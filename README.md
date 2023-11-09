@@ -8,7 +8,7 @@ git clone
 ```
 ### cd to app directory
 ```bash
-cd gsi-iloilo
+cd softdev
 ```
 ### Install Dependencies
 ```bash
