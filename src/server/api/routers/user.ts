@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, } from "~/server/api/trpc";
 import { db } from "~/server/db";
-
+import bcrypt from 'bcrypt';
 
 export const userRouter = createTRPCRouter({
     /**
@@ -41,17 +41,19 @@ export const userRouter = createTRPCRouter({
                 throw new Error('Email is already in use');
             }
 
-            //insert password hashing below
-            //const hashedPassword = something
+            //hash the password
+            const saltRounds = 13;
+            const hashedPassword = await bcrypt.hash(input.password, saltRounds);
 
             //add user credentials to the database
-            const user = await db.user.create({
-                data: {
-                    ...input,
-                    //password: hashedPassword,
-                },
-            });
+            const newUser = {
+                ...input,
+                password: hashedPassword,
+            };
 
+            const user = await db.user.create({
+                data: newUser,
+            });
             return user;
         }),
 
