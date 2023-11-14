@@ -41,8 +41,8 @@ export const userRouter = createTRPCRouter({
                 throw new Error('Email is already in use');
             }
 
-            //insert password hashing here
-            //const hashedPassword 
+            //insert password hashing below
+            //const hashedPassword = something
 
             //add user credentials to the database
             const user = await db.user.create({
