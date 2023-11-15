@@ -86,7 +86,7 @@ export const Navbar = () => {
 
         <div className="hidden justify-end lg:flex">
           <Link
-            href="/login"
+            href="/dashboard"
             className="mx-4 rounded bg-blue-700 px-6 py-2 font-bold text-white hover:bg-blue-800"
           >
             LOG IN
@@ -146,7 +146,7 @@ export const Navbar = () => {
             ))}
 
             <div className="absolute bottom-0 left-0 w-full py-8 shadow-inner">
-              <Link href="/login">
+              <Link href="/sign-in">
                 <li
                   onClick={closeMenu}
                   className="mx-16 rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800"

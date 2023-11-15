@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, } from "~/server/api/trpc";
 import { db } from "~/server/db";
@@ -43,6 +45,7 @@ export const userRouter = createTRPCRouter({
 
             //hash the password
             const saltRounds = 13;
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             const hashedPassword = await bcrypt.hash(input.password, saltRounds);
 
             //add user credentials to the database
