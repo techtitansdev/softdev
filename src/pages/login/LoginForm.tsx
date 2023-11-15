@@ -180,6 +180,7 @@ export const LoginForm = () => {
               isOpen={isModalOpen}
               onClose={closeModal}
               message="Success"
+              bgColor="bg-gray-800"
             />
           </div>
         </div>
