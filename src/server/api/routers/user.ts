@@ -33,7 +33,7 @@ export const userRouter = createTRPCRouter({
             const { input } = opts;
 
             //check if email already exists in the database
-            const existingEmail = await db.user.findUnique({
+            const existingEmail = await db.users.findUnique({
                 where: { email: input.email }
             });
 
@@ -51,7 +51,7 @@ export const userRouter = createTRPCRouter({
                 password: hashedPassword,
             };
 
-            const user = await db.user.create({
+            const user = await db.users.create({
                 data: newUser,
             });
             return user;

@@ -29,7 +29,7 @@ model Admins {
   userId               String
   user                 Users                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   assignAdminBlogs     AssignAdminBlogs[]
-  AssignAdminsProjects AssignAdminsProjects[]
+  assignAdminsProjects AssignAdminsProjects[]
 
   @@index([userId])
 }
@@ -37,8 +37,8 @@ model Admins {
 model Categories {
   id                      String                    @id @default(cuid())
   name                    String
-  AssignCategoriesBlog    AssignCategoriesBlog[]
-  AssignCategoriesProject AssignCategoriesProject[]
+  assignCategoriesBlog    AssignCategoriesBlog[]
+  assignCategoriesProject AssignCategoriesProject[]
 }
 
 model Blogs {
@@ -52,7 +52,7 @@ model Blogs {
   status               String
   featured             Boolean                @default(false)
   assignAdminBlogs     AssignAdminBlogs[]
-  AssignCategoriesBlog AssignCategoriesBlog[]
+  assignCategoriesBlog AssignCategoriesBlog[]
 }
 
 model Projects {
@@ -66,9 +66,9 @@ model Projects {
   updated                 DateTime                  @updatedAt()
   about                   String
   status                  String
-  AssignAdminsProjects    AssignAdminsProjects[]
-  AssignCategoriesProject AssignCategoriesProject[]
-  Fundraisers             Fundraisers[]
+  assignAdminsProjects    AssignAdminsProjects[]
+  assignCategoriesProject AssignCategoriesProject[]
+  fundraisers             Fundraisers[]
 }
 
 model Fundraisers {
@@ -83,7 +83,7 @@ model Fundraisers {
   status     String
   featured   Boolean    @default(false)
   project    Projects   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  Fundings   Fundings[]
+  fundings   Fundings[]
 
   @@index([projectId])
 }
