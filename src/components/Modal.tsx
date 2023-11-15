@@ -7,7 +7,7 @@ export const Modal = ({ isOpen, onClose, message, bgColor }: ModalProps) => {
 
   return (
     isOpen && (
-      <div className="fixed inset-0 z-10 flex items-start justify-center">
+      <div className="fixed inset-0 z-50 flex items-start justify-center px-5">
         <div
           className={`mt-8 flex items-center rounded-lg p-4 shadow-lg ${modalBackgroundClass}`}
         >
