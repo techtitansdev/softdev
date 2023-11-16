@@ -16,10 +16,11 @@ model Users {
   firstName       String
   lastName        String
   address         String
-  phone           String    
+  phone           String
   password        String
   created         DateTime  @default(now())
   updated         DateTime  @updatedAt()
+  role            String    @default("USER")
   admins          Admins[]
   donors          Donors[]
 }

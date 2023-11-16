@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure, } from "~/server/api/trpc";
 import { db } from "~/server/db";
 import bcrypt from 'bcrypt';
+import { Prisma } from "@prisma/client";
 
 export const userRouter = createTRPCRouter({
     /**
@@ -56,5 +57,31 @@ export const userRouter = createTRPCRouter({
             });
             return user;
         }),
+    verify: publicProcedure
+        .input(z.object({
+            email: z.string().toLowerCase(),
+        }))
+        .mutation(async (opts) => {
+            const { input } = opts;
 
+            //check if user exists
+            const user = await db.users.findUnique({
+                where: { email: input.email }
+            })
+            if (!user) {
+                throw new Error('User does not exist')
+            }
+
+            //update verification data
+            await db.users.update({
+                where: {
+                    email: input.email
+                },
+                data: {
+                    emailVerified: true,
+                    emailVerifiedAt: new Date().toISOString(),
+                }
+            })
+
+        })
 })
