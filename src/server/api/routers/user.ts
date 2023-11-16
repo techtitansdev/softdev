@@ -1,8 +1,7 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure, } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure, } from "~/server/api/trpc";
 import { db } from "~/server/db";
 import bcrypt from 'bcrypt';
-import { Prisma } from "@prisma/client";
 
 export const userRouter = createTRPCRouter({
     /**
@@ -82,6 +81,23 @@ export const userRouter = createTRPCRouter({
                     emailVerifiedAt: new Date().toISOString(),
                 }
             })
+        }),
+    getRole: protectedProcedure
+        .input(z.object({
+            email: z.string()
+        }))
+        .query(async (opts) => {
+            const { input } = opts;
+            const user = await db.users.findUnique({
+                where: {
+                    email: input.email
+                }
+            });
+            if (!user) {
+                throw new Error('User not found');
+            }
+            return user.role;
+        }),
+        
+});
 
-        })
-})
