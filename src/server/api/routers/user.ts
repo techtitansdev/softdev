@@ -98,6 +98,30 @@ export const userRouter = createTRPCRouter({
             }
             return user.role;
         }),
-        
+    setRole: protectedProcedure
+        .input(z.object({
+            email: z.string(),
+            role: z.string()
+        }))
+        .mutation(async (opts) => {
+            const { input } = opts;
+            const user = await db.users.findUnique({
+                where: {
+                    email: input.email
+                }
+            })
+            if (!user) {
+                throw new Error('User not found')
+            }
+
+            await db.users.update({
+                where: {
+                    email: input.email
+                },
+                data: {
+                    role: input.role
+                }
+            })
+        })
 });
 
