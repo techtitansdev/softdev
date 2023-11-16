@@ -84,7 +84,7 @@ export const userRouter = createTRPCRouter({
         }),
     getRole: protectedProcedure
         .input(z.object({
-            email: z.string()
+            email: z.string().toLowerCase()
         }))
         .query(async (opts) => {
             const { input } = opts;
@@ -104,8 +104,8 @@ export const userRouter = createTRPCRouter({
 
     setRole: protectedProcedure
         .input(z.object({
-            email: z.string(),
-            role: z.string()
+            email: z.string().toLowerCase(),
+            role: z.string().toUpperCase()
         }))
         .mutation(async (opts) => {
             const { input } = opts;
