@@ -27,7 +27,7 @@ model Users {
 
 model Admins {
   id                   String                 @id @default(cuid())
-  userEmail            String
+  userEmail            String                 @unique
   user                 Users                  @relation(fields: [userEmail], references: [email], onDelete: Cascade)
   assignAdminBlogs     AssignAdminBlogs[]
   assignAdminsProjects AssignAdminsProjects[]
@@ -91,7 +91,7 @@ model Fundraisers {
 
 model Donors {
   id        String     @id @default(cuid())
-  userEmail String
+  userEmail String     @unique
   user      Users      @relation(fields: [userEmail], references: [email], onDelete: Cascade)
   fundings  Fundings[]
 
