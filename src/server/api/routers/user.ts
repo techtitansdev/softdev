@@ -88,6 +88,8 @@ export const userRouter = createTRPCRouter({
         }))
         .query(async (opts) => {
             const { input } = opts;
+
+            //check if user exists
             const user = await db.users.findUnique({
                 where: {
                     email: input.email
@@ -96,8 +98,10 @@ export const userRouter = createTRPCRouter({
             if (!user) {
                 throw new Error('User not found');
             }
+            //return the user role
             return user.role;
         }),
+
     setRole: protectedProcedure
         .input(z.object({
             email: z.string(),
@@ -105,6 +109,8 @@ export const userRouter = createTRPCRouter({
         }))
         .mutation(async (opts) => {
             const { input } = opts;
+
+            //check if user exists
             const user = await db.users.findUnique({
                 where: {
                     email: input.email
@@ -114,6 +120,7 @@ export const userRouter = createTRPCRouter({
                 throw new Error('User not found')
             }
 
+            //update user role
             await db.users.update({
                 where: {
                     email: input.email
