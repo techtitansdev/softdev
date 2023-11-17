@@ -5,10 +5,10 @@ import {
   AiOutlineEye,
   AiOutlineEyeInvisible,
 } from "react-icons/ai";
-import PhoneInput from "react-phone-input-2";
 import { Register } from "~/types/register";
-import "react-phone-input-2/lib/style.css";
 import validateRegistration from "~/utils/validateRegistration";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 export const RegisterForm = () => {
   const initialValues: Register = {
@@ -23,6 +23,7 @@ export const RegisterForm = () => {
   const [formValues, setFormValues] = useState<Register>(initialValues);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmit, setIsSubmit] = useState(false);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
