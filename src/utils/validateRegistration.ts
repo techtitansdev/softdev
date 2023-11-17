@@ -1,5 +1,5 @@
-import { Register } from "~/types/register";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
+import { Register } from "~/types/register";
 
 const ERROR_MESSAGES = {
   invalidEmail: "Please enter a valid email address",
