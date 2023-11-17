@@ -58,6 +58,8 @@ export const LoginForm = () => {
     setShowPassword(!showPassword);
   };
 
+  const [loginError, setLoginError] = useState(false);
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex sm:flex-col md:flex-col lg:flex-row xl:h-screen xl:flex-row">
@@ -179,7 +181,12 @@ export const LoginForm = () => {
             <Modal
               isOpen={isModalOpen}
               onClose={closeModal}
-              message="Success"
+              message={
+                loginError
+                  ? "Make sure your email and password are all correct."
+                  : "Success"
+              }
+              bgColor={loginError ? "bg-red-600" : "bg-gray-800"}
             />
           </div>
         </div>
