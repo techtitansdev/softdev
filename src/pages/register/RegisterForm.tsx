@@ -24,7 +24,6 @@ export const RegisterForm = () => {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmit, setIsSubmit] = useState(false);
 
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormValues({
@@ -86,7 +85,7 @@ export const RegisterForm = () => {
           <div className="ml-5 mt-28 flex flex-col text-3xl font-semibold md:ml-10 lg:ml-16 xl:ml-24 xl:text-4xl">
             Register
           </div>
-          <div className="mb-8 ml-5 mt-1 flex flex-col text-base md:ml-10 lg:ml-16 xl:ml-24 xl:text-lg">
+          <div className="mx-5 mb-8 mt-1 flex flex-col text-sm sm:text-base md:ml-10 lg:ml-16 xl:ml-24 xl:text-lg">
             Create New Account! Please Enter your details
           </div>
 
@@ -267,7 +266,7 @@ export const RegisterForm = () => {
                 Sign Up
               </button>
 
-              <div className="col text-medium mt-4 flex items-center justify-center">
+              <div className="mt-4 flex items-center justify-center text-sm sm:text-base">
                 <div>
                   Already have an account? &nbsp;
                   <Link href="/login">
