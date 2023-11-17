@@ -5,8 +5,10 @@ import {
   AiOutlineEye,
   AiOutlineEyeInvisible,
 } from "react-icons/ai";
+import PhoneInput from "react-phone-input-2";
 import { Register } from "~/types/register";
-import { validateRegistration } from "~/utils/validateRegistration";
+import "react-phone-input-2/lib/style.css";
+import validateRegistration from "~/utils/validateRegistration";
 
 export const RegisterForm = () => {
   const initialValues: Register = {
@@ -40,6 +42,8 @@ export const RegisterForm = () => {
   useEffect(() => {
     if (Object.keys(formErrors).length === 0 && isSubmit) {
       console.log("Form values submitted:", formValues);
+    } else {
+      console.log("Form submission conditions not met");
     }
   }, [formErrors, isSubmit]);
 
@@ -148,7 +152,7 @@ export const RegisterForm = () => {
                 onChange={handleInputChange}
               />
               {formErrors.address && (
-                <div className="flex items-center text-sm text-red-600">
+                <div className="mb-2 flex items-center text-sm text-red-600">
                   <AiOutlineExclamationCircle className="mr-1" size={18} />
                   {formErrors.address}
                 </div>
@@ -156,14 +160,25 @@ export const RegisterForm = () => {
             </div>
 
             <div className="relative mb-2">
-              <input
-                className="my-2 w-full border-b border-gray-800 py-2 pr-3 text-black outline-none focus:outline-none"
-                type="tel"
+              <PhoneInput
+                inputProps={{
+                  className:
+                    "pl-12 w-full border-b border-gray-800 py-2 pr-3 text-black outline-none focus:outline-none",
+                  type: "tel",
+                }}
                 placeholder="Phone Number"
-                name="phone"
+                country="ph"
                 value={formValues.phone}
-                onChange={handleInputChange}
+                onChange={(value) => {
+                  handleInputChange({
+                    target: {
+                      name: "phone",
+                      value,
+                    },
+                  } as React.ChangeEvent<HTMLInputElement>);
+                }}
               />
+
               {formErrors.phone && (
                 <div className="flex items-center text-sm text-red-600">
                   <AiOutlineExclamationCircle className="mr-1" size={18} />

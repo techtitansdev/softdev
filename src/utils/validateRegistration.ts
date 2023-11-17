@@ -1,57 +1,59 @@
 import { Register } from "~/types/register";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 const ERROR_MESSAGES = {
-  required: "Required",
   invalidEmail: "Please enter a valid email address",
-  invalidPhone: "Invalid Phone Number",
+  invalidPhone: "Invalid phone number",
   invalidPassword: "Invalid password",
-  passwordsNotMatch: "Passwords do not match",
 };
-
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{6,}$/;
-const PHONE_REGEX = /^(09|\+639)\d{9}$/;
+const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[@#$%^&+=])(?=.*\d).*$/i;
 
-const validateRequired = (value: string | undefined): string | undefined => {
-  return value ? undefined : ERROR_MESSAGES.required;
-};
-
-const validateEmail = (email: string | undefined): string | undefined => {
-  return email && !EMAIL_REGEX.test(email)
-    ? ERROR_MESSAGES.invalidEmail
-    : undefined;
-};
-
-const validatePhone = (phone: string | undefined): string | undefined => {
-  return phone && !PHONE_REGEX.test(phone)
-    ? ERROR_MESSAGES.invalidPhone
-    : undefined;
-};
-
-const validatePassword = (password: string | undefined): string | undefined => {
-  return password && !PASSWORD_REGEX.test(password)
-    ? ERROR_MESSAGES.invalidPassword
-    : undefined;
-};
-
-export const validateRegistration = (form: Register) => {
+const validateRegistration = (form: Register) => {
   const errors: Record<string, string> = {};
 
-  errors.firstName = validateRequired(form.firstName) || "";
-  errors.lastName = validateRequired(form.lastName) || "";
-  errors.email =
-    validateRequired(form.email) || validateEmail(form.email) || "";
-  errors.address = validateRequired(form.address) || "";
-  errors.phone =
-    validateRequired(form.phone) || validatePhone(form.phone) || "";
-  errors.password =
-    validateRequired(form.password) || validatePassword(form.password) || "";
-  errors.confirmPassword =
-    validateRequired(form.confirmPassword) ||
-    (form.password !== form.confirmPassword
-      ? ERROR_MESSAGES.passwordsNotMatch
-      : undefined) ||
-    "";
+  if (!form.firstName) {
+    errors.firstName = "Required";
+  }
+
+  if (!form.lastName) {
+    errors.lastName = "Required";
+  }
+
+  if (!form.email) {
+    errors.email = "Required";
+  } else if (!EMAIL_REGEX.test(form.email)) {
+    errors.email = ERROR_MESSAGES.invalidEmail;
+  }
+
+  if (!form.address) {
+    errors.address = "Required";
+  }
+
+  if (!form.phone) {
+    errors.phone = "Required!";
+  } else {
+    const parsedPhoneNumber = parsePhoneNumberFromString(form.phone, "PH");
+    if (!parsedPhoneNumber || !parsedPhoneNumber.isValid()) {
+      errors.phone = ERROR_MESSAGES.invalidPhone;
+    } else if (form.phone.length < 10) {
+      errors.phone = "Phone Number must be at least 10 digits";
+    }
+  }
+
+  if (!form.password) {
+    errors.password = "Required";
+  } else if (!PASSWORD_REGEX.test(form.password)) {
+    errors.password = ERROR_MESSAGES.invalidPassword;
+  }
+
+  if (!form.confirmPassword) {
+    errors.confirmPassword = "Required";
+  } else if (form.password !== form.confirmPassword) {
+    errors.confirmPassword = "Passwords do not match";
+  }
 
   return errors;
 };
+
+export default validateRegistration;
