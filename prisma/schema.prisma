@@ -27,12 +27,12 @@ model Users {
 
 model Admins {
   id                   String                 @id @default(cuid())
-  userId               String
-  user                 Users                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userEmail            String                 @unique
+  user                 Users                  @relation(fields: [userEmail], references: [email], onDelete: Cascade)
   assignAdminBlogs     AssignAdminBlogs[]
   assignAdminsProjects AssignAdminsProjects[]
 
-  @@index([userId])
+  @@index([userEmail])
 }
 
 model Categories {
@@ -90,12 +90,12 @@ model Fundraisers {
 }
 
 model Donors {
-  id       String     @id @default(cuid())
-  userId   String
-  user     Users      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  fundings Fundings[]
+  id        String     @id @default(cuid())
+  userEmail String     @unique
+  user      Users      @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  fundings  Fundings[]
 
-  @@index([userId])
+  @@index([userEmail])
 }
 
 model Fundings {
