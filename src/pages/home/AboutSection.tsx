@@ -15,7 +15,7 @@ export const AboutSection = () => {
   return (
     <div className="bg-gray-50 py-10">
       <div className="mx-auto flex min-w-[200px] max-w-[1241px] flex-col items-center justify-between sm:flex-row">
-        <div className="w-full pr-6 md:w-1/2">
+        <div className="w-full md:w-1/2 md:pl-4 lg:pr-6 xl:pl-0">
           <img
             src="/about-img.jpeg"
             alt="About FundImpact"

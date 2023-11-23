@@ -53,7 +53,7 @@ export const WelcomeSection = () => {
           </motion.div>
 
           <motion.div
-            className="mx-auto px-8 text-center text-sm font-normal text-gray-700 xl:px-0 xl:pr-28 xl:text-left xl:text-base"
+            className="mx-auto px-8 max-w-[500px] text-center text-sm font-normal text-gray-700 xl:px-0 xl:pr-28 xl:text-left xl:text-base md:max-w-[600px] xl:max-w-[800px]"
             initial="hidden"
             animate="visible"
             variants={textVariants}
