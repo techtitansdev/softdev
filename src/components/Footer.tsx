@@ -6,7 +6,7 @@ import { BiLogoFacebook, BiLogoLinkedin } from "react-icons/bi";
 export const Footer = () => {
   return (
     <nav className="w-full bg-[#0a133c] px-14 py-10">
-      <div className=" border-b-2 border-white py-6">
+      <div className=" mx-auto max-w-[1750px] border-b-2 border-white py-6">
         <div className="flex flex-col items-center md:flex-row lg:justify-between">
           <div className="text-center md:w-1/3 md:text-left">
             <div className="text-center text-2xl text-gray-100 lg:text-3xl">

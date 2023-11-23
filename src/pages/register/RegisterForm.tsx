@@ -59,26 +59,26 @@ export const RegisterForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex sm:flex-col md:flex-col lg:flex-row xl:flex-row">
+      <div className="mx-auto flex max-h-[800px] max-w-[1750px] sm:flex-col md:flex-col lg:flex-row xl:flex-row">
         <div className="relative z-10 mx-auto hidden w-1/2 sm:hidden md:hidden lg:flex">
           <div
-            className="w-full xl:min-h-screen"
+            className="w-full"
             style={{
               backgroundImage: `url('https://a0.muscache.com/im/pictures/miso/Hosting-802555919348853702/original/59dcec71-d33e-4edc-af0f-3681e7e76feb.jpeg')`,
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
-          ></div>
-        </div>
-
-        <div className="absolute left-2 top-2 z-30">
-          <img
-            src="gsi-logo2.png"
-            height={90}
-            width={90}
-            alt="Logo"
-            className="cursor-pointer"
-          />
+          >
+            <div className="absolute left-2 top-2 z-30">
+              <img
+                src="gsi-logo2.png"
+                height={90}
+                width={90}
+                alt="Logo"
+                className="cursor-pointer"
+              />
+            </div>
+          </div>
         </div>
 
         <div className="flex w-full flex-col sm:w-full md:w-full  lg:w-1/2 xl:min-h-screen xl:w-1/2">
