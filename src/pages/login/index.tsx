@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { LoginForm } from "./LoginForm";
+import { Footer } from "~/components/Footer";
 
 const Login = () => {
   return (
@@ -11,6 +12,7 @@ const Login = () => {
       </Head>
 
       <LoginForm />
+      <Footer/>
     </>
   );
 };
