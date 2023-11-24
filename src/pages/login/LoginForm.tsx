@@ -15,17 +15,14 @@ import { validateLogin } from "~/utils/validateLogin";
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
- 
-  const { isLoaded, signIn, setActive } = useSignIn();
- 
-
- 
- 
-
+  
+  
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
   });
+  
+   const { isLoaded, signIn, setActive } = useSignIn();
 
   const [formErrors, setFormErrors] = useState({
     emailError: "",
@@ -55,6 +52,7 @@ export const LoginForm = () => {
           console.log(result);
           router.push('/home')
         } else {
+          console.log(result);
           console.log(result);
         }
       })
