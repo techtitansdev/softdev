@@ -8,6 +8,7 @@ import { GoProjectSymlink } from "react-icons/go";
 import { FaPeopleCarry } from "react-icons/fa";
 import { HiArrowNarrowRight } from "react-icons/hi";
 import { AiOutlineClose, AiOutlineHome, AiOutlineMenu } from "react-icons/ai";
+import { UserButton, useClerk, useUser } from "@clerk/nextjs";
 
 const navigationLinks = [
   { path: "/", text: "HOME", icon: <AiOutlineHome size={22} /> },
@@ -23,6 +24,7 @@ export const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const navBackground = isScrolled ? "bg-white" : "bg-transparent";
+  const { signOut } = useClerk();
 
   const handleNav = () => {
     setMenuOpen((prevMenuOpen) => !prevMenuOpen);
@@ -46,7 +48,8 @@ export const Navbar = () => {
   }, []);
 
   const closeMenu = () => setMenuOpen(false);
-
+  const { user } = useUser();
+  console.log(user);
   return (
     <nav
       className={`w-full pt-2 ${navBackground} ${
@@ -54,7 +57,7 @@ export const Navbar = () => {
       } fixed top-0 z-50 transition-all duration-300 ease-in-out`}
     >
       <div className="flex h-full w-full items-center justify-between px-4">
-        <Link href="/">
+        <Link href="/home">
           <img
             src="gsi-logo2.png"
             height={90}
@@ -85,12 +88,22 @@ export const Navbar = () => {
         </div>
 
         <div className="hidden justify-end lg:flex">
-          <Link
-            href="/dashboard"
-            className="mx-4 rounded bg-blue-700 px-6 py-2 font-bold text-white hover:bg-blue-800"
-          >
-            LOG IN
-          </Link>
+          {user && (
+            <button
+              className="mx-4 rounded bg-blue-700 px-6 py-2 font-bold text-white hover:bg-blue-800"
+              onClick={() => signOut(() => router.push("/"))}
+            >
+              Sign out
+            </button>
+          )}
+          {!user && (
+            <Link
+              href="/dashboard"
+              className="mx-4 rounded bg-blue-700 px-6 py-2 font-bold text-white hover:bg-blue-800"
+            >
+              LOG IN
+            </Link>
+          )}
         </div>
 
         {/* Hamburger menu */}
@@ -144,17 +157,26 @@ export const Navbar = () => {
                 <hr className="mx-3 my-5 border-t border-dashed border-gray-500"></hr>
               </Link>
             ))}
-
             <div className="absolute bottom-0 left-0 w-full py-8 shadow-inner">
-              <Link href="/sign-in">
-                <li
-                  onClick={closeMenu}
-                  className="mx-16 rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800"
-                  style={{ zIndex: 1 }}
+              {user && (
+                <button
+                className="mx-16 rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800"
+                  onClick={() => signOut(() => router.push("/"))}
                 >
-                  LOGIN
-                </li>
-              </Link>
+                  Sign out
+                </button>
+              )}
+              {!user && (
+                <Link href="/sign-in">
+                  <li
+                    onClick={closeMenu}
+                    className="mx-16 rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800"
+                    style={{ zIndex: 1 }}
+                  >
+                    LOGIN
+                  </li>
+                </Link>
+              )}
             </div>
           </ul>
         </div>

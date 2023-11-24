@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { RegisterForm } from "./RegisterForm";
+import { Footer } from "~/components/Footer";
 
 const Register = () => {
   return (
@@ -11,6 +12,7 @@ const Register = () => {
       </Head>
 
       <RegisterForm />
+      <Footer />
     </>
   );
 };

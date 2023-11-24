@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure, } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure, } from "~/server/api/trpc";
 import { db } from "~/server/db";
 import bcrypt from 'bcrypt';
 import { Prisma } from "@prisma/client";
@@ -85,6 +85,54 @@ export const userRouter = createTRPCRouter({
                     emailVerifiedAt: new Date().toISOString(),
                 }
             })
+        }),
+    getRole: protectedProcedure
+        .input(z.object({
+            email: z.string().toLowerCase()
+        }))
+        .query(async (opts) => {
+            const { input } = opts;
 
+            //check if user exists
+            const user = await db.users.findUnique({
+                where: {
+                    email: input.email
+                }
+            });
+            if (!user) {
+                throw new Error('User not found');
+            }
+            //return the user role
+            return user.role;
+        }),
+
+    setRole: protectedProcedure
+        .input(z.object({
+            email: z.string().toLowerCase(),
+            role: z.string().toUpperCase()
+        }))
+        .mutation(async (opts) => {
+            const { input } = opts;
+
+            //check if user exists
+            const user = await db.users.findUnique({
+                where: {
+                    email: input.email
+                }
+            })
+            if (!user) {
+                throw new Error('User not found')
+            }
+
+            //update user role
+            await db.users.update({
+                where: {
+                    email: input.email
+                },
+                data: {
+                    role: input.role
+                }
+            })
         })
-})
+});
+

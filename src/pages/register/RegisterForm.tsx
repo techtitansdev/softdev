@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -14,9 +13,11 @@ import "react-phone-input-2/lib/style.css";
 import { useSignUp } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { OtpVerification } from "~/components/OtpVerification";
+import { api } from "~/utils/api";
 
 
 export const RegisterForm = () => {
+  const createUser = api.user.create.useMutation()
   const { isLoaded, signUp, setActive } = useSignUp();
   const initialValues: Register = {
     firstName: "",
@@ -47,6 +48,16 @@ export const RegisterForm = () => {
  
       // change the UI to our pending section.
       setPendingVerification(true);
+
+      createUser.mutate({
+        email: formValues.email,
+        firstName: formValues.firstName,
+        lastName: formValues.lastName,
+        address: formValues.address,
+        phone: formValues.phone,
+        password: formValues.password
+      }
+      )
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
     }

@@ -1,4 +1,6 @@
+import { useSignIn } from "@clerk/nextjs";
 import Link from "next/link";
+import router from "next/router";
 import { useState } from "react";
 import {
   AiOutlineExclamationCircle,
@@ -11,6 +13,15 @@ import { Modal } from "~/components/Modal";
 import { validateLogin } from "~/utils/validateLogin";
 
 export const LoginForm = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+ 
+  const { isLoaded, signIn, setActive } = useSignIn();
+ 
+
+ 
+ 
+
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
@@ -27,13 +38,30 @@ export const LoginForm = () => {
     setModalOpen(false);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const validate = handleValidate();
 
     if (validate) {
       console.log("form submited", formValues);
+      await signIn!
+      .create({
+        identifier: formValues.email,
+        password:formValues.password,
+      })
+      .then((result) => {
+        if (result.status === "complete") {
+          console.log(result);
+          router.push('/home')
+        } else {
+          console.log(result);
+        }
+      })
+      .catch((err) => console.error("error", err.errors[0].longMessage));
       setModalOpen(true);
+
+      
 
       setTimeout(() => {
         setModalOpen(false);
