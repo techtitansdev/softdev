@@ -6,12 +6,12 @@ export const FeaturedProjects = () => {
   return (
     <div className="bg-gray-50 bg-cover">
       <div className="mx-auto max-w-screen-xl py-2 pb-12 sm:p-10 lg:p-6 lg:py-6">
-        <div className="mt-4 text-center text-2xl font-medium text-gray-800 md:text-3xl lg:text-left">
+        <div className="mt-4 text-center text-2xl font-medium text-gray-800 sm:text-3xl lg:text-left">
           FEATURED PROJECTS
         </div>
 
         <div className="px-6 pb-5 text-center text-sm font-normal text-gray-700 sm:px-0 md:text-base lg:text-left">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit
+          Redefining impact through transformative actions.
         </div>
 
         <div className="mb-2 flex items-center justify-center">

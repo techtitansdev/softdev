@@ -8,9 +8,9 @@ export const HowItWorks = () => {
           How Fund Impact Works
         </p>
 
-        <p className="sm:text-medium mt-1 px-6 text-center text-sm font-light text-gray-700 lg:text-lg">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry.
+        <p className="sm:text-medium mt-1 px-4 text-center text-sm font-light text-gray-700 lg:text-lg">
+          Explore the dynamic synergy of Fund Impact, where every contribution
+          powers impactful global projects.
         </p>
       </div>
       <div className="mx-auto mb-6 mt-6 flex w-full items-center justify-center px-4 sm:mb-12 sm:px-6 lg:mb-12">

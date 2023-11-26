@@ -1,30 +1,30 @@
 export const featuredShapers = [
   {
-    title: "Lorem Ipsum",
-    imageUrl:
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+    title: "Anjelou Estrella",
+    work: "Co-Founder/Executive Director,Team Dugong Bughaw",
+    imageUrl: "anjelou-estrella.png",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis dolore adipisci placeat.",
+      "Being part of Global Shapers Community challenged me to go beyond my limits, to unleash my potential of becoming a passionate leader driven to create social impact, and to collaborate with like-minded individuals serving different communities. This community provides an avenue for Shapers to turn their ideas into actions. It’s a home for changemakers!",
   },
   {
-    title: "Lorem Ipsum",
-    imageUrl:
-      "https://images.unsplash.com/photo-1502675135487-e971002a6adb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=688&q=80",
+    title: "Ted Hyacinth Aspera",
+    work: "Co-Founder and CTO, Welby Project Technical Asst, UMWAD Consortium",
+    imageUrl: "ted-aspera.png",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis dolore adipisci placeat.",
+      "Global Shapers Iloilo helped me realize that I can be the change the world needs. It offers tools and the right network that enables me to translate global ideas into impactful local actions. I was able to apply my technological background to shape the digital forefront of our pillar projects. It has provided me with a platform to inspire and influence the lives of thousands of youths.",
   },
   {
-    title: "Lorem Ipsum",
-    imageUrl:
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+    title: "James Daniel Gregori",
+    work: "Enterprise Dev't and Marketing Specialist,Department of Agriculture - Regional Field Office VI",
+    imageUrl: "james-gregori.png",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis dolore adipisci placeat.",
+      "With Global Shapers, I have come to understand that the rich diversity of thought among the shapers within the hub fosters the generation of exceptionally refined and innovative ideas when devising multi-sectoral initiatives. Being part of this community has motivated me to undertake in-depth analyses, thoroughly examining the distinct impact of each project on those it serves.",
   },
   {
-    title: "Lorem Ipsum",
-    imageUrl:
-      "https://assets.weforum.org/news_update/image/responsive_big_webp_bnhoQ0zkGJmTD_LKWN-mnYEdK4WuH6MOYl3OmCJOcQA.webp",
+    title: "Ariessa Lane Ko",
+    work: "Product Manager, Stacktreck Enterprise Inc.President, Devcon Iloilo",
+    imageUrl: "ariessa-ko.png",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis dolore adipisci placeat.",
+      "I've learned that as a Global Shaper, there are countless individuals from diverse backgrounds and with various initiatives, all driven by a shared desire to make a positive impact on the world. This experience has shown me the incredible power of collaboration and the potential for positive change when people come together with a common goal.",
   },
 ];
