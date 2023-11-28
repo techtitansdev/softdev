@@ -2,6 +2,10 @@ import Head from "next/head";
 import { ComingSoon } from "~/components/ComingSoon";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
+import { AboutUsSection } from "./AboutUsSection";
+import { Mission } from "./Mission";
+import { TeamCards } from "./TeamCards";
+import { Vision } from "./Vision";
 
 const AboutUs = () => {
   return (
@@ -13,7 +17,11 @@ const AboutUs = () => {
       </Head>
 
       <Navbar />
-      <ComingSoon />
+      <AboutUsSection />
+      <Mission />
+      <Vision />
+      <TeamCards />
+
       <Footer />
     </>
   );

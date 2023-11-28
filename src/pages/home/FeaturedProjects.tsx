@@ -11,7 +11,8 @@ export const FeaturedProjects = () => {
         </div>
 
         <div className="px-6 pb-5 text-center text-sm font-normal text-gray-700 sm:px-0 md:text-base lg:text-left">
-          Redefining impact through transformative actions.
+          Transform communities worldwide by exploring and implementing
+          innovative solutions that drive positive change.
         </div>
 
         <div className="mb-2 flex items-center justify-center">
