@@ -8,7 +8,7 @@ export const TeamCards = () => {
         Meet Our Team
       </div>
       <div className="mb-12 flex items-center justify-center">
-        <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5">
+        <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
           {teamImages.map((member, index) => (
             <li
               key={index}
@@ -26,11 +26,11 @@ export const TeamCards = () => {
                     className="h-96 w-full rounded-lg shadow-lg"
                     alt={member.name}
                   />
-                  <div className="absolute bottom-0 w-full bg-gray-600 bg-opacity-40 p-1 opacity-0 group-hover:opacity-100">
-                    <div className="ml-2 text-lg font-medium tracking-tight text-white">
+                  <div className="absolute bottom-0 w-full bg-gray-800 bg-opacity-60 p-1 opacity-0 group-hover:opacity-100">
+                    <div className="ml-2 text-lg font-medium tracking-tight text-white text-center">
                       {member.name}
                     </div>
-                    <div className="text-normal ml-2 font-light tracking-tight text-yellow-300">
+                    <div className="text-normal ml-2 font-light tracking-tight text-yellow-300 text-center">
                       {member.position}
                     </div>
                   </div>
