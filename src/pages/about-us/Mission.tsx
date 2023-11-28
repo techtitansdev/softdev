@@ -2,27 +2,27 @@ import React from "react";
 
 export const Mission = () => {
   return (
-    <div className="mx-8 mb-12 lg:mx-8 xl:mx-24">
-      <div className="mx-auto flex flex-col-reverse items-center justify-between md:flex-row">
-        <div className="ml-8 w-full flex-col items-center justify-center px-2 md:w-1/2">
-          <p className="mb-2 mt-6 text-3xl font-semibold text-gray-800 lg:mb-5 lg:mt-1 lg:text-4xl">
+    <div className="mx-auto mt-6 max-w-[1230px]">
+      <div className="flex flex-col-reverse items-center md:flex-row">
+        <div className=" w-full flex-col items-center justify-center md:w-1/2">
+          <p className="mb-2 mt-4 px-6 text-2xl font-semibold text-gray-800 sm:text-3xl md:mt-0 lg:text-4xl xl:px-0">
             Our Mission
           </p>
-          <p className="mb-4 mr-6 text-base font-light text-gray-800  lg:text-lg">
+          <p className="mb-4 px-6 text-sm font-light text-gray-800 sm:text-base md:max-w-[530px] lg:text-lg xl:px-0">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed varius
             vehicula nisl in venenatis. Integer non ultricies nisi, et pretium
             mi. In sed dui leo. Sed non congue lacus.
           </p>
-          <p className="mr-6 text-base font-light text-gray-800  lg:text-lg">
+          <p className="px-6 text-sm font-light text-gray-800  sm:text-base md:max-w-[530px] lg:text-lg xl:px-0">
             Morbi facilisis lacus vitae velit euismod, et scelerisque ex
             tincidunt.
           </p>
         </div>
-        <div className="w-full px-6 md:w-1/2">
+        <div className="w-full px-6 md:w-1/2 md:max-w-[540px] xl:ml-8 xl:px-0">
           <img
             src="https://i.pinimg.com/474x/35/82/b9/3582b9e4fa770269f044a110be7e609a.jpg"
-            alt="About FundImpact"
-            className="w-full shadow-lg"
+            alt="Mission"
+            className="w-full shadow-xl"
           />
         </div>
       </div>
