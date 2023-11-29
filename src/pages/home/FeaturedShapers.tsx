@@ -40,10 +40,10 @@ export const FeaturedShapers = () => {
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black group-hover:from-black/70 group-hover:via-black/60 group-hover:to-black/70"></div>
                 <div className="absolute inset-0 flex translate-y-[60%] flex-col items-center justify-center px-5 text-center transition-all duration-500 group-hover:translate-y-0">
-                  <div className="w-56 bg-gradient-to-r from-blue-500 to-blue-900 px-1 text-xl font-medium text-white">
+                  <div className="rounded-t-lg w-56 bg-gradient-to-r from-blue-500 to-blue-900 px-1 text-xl font-medium text-white">
                     {shaper.title}
                   </div>
-                  <div className="mb-5 w-56 bg-white px-1 text-left text-xs">
+                  <div className="rounded-b-lg mb-5 w-56 bg-white px-1 text-left text-xs">
                     {shaper.work}
                   </div>
 

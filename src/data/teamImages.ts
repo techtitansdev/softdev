@@ -6,8 +6,8 @@ export const teamImages = [
     position: "CURATOR",
   },
   {
-    image: "anjelou-estrella.png",
-    image2:"anjelou-estrella2.png",
+    image: "anjelou-estrella2.png",
+    image2:"anjelou-estrella.png",
     name: "ANJELOU ESTRELLA",
     position: "VICE CURATOR",
   },
@@ -18,7 +18,7 @@ export const teamImages = [
     position: "IMPACT OFFICER",
   },
   {
-    image: "jasper-vijar.png",
+    image: "jasper-vijar2.png",
     image2: "jasper-vijar.png",
     name: "JASPER RUBY VIJAR",
     position: "MEMBERSHIP & ENGAGEMENT",
@@ -36,8 +36,8 @@ export const teamImages = [
     position: "PARTNERSHIPS",
   },
   {
-    image: "ken-ceballos2.png",
-    image2: "ken-ceballos.png",
+    image: "ken-ceballos.png",
+    image2: "ken-ceballos2.png",
     name: "KEN ALFRITZ CEBALLOS",
     position: "PR & MEDIA",
   },
