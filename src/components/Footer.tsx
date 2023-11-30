@@ -10,10 +10,10 @@ export const Footer = () => {
         <div className="flex flex-col items-center md:flex-row lg:justify-between">
           <div className="text-center md:w-1/3 md:text-left">
             <div className="text-center text-2xl text-gray-100 lg:text-3xl">
-              Global Shapers Iloilo
+              Global Shapers Iloilo Inc.
             </div>
             <div className="mt-2 text-center text-sm text-gray-300 lg:text-base">
-              Lopez Jaena, Street. Jaro, Iloilo City Iloilo, 5000
+              WVSU-GTBI BLDG. Luna St. La Paz Iloilo City, Iloilo
             </div>
           </div>
 
@@ -23,7 +23,7 @@ export const Footer = () => {
             </div>
             <div className="mt-2 flex items-center text-sm text-gray-300 hover:underline lg:text-base">
               <AiOutlinePhone className="mr-1" />
-              <div>(011) 123-28-38</div>
+              <div>+63157356130</div>
             </div>
             <div className="mt-2 flex items-center text-sm text-gray-300 hover:underline lg:text-base">
               <AiOutlineMail className="mr-1" />
