@@ -56,7 +56,7 @@ export const Navbar = () => {
       <div className="flex h-full w-full items-center justify-between px-4">
         <Link href="/">
           <img
-            src="gsi-logo2.png"
+            src="/gsi-logo2.png"
             height={90}
             width={90}
             alt="logo"
