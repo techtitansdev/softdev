@@ -1,7 +1,36 @@
+
+import { useSignUp } from "@clerk/nextjs";
+import router from "next/router";
 import React, { useState } from "react";
 
-export const OtpVerification = () => {
+ 
+ export const OtpVerification = () => {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
+  const { isLoaded, signUp, setActive } = useSignUp();
+  const [code, setCode] = useState("");
+  const onPressVerify = async () => {
+    if (!isLoaded) {
+      return;
+    }
+   
+    try {
+      const completeSignUp = await signUp.attemptEmailAddressVerification({
+        code,
+      });
+      if (completeSignUp.status !== "complete") {
+        /* investigate the response, to see if there was an error
+         or if the user needs to complete more steps.*/
+        console.log(JSON.stringify(completeSignUp, null, 2));
+      }
+      if (completeSignUp.status === "complete") {
+        await setActive({ session: completeSignUp.createdSessionId })
+        router.push("/");
+      }
+    } catch (err: any) {
+      console.error(JSON.stringify(err, null, 2));
+    }
+   };
+  
 
   const handleChange = (el: EventTarget & HTMLInputElement, index: number) => {
     const inputValue = el.value;
@@ -21,14 +50,7 @@ export const OtpVerification = () => {
   };
 
   // Submit OTP handler
-  const submitOtp = () => {
-    const enteredOtp = otp.join("");
-    if (enteredOtp === "111111") {
-      alert("Verified");
-    } else {
-      alert("Wrong OTP");
-    }
-  };
+ 
 
   return (
     <div className=" m-auto flex min-h-screen items-center justify-center">
@@ -57,7 +79,14 @@ export const OtpVerification = () => {
         </div>
         <div className="m-auto my-5 flex w-[80%] flex-row justify-center gap-2">
           <button
-            onClick={submitOtp}
+            onClick={() => {
+              const enteredOtp = otp.join("");
+              console.log(otp.join(""))
+              setCode(otp.join(""));
+              setTimeout(() => {
+                onPressVerify();
+              }, 200);
+            }}
             className="mt-6 block w-80 rounded-2xl bg-blue-800 py-2 text-lg font-semibold text-white hover:bg-blue-900 md:py-3 xl:mb-6"
           >
             VERIFY & PROCEED

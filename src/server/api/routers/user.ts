@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure, } from "~/server/api/trpc";
 import { db } from "~/server/db";
 import bcrypt from 'bcrypt';
+import { Prisma } from "@prisma/client";
 
 export const userRouter = createTRPCRouter({
     /**
@@ -43,6 +46,7 @@ export const userRouter = createTRPCRouter({
 
             //hash the password
             const saltRounds = 13;
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             const hashedPassword = await bcrypt.hash(input.password, saltRounds);
 
             //add user credentials to the database

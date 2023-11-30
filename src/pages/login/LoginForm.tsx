@@ -1,4 +1,6 @@
+import { useSignIn } from "@clerk/nextjs";
 import Link from "next/link";
+import router from "next/router";
 import { useState } from "react";
 import {
   AiOutlineExclamationCircle,
@@ -11,10 +13,16 @@ import { Modal } from "~/components/Modal";
 import { validateLogin } from "~/utils/validateLogin";
 
 export const LoginForm = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  
+  
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
   });
+  
+   const { isLoaded, signIn, setActive } = useSignIn();
 
   const [formErrors, setFormErrors] = useState({
     emailError: "",
@@ -27,13 +35,31 @@ export const LoginForm = () => {
     setModalOpen(false);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const validate = handleValidate();
 
     if (validate) {
       console.log("form submited", formValues);
+      await signIn!
+      .create({
+        identifier: formValues.email,
+        password:formValues.password,
+      })
+      .then((result) => {
+        if (result.status === "complete") {
+          console.log(result);
+          router.push('/home')
+        } else {
+          console.log(result);
+          console.log(result);
+        }
+      })
+      .catch((err) => console.error("error", err.errors[0].longMessage));
       setModalOpen(true);
+
+      
 
       setTimeout(() => {
         setModalOpen(false);
@@ -62,7 +88,7 @@ export const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="mx-auto flex max-h-[800px] max-w-[1750px] sm:flex-col md:flex-col lg:flex-row xl:h-screen xl:flex-row">
+      <div className="flex sm:flex-col md:flex-col lg:flex-row xl:h-screen xl:flex-row">
         <div className="relative z-10 mx-auto hidden w-1/2 sm:hidden md:hidden lg:flex">
           <div
             className="w-full"
@@ -71,17 +97,17 @@ export const LoginForm = () => {
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
-          >
-            <div className="absolute left-2 top-2 z-30 block max-w-[1750px] md:left-6 md:top-4 lg:left-2 lg:top-2">
-              <img
-                src="gsi-logo2.png"
-                height={90}
-                width={90}
-                alt="Logo"
-                className="cursor-pointer"
-              />
-            </div>
-          </div>
+          ></div>
+        </div>
+
+        <div className="absolute left-2 top-2 z-30 block md:left-6 md:top-4 lg:left-2 lg:top-2">
+          <img
+            src="gsi-logo2.png"
+            height={90}
+            width={90}
+            alt="Logo"
+            className="cursor-pointer"
+          />
         </div>
 
         <div className="flex w-full flex-col sm:w-full md:w-full lg:w-1/2 xl:w-1/2">
