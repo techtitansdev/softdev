@@ -6,6 +6,7 @@ import { AboutUsSection } from "./AboutUsSection";
 import { Mission } from "./Mission";
 import { TeamCards } from "./TeamCards";
 import { Vision } from "./Vision";
+import { Values } from "./Values";
 
 const AboutUs = () => {
   return (
@@ -20,6 +21,7 @@ const AboutUs = () => {
       <AboutUsSection />
       <Mission />
       <Vision />
+      <Values />
       <TeamCards />
 
       <Footer />

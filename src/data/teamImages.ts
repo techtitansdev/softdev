@@ -13,7 +13,7 @@ export const teamImages = [
   },
   {
     image: "ricco-ruto.png",
-    image2: "ricco-ruto.png",
+    image2: "ricco-ruto2.png",
     name: "RICCO VICTOR RUTO",
     position: "IMPACT OFFICER",
   },

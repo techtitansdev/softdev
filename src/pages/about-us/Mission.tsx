@@ -9,13 +9,10 @@ export const Mission = () => {
             Our Mission
           </p>
           <p className="mb-4 px-6 text-sm font-light text-gray-800 sm:text-base md:max-w-[530px] lg:text-lg xl:px-0">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed varius
-            vehicula nisl in venenatis. Integer non ultricies nisi, et pretium
-            mi. In sed dui leo. Sed non congue lacus.
-          </p>
-          <p className="px-6 text-sm font-light text-gray-800  sm:text-base md:max-w-[530px] lg:text-lg xl:px-0">
-            Morbi facilisis lacus vitae velit euismod, et scelerisque ex
-            tincidunt.
+            The Global Shapers Community - Iloilo Hub (GSI) is composed of young
+            dynamic leaders from the city and province of Iloilo, Philippines
+            who are passionate about amplifying the voice of the youth in
+            shaping Iloilo for the future.
           </p>
         </div>
         <div className="w-full px-6 md:w-1/2 md:max-w-[540px] xl:ml-8 xl:px-0">

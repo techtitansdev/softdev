@@ -13,17 +13,12 @@ export const Vision = () => {
             />
           </div>
           <div className="mx-auto w-full flex-col items-center justify-center px-6 md:w-1/2 lg:max-w-[580px] xl:ml-28 xl:px-0">
-            <p className="mb-2 mt-6 text-2xl sm:text-3xl font-semibold text-gray-800 lg:mb-5 lg:mt-1 lg:text-4xl">
+            <p className="mb-2 mt-6 text-2xl font-semibold text-gray-800 sm:text-3xl lg:mb-2 lg:mt-1 lg:text-4xl">
               Our Vision
             </p>
-            <p className="mb-4 mr-6 text-sm sm:text-base font-light  text-gray-800 lg:text-lg xl:px-0">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-              varius vehicula nisl in venenatis. Integer non ultricies nisi, et
-              pretium mi. In sed dui leo. Sed non congue lacus.
-            </p>
-            <p className="mr-6 text-sm sm:text-base font-light  text-gray-800 lg:text-lg xl:px-0">
-              Morbi facilisis lacus vitae velit euismod, et scelerisque ex
-              tincidunt.
+            <p className="mb-4 mr-6 text-sm font-light text-gray-800  sm:text-base lg:text-lg xl:px-0">
+              We envision an Iloilo City and Province where the youth’s
+              creativity and entrepreneurial spirit can thrive.
             </p>
           </div>
         </div>

@@ -15,8 +15,8 @@ export const AboutUsSection = () => {
         <div className="mb-2 mt-32 text-3xl font-medium text-gray-800 sm:text-4xl md:text-5xl">
           About Us
         </div>
-        <div className="text:lg mx-4 mb-20 text-center font-light text-gray-700 sm:text-xl md:text-2xl">
-          Explore our mission, vision, and meet the team driving our
+        <div className="text:lg mx-4 mb-20 text-center font-light text-gray-700 sm:text-xl md:text-xl">
+          Explore our mission, vision, values and meet the team driving our
           initiatives.
         </div>
       </div>

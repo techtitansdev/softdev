@@ -14,6 +14,7 @@ const Impact = () => {
       </Head>
 
       <Navbar />
+
       <div className="mx-auto mt-32 max-w-[365px] flex-col items-center  px-2 sm:max-w-[405px] md:max-w-[810px] xl:max-w-[1220px]">
         <div className="text-gray text-3xl lg:text-4xl">Areas of Impact</div>
         <hr className="dark-bg-gray-800 my-4 mb-8 h-px border-0 bg-gray-800"></hr>
@@ -26,22 +27,20 @@ const Impact = () => {
               key={index}
               className="hover:scale-104 w-[350px] transform shadow transition duration-500 ease-in-out hover:-translate-y-1 sm:w-[385px]"
             >
-              <Link href={`/impact/${encodeURIComponent(card.impactName)}`}>
-                <div className="flex items-center">
-                  <div className="flex-1">
-                    <img className="h-40 w-36" src={card.image} />
+              <div className="flex items-center">
+                <div className="flex-1">
+                  <img className="h-40 w-36" src={card.image} />
+                </div>
+                <div className="mx-2 my-2 flex-1">
+                  <div className="w-52 text-lg font-semibold tracking-tight text-gray-900">
+                    {card.title}
                   </div>
-                  <div className="mx-2 my-2 flex-1">
-                    <div className="w-52 text-lg font-semibold tracking-tight text-gray-900">
-                      {card.title}
-                    </div>
 
-                    <div className=" mt-1 text-sm font-light text-gray-900">
-                      {card.excerpt}
-                    </div>
+                  <div className=" mt-1 text-sm font-light text-gray-900">
+                    {card.excerpt}
                   </div>
                 </div>
-              </Link>
+              </div>
             </li>
           ))}
         </ul>
