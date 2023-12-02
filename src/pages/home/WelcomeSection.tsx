@@ -23,7 +23,7 @@ export const WelcomeSection = () => {
         backgroundPosition: "center",
       }}
     >
-      <div className="mx-auto flex min-w-[200px] max-w-[1240px] flex-col items-center justify-between xl:flex-row-reverse">
+      <div className="mx-auto flex min-w-[200px] max-w-[1260px] flex-col items-center justify-between xl:flex-row-reverse">
         <motion.img
           src="/sample-pic5.png"
           className="mt-28 h-64 rounded-lg xl:mt-20 xl:h-[510px] xl:w-1/2 "
@@ -43,11 +43,11 @@ export const WelcomeSection = () => {
               <div className="hidden xl:block">
                 Welcome to
                 <br />
-                Shapers Iloilo
+                Shaping Iloilo
               </div>
 
               <div className="mb-3 block text-2xl sm:text-3xl xl:hidden">
-                Welcome to Shapers Iloilo
+                Welcome to Shaping Iloilo
               </div>
             </div>
           </motion.div>
@@ -58,11 +58,10 @@ export const WelcomeSection = () => {
             animate="visible"
             variants={textVariants}
           >
-            The Global Shapers Iloilo Hub is one of the 456 city-based hubs in
-            the Global Shapers Community - a network of inspiring young people
-            working together to address local, regional, and global challenges.
-            We believe in a world where young people are central to solution
-            building, policy-making and lasting change.
+            In a rapidly changing world, a community of young, passionate, and
+            dedicated individuals has emerged, ready to make a difference on
+            both a local and global scale. Welcome to the Global Shapers
+            Community, where the power of youth meets the urgency of our times.
           </motion.div>
 
           <Link href="/funded-projects">

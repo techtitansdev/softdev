@@ -38,12 +38,12 @@ export const AboutSection = () => {
           </p>
 
           <p className="text-sm font-light text-gray-800 sm:text-sm xl:text-base">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged.
+            Within our website, we act as a vibrant center where Ilonggo
+            changemakers come together to transform creative concepts into
+            reality. Recognizing that groundbreaking ideas and ambitious
+            endeavors frequently demand financial backing to flourish, we offer
+            an opportunity. If you're seeking a platform to finance a project
+            for a community initiative, you've found the right place!
           </p>
         </motion.div>
       </div>

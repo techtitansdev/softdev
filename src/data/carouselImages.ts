@@ -1,7 +1,7 @@
 export const carouselImages = [
-  "slide2.jpg",
-  "sample-pic3.png",
-  "slide2.jpg",
-  "sample-pic3.png",
-  "sample-pic3.png",
+  "carousel-4.jpg",
+  "carousel-6.jpg",
+  "carousel-5.jpg",
+  "carousel-1.jpg",
+  "carousel-2.jpg",
 ];

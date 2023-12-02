@@ -12,8 +12,8 @@ export const FeaturedShapers = () => {
               FEATURED SHAPERS
             </div>
 
-            <div className="px-6 pb-5 text-center text-sm font-normal text-gray-700 sm:px-0 md:mx-1 md:text-base lg:text-left">
-              Global change makers turning ideas into impactful actions.
+            <div className="px-6 pb-5 text-center text-sm font-normal text-gray-700 sm:px-0 md:text-base lg:text-left">
+              Delve into the reflection of Global Shapers Iloilo as they share their insights they have gleaned from their time at hub.
             </div>
           </div>
           <Link
