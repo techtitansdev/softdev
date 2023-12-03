@@ -7,9 +7,9 @@ export const Vision = () => {
         <div className="flex flex-col items-center md:flex-row">
           <div className="w-full px-6 md:w-1/2 md:max-w-[530px] xl:px-0">
             <img
-              src="https://i.pinimg.com/564x/00/ab/75/00ab757ff30b878581a234b7eed1dbe7.jpg"
+              src="vision.png"
               alt="About FundImpact"
-              className="w-full shadow-lg"
+              className="w-full rounded-lg h-80"
             />
           </div>
           <div className="mx-auto w-full flex-col items-center justify-center px-6 md:w-1/2 lg:max-w-[580px] xl:ml-28 xl:px-0">

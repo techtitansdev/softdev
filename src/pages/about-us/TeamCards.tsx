@@ -14,25 +14,18 @@ export const TeamCards = () => {
               key={index}
               className="duration-400 group relative h-96 w-64 transform items-center justify-center transition ease-in-out hover:-translate-y-1 hover:scale-105"
             >
-              <div
-                className="relative h-96 w-full transform rounded-lg bg-cover bg-center bg-no-repeat transition duration-300 ease-in-out hover:scale-105 group-hover:scale-100"
-                style={{
-                  backgroundImage: `url(${member.image2})`,
-                }}
-              >
-                <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100">
-                  <img
-                    src={member.image}
-                    className="h-96 w-full rounded-lg shadow-lg"
-                    alt={member.name}
-                  />
-                  <div className="absolute bottom-0 w-full bg-gray-800 bg-opacity-60 p-1 opacity-0 group-hover:opacity-100">
-                    <div className="ml-2 text-center text-lg font-medium tracking-tight text-white">
-                      {member.name}
-                    </div>
-                    <div className="text-normal ml-2 text-center font-light tracking-tight text-yellow-300">
-                      {member.position}
-                    </div>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <img
+                  src={member.image}
+                  className="h-96 w-full rounded-lg shadow-lg"
+                  alt={member.name}
+                />
+                <div className="absolute bottom-0 w-full bg-gray-800 bg-opacity-60 p-1 opacity-0 group-hover:opacity-100">
+                  <div className="ml-2 text-center text-lg font-medium tracking-tight text-white">
+                    {member.name}
+                  </div>
+                  <div className="text-normal ml-2 text-center font-light tracking-tight text-yellow-300">
+                    {member.position}
                   </div>
                 </div>
               </div>

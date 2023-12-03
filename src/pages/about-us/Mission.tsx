@@ -17,9 +17,9 @@ export const Mission = () => {
         </div>
         <div className="w-full px-6 md:w-1/2 md:max-w-[540px] xl:ml-8 xl:px-0">
           <img
-            src="https://i.pinimg.com/474x/35/82/b9/3582b9e4fa770269f044a110be7e609a.jpg"
+            src="mission.jpg"
             alt="Mission"
-            className="w-full shadow-xl"
+            className="w-full rounded-lg h-80"
           />
         </div>
       </div>
