@@ -79,4 +79,16 @@ export const project = createTRPCRouter({
         data: newDetails,
       });
     }),
+  delete: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+      await db.projects.delete({
+        where: { id: input.id },
+      });
+    }),
 });
