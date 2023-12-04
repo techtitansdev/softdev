@@ -3,6 +3,10 @@ import { IoLocationSharp } from "react-icons/io5";
 import { featuredProjects } from "~/data/featuredProjects";
 
 export const FeaturedProjects = () => {
+  const handleCardClick = (route: any) => {
+    window.location.href = `/projects/${route}`;
+  };
+
   return (
     <div className="bg-gray-50 bg-cover">
       <div className="mx-auto max-w-screen-xl py-2 pb-12 sm:p-10 lg:p-6 lg:py-6">
@@ -20,6 +24,11 @@ export const FeaturedProjects = () => {
             {featuredProjects.map((card, index) => (
               <div
                 key={index}
+                onClick={() => {
+                  if (card.route === "tech4all") {
+                    handleCardClick(card.route);
+                  }
+                }}
                 className="w-full transform justify-self-start rounded-lg border border-gray-200 bg-white font-medium shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105 dark:bg-white"
               >
                 <img
