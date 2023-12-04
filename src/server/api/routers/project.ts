@@ -87,6 +87,16 @@ export const project = createTRPCRouter({
     )
     .mutation(async (opts) => {
       const { input } = opts;
+
+      //check if project exists:
+      const existingProject = await db.projects.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!existingProject) {
+        throw new Error("Project Does Not Exist");
+      }
+
       await db.projects.delete({
         where: { id: input.id },
       });
