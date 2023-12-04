@@ -20,10 +20,13 @@
     "@trpc/next": "^10.37.1",
     "@trpc/react-query": "^10.37.1",
     "@trpc/server": "^10.37.1",
+    "framer-motion": "^10.16.12",
     "next": "^14.0.0",
     "next-auth": "^4.24.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-icons": "^4.12.0",
+    "react-intersection-observer": "^9.5.3",
     "superjson": "^1.13.1",
     "zod": "^3.22.4"
   },
