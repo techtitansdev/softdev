@@ -3,12 +3,9 @@ import React from "react";
 export const AboutUsSection = () => {
   return (
     <div
-      className="mb-12 flex h-72 flex-col items-center"
+      className="z-10 md:mb-12 flex h-72 flex-col items-center bg-cover bg-center"
       style={{
-        backgroundImage:
-          "url('https://i.pinimg.com/564x/e1/75/bd/e175bdcd71ab6f24105916ffd6c6ab6f.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundImage: "url('https://i.pinimg.com/564x/e1/75/bd/e175bdcd71ab6f24105916ffd6c6ab6f.jpg')",
       }}
     >
       <div className="mb-12 flex flex-col items-center justify-center">
