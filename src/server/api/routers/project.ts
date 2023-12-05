@@ -79,4 +79,26 @@ export const project = createTRPCRouter({
         data: newDetails,
       });
     }),
+  delete: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+
+      //check if project exists:
+      const existingProject = await db.projects.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!existingProject) {
+        throw new Error("Project Does Not Exist");
+      }
+
+      await db.projects.delete({
+        where: { id: input.id },
+      });
+    }),
 });
