@@ -11,6 +11,7 @@ const config = {
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:testing-library/react",
     "plugin:jest/recommended",
+    "plugin:jest-dom/recommended",
   ],
   rules: {
     // These opinionated rules are enabled in stylistic-type-checked above.
