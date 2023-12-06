@@ -50,7 +50,7 @@ export const Navbar = () => {
   return (
     <nav
       className={`w-full pt-2 ${navBackground} ${
-        isScrolled ? "rounded-b-3xl shadow" : ""
+        isScrolled ? "rounded-b-xl shadow" : ""
       } fixed top-0 z-50 transition-all duration-300 ease-in-out`}
     >
       <div className="flex h-full w-full items-center justify-between px-4">
@@ -71,9 +71,9 @@ export const Navbar = () => {
               <li key={link.path} className="text-md my-6 ml-10">
                 <Link
                   href={link.path}
-                  className={`font-semibold text-blue-600 ${
+                  className={`font-semibold text-[#0053F1] ${
                     router.pathname === link.path
-                      ? "border-b-4 border-blue-600 py-2"
+                      ? "border-b-4 border-[#0053F1] py-2"
                       : ""
                   }`}
                 >
