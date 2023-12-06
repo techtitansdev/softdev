@@ -50,7 +50,7 @@ export const Navbar = () => {
   return (
     <nav
       className={`w-full pt-2 ${navBackground} ${
-        isScrolled ? "rounded-b-xl shadow" : ""
+        isScrolled ? "rounded-b-2xl shadow" : ""
       } fixed top-0 z-50 transition-all duration-300 ease-in-out`}
     >
       <div className="flex h-full w-full items-center justify-between px-4">
