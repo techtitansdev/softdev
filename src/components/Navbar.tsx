@@ -98,7 +98,7 @@ export const Navbar = () => {
           )}
           {!user && (
             <Link
-              href="/dashboard"
+              href="/register"
               className="mx-4 rounded bg-blue-700 px-6 py-2 font-bold text-white hover:bg-blue-800"
             >
               LOG IN

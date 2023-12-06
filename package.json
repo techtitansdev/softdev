@@ -5,6 +5,7 @@
   "scripts": {
     "build": "next build",
     "db:push": "prisma db push",
+    "db:seed": "node prisma/seed.js",
     "db:studio": "prisma studio",
     "dev": "next dev",
     "postinstall": "prisma generate",
@@ -24,6 +25,7 @@
     "@trpc/react-query": "^10.37.1",
     "@trpc/server": "^10.37.1",
     "framer-motion": "^10.16.4",
+    "libphonenumber-js": "^1.10.51",
     "next": "^14.0.0",
     "next-auth": "^4.24.4",
     "nodemailer": "^6.9.7",

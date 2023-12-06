@@ -1,6 +1,5 @@
 import { useSignIn } from "@clerk/nextjs";
 import Link from "next/link";
-import router from "next/router";
 import { useState } from "react";
 import {
   AiOutlineExclamationCircle,
@@ -10,18 +9,19 @@ import {
   AiOutlineMail,
 } from "react-icons/ai";
 import { Modal } from "~/components/Modal";
+import { api } from "~/utils/api";
 import { validateLogin } from "~/utils/validateLogin";
+import router from "next/router";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
-  
+
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
   });
-  
+
    const { isLoaded, signIn, setActive } = useSignIn();
 
   const [formErrors, setFormErrors] = useState({
@@ -35,6 +35,7 @@ export const LoginForm = () => {
     setModalOpen(false);
   };
 
+  const adminCheck = api.admin.check.useMutation();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -42,27 +43,31 @@ export const LoginForm = () => {
 
     if (validate) {
       console.log("form submited", formValues);
-      await signIn!
-      .create({
+
+      await signIn!.create({
         identifier: formValues.email,
-        password:formValues.password,
-      })
-      .then((result) => {
+        password: formValues.password,
+      }).then((result) => {
         if (result.status === "complete") {
-          console.log(result);
-          router.push('/home')
+          adminCheck.mutate({ email: result.identifier! }, {
+            onSettled(data, error) {
+              if (error) return console.log("error mutation", error)
+
+              if (data) {
+                router.push("/admin")
+              } else {
+                router.push("/home")
+              }
+            }
+          });
         } else {
           console.log(result);
-          console.log(result);
         }
-      })
-      .catch((err) => console.error("error", err.errors[0].longMessage));
+      }).catch((err) => console.log(err))
+
       setModalOpen(true);
-
-      
-
       setTimeout(() => {
-        setModalOpen(false);
+        setModalOpen(false)
       }, 3000);
     } else {
       console.log("error");
@@ -72,11 +77,7 @@ export const LoginForm = () => {
   const handleValidate = () => {
     const validation = validateLogin(formValues);
     setFormErrors(validation);
-    if (validation.state === "validated") {
-      return true;
-    } else {
-      return false;
-    }
+    return validation.state === "validated";
   };
 
   const [showPassword, setShowPassword] = useState(false);
