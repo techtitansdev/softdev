@@ -25,8 +25,8 @@ export const WelcomeSection = () => {
     >
       <div className="mx-auto flex min-w-[200px] max-w-[1260px] flex-col items-center justify-between xl:flex-row-reverse">
         <motion.img
-          src="/sample-pic5.png"
-          className="mt-28 h-64 rounded-lg xl:mt-20 xl:h-[510px] xl:w-1/2 "
+          src="https://i.pinimg.com/564x/f7/9c/9e/f79c9ed4e08c249d5af316e232f416d7.jpg"
+          className="mt-28 h-64 rounded-lg xl:mt-20 xl:h-[510px] xl:w-1/2 xl:mr-3 max-h-[400px]"
           initial="hidden"
           animate="visible"
           variants={imageVariants}
