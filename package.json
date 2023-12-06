@@ -11,6 +11,7 @@
     "lint": "next lint",
     "start": "next start",
     "test": "jest",
+    "test:watch": "jest --watchAll"
     "test:watch": "jest --watch"
   },
   "dependencies": {
@@ -24,6 +25,7 @@
     "@trpc/react-query": "^10.37.1",
     "@trpc/server": "^10.37.1",
     "framer-motion": "^10.16.4",
+    "libphonenumber-js": "^1.10.51",
     "next": "^14.0.0",
     "next-auth": "^4.24.4",
     "nodemailer": "^6.9.7",
@@ -45,6 +47,7 @@
     "@types/node": "^18.16.0",
     "@types/react": "^18.2.33",
     "@types/react-dom": "^18.2.14",
+    "@types/testing-library__jest-dom": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
     "autoprefixer": "^10.4.14",
