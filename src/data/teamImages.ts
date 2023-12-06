@@ -37,6 +37,6 @@ export const teamImages = [
   {
     image: "ted-aspera.png",
     name: "TED  HYACINTH ASPERA",
-    position: "Lorem Ipsum",
+    position: "SHAPER",
   },
 ];
