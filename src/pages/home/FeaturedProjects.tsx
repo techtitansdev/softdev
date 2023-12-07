@@ -8,20 +8,13 @@ export const FeaturedProjects = () => {
   };
 
   return (
-    <div
-      className="bg-cover bg-center"
-      style={{
-        backgroundImage:
-          "linear-gradient(to bottom, rgba(10,19,60,0.6), rgba(10,19,60,0.5)), url('bg-2.jpeg')",
-        backgroundSize: "100% 100%",
-      }}
-    >
+    <div className="bg-gray-50 bg-cover bg-center">
       <div className="mx-auto max-w-screen-xl py-6 pb-10 lg:p-6 lg:py-8 lg:pb-12">
-        <div className="mx-auto mt-4 text-center text-2xl font-medium text-white sm:max-w-[610px] sm:text-left sm:text-3xl xl:mx-0 xl:max-w-[900px]">
+        <div className="mx-auto mt-4 text-center text-2xl font-medium text-gray-800 sm:max-w-[610px] sm:text-left sm:text-3xl xl:mx-0 xl:max-w-[900px]">
           FEATURED PROJECTS
         </div>
 
-        <div className="mx-auto px-4 pb-5 text-center text-sm font-normal text-white sm:max-w-[610px] sm:px-0 sm:text-left xl:mx-0 xl:max-w-[900px] xl:text-base">
+        <div className="mx-auto px-4 pb-5 text-center text-sm font-normal text-gray-700 sm:max-w-[610px] sm:px-0 sm:text-left xl:mx-0 xl:max-w-[900px] xl:text-base">
           Shaping Iloilo through our new hub projects by implementing innovative
           solutions that foster positive social change.
         </div>
@@ -36,7 +29,7 @@ export const FeaturedProjects = () => {
                     handleCardClick(card.route);
                   }
                 }}
-                className="w-full transform justify-self-start rounded-lg border border-gray-200 bg-white font-medium shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105 dark:bg-white"
+                className="w-full transform justify-self-start rounded-lg font-medium shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105 dark:bg-white"
               >
                 <img
                   className="h-52 w-72 rounded-t-lg object-cover"
