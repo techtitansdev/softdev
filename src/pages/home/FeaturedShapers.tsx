@@ -4,28 +4,37 @@ import { featuredShapers } from "~/data/featuredShapers";
 
 export const FeaturedShapers = () => {
   return (
-    <div>
-      <div className="mx-auto max-w-screen-xl py-2 pb-12 sm:p-10 lg:p-6 lg:py-6">
-        <div className="flex items-center justify-center lg:justify-between xl:justify-between">
+    <div
+      className="bg-contain"
+      style={{
+        backgroundImage:
+          "linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(250, 250, 250, 0.7)), url('bg-1.jpeg')",
+        backgroundSize: "100% 100%",
+      }}
+    >
+      <div className="mx-auto max-w-screen-xl py-6 pb-10 lg:p-6 lg:py-8 lg:pb-12">
+        <div className="flex items-center justify-center xl:justify-between">
           <div className="flex-col">
-            <div className="mt-4 text-center text-2xl font-medium text-gray-800 sm:text-3xl lg:text-left">
+            <div className="mx-auto mt-4 text-center text-2xl font-medium text-gray-800 sm:max-w-[610px] sm:text-left sm:text-3xl xl:mx-0 xl:max-w-[900px]">
               FEATURED SHAPERS
             </div>
 
-            <div className="px-6 pb-5 text-center text-sm font-normal text-gray-700 sm:px-0 md:text-base lg:text-left">
-              Delve into the reflection of Global Shapers Iloilo as they share their insights they have gleaned from their time at hub.
+            <div className="xl:text-baset mx-auto px-4 pb-5 text-center text-sm font-normal text-gray-700 sm:max-w-[610px] sm:px-0 sm:text-left xl:mx-0 xl:max-w-[900px]">
+              Delve into the reflection of Global Shapers Iloilo as they share
+              their insights they have gleaned from their time at hub.
             </div>
           </div>
+
           <Link
             href="/shapers"
-            className="mr-1 hidden rounded-md border border-gray-800 px-5 py-1 font-semibold hover:bg-gray-200 lg:block xl:block 2xl:block"
+            className="mr-1 hidden rounded-md border border-gray-800 bg-gray-50 px-5 py-1 font-semibold hover:bg-gray-200 xl:block"
           >
             See All
           </Link>
         </div>
 
         <div className="flex items-center justify-center">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4">
             {featuredShapers.map((shaper, index) => (
               <div
                 key={index}
@@ -40,10 +49,10 @@ export const FeaturedShapers = () => {
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black group-hover:from-black/70 group-hover:via-black/60 group-hover:to-black/70"></div>
                 <div className="absolute inset-0 flex translate-y-[60%] flex-col items-center justify-center px-5 text-center transition-all duration-500 group-hover:translate-y-0">
-                  <div className="rounded-t-lg w-56 bg-gradient-to-r from-blue-500 to-blue-900 px-1 text-xl font-medium text-white">
+                  <div className="w-56 rounded-t-sm bg-gradient-to-r from-blue-500 to-blue-900 px-1 text-xl font-medium text-white">
                     {shaper.title}
                   </div>
-                  <div className="rounded-b-lg mb-5 w-56 bg-white px-1 text-left text-xs">
+                  <div className="mb-5 w-56 rounded-b-sm bg-white px-1 text-left text-xs">
                     {shaper.work}
                   </div>
 
@@ -58,7 +67,7 @@ export const FeaturedShapers = () => {
         <div className="flex items-center justify-center">
           <Link
             href="/shapers"
-            className="mt-5 rounded-md border border-gray-800 px-16 py-1 font-semibold hover:bg-gray-200 lg:hidden"
+            className="mt-5 rounded-md border border-gray-800 bg-gray-50 px-16 py-1 font-semibold hover:bg-gray-200 xl:hidden"
           >
             See All
           </Link>
