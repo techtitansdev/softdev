@@ -19,7 +19,7 @@ export const FeaturedShapers = () => {
               FEATURED SHAPERS
             </div>
 
-            <div className="xl:text-baset mx-auto px-4 pb-5 text-center text-sm font-normal text-gray-700 sm:max-w-[610px] sm:px-0 sm:text-left xl:mx-0 xl:max-w-[900px]">
+            <div className="xl:text-baset mx-auto px-4 pb-5 text-center text-sm font-normal text-gray-700 sm:max-w-[610px] sm:px-0 sm:text-left xl:mx-0 xl:max-w-[900px] xl:text-base">
               Delve into the reflection of Global Shapers Iloilo as they share
               their insights they have gleaned from their time at hub.
             </div>
