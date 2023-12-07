@@ -15,17 +15,17 @@ export const WelcomeSection = () => {
 
   return (
     <div
-      className="flex max-h-[800px] flex-col items-center bg-gray-50 xl:h-screen xl:flex-row-reverse"
+      className="flex max-h-[800px] flex-col items-center bg-gray-50 xl:h-screen xl:flex-row-reverse bg-contain"
       style={{
         backgroundImage:
-          "url('https://i.pinimg.com/474x/f2/7c/23/f27c2356e1943df4875ed932707e9931.jpg')",
-        backgroundSize: "cover",
+        "linear-gradient(to right, rgba(255, 255, 255), rgba(250, 250, 250, 0.5)), url('bg-4.JPG')",
+      backgroundSize: "100% 100%",
         backgroundPosition: "center",
       }}
     >
       <div className="mx-auto flex min-w-[200px] max-w-[1260px] flex-col items-center justify-between xl:flex-row-reverse">
         <motion.img
-          src="https://i.pinimg.com/564x/f7/9c/9e/f79c9ed4e08c249d5af316e232f416d7.jpg"
+          src="bg-4.JPG"
           className="mt-28 h-64 rounded-lg xl:mt-20 xl:h-[510px] xl:w-1/2 xl:mr-3 max-h-[400px]"
           initial="hidden"
           animate="visible"
