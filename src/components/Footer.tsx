@@ -5,7 +5,7 @@ import { BiLogoFacebook, BiLogoLinkedin } from "react-icons/bi";
 
 export const Footer = () => {
   return (
-    <nav className="w-full bg-[#0a133c] px-14 py-10">
+    <footer className="w-full bg-[#0a133c] px-14 py-10">
       <div className=" mx-auto max-w-[1750px] border-b-2 border-white py-6">
         <div className="flex flex-col items-center md:flex-row lg:justify-between">
           <div className="text-center md:w-1/3 md:text-left">
@@ -23,7 +23,7 @@ export const Footer = () => {
             </div>
             <div className="mt-2 flex items-center text-sm text-gray-300 hover:underline lg:text-base">
               <AiOutlinePhone className="mr-1" />
-              <div>+63157356130</div>
+              <div>+639157356130</div>
             </div>
             <div className="mt-2 flex items-center text-sm text-gray-300 hover:underline lg:text-base">
               <AiOutlineMail className="mr-1" />
@@ -59,6 +59,6 @@ export const Footer = () => {
           </div>
         </div>
       </div>
-    </nav>
+    </footer>
   );
 };
