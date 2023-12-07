@@ -29,7 +29,7 @@ export const Carousel = ({ slides }: CarouselProps) => {
   };
 
   return (
-    <div className="relative mx-auto mb-8 mt-8 max-h-[600px] min-w-[200px] max-w-[1240px] overflow-hidden rounded-xl">
+    <div className="relative mx-auto mb-8 mt-8 max-h-[660px] min-w-[200px] max-w-[1240px] overflow-hidden">
       <motion.div
         className={`duration-400 flex transition-transform ease-out`}
         style={{
