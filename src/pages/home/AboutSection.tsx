@@ -13,13 +13,19 @@ export const AboutSection = () => {
   };
 
   return (
-    <div className="bg-gray-50 py-10">
+    <div
+      className="bg-contain py-14"
+      style={{
+        backgroundImage: " url('bg-1.png')",
+        backgroundSize: "100% 100%",
+      }}
+    >
       <div className="mx-auto flex min-w-[200px] max-w-[1241px] flex-col items-center justify-between sm:flex-row">
         <div className="w-full sm:pl-6 md:w-1/2 lg:pr-6 xl:pl-0">
           <img
-            src="/about-img.jpeg"
-            alt="About FundImpact"
-            className="h-64 w-full px-4 sm:h-80 sm:px-0"
+            src="/fund-impact.png"
+            alt="about fundimpact"
+            className="h-64 w-full px-4 sm:px-0 md:h-72 xl:h-80"
           />
         </div>
 
@@ -30,14 +36,14 @@ export const AboutSection = () => {
           variants={textVariants}
           ref={ref}
         >
-          <p className="mt-3 text-2xl font-medium text-gray-700 sm:text-3xl xl:text-5xl xl:font-normal">
+          <p className="mt-3 text-2xl font-medium text-gray-800 sm:text-3xl xl:text-5xl xl:font-normal">
             About Fund Impact
           </p>
-          <p className="mb-3 text-sm font-medium text-gray-600 sm:text-base lg:mb-5 xl:text-lg">
+          <p className="mb-3 text-sm font-medium text-gray-700 sm:text-base lg:mb-5 xl:text-lg">
             Why are we so excited? Need a little background?
           </p>
 
-          <p className="text-sm font-light text-gray-800 sm:text-sm xl:text-base">
+          <p className="text-sm font-normal text-gray-700 sm:text-sm xl:text-base">
             Within our website, we act as a vibrant center where Ilonggo
             changemakers come together to transform creative concepts into
             reality. Recognizing that groundbreaking ideas and ambitious
