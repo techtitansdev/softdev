@@ -8,7 +8,7 @@ export const FeaturedShapers = () => {
       className="bg-contain"
       style={{
         backgroundImage:
-          "linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(250, 250, 250, 0.7)), url('bg-1.jpeg')",
+        " url('bg-7.png')",
         backgroundSize: "100% 100%",
       }}
     >
