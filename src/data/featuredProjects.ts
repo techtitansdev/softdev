@@ -2,7 +2,7 @@ export const featuredProjects = [
   {
     route: "tech4all",
     title: "Tech4All",
-    image: "/tech4all.jpeg",
+    image: "/tech4all.png",
     location: "Iloilo Hub",
   },
   {

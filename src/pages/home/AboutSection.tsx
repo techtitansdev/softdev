@@ -14,36 +14,36 @@ export const AboutSection = () => {
 
   return (
     <div
-      className="bg-contain py-14"
+      className="bg-blue-800 bg-contain py-10"
       style={{
-        backgroundImage: " url('bg-1.png')",
+        backgroundImage: " url('fundimpact-bg.png')",
         backgroundSize: "100% 100%",
       }}
     >
-      <div className="mx-auto flex min-w-[200px] max-w-[1241px] flex-col items-center justify-between sm:flex-row">
-        <div className="w-full sm:pl-6 md:w-1/2 lg:pr-6 xl:pl-0">
+      <div className="mx-auto flex max-w-[1241px] flex-col items-center justify-between sm:flex-row">
+        <div className="w-full sm:pl-6 md:w-1/2 lg:pr-16 xl:pl-0">
           <img
             src="/fund-impact.png"
             alt="about fundimpact"
-            className="h-64 w-full px-4 sm:px-0 md:h-72 xl:h-80"
+            className="h-[320px] w-full px-4 sm:px-0 md:h-[390px] xl:h-[400px]"
           />
         </div>
 
         <motion.div
-          className="w-full flex-col items-center justify-center px-4 md:w-1/2 xl:px-0 xl:pl-6"
+          className="w-full flex-col items-center justify-center px-4 md:w-1/2 xl:px-0 xl:pl-4"
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           variants={textVariants}
           ref={ref}
         >
-          <p className="mt-3 text-2xl font-medium text-gray-800 sm:text-3xl xl:text-5xl xl:font-normal">
+          <p className="mt-3 text-2xl text-white sm:text-3xl md:text-4xl lg:text-5xl">
             About Fund Impact
           </p>
-          <p className="mb-3 text-sm font-medium text-gray-700 sm:text-base lg:mb-5 xl:text-lg">
+          <p className="mb-3 text-sm font-normal text-gray-50 sm:text-base lg:mb-5 xl:text-lg">
             Why are we so excited? Need a little background?
           </p>
 
-          <p className="text-sm font-normal text-gray-700 sm:text-sm xl:text-base">
+          <p className="lg: max-w-[590px] text-sm font-light text-gray-100 sm:text-sm xl:text-base">
             Within our website, we act as a vibrant center where Ilonggo
             changemakers come together to transform creative concepts into
             reality. Recognizing that groundbreaking ideas and ambitious

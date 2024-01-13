@@ -29,7 +29,7 @@ export const Carousel = ({ slides }: CarouselProps) => {
   };
 
   return (
-    <div className="relative mx-auto mb-8 mt-8 max-h-[660px] min-w-[200px] max-w-[1240px] overflow-hidden">
+    <div className="relative mx-auto max-h-[700px] min-w-[200px] max-w-[1395px] overflow-hidden md:my-12 my-4">
       <motion.div
         className={`duration-400 flex transition-transform ease-out`}
         style={{
@@ -44,14 +44,7 @@ export const Carousel = ({ slides }: CarouselProps) => {
         transition={{ duration: 0.8, ease: "easeInOut" }}
       >
         {slides.map((s, index) => {
-          return (
-            <img
-              src={s}
-              key={index}
-              alt={`Slide ${index}`}
-              style={{ width: "100%", height: "auto" }}
-            />
-          );
+          return <img src={s} key={index} className="object-obtain" />;
         })}
       </motion.div>
 

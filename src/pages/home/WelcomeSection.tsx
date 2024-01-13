@@ -15,45 +15,44 @@ export const WelcomeSection = () => {
 
   return (
     <div
-      className="flex max-h-[800px] flex-col items-center bg-gray-50 xl:h-screen xl:flex-row-reverse bg-contain"
+      className="flex max-h-[800px] flex-col items-center bg-gray-50 bg-contain md:h-screen md:flex-row-reverse"
       style={{
-        backgroundImage:
-        "linear-gradient(to right, rgba(255, 255, 255), rgba(250, 250, 250, 0.5)), url('bg-4.JPG')",
-      backgroundSize: "100% 100%",
+        backgroundImage: "url('/home-bg.png')",
+        backgroundSize: "100% 100%",
         backgroundPosition: "center",
       }}
     >
-      <div className="mx-auto flex min-w-[200px] max-w-[1260px] flex-col items-center justify-between xl:flex-row-reverse">
+      <div className="mx-auto flex min-w-[200px] max-w-[1260px] flex-col items-center justify-between md:flex-row-reverse">
         <motion.img
-          src="bg-4.JPG"
-          className="mt-28 h-64 rounded-lg xl:mt-20 xl:h-[510px] xl:w-1/2 xl:mr-3 max-h-[400px]"
+          src="welcome.png"
+          className="mt-28 h-64 max-h-[400px] rounded-lg md:mt-20 md:h-[510px] md:w-1/2 xl:mr-3"
           initial="hidden"
           animate="visible"
           variants={imageVariants}
         />
 
-        <div className="w-full xl:w-1/2 xl:px-1">
+        <div className="w-full md:w-1/2 md:px-1">
           <motion.div
-            className="text-4xl font-medium md:mb-2 md:text-4xl xl:mb-4 xl:mt-36 xl:text-6xl xl:font-normal"
+            className="text-4xl font-medium md:mb-2 md:mt-40 md:text-5xl md:font-normal lg:text-6xl xl:mb-4"
             initial="hidden"
             animate="visible"
             variants={textVariants}
           >
-            <div className="text-center text-gray-800 xl:text-left">
-              <div className="hidden xl:block">
+            <div className="px-8 text-center text-gray-800 md:text-left xl:px-0">
+              <div className="hidden md:block">
                 Welcome to
                 <br />
                 Shaping Iloilo
               </div>
 
-              <div className="mb-3 block text-2xl sm:text-3xl xl:hidden">
+              <div className="mb-2 mt-3 block text-2xl md:hidden">
                 Welcome to Shaping Iloilo
               </div>
             </div>
           </motion.div>
 
           <motion.div
-            className="mx-auto max-w-[500px] px-8 text-center text-sm font-normal text-gray-700 md:max-w-[600px] xl:max-w-[800px] xl:px-0 xl:pr-28 xl:text-left xl:text-base"
+            className="mx-auto max-w-[500px] px-8 text-center text-sm font-light text-gray-700 md:px-8 md:text-left md:text-base lg:max-w-[680px] lg:text-lg xl:max-w-[800px] xl:px-0 xl:pr-[125px]"
             initial="hidden"
             animate="visible"
             variants={textVariants}
@@ -66,12 +65,12 @@ export const WelcomeSection = () => {
 
           <Link href="/funded-projects">
             <motion.div
-              className="mb-8 flex items-center justify-center xl:mb-12 xl:items-start xl:justify-start"
+              className="mb-8 flex items-center justify-center px-8 md:mb-12 md:items-start md:justify-start xl:px-0"
               initial="hidden"
               animate="visible"
               variants={textVariants}
             >
-              <button className="mt-6 block w-80 rounded-2xl bg-blue-800 py-2 text-lg font-semibold text-white hover:bg-blue-900 md:py-3 xl:mb-6">
+              <button className="mt-6 block md:w-80 w-72 rounded-2xl bg-blue-800 py-2 text-lg font-semibold text-white hover:bg-blue-900 md:mb-6 md:py-3">
                 Fund Impact
               </button>
             </motion.div>
