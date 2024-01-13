@@ -52,7 +52,7 @@ export const WelcomeSection = () => {
           </motion.div>
 
           <motion.div
-            className="mx-auto max-w-[500px] px-8 text-center text-sm font-light text-gray-700 md:px-8 md:text-left md:text-base lg:max-w-[680px] lg:text-lg xl:max-w-[800px] xl:px-0 xl:pr-[125px]"
+            className="mx-auto max-w-[500px] px-8 text-center text-sm font-light text-gray-700 md:px-8 md:text-left md:text-base lg:max-w-[680px] xl:max-w-[800px] xl:px-0 xl:pr-[100px]"
             initial="hidden"
             animate="visible"
             variants={textVariants}
@@ -70,7 +70,7 @@ export const WelcomeSection = () => {
               animate="visible"
               variants={textVariants}
             >
-              <button className="mt-6 block md:w-80 w-72 rounded-2xl bg-blue-800 py-2 text-lg font-semibold text-white hover:bg-blue-900 md:mb-6 md:py-3">
+              <button className="mt-6 block w-72 rounded-2xl bg-blue-800 py-2 text-lg font-semibold text-white hover:bg-blue-900 md:mb-6 md:w-80 md:py-3">
                 Fund Impact
               </button>
             </motion.div>
