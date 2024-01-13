@@ -1,7 +1,8 @@
 import Link from "next/link";
 import React from "react";
 import { AiOutlinePhone, AiOutlineMail, AiFillInstagram } from "react-icons/ai";
-import { BiLogoFacebook, BiLogoLinkedin } from "react-icons/bi";
+import { CiGlobe } from "react-icons/ci";
+import { BiLogoFacebook } from "react-icons/bi";
 
 export const Footer = () => {
   return (
@@ -50,10 +51,10 @@ export const Footer = () => {
                 <AiFillInstagram size={22} />
               </Link>
               <Link
-                href="https://www.instagram.com/globalshapersiloilo"
+                href="https://www.globalshapers.org/hubs/iloilo-hub"
                 className="mx-3 rounded-full bg-white px-1 py-1 hover:bg-gray-400"
               >
-                <BiLogoLinkedin size={22} />
+                <CiGlobe size={22} />
               </Link>
             </div>
           </div>
