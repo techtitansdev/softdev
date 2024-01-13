@@ -132,7 +132,7 @@ export const Navbar = () => {
                   className="flex items-center justify-between"
                   onClick={closeMenu}
                 >
-                  <li className="flex cursor-pointer items-center text-base font-semibold text-[#07549C]">
+                  <li className="flex cursor-pointer items-center text-base font-medium text-[#07549C]">
                     <span className="ml-6">{link.icon}</span>
                     <span className="ml-6"> {link.text}</span>
                   </li>
