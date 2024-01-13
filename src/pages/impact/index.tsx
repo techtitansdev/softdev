@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Link from "next/link";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
 import { impactAreasData } from "~/data/impactAreasData";
@@ -15,24 +14,24 @@ const Impact = () => {
 
       <Navbar />
 
-      <div className="mx-auto mt-32 max-w-[365px] flex-col items-center  px-2 sm:max-w-[405px] md:max-w-[810px] xl:max-w-[1220px]">
-        <div className="text-gray text-3xl lg:text-4xl">Areas of Impact</div>
+      <div className="mx-auto mt-36 max-w-[365px] flex-col items-center  px-2 sm:max-w-[405px] md:max-w-[780px] xl:max-w-[1175px]">
+        <div className="text-3xl text-black lg:text-4xl">Areas of Impact</div>
         <hr className="dark-bg-gray-800 my-4 mb-8 h-px border-0 bg-gray-800"></hr>
       </div>
 
-      <div className="mb-12 flex items-center justify-center">
+      <div className="mb-24 flex items-center justify-center">
         <ul className="grid grid-cols-1 gap-6 px-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           {impactAreasData.map((card, index) => (
             <li
               key={index}
-              className="hover:scale-104 w-[350px] transform shadow transition duration-500 ease-in-out hover:-translate-y-1 sm:w-[385px]"
+              className="hover:scale-104 w-[350px] transform shadow transition duration-500 ease-in-out hover:-translate-y-1 sm:w-[370px]"
             >
               <div className="flex items-center">
                 <div className="flex-1">
-                  <img className="h-40 w-36" src={card.image} />
+                  <img className="h-40 w-[140px]" src={card.image} />
                 </div>
                 <div className="mx-2 my-2 flex-1">
-                  <div className="w-52 text-lg font-semibold tracking-tight text-gray-900">
+                  <div className="w-56 text-lg font-medium tracking-tight text-gray-900">
                     {card.title}
                   </div>
 
