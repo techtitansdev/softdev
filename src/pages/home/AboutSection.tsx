@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 
-export const AboutSection = () => {
+const AboutSection = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
   });
@@ -56,3 +56,5 @@ export const AboutSection = () => {
     </div>
   );
 };
+
+export default AboutSection;

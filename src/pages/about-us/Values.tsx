@@ -1,6 +1,6 @@
 import { values } from "~/data/values";
 
-export const Values = () => {
+const Values = () => {
   return (
     <>
       <div className="mb-2 mt-12 flex items-center justify-center text-3xl font-medium text-gray-700 sm:text-4xl lg:mt-20 lg:text-5xl">
@@ -30,3 +30,5 @@ export const Values = () => {
     </>
   );
 };
+
+export default Values;

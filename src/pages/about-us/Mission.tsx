@@ -1,6 +1,6 @@
 import React from "react";
 
-export const Mission = () => {
+const Mission = () => {
   return (
     <div
       style={{
@@ -31,3 +31,5 @@ export const Mission = () => {
     </div>
   );
 };
+
+export default Mission;

@@ -1,6 +1,6 @@
 import React from "react";
 
-export const AboutUsSection = () => {
+const AboutUsSection = () => {
   return (
     <div className="z-10 flex h-52 flex-col items-center bg-gray-50 bg-cover bg-center shadow">
       <div className="mb-12 flex flex-col items-center justify-center">
@@ -15,3 +15,5 @@ export const AboutUsSection = () => {
     </div>
   );
 };
+
+export default AboutUsSection

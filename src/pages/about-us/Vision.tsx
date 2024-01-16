@@ -1,6 +1,6 @@
 import React from "react";
 
-export const Vision = () => {
+const Vision = () => {
   return (
     <div
       className="bg-gray-100 bg-contain py-12 md:py-12"
@@ -32,3 +32,5 @@ export const Vision = () => {
     </div>
   );
 };
+
+export default Vision;

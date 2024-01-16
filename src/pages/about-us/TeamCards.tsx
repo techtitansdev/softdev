@@ -1,7 +1,7 @@
 import React from "react";
 import { teamImages } from "~/data/teamImages";
 
-export const TeamCards = () => {
+const TeamCards = () => {
   return (
     <div
       style={{
@@ -43,3 +43,5 @@ export const TeamCards = () => {
     </div>
   );
 };
+
+export default TeamCards

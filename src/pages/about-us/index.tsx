@@ -1,12 +1,11 @@
 import Head from "next/head";
-import { ComingSoon } from "~/components/ComingSoon";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
-import { AboutUsSection } from "./AboutUsSection";
-import { Mission } from "./Mission";
-import { TeamCards } from "./TeamCards";
-import { Vision } from "./Vision";
-import { Values } from "./Values";
+import AboutUsSection from "./AboutUsSection";
+import Mission from "./Mission";
+import TeamCards from "./TeamCards";
+import Vision from "./Vision";
+import Values from "./Values";
 
 const AboutUs = () => {
   return (

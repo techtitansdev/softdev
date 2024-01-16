@@ -6,7 +6,7 @@ interface CarouselProps {
   slides: string[];
 }
 
-export const Carousel = ({ slides }: CarouselProps) => {
+const Carousel = ({ slides }: CarouselProps) => {
   const [current, setCurrent] = useState(0);
   const controls = useAnimation();
 
@@ -43,7 +43,7 @@ export const Carousel = ({ slides }: CarouselProps) => {
         }}
         transition={{ duration: 0.8, ease: "easeInOut" }}
       >
-        {slides.map((s, index) => {
+        {slides && slides.map((s, index) => {
           return <img src={s} key={index} className="object-obtain" />;
         })}
       </motion.div>
@@ -58,7 +58,7 @@ export const Carousel = ({ slides }: CarouselProps) => {
       </div>
 
       <div className="absolute bottom-0 flex w-full justify-center gap-3 py-4">
-        {slides.map((_, i) => {
+        {slides && slides.map((_, i) => {
           return (
             <div
               onClick={() => {
@@ -76,3 +76,5 @@ export const Carousel = ({ slides }: CarouselProps) => {
     </div>
   );
 };
+
+export default Carousel;

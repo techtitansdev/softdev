@@ -2,7 +2,7 @@ import React from "react";
 import { IoLocationSharp } from "react-icons/io5";
 import { featuredProjects } from "~/data/featuredProjects";
 
-export const FeaturedProjects = () => {
+const FeaturedProjects = () => {
   const handleCardClick = (route: any) => {
     window.location.href = `/projects/${route}`;
   };
@@ -55,3 +55,5 @@ export const FeaturedProjects = () => {
     </div>
   );
 };
+
+export default FeaturedProjects;

@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-export const WelcomeSection = () => {
+const WelcomeSection = () => {
   const textVariants = {
     hidden: { opacity: 0, y: -10 },
     visible: { opacity: 1, y: 0, transition: { delay: 0.5, duration: 1.5 } },
@@ -80,3 +80,5 @@ export const WelcomeSection = () => {
     </div>
   );
 };
+
+export default WelcomeSection;

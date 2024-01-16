@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 import { featuredShapers } from "~/data/featuredShapers";
 
-export const FeaturedShapers = () => {
+const FeaturedShapers = () => {
   return (
     <div
       className="mt-1 bg-contain"
@@ -75,3 +75,5 @@ export const FeaturedShapers = () => {
     </div>
   );
 };
+
+export default FeaturedShapers;
