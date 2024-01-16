@@ -7,6 +7,19 @@ const Index = () => {
   useEffect(() => {
     router.replace("/home");
   }, [router]);
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+
+const Index = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const redirect = async () => {
+      await router.replace("/home");
+    };
+
+    redirect();
+  }, [router]);
 
   return null;
 };
