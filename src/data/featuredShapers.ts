@@ -1,30 +1,30 @@
 export const featuredShapers = [
   {
-    title: "Lorem Ipsum",
-    imageUrl:
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+    title: "Mikee Canaman",
+    work: "Founder/Chief Executive Officer Sowenscale Business Development Services",
+    imageUrl: "mikee-canaman.png",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis dolore adipisci placeat.",
+      "Being a part of the Global Shapers Community has been one of the most enriching experiences of the last 8 years for me. It's easy to feel proud of being a Shaper, but it's also incredibly humbling. As a young person, I was searching for where I could make the most meaningful contributions within the community. It's a journey of growth, service, and connection that's truly worth embracing.",
   },
   {
-    title: "Lorem Ipsum",
-    imageUrl:
-      "https://images.unsplash.com/photo-1502675135487-e971002a6adb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=688&q=80",
+    title: "Anjelou Estrella",
+    work: "Co-Founder/Executive Director,Team Dugong Bughaw",
+    imageUrl: "anjelou-estrella.png",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis dolore adipisci placeat.",
+      "Being part of Global Shapers Community challenged me to go beyond my limits, to unleash my potential of becoming a passionate leader driven to create social impact, and to collaborate with like-minded individuals serving different communities. This community provides an avenue for Shapers to turn their ideas into actions. It’s a home for changemakers!",
   },
   {
-    title: "Lorem Ipsum",
-    imageUrl:
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+    title: "James Daniel Gregori",
+    work: "Enterprise Dev't and Marketing Specialist,Department of Agriculture Regional Field Office VI",
+    imageUrl: "james-gregori.png",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis dolore adipisci placeat.",
+      "With Global Shapers, I have come to understand that the rich diversity of thought among the shapers within the hub fosters the generation of exceptionally refined and innovative ideas when devising multi-sectoral initiatives. Being part of this community has motivated me to undertake in-depth analyses, thoroughly examining the distinct impact of each project on those it serves.",
   },
   {
-    title: "Lorem Ipsum",
-    imageUrl:
-      "https://assets.weforum.org/news_update/image/responsive_big_webp_bnhoQ0zkGJmTD_LKWN-mnYEdK4WuH6MOYl3OmCJOcQA.webp",
+    title: "Enniss Albert Pareja",
+    work: "Senior Economic Development Specialist,National Economic and Development Authority",
+    imageUrl: "enniss-pareja.png",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis dolore adipisci placeat.",
+      "In engaging with Global Shapers, I have discovered the immense power that lies in collaboration and shared purpose. The realization that my aspirations are echoed by many others has not only been inspiring but has also broadened my perspective on the possibilities for impact. The Global Shapers Community emerges when young, passionate individuals unite with a common vision for a better world.",
   },
 ];
