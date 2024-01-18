@@ -52,7 +52,7 @@ const Tech4all = () => {
               </p>
             </div>
 
-            <div className="mt-2 w-full rounded-md px-4 pr-12 sm:px-6 sm:pr-24 md:pr-28 lg:w-1/2 lg:max-w-[650px] lg:pr-4 xl:ml-12 xl:px-0">
+            <div className="mt-2 w-full rounded-md px-4 pr-12 sm:px-6 sm:pr-24 md:pr-28 lg:w-1/2 lg:max-w-[650px] lg:pr-6 xl:ml-12 xl:px-0">
               <video
                 controls
                 autoPlay
@@ -69,7 +69,7 @@ const Tech4all = () => {
         Project Objectives
       </div>
 
-      <div className="mx-auto mb-1 md:mt-3 mt-1 px-4 text-center text-sm font-light sm:text-base md:max-w-[720px] lg:mb-10 lg:max-w-[950px] xl:text-lg">
+      <div className="mx-auto mb-1 mt-1 px-4 text-center text-sm font-light sm:text-base md:mt-3 md:max-w-[720px] lg:mb-10 lg:max-w-[950px] xl:text-lg">
         Delve into the project objectives that aims to empower individuals and
         communities through digital literacy and skills development, inclusive
         innovation, and socioeconomic empowerment.

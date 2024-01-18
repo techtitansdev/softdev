@@ -14,7 +14,7 @@ const AboutSection = () => {
 
   return (
     <div
-      className="bg-blue-800 bg-contain py-10"
+      className="bg-blue-800 bg-contain sm:py-10 py-8"
       style={{
         backgroundImage: " url('fundimpact-bg.png')",
         backgroundSize: "100% 100%",

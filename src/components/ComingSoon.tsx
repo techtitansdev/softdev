@@ -18,7 +18,7 @@ export const ComingSoon = () => {
             <div className="max-w-[400px] px-2 text-center text-xl font-light sm:max-w-[600px] lg:max-w-[880px]">
               Our website is currently under construction and will soon be
               your hub for impactful initiatives and collaborative projects. Get
-              ready to be part of a global community making a difference!"
+              ready to be part of a global community making a difference!
             </div>
           </div>
         </div>

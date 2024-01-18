@@ -22,6 +22,7 @@ export const Navbar = () => {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
   const navBackground = isScrolled ? "bg-white" : "bg-transparent";
 
   const handleNav = () => {
@@ -39,9 +40,20 @@ export const Navbar = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
     };
+
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth <= 767);
+    };
+
     window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
+
+    // Initial check for mobile view on mount
+    handleResize();
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -54,16 +66,27 @@ export const Navbar = () => {
       } fixed top-0 z-50 transition-all duration-300 ease-in-out`}
     >
       <div className="flex h-full w-full items-center justify-between px-4">
-        <Link href="/">
-          <img
-            src="/gsi-logo2.png"
-            height={90}
-            width={90}
-            alt="logo"
-            className="cursor-pointer"
-          />
-        </Link>
-
+        {isMobileView && isScrolled ? (
+          <Link href="/">
+            <img
+              src="/gsi-logo2.png"
+              height={55}
+              width={55}
+              alt="logo"
+              className="cursor-pointer"
+            />
+          </Link>
+        ) : (
+          <Link href="/">
+            <img
+              src="/gsi-logo2.png"
+              height={90}
+              width={90}
+              alt="logo"
+              className="cursor-pointer"
+            />
+          </Link>
+        )}
         {/* Navigation for lg to xl view */}
         <div className="hidden lg:flex lg:items-center lg:justify-center">
           <ul className="lg:flex">

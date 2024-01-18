@@ -10,7 +10,7 @@ const FeaturedProjects = () => {
   return (
     <div className="bg-gray-50 bg-cover bg-center shadow">
       <div className="mx-auto max-w-screen-xl py-6 pb-10 lg:p-6 lg:py-6 xl:pb-12">
-        <div className="mx-auto mt-4 text-center text-2xl font-medium text-gray-800 sm:max-w-[610px] sm:text-left sm:text-3xl xl:mx-0 xl:max-w-[900px]">
+        <div className="mx-auto mt-1 sm:mt-4 text-center text-2xl font-medium text-gray-800 sm:max-w-[610px] sm:text-left sm:text-3xl xl:mx-0 xl:max-w-[900px]">
           FEATURED PROJECTS
         </div>
 

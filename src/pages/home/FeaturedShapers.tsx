@@ -14,11 +14,11 @@ const FeaturedShapers = () => {
       <div className="mx-auto max-w-screen-xl py-6 pb-10 lg:p-6 lg:py-6 xl:pb-16">
         <div className="flex items-center justify-center xl:justify-between">
           <div className="flex-col">
-            <div className="mx-auto mt-4 text-center text-2xl font-medium text-gray-800 sm:max-w-[610px] sm:text-left sm:text-3xl xl:mx-0 xl:max-w-[900px]">
+            <div className="mx-auto mt-1 text-center text-2xl font-medium text-gray-800 sm:mt-4 sm:max-w-[610px] sm:text-left sm:text-3xl xl:mx-0 xl:max-w-[900px]">
               FEATURED SHAPERS
             </div>
 
-            <div className="mx-auto px-8 pb-5 text-center text-sm font-light text-gray-700 sm:max-w-[610px] sm:px-0 sm:text-left xl:mx-0 xl:max-w-[920px] xl:text-base">
+            <div className="mx-auto px-10 pb-5 text-center text-sm font-light text-gray-700 sm:max-w-[610px] sm:px-0 sm:text-left xl:mx-0 xl:max-w-[920px] xl:text-base">
               Delve into the reflection of Global Shapers Iloilo as they share
               their insights they have gleaned from their time at hub.
             </div>

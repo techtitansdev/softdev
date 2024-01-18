@@ -3,7 +3,7 @@ import React from "react";
 const HowItWorks = () => {
   return (
     <>
-      <div className="mt-6 w-full sm:mt-10 xl:mt-16">
+      <div className="mt-8 w-full sm:mt-10 xl:mt-16">
         <p className="text-center text-2xl font-normal text-gray-800 sm:text-3xl lg:text-4xl">
           How Fund Impact Works
         </p>

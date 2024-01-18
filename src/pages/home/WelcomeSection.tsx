@@ -25,7 +25,7 @@ const WelcomeSection = () => {
       <div className="mx-auto flex min-w-[200px] max-w-[1260px] flex-col items-center justify-between md:flex-row-reverse">
         <motion.img
           src="welcome.png"
-          className="mt-28 h-64 max-h-[400px] rounded-lg md:mt-20 md:h-[510px] md:w-1/2 xl:mr-3"
+          className="mt-28 h-64 max-h-[400px] rounded-lg px-8 md:mt-20 md:h-[510px] md:w-1/2 xl:px-0"
           initial="hidden"
           animate="visible"
           variants={imageVariants}
@@ -38,7 +38,7 @@ const WelcomeSection = () => {
             animate="visible"
             variants={textVariants}
           >
-            <div className="px-8 text-center text-gray-800 md:text-left xl:px-0">
+            <div className="lg-px-12 px-8 text-center text-gray-800 md:text-left xl:px-0">
               <div className="hidden md:block">
                 Welcome to
                 <br />
@@ -52,7 +52,7 @@ const WelcomeSection = () => {
           </motion.div>
 
           <motion.div
-            className="mx-auto max-w-[500px] px-8 text-center text-sm font-light text-gray-700 md:px-8 md:text-left md:text-base lg:max-w-[680px] xl:max-w-[800px] xl:px-0 xl:pr-[100px]"
+            className="mx-auto max-w-[500px] px-5 text-center text-sm font-light text-gray-700 md:px-8 md:text-left md:text-base lg:max-w-[680px] xl:max-w-[800px] xl:px-0 xl:pr-[100px]"
             initial="hidden"
             animate="visible"
             variants={textVariants}
