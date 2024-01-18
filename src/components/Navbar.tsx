@@ -66,7 +66,7 @@ export const Navbar = () => {
       } fixed top-0 z-50 transition-all duration-300 ease-in-out`}
     >
       <div className="flex h-full w-full items-center justify-between px-4">
-        {isMobileView && isScrolled ? (
+        {isMobileView ? (
           <Link href="/">
             <img
               src="/gsi-logo2.png"
@@ -136,8 +136,8 @@ export const Navbar = () => {
         <div className="mb-4 flex items-center justify-between">
           <img
             src="gsi-logo2.png"
-            height={90}
-            width={90}
+            height={55}
+            width={55}
             alt="logo"
             className="cursor-pointer"
           />
