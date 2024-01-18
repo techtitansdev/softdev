@@ -15,7 +15,7 @@ const Tech4all = () => {
       <Navbar />
 
       <div
-        className="md:-h-[1000px] mt-[100px] bg-contain lg:h-[644px]"
+        className="md:-h-[1000px] mt-[65px] bg-contain md:mt-[100px] lg:h-[644px]"
         style={{
           backgroundImage: "url('/tech4all-bg.png')",
           backgroundSize: "100% 100%",

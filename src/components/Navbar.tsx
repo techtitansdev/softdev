@@ -135,7 +135,7 @@ export const Navbar = () => {
         {/* Close button for sm to md view */}
         <div className="mb-4 flex items-center justify-between">
           <img
-            src="gsi-logo2.png"
+            src="/gsi-logo2.png"
             height={55}
             width={55}
             alt="logo"

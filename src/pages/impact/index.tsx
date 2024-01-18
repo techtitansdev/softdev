@@ -14,7 +14,7 @@ const Impact = () => {
 
       <Navbar />
 
-      <div className="mx-auto mt-36 max-w-[365px] flex-col items-center  px-2 sm:max-w-[405px] md:max-w-[780px] xl:max-w-[1175px]">
+      <div className="mx-auto mt-24 max-w-[365px] flex-col items-center px-2  sm:max-w-[405px] md:mt-36 md:max-w-[780px] xl:max-w-[1175px]">
         <div className="text-3xl text-black lg:text-4xl">Areas of Impact</div>
         <hr className="dark-bg-gray-800 my-4 mb-8 h-px border-0 bg-gray-800"></hr>
       </div>

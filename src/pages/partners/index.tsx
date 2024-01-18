@@ -14,13 +14,13 @@ const Partners = () => {
 
       <Navbar />
       <div
-        className="mt-[100px] bg-contain pb-20 pt-20"
+        className="mt-[65px] bg-contain pb-20 pt-20 md:mt-[100px]"
         style={{
           backgroundImage: " url('partner-bg.png')",
           backgroundSize: "100% 100%",
         }}
       >
-        <div className="mx-auto flex lg:max-w-[960px] md:max-w-[720px] sm:max-w-[600px] max-w-[340px] flex-col items-center rounded-xl bg-white p-8 shadow-xl">
+        <div className="mx-auto flex max-w-[340px] flex-col items-center rounded-xl bg-white p-8 shadow-xl sm:max-w-[600px] md:max-w-[720px] lg:max-w-[960px]">
           <div className="mb-8 text-center text-3xl">
             In collaboration with:
           </div>
