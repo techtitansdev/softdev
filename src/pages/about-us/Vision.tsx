@@ -3,7 +3,7 @@ import React from "react";
 const Vision = () => {
   return (
     <div
-      className="bg-gray-100 bg-contain py-12 md:py-12"
+      className="bg-gray-100 bg-contain py-5 md:py-12"
       style={{
         backgroundImage: " url('vision-bg.png')",
         backgroundSize: "100% 100%",
