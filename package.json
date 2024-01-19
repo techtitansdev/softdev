@@ -12,7 +12,6 @@
     "start": "next start",
     "test": "jest",
     "test:watch": "jest --watchAll"
-    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.27.1",
@@ -35,6 +34,7 @@
     "react-intersection-observer": "^9.5.3",
     "react-phone-input-2": "^2.15.1",
     "superjson": "^1.13.1",
+    "trpc-playground": "^1.0.4",
     "zod": "^3.22.4"
   },
   "devDependencies": {
