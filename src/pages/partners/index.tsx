@@ -32,7 +32,7 @@ const Partners = () => {
         style={{
           backgroundImage: showBackgroundImage
             ? "url('partner-bg.png')"
-            : "url('partner-bg2.png')",
+            : "url('none')",
           backgroundSize: "100% 100%",
         }}
       >
