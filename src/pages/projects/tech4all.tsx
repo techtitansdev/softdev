@@ -166,7 +166,7 @@ const Tech4all = () => {
         </div>
       </div>
 
-      <div className="mx-auto mb-12 grid max-w-[1360px] grid-cols-1 items-center justify-center md:mb-16 lg:grid-cols-2">
+      <div className="mx-auto mb-10 grid max-w-[1360px] grid-cols-1 items-center justify-center md:mb-16 lg:grid-cols-2">
         <div className="flex-col">
           <div className="mb-1 text-center text-2xl font-medium text-[#227135] md:text-3xl">
             ROBOTOPIA

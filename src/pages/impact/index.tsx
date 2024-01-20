@@ -19,7 +19,7 @@ const Impact = () => {
         <hr className="dark-bg-gray-800 my-4 mb-8 h-px border-0 bg-gray-800"></hr>
       </div>
 
-      <div className="mb-24 flex items-center justify-center">
+      <div className="md:mb-24 mb-10 flex items-center justify-center">
         <ul className="grid grid-cols-1 gap-6 px-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           {impactAreasData.map((card, index) => (
             <li

@@ -14,7 +14,7 @@ const FeaturedShapers = () => {
       <div className="mx-auto max-w-screen-xl py-6 pb-10 lg:p-6 lg:py-6 xl:pb-16">
         <div className="flex items-center justify-center xl:justify-between">
           <div className="flex-col">
-            <div className="mx-auto mt-1 text-center text-2xl font-medium text-gray-800 sm:mt-4 sm:max-w-[610px] sm:text-left sm:text-3xl xl:mx-0 xl:max-w-[900px]">
+            <div className="mx-auto mt-1 text-center text-2xl font-normal md:font-medium text-gray-800 sm:mt-4 sm:max-w-[610px] sm:text-left sm:text-3xl xl:mx-0 xl:max-w-[900px]">
               FEATURED SHAPERS
             </div>
 

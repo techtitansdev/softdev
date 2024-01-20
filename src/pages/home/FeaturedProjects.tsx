@@ -10,7 +10,7 @@ const FeaturedProjects = () => {
   return (
     <div className="bg-gray-50 bg-cover bg-center shadow">
       <div className="mx-auto max-w-screen-xl py-6 pb-10 lg:p-6 lg:py-6 xl:pb-12">
-        <div className="mx-auto mt-1 sm:mt-4 text-center text-2xl font-medium text-gray-800 sm:max-w-[610px] sm:text-left sm:text-3xl xl:mx-0 xl:max-w-[900px]">
+        <div className="mx-auto mt-1 sm:mt-4 text-center text-2xl font-normal md:font-medium text-gray-800 sm:max-w-[610px] sm:text-left sm:text-3xl xl:mx-0 xl:max-w-[900px]">
           FEATURED PROJECTS
         </div>
 
@@ -20,7 +20,7 @@ const FeaturedProjects = () => {
         </div>
 
         <div className="mb-2 flex items-center justify-center">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4 cursor-pointer">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4">
             {featuredProjects.map((card, index) => (
               <div
                 key={index}
@@ -29,7 +29,7 @@ const FeaturedProjects = () => {
                     handleCardClick(card.route);
                   }
                 }}
-                className="w-full transform justify-self-start rounded-lg font-medium shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105 dark:bg-white"
+                className="cursor-pointer w-full transform justify-self-start rounded-lg font-medium shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105 dark:bg-white"
               >
                 <img
                   className="h-52 w-72 rounded-t-lg object-cover"

@@ -14,7 +14,7 @@ const AboutSection = () => {
 
   return (
     <div
-      className="bg-blue-800 bg-contain sm:py-10 py-8"
+      className="bg-blue-800 bg-contain py-8 sm:py-10"
       style={{
         backgroundImage: " url('fundimpact-bg.png')",
         backgroundSize: "100% 100%",
@@ -43,7 +43,7 @@ const AboutSection = () => {
             Why are we so excited? Need a little background?
           </p>
 
-          <p className="lg: max-w-[590px] text-sm font-light text-gray-100 sm:text-sm xl:text-base">
+          <p className="lg: max-w-[590px] text-sm font-light text-gray-50 sm:text-sm xl:text-base">
             Within our website, we act as a vibrant center where Ilonggo
             changemakers come together to transform creative concepts into
             reality. Recognizing that groundbreaking ideas and ambitious

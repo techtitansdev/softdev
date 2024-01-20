@@ -10,7 +10,7 @@ const TeamCards = () => {
       }}
     >
       <div className="flex flex-col items-center justify-center">
-        <div className="mb-8 mt-5 text-3xl font-medium text-gray-700 sm:text-4xl lg:text-5xl">
+        <div className="mb-8 mt-1 md:mt-8 text-3xl font-medium text-gray-700 sm:text-4xl lg:text-5xl">
           Meet Our Team
         </div>
         <div className="mb-12 flex items-center justify-center">
