@@ -1,5 +1,5 @@
 import { render, fireEvent, act, waitFor } from "@testing-library/react";
-import { RegisterForm } from "../register/RegisterForm";
+import { RegisterForm } from "../RegisterForm";
 import { useSignUp } from "@clerk/nextjs";
 import { api } from "~/utils/api";
 
