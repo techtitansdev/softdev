@@ -1,4 +1,3 @@
-
 import { useSignIn } from "@clerk/nextjs";
 import Link from "next/link";
 import router from "next/router";
@@ -11,74 +10,39 @@ import {
   AiOutlineMail,
 } from "react-icons/ai";
 import { Modal } from "~/components/Modal";
-import { validateLogin } from "~/utils/validateLogin";
 import { api } from "~/utils/api";
-
-
+import { validateLogin } from "~/utils/validateLogin";
 const useGetRoleQuery = (email: string) => {
   return api.user.getRole.useQuery({ email });
 };
 export const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { signIn } = useSignIn();
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState("");
+  const [modalBgColor, setModalBgColor] = useState("");
+  const [isLoading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
   });
-  const { isLoaded, signIn, setActive } = useSignIn();
 
   const [formErrors, setFormErrors] = useState({
     emailError: "",
     passwordError: "",
   });
 
-  const [isModalOpen, setModalOpen] = useState(false);
-
   const closeModal = () => {
     setModalOpen(false);
-  }
-  
-  const getRole = useGetRoleQuery(formValues.email);
-  // const getRole = api.user.getRole.useQuery({ email: formValues.email });
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const validate = handleValidate();
-
-    if (validate) {
-      console.log("form submited", formValues);
-      await signIn!
-        .create({
-          identifier: formValues.email,
-          password: formValues.password,
-        })
-        .then((result) => {
-          if (result.status === "complete") {
-            if (getRole.data === "ADMIN") {
-              console.log("role");
-              console.log(getRole.data);
-              router.push("/admin");
-            }else{
-              console.log("role");
-              console.log(getRole.data);
-              router.push("/home");
-            }
-          } else {
-            console.log(result);
-          }
-        })
-        .catch((err) => console.error("error", err.errors[0].longMessage));
-      setModalOpen(true);
-
-      setTimeout(() => {
-        setModalOpen(false);
-      }, 3000);
-    } else {
-      console.log("error");
-    }
   };
 
   const handleValidate = () => {
     const validation = validateLogin(formValues);
+
     setFormErrors(validation);
     if (validation.state === "validated") {
       return true;
@@ -86,13 +50,52 @@ export const LoginForm = () => {
       return false;
     }
   };
+  const getRole = useGetRoleQuery(formValues.email);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  const [showPassword, setShowPassword] = useState(false);
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+    const isValid = handleValidate();
+
+    if (isValid) {
+      try {
+        const result = await signIn?.create({
+          identifier: formValues.email,
+          password: formValues.password,
+        });
+
+        if (result && result.status === "complete") {
+          setModalOpen(true);
+          setModalContent("Success");
+          setModalBgColor("bg-gray-800");
+
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+
+          setModalOpen(false);
+          setLoading(false);
+          if (getRole.data === "ADMIN") {
+            console.log("role");
+            console.log(getRole.data);
+            router.push("/admin");
+          }else{
+            console.log("role");
+            console.log(getRole.data);
+            router.push("/home");
+          }
+          return;
+        }
+      } catch (err: any) {
+        console.error(err.errors[0].longMessage);
+      }
+
+      setModalOpen(true);
+      setModalContent("Make sure your email and password are correct.");
+      setModalBgColor("bg-red-500");
+
+      setTimeout(() => {
+        setModalOpen(false);
+      }, 3000);
+    }
   };
-
-  const [loginError, setLoginError] = useState(false);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -211,15 +214,12 @@ export const LoginForm = () => {
                 </Link>
               </div>
             </div>
+
             <Modal
               isOpen={isModalOpen}
               onClose={closeModal}
-              message={
-                loginError
-                  ? "Make sure your email and password are all correct."
-                  : "Success"
-              }
-              bgColor={loginError ? "bg-red-600" : "bg-gray-800"}
+              message={modalContent}
+              bgColor={modalBgColor}
             />
           </div>
         </div>
