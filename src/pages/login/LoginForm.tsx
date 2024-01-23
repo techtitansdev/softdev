@@ -1,3 +1,4 @@
+
 import { useSignIn } from "@clerk/nextjs";
 import Link from "next/link";
 import router from "next/router";
@@ -13,15 +14,17 @@ import { Modal } from "~/components/Modal";
 import { validateLogin } from "~/utils/validateLogin";
 import { api } from "~/utils/api";
 
+
+const useGetRoleQuery = (email: string) => {
+  return api.user.getRole.useQuery({ email });
+};
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
   });
-
   const { isLoaded, signIn, setActive } = useSignIn();
 
   const [formErrors, setFormErrors] = useState({
@@ -33,12 +36,12 @@ export const LoginForm = () => {
 
   const closeModal = () => {
     setModalOpen(false);
-  };
-
-  const adminCheck = api.admin.check.useMutation();
+  }
+  
+  const getRole = useGetRoleQuery(formValues.email);
+  // const getRole = api.user.getRole.useQuery({ email: formValues.email });
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const validate = handleValidate();
 
     if (validate) {
@@ -50,17 +53,15 @@ export const LoginForm = () => {
         })
         .then((result) => {
           if (result.status === "complete") {
-            adminCheck.mutate({ email: result.identifier! }, {
-              onSettled(data, error) {
-                if (error) return console.log("error mutation", error)
-                if (data) {
-                  router.push("/admin")
-                } else {
-                  router.push("/home")
-                }
-              }
-            });
-            console.log(result);
+            if (getRole.data === "ADMIN") {
+              console.log("role");
+              console.log(getRole.data);
+              router.push("/admin");
+            }else{
+              console.log("role");
+              console.log(getRole.data);
+              router.push("/home");
+            }
           } else {
             console.log(result);
           }
