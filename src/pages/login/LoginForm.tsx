@@ -11,18 +11,18 @@ import {
 } from "react-icons/ai";
 import { Modal } from "~/components/Modal";
 import { validateLogin } from "~/utils/validateLogin";
+import { api } from "~/utils/api";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
-  
+
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
   });
-  
-   const { isLoaded, signIn, setActive } = useSignIn();
+
+  const { isLoaded, signIn, setActive } = useSignIn();
 
   const [formErrors, setFormErrors] = useState({
     emailError: "",
@@ -35,6 +35,7 @@ export const LoginForm = () => {
     setModalOpen(false);
   };
 
+  const adminCheck = api.admin.check.useMutation();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -43,23 +44,29 @@ export const LoginForm = () => {
     if (validate) {
       console.log("form submited", formValues);
       await signIn!
-      .create({
-        identifier: formValues.email,
-        password:formValues.password,
-      })
-      .then((result) => {
-        if (result.status === "complete") {
-          console.log(result);
-          router.push('/home')
-        } else {
-          console.log(result);
-          console.log(result);
-        }
-      })
-      .catch((err) => console.error("error", err.errors[0].longMessage));
+        .create({
+          identifier: formValues.email,
+          password: formValues.password,
+        })
+        .then((result) => {
+          if (result.status === "complete") {
+            adminCheck.mutate({ email: result.identifier! }, {
+              onSettled(data, error) {
+                if (error) return console.log("error mutation", error)
+                if (data) {
+                  router.push("/admin")
+                } else {
+                  router.push("/home")
+                }
+              }
+            });
+            console.log(result);
+          } else {
+            console.log(result);
+          }
+        })
+        .catch((err) => console.error("error", err.errors[0].longMessage));
       setModalOpen(true);
-
-      
 
       setTimeout(() => {
         setModalOpen(false);
