@@ -9,14 +9,10 @@ import { HowItWorks } from "./HowItWorks";
 import { WelcomeSection } from "./WelcomeSection";
 import { carouselImages } from "~/data/carouselmages";
 import { api } from "~/utils/api";
-import router from "next/router";
-import { getServerSession } from "next-auth/next";
 
-import { WithSession} from "@clerk/nextjs";
+
 
 const Home = () => {
-  console.log('User');
-  console.log(WithSession.name);
   return (
     <>
       <Head>
@@ -25,7 +21,7 @@ const Home = () => {
         <link rel="icon" href="/gsi-logo.jpeg" />
       </Head>
 
-      <Navbar  />
+      <Navbar />
       <WelcomeSection />
       <Carousel slides={carouselImages} />
       <AboutSection />

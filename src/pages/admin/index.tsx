@@ -23,11 +23,7 @@ const Admin = () => {
   return (
     <div className="grid lg:grid-cols-6">
       <div className="sticky hidden h-screen lg:block">
-<<<<<<< HEAD
         <AdminSidebar logo="/gsi-logo2.png" routes={navigationLinks} />
-=======
-        <AdminSidebar logo="gsi-logo2.png" routes={navigationLinks} />
->>>>>>> 48bf7c18d39ae36a1bbbeabf433caaf7fe829dd0
       </div>
       <div className="lg-col-span-6 col-span-5 bg-gray-300"></div>
     </div>

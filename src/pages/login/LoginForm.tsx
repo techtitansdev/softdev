@@ -21,18 +21,10 @@ const useGetRoleQuery = (email: string) => {
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-<<<<<<< HEAD
-=======
-
->>>>>>> 48bf7c18d39ae36a1bbbeabf433caaf7fe829dd0
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
   });
-<<<<<<< HEAD
-=======
-
->>>>>>> 48bf7c18d39ae36a1bbbeabf433caaf7fe829dd0
   const { isLoaded, signIn, setActive } = useSignIn();
 
   const [formErrors, setFormErrors] = useState({
@@ -44,16 +36,10 @@ export const LoginForm = () => {
 
   const closeModal = () => {
     setModalOpen(false);
-<<<<<<< HEAD
   }
   
   const getRole = useGetRoleQuery(formValues.email);
   // const getRole = api.user.getRole.useQuery({ email: formValues.email });
-=======
-  };
-
-  const adminCheck = api.admin.check.useMutation();
->>>>>>> 48bf7c18d39ae36a1bbbeabf433caaf7fe829dd0
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const validate = handleValidate();
@@ -67,7 +53,6 @@ export const LoginForm = () => {
         })
         .then((result) => {
           if (result.status === "complete") {
-<<<<<<< HEAD
             if (getRole.data === "ADMIN") {
               console.log("role");
               console.log(getRole.data);
@@ -77,19 +62,6 @@ export const LoginForm = () => {
               console.log(getRole.data);
               router.push("/home");
             }
-=======
-            adminCheck.mutate({ email: result.identifier! }, {
-              onSettled(data, error) {
-                if (error) return console.log("error mutation", error)
-                if (data) {
-                  router.push("/admin")
-                } else {
-                  router.push("/home")
-                }
-              }
-            });
-            console.log(result);
->>>>>>> 48bf7c18d39ae36a1bbbeabf433caaf7fe829dd0
           } else {
             console.log(result);
           }
