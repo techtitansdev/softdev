@@ -211,7 +211,6 @@ export const LoginForm = () => {
                 </Link>
               </div>
             </div>
-
             <Modal
               isOpen={isModalOpen}
               onClose={closeModal}

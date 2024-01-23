@@ -10,7 +10,6 @@ interface CarouselProps {
 export const Carousel = ({ slides }: CarouselProps) => {
   const [current, setCurrent] = useState(0);
   const controls = useAnimation();
-  router.reload()
   const previousSlide = () => {
     setCurrent((prevCurrent) =>
       prevCurrent === 0 ? slides.length - 1 : prevCurrent - 1,
