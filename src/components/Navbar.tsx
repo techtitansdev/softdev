@@ -168,7 +168,7 @@ export const Navbar = () => {
               </Link>
             ))}
 
-            <div className="absolute bottom-0 left-0 w-full py-8">
+            <div className="absolute bottom-10 left-0 w-full py-5">
               <Link href="/login">
                 <li
                   onClick={closeMenu}
