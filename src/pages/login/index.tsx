@@ -1,6 +1,6 @@
 import Head from "next/head";
-import { RegisterForm } from "./RegisterForm";
 import { Footer } from "~/components/Footer";
+import { LoginForm } from "./LoginForm";
 
 const Register = () => {
   return (
@@ -11,7 +11,7 @@ const Register = () => {
         <link rel="icon" href="/gsi-logo.jpeg" />
       </Head>
 
-      <RegisterForm />
+      <LoginForm />
       <Footer />
     </>
   );

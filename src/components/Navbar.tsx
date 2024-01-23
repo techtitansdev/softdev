@@ -88,17 +88,13 @@ export const Navbar = () => {
         </div>
 
         <div className="hidden justify-end lg:flex">
-          {user && (
-            <button
-              className="mx-4 rounded bg-blue-700 px-6 py-2 font-bold text-white hover:bg-blue-800"
-              onClick={() => signOut(() => router.push("/"))}
-            >
-              Sign out
-            </button>
-          )}
+          <div className="mr-4">
+            {user && <UserButton afterSignOutUrl="/home" />}
+          </div>
+
           {!user && (
             <Link
-              href="/dashboard"
+              href="/login"
               className="mx-4 rounded bg-blue-700 px-6 py-2 font-bold text-white hover:bg-blue-800"
             >
               LOG IN
@@ -160,14 +156,14 @@ export const Navbar = () => {
             <div className="absolute bottom-0 left-0 w-full py-8 shadow-inner">
               {user && (
                 <button
-                className="mx-16 rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800"
+                  className="mx-16 rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800"
                   onClick={() => signOut(() => router.push("/"))}
                 >
                   Sign out
                 </button>
               )}
               {!user && (
-                <Link href="/sign-in">
+                <Link href="/login">
                   <li
                     onClick={closeMenu}
                     className="mx-16 rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800"

@@ -9,16 +9,11 @@ import { Register } from "~/types/register";
 import validateRegistration from "~/utils/validateRegistration";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-
 import { useSignUp } from "@clerk/nextjs";
-import { useRouter } from "next/router";
 import { OtpVerification } from "~/components/OtpVerification";
 import { api } from "~/utils/api";
 
-
 export const RegisterForm = () => {
-  const createUser = api.user.create.useMutation()
-  const { isLoaded, signUp, setActive } = useSignUp();
   const initialValues: Register = {
     firstName: "",
     lastName: "",
@@ -28,57 +23,12 @@ export const RegisterForm = () => {
     password: "",
     confirmPassword: "",
   };
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
-    e.preventDefault();
-    let formErrors = validateRegistration(formValues);
-    
-    setFormErrors(formErrors);
-    if (!isLoaded && Object.keys(formErrors).length === 0) {
-      return;
-    }
- 
-    try {
-      await signUp?.create({
-        emailAddress: formValues.email,
-        password: formValues.password,
-      });
- 
-      // send the email.
-      await signUp?.prepareEmailAddressVerification({ strategy: "email_code" });
- 
-      // change the UI to our pending section.
-      setPendingVerification(true);
-
-      createUser.mutate({
-        email: formValues.email,
-        firstName: formValues.firstName,
-        lastName: formValues.lastName,
-        address: formValues.address,
-        phone: formValues.phone,
-        password: formValues.password
-      }
-      )
-    } catch (err: any) {
-      console.error(JSON.stringify(err, null, 2));
-    }
-  };
-  
-  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   let formErrors = validateRegistration(formValues);
-    
-  //   setFormErrors(formErrors);
-  //   setIsSubmit(true);
-  //   if (Object.keys(formErrors).length === 0){
-  //     setPendingVerification(true);
-  //   }
-  //  };
   const [formValues, setFormValues] = useState<Register>(initialValues);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [pendingVerification, setPendingVerification] = useState(false);
-  const [code, setCode] = useState("");
-  const router = useRouter();
- 
+  const createUser = api.user.create.useMutation();
+  const { signUp } = useSignUp();
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormValues({
@@ -86,30 +36,50 @@ export const RegisterForm = () => {
       [name]: value,
     });
   };
-  const onPressVerify = async (e: { preventDefault: () => void; }) => {
+
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    if (!isLoaded) {
-      return;
-    }
- 
-    try {
-      const completeSignUp = await signUp.attemptEmailAddressVerification({
-        code,
-      });
-      if (completeSignUp.status !== "complete") {
-        /*  investigate the response, to see if there was an error
-         or if the user needs to complete more steps.*/
-        console.log(JSON.stringify(completeSignUp, null, 2));
+
+    let formErrors = validateRegistration(formValues);
+
+    setFormErrors(formErrors);
+
+    if (Object.keys(formErrors).length === 0) {
+      try {
+        const signUpResponse = await signUp?.create({
+          emailAddress: formValues.email,
+          password: formValues.password,
+        });
+
+        // Check if the response is valid JSON
+        if (!signUpResponse || typeof signUpResponse !== "object") {
+          throw new Error("Invalid JSON response from server");
+        }
+
+        await signUp?.prepareEmailAddressVerification({
+          strategy: "email_code",
+        });
+
+        createUser.mutate({
+          email: formValues.email,
+          firstName: formValues.firstName,
+          lastName: formValues.lastName,
+          address: formValues.address,
+          phone: formValues.phone,
+          password: formValues.password,
+        });
+
+        setPendingVerification(true);
+      } catch (err: any) {
+        console.error(JSON.stringify(err, null, 2));
+        // Handle errors, show a notification, etc.
+      } finally {
+        setLoading(false);
       }
-      if (completeSignUp.status === "complete") {
-        await setActive({ session: completeSignUp.createdSessionId })
-        router.push("/");
-      }
-    } catch (err: any) {
-      console.error(JSON.stringify(err, null, 2));
     }
   };
-
 
   useEffect(() => {
     if (Object.keys(formErrors).length === 0) {
@@ -345,7 +315,6 @@ export const RegisterForm = () => {
                   <button
                     type="submit"
                     className="block w-full rounded-lg bg-gray-600 px-4 py-3 font-bold text-white hover:bg-gray-800"
-                    
                   >
                     Sign Up
                   </button>
@@ -366,9 +335,7 @@ export const RegisterForm = () => {
           </div>
         </form>
       )}
-      {pendingVerification && (
-      <OtpVerification />
-      )}
+      {pendingVerification && <OtpVerification />}
     </div>
   );
 };
