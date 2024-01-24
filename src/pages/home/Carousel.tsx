@@ -47,6 +47,7 @@ const Carousel = ({ slides }: CarouselProps) => {
           return <img src={s} key={index} className="object-obtain" />;
         })}
       </motion.div>
+      
 
       <div className="absolute top-0 flex h-full w-full items-center justify-between px-10 text-2xl text-white">
         <button onClick={previousSlide}>
