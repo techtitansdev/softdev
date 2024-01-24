@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { motion, useAnimation } from "framer-motion"; // Import motion and useAnimation
+import { motion, useAnimation } from "framer-motion";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import Image from 'next/image'
 
 interface CarouselProps {
   slides: string[];
@@ -44,7 +45,7 @@ const Carousel = ({ slides }: CarouselProps) => {
         transition={{ duration: 0.8, ease: "easeInOut" }}
       >
         {slides && slides.map((s, index) => {
-          return <img src={s} alt="carousel" key={index} className="object-obtain" />;
+          return <Image src={s} alt="carousel" key={index} className="object-obtain" />;
         })}
       </motion.div>
 

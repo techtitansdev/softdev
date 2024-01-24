@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { featuredShapers } from "~/data/featuredShapers";
+import Image from 'next/image'
 
 const FeaturedShapers = () => {
   return (
@@ -40,7 +41,7 @@ const FeaturedShapers = () => {
                 className="group relative mb-1 cursor-pointer items-center justify-center overflow-hidden rounded-md transition-shadow hover:shadow-xl hover:shadow-black/30"
               >
                 <div className="h-96 w-72">
-                  <img
+                  <Image
                     className="object-obtain h-full w-full transition-transform duration-500 group-hover:rotate-3 group-hover:scale-105"
                     src={shaper.imageUrl}
                     alt="shaperImg"

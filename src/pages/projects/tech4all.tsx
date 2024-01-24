@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
+import Image from 'next/image'
 
 const Tech4all = () => {
   const [showBackgroundImage, setShowBackgroundImage] = useState(false);
@@ -93,7 +94,7 @@ const Tech4all = () => {
 
       <div className="mx-auto mb-12 grid  max-w-[1300px] grid-cols-1 gap-2 md:gap-4 lg:mb-24 lg:grid-cols-2">
         <div className="flex items-center justify-center">
-          <img
+          <Image
             src="/tech4all-1.png"
             className="h-36 w-36"
             alt="First Objective"
@@ -111,7 +112,7 @@ const Tech4all = () => {
         </div>
 
         <div className="flex items-center justify-center">
-          <img
+          <Image
             src="/tech4all-2.png"
             className="h-36 w-36"
             alt="Second Objective"
@@ -129,7 +130,7 @@ const Tech4all = () => {
         </div>
 
         <div className="flex items-center justify-center lg:mt-14">
-          <img
+          <Image
             src="/tech4all-3.png"
             className="h-36 w-36"
             alt="Third Objective"
@@ -148,7 +149,7 @@ const Tech4all = () => {
         </div>
 
         <div className="flex items-center justify-center lg:mt-14">
-          <img
+          <Image
             src="/tech4all-4.png"
             className="w- h-36"
             alt="Fourth Objective"
@@ -174,11 +175,11 @@ const Tech4all = () => {
           <div className="mb-3 text-center text-sm font-light md:text-base">
             Forging Future Innovators Through Early Technology Immersion{" "}
           </div>
-          <img
+          <Image
             src="/robotopia.png"
             alt="robotopia"
             className="mx-auto h-[560px] w-[680px] border-[#227135] lg:border-r-4 lg:pr-10"
-          ></img>
+          ></Image>
         </div>
 
         <div className="flex-col lg:pl-8">
@@ -189,11 +190,11 @@ const Tech4all = () => {
             Empowering Creators for a More Inclusive Gaming
           </div>
 
-          <img
+          <Image
             src="/gameon.png"
             alt="gameon"
             className="mx-auto h-[560px] w-[680px]"
-          ></img>
+          ></Image>
         </div>
       </div>
 

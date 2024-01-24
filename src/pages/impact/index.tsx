@@ -2,6 +2,7 @@ import Head from "next/head";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
 import { impactAreasData } from "~/data/impactAreasData";
+import Image from 'next/image'
 
 const Impact = () => {
   return (
@@ -28,7 +29,7 @@ const Impact = () => {
             >
               <div className="flex items-center">
                 <div className="flex-1">
-                  <img className="h-40 w-[140px]" src={card.image} alt="impact"/>
+                  <Image className="h-40 w-[140px]" src={card.image} alt="impact"/>
                 </div>
                 <div className="mx-2 my-2 flex-1">
                   <div className="w-56 text-lg font-medium tracking-tight text-gray-900">

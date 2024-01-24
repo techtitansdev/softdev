@@ -1,4 +1,5 @@
 import React from "react";
+import Image from 'next/image'
 
 const Vision = () => {
   return (
@@ -12,7 +13,7 @@ const Vision = () => {
       <div className="mx-auto max-w-[1230px]">
         <div className="flex flex-col items-center md:flex-row">
           <div className="w-full px-6 md:w-1/2 md:max-w-[530px] xl:px-0">
-            <img
+            <Image
               src="vision.png"
               alt="About FundImpact"
               className="h-96 w-full rounded-lg"

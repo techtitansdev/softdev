@@ -8,6 +8,7 @@ import { GoProjectSymlink } from "react-icons/go";
 import { FaPeopleCarry } from "react-icons/fa";
 import { HiArrowNarrowRight } from "react-icons/hi";
 import { AiOutlineClose, AiOutlineHome, AiOutlineMenu } from "react-icons/ai";
+import Image from 'next/image'
 
 const navigationLinks = [
   { path: "/home", text: "HOME", icon: <AiOutlineHome size={22} /> },
@@ -68,7 +69,7 @@ export const Navbar = () => {
       <div className="flex h-full w-full items-center justify-between px-4">
         {isMobileView ? (
           <Link href="/">
-            <img
+            <Image
               src="/gsi-logo2.png"
               height={55}
               width={55}
@@ -78,7 +79,7 @@ export const Navbar = () => {
           </Link>
         ) : (
           <Link href="/">
-            <img
+            <Image
               src="/gsi-logo2.png"
               height={90}
               width={90}
@@ -134,7 +135,7 @@ export const Navbar = () => {
       >
         {/* Close button for sm to md view */}
         <div className="mb-4 flex items-center justify-between">
-          <img
+          <Image
             src="/gsi-logo2.png"
             height={55}
             width={55}

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
 import { partners } from "~/data/partners";
+import Image from 'next/image'
 
 const Partners = () => {
   const [showBackgroundImage, setShowBackgroundImage] = useState(false);
@@ -43,7 +44,7 @@ const Partners = () => {
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-2 md:gap-12 lg:grid-cols-3 xl:grid-cols-3">
             {partners.map((partner, index) => (
               <div key={index} className="rounded-md">
-                <img src={partner.image} alt="partners" className="h-32 w-60 object-contain" />
+                <Image src={partner.image} alt="partners" className="h-32 w-60 object-contain" />
               </div>
             ))}
           </div>
@@ -51,16 +52,16 @@ const Partners = () => {
             Supported by:
           </div>
           <div className="items-center justify-center md:flex">
-            <img
+            <Image
               src="city-of-iloilo.jpeg"
               alt="city-of-iloilo"
               className="mb-10 h-36 w-56 object-contain md:mb-0"
-            ></img>
-            <img
+            />
+            <Image
               src="doe-iloilo.jpeg"
               alt="doe-iloilo"
               className="h-36 w-56 object-contain"
-            ></img>
+            />
           </div>
         </div>
       </div>

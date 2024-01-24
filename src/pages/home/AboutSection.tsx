@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import Image from 'next/image'
 
 const AboutSection = () => {
   const [ref, inView] = useInView({
@@ -22,7 +23,7 @@ const AboutSection = () => {
     >
       <div className="mx-auto flex max-w-[1241px] flex-col items-center justify-between sm:flex-row">
         <div className="w-full sm:pl-6 md:w-1/2 lg:pr-16 xl:pl-0">
-          <img
+          <Image
             src="/fund-impact.png"
             alt="about fundimpact"
             className="h-[320px] w-full px-4 sm:px-0 md:h-[390px] xl:h-[400px]"

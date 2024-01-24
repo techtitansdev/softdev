@@ -1,6 +1,7 @@
 import React from "react";
 import { IoLocationSharp } from "react-icons/io5";
 import { featuredProjects } from "~/data/featuredProjects";
+import Image from 'next/image'
 
 const FeaturedProjects = () => {
   const handleCardClick = (route: any) => {
@@ -31,7 +32,7 @@ const FeaturedProjects = () => {
                 }}
                 className="cursor-pointer w-full transform justify-self-start rounded-lg font-medium shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105 dark:bg-white"
               >
-                <img
+                <Image
                   className="h-52 w-72 rounded-t-lg object-cover"
                   src={card.image}
                   alt={card.title}

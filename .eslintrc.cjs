@@ -15,7 +15,6 @@ const config = {
     // Feel free to reconfigure them to your own preference.
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
-    "@next/next/no-img-element":"off",
     "@typescript-eslint/no-floating-promises":"off",
     "@typescript-eslint/no-explicit-any":"off",
     "react/no-unescaped-entities":"off",

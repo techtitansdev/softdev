@@ -1,5 +1,6 @@
 import React from "react";
 import { teamImages } from "~/data/teamImages";
+import Image from 'next/image'
 
 const TeamCards = () => {
   return (
@@ -21,7 +22,7 @@ const TeamCards = () => {
                 className="duration-400 group relative mb-4 transform items-center justify-center transition ease-in-out hover:-translate-y-1 hover:scale-110"
               >
                 <div className="flex flex-col items-center justify-center">
-                  <img
+                  <Image
                     src={member.image}
                     className="h-52 w-52 rounded-full shadow-lg"
                     alt={member.name}
