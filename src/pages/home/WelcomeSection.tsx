@@ -2,75 +2,77 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-const WelcomeSection = () => {
+export const WelcomeSection = () => {
   const textVariants = {
     hidden: { opacity: 0, y: -10 },
     visible: { opacity: 1, y: 0, transition: { delay: 0.5, duration: 1.5 } },
   };
 
   const imageVariants = {
-    hidden: { opacity: 0, x: 15 },
+    hidden: { opacity: 0, x: 160 },
     visible: { opacity: 1, x: 0, transition: { duration: 1.5 } },
   };
 
   return (
     <div
-      className="flex max-h-[800px] flex-col items-center bg-gray-50 bg-contain md:h-screen md:flex-row-reverse"
+      className="flex max-h-[800px] flex-col items-center bg-gray-50 xl:h-screen xl:flex-row-reverse"
       style={{
-        backgroundImage: "url('/home-bg.png')",
-        backgroundSize: "100% 100%",
+        backgroundImage:
+          "url('https://i.pinimg.com/474x/f2/7c/23/f27c2356e1943df4875ed932707e9931.jpg')",
+        backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="mx-auto flex min-w-[200px] max-w-[1260px] flex-col items-center justify-between md:flex-row-reverse">
+      <div className="mx-auto flex min-w-[200px] max-w-[1240px] flex-col items-center justify-between xl:flex-row-reverse">
         <motion.img
-          src="welcome.png"
-          className="mt-28 h-64 max-h-[400px] rounded-lg px-8 md:mt-20 md:h-[510px] md:w-1/2 xl:px-0"
+          src="/sample-pic5.png"
+          className="mt-28 h-64 rounded-lg xl:mt-20 xl:h-[510px] xl:w-1/2 "
           initial="hidden"
           animate="visible"
           variants={imageVariants}
         />
 
-        <div className="w-full md:w-1/2 md:px-1">
+        <div className="w-full xl:w-1/2 xl:px-1">
           <motion.div
-            className="text-4xl font-medium md:mb-2 md:mt-40 md:text-5xl md:font-normal lg:text-6xl xl:mb-4"
+            className="text-4xl font-medium md:mb-2 md:text-4xl xl:mb-4 xl:mt-36 xl:text-6xl xl:font-normal"
             initial="hidden"
             animate="visible"
             variants={textVariants}
           >
-            <div className="lg-px-12 px-8 text-center text-gray-800 md:text-left xl:px-0">
-              <div className="hidden md:block">
+            <div className="text-center text-gray-800 xl:text-left">
+              <div className="hidden xl:block">
                 Welcome to
                 <br />
-                Shaping Iloilo
+                Shapers Iloilo
               </div>
 
-              <div className="mb-2 mt-3 block text-2xl md:hidden">
-                Welcome to Shaping Iloilo
+              <div className="mb-3 block text-2xl sm:text-3xl xl:hidden">
+                Welcome to Shapers Iloilo
               </div>
             </div>
           </motion.div>
 
           <motion.div
-            className="mx-auto max-w-[500px] px-5 text-center text-sm font-light text-gray-700 md:px-8 md:text-left md:text-base lg:max-w-[680px] xl:max-w-[800px] xl:px-0 xl:pr-[100px]"
+            className="mx-auto px-8 max-w-[500px] text-center text-sm font-normal text-gray-700 xl:px-0 xl:pr-28 xl:text-left xl:text-base md:max-w-[600px] xl:max-w-[800px]"
             initial="hidden"
             animate="visible"
             variants={textVariants}
           >
-            In a rapidly changing world, a community of young, passionate, and
-            dedicated individuals has emerged, ready to make a difference on
-            both a local and global scale. Welcome to the Global Shapers
-            Community, where the power of youth meets the urgency of our times.
+            The Global Shapers Iloilo Hub is one of the 456 city-based hubs in
+            the Global Shapers Community - a network of inspiring young people
+            working together to address local, regional, and global challenges.
+            We believe in a world where young people are central to solution
+            building, policy-making and lasting change.
           </motion.div>
 
           <Link href="/funded-projects">
             <motion.div
-              className="mb-8 flex items-center justify-center px-8 md:mb-12 md:items-start md:justify-start xl:px-0"
+              className="mb-8 flex items-center justify-center xl:mb-12 xl:items-start xl:justify-start"
               initial="hidden"
               animate="visible"
               variants={textVariants}
             >
-              <button className="mt-6 block w-72 rounded-2xl bg-blue-800 py-2 text-lg font-semibold text-white hover:bg-blue-900 md:mb-6 md:w-80 md:py-3">
+              <button className="mt-6 block w-80 rounded-2xl bg-blue-800 py-2 text-lg font-semibold text-white hover:bg-blue-900 md:py-3 xl:mb-6">
                 Fund Impact
               </button>
             </motion.div>
@@ -80,5 +82,3 @@ const WelcomeSection = () => {
     </div>
   );
 };
-
-export default WelcomeSection;

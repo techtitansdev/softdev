@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { motion, useAnimation } from "framer-motion"; // Import motion and useAnimation
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import router from "next/router";
 
 interface CarouselProps {
   slides: string[];
 }
 
-const Carousel = ({ slides }: CarouselProps) => {
+export const Carousel = ({ slides }: CarouselProps) => {
   const [current, setCurrent] = useState(0);
   const controls = useAnimation();
-
   const previousSlide = () => {
     setCurrent((prevCurrent) =>
       prevCurrent === 0 ? slides.length - 1 : prevCurrent - 1,
@@ -29,7 +29,7 @@ const Carousel = ({ slides }: CarouselProps) => {
   };
 
   return (
-    <div className="relative mx-auto max-h-[700px] min-w-[200px] max-w-[1395px] overflow-hidden md:my-12 my-4">
+    <div className="relative mx-auto mb-8 mt-8 min-w-[200px] max-w-[1240px] overflow-hidden">
       <motion.div
         className={`duration-400 flex transition-transform ease-out`}
         style={{
@@ -43,8 +43,15 @@ const Carousel = ({ slides }: CarouselProps) => {
         }}
         transition={{ duration: 0.8, ease: "easeInOut" }}
       >
-        {slides && slides.map((s, index) => {
-          return <img src={s} key={index} className="object-obtain" />;
+        {slides.map((s, index) => {
+          return (
+            <img
+              src={s}
+              key={index}
+              alt={`Slide ${index}`}
+              style={{ width: "100%", height: "auto" }}
+            />
+          );
         })}
       </motion.div>
       
@@ -59,7 +66,7 @@ const Carousel = ({ slides }: CarouselProps) => {
       </div>
 
       <div className="absolute bottom-0 flex w-full justify-center gap-3 py-4">
-        {slides && slides.map((_, i) => {
+        {slides.map((_, i) => {
           return (
             <div
               onClick={() => {
@@ -77,5 +84,3 @@ const Carousel = ({ slides }: CarouselProps) => {
     </div>
   );
 };
-
-export default Carousel;
