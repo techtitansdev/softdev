@@ -18,6 +18,7 @@ const FeaturedProjects = () => {
           Shaping Iloilo through our new hub projects by implementing innovative
           solutions that foster positive social change.
         </div>
+        
 
         <div className="mb-2 flex items-center justify-center">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4">
