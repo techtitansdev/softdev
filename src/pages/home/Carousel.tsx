@@ -44,7 +44,7 @@ const Carousel = ({ slides }: CarouselProps) => {
         transition={{ duration: 0.8, ease: "easeInOut" }}
       >
         {slides && slides.map((s, index) => {
-          return <img src={s} key={index} className="object-obtain" />;
+          return <img src={s} alt="carousel" key={index} className="object-obtain" />;
         })}
       </motion.div>
 
