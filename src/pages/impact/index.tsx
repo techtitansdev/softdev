@@ -2,7 +2,6 @@ import Head from "next/head";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
 import { impactAreasData } from "~/data/impactAreasData";
-import Image from 'next/image'
 
 const Impact = () => {
   return (
@@ -20,7 +19,7 @@ const Impact = () => {
         <hr className="dark-bg-gray-800 my-4 mb-8 h-px border-0 bg-gray-800"></hr>
       </div>
 
-      <div className="md:mb-24 mb-10 flex items-center justify-center">
+      <div className="mb-10 flex items-center justify-center md:mb-24">
         <ul className="grid grid-cols-1 gap-6 px-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           {impactAreasData.map((card, index) => (
             <li
@@ -29,7 +28,7 @@ const Impact = () => {
             >
               <div className="flex items-center">
                 <div className="flex-1">
-                  <Image className="h-40 w-[140px]" src={card.image} alt="impact"/>
+                  <img className="h-40 w-[140px]" src={card.image} alt="impact"/>
                 </div>
                 <div className="mx-2 my-2 flex-1">
                   <div className="w-56 text-lg font-medium tracking-tight text-gray-900">

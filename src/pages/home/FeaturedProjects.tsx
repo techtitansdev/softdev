@@ -32,7 +32,7 @@ const FeaturedProjects = () => {
                 }}
                 className="cursor-pointer w-full transform justify-self-start rounded-lg font-medium shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105 dark:bg-white"
               >
-                <Image
+                <img
                   className="h-52 w-72 rounded-t-lg object-cover"
                   src={card.image}
                   alt={card.title}

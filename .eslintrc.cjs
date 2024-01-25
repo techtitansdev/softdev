@@ -16,6 +16,7 @@ const config = {
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/no-floating-promises":"off",
+    "@next/next/no-img-element":"off",
     "@typescript-eslint/no-explicit-any":"off",
     "react/no-unescaped-entities":"off",
     "@typescript-eslint/prefer-optional-chain": "off",
