@@ -15,7 +15,7 @@ const Values = () => {
             key={index}
             className={`flex items-center ${index > 1 ? "lg:mt-12" : ""}`}
           >
-            <img src={value.imageSrc} alt="values" className="h-32 w-32" />
+            <img src={value.imageSrc} alt={value.title} className="h-32 w-32" />
 
             <div className="ml-2 lg:ml-4">
               <div className="text-sm font-medium sm:text-base xl:text-lg">

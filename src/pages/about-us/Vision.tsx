@@ -15,7 +15,7 @@ const Vision = () => {
           <div className="w-full px-6 md:w-1/2 md:max-w-[530px] xl:px-0">
             <img
               src="vision.png"
-              alt="About FundImpact"
+              alt="Vision"
               className="h-96 w-full rounded-lg"
             />
           </div>

@@ -45,7 +45,7 @@ const Carousel = ({ slides }: CarouselProps) => {
       >
         {slides &&
           slides.map((s, index) => {
-            return <img src={s} alt="carousel" key={index} className="object-obtain" />;
+            return <img src={s} alt="Carousel" key={index} className="object-obtain" />;
           })}
       </motion.div>
 

@@ -28,7 +28,7 @@ const Impact = () => {
             >
               <div className="flex items-center">
                 <div className="flex-1">
-                  <img className="h-40 w-[140px]" src={card.image} alt="impact"/>
+                  <img className="h-40 w-[140px]" src={card.image} alt="Impact"/>
                 </div>
                 <div className="mx-2 my-2 flex-1">
                   <div className="w-56 text-lg font-medium tracking-tight text-gray-900">

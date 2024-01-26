@@ -177,7 +177,7 @@ const Tech4all = () => {
           <img
             src="/robotopia.png"
             className="mx-auto h-[560px] w-[680px] border-[#227135] lg:border-r-4 lg:pr-10"
-            alt="robotopia"
+            alt="Robotopia"
           ></img>
         </div>
 
@@ -189,7 +189,7 @@ const Tech4all = () => {
             Empowering Creators for a More Inclusive Gaming
           </div>
 
-          <img src="/gameon.png" className="mx-auto h-[560px] w-[680px]" alt="gameon"></img>
+          <img src="/gameon.png" className="mx-auto h-[560px] w-[680px]" alt="Gameon"></img>
         </div>
       </div>
 

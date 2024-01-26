@@ -25,7 +25,7 @@ const AboutSection = () => {
         <div className="w-full sm:pl-6 md:w-1/2 lg:pr-16 xl:pl-0">
           <img
             src="/fund-impact.png"
-            alt="about fundimpact"
+            alt="About Fundimpact"
             className="h-[320px] w-full px-4 sm:px-0 md:h-[390px] xl:h-[400px]"
           />
         </div>

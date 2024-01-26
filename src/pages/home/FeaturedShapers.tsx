@@ -43,7 +43,7 @@ const FeaturedShapers = () => {
                   <img
                     className="object-obtain h-full w-full transition-transform duration-500 group-hover:rotate-3 group-hover:scale-105"
                     src={shaper.imageUrl}
-                    alt="shaperImg"
+                    alt={shaper.title}
                   />
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black group-hover:from-black/70 group-hover:via-black/60 group-hover:to-black/70"></div>

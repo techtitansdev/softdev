@@ -43,7 +43,7 @@ const Partners = () => {
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-2 md:gap-12 lg:grid-cols-3 xl:grid-cols-3">
             {partners.map((partner, index) => (
               <div key={index} className="rounded-md">
-                <img src={partner.image} alt="partners" className="h-32 w-60 object-contain" />
+                <img src={partner.image} alt="Partners" className="h-32 w-60 object-contain" />
               </div>
             ))}
           </div>
@@ -54,9 +54,9 @@ const Partners = () => {
             <img
               src="city-of-iloilo.jpeg"
               className="mb-10 h-36 w-56 object-contain md:mb-0"
-              alt="city-of-iloilo"
+              alt="City-Of-Iloilo"
             />
-            <img src="doe-iloilo.jpeg" className="h-36 w-56 object-contain" alt="doe-iloilo"/>
+            <img src="doe-iloilo.jpeg" className="h-36 w-56 object-contain" alt="Doe-Iloilo"/>
           </div>
         </div>
       </div>

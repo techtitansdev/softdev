@@ -29,6 +29,7 @@ const WelcomeSection = () => {
           initial="hidden"
           animate="visible"
           variants={imageVariants}
+          alt="Shaping Iloilo"
         />
 
         <div className="w-full md:w-1/2 md:px-1">
