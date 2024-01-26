@@ -8,6 +8,9 @@ import { FeaturedShapers } from "./FeaturedShapers";
 import { HowItWorks } from "./HowItWorks";
 import { WelcomeSection } from "./WelcomeSection";
 import { carouselImages } from "~/data/carouselmages";
+import { api } from "~/utils/api";
+
+
 
 const Home = () => {
   return (

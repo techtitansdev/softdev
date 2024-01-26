@@ -13,6 +13,7 @@ export const FeaturedProjects = () => {
         <div className="px-6 pb-5 text-center text-sm font-normal text-gray-700 sm:px-0 md:text-base lg:text-left">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit
         </div>
+        
 
         <div className="mb-2 flex items-center justify-center">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
