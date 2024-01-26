@@ -1,6 +1,5 @@
 import React from "react";
 import { teamImages } from "~/data/teamImages";
-import Image from 'next/image'
 
 const TeamCards = () => {
   return (

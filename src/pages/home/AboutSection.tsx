@@ -1,7 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import Image from 'next/image'
 
 const AboutSection = () => {
   const [ref, inView] = useInView({

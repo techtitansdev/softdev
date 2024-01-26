@@ -1,7 +1,6 @@
 import React from "react";
 import { IoLocationSharp } from "react-icons/io5";
 import { featuredProjects } from "~/data/featuredProjects";
-import Image from 'next/image'
 
 const FeaturedProjects = () => {
   const handleCardClick = (route: any) => {
