@@ -10,20 +10,16 @@ import {
   AiOutlineMail,
 } from "react-icons/ai";
 import { Modal } from "~/components/Modal";
-import { validateLogin } from "~/utils/validateLogin";
 import { api } from "~/utils/api";
+import { validateLogin } from "~/utils/validateLogin";
 
-const useGetRoleQuery = (email: string) => {
-  return api.user.getRole.useQuery({ email });
-};
 export const LoginForm = () => {
-  const { signIn } = useSignIn();
+  const { isLoaded, signIn, setActive } = useSignIn();
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [modalBgColor, setModalBgColor] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -44,6 +40,7 @@ export const LoginForm = () => {
 
   const handleValidate = () => {
     const validation = validateLogin(formValues);
+
     setFormErrors(validation);
     if (validation.state === "validated") {
       return true;
@@ -52,8 +49,7 @@ export const LoginForm = () => {
     }
   };
 
-  const getRole = useGetRoleQuery(formValues.email);
-
+  const user = api.user.getRole.useQuery({ email: formValues.email });
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -61,34 +57,35 @@ export const LoginForm = () => {
 
     if (isValid) {
       try {
-        const result = await signIn?.create({
-          identifier: formValues.email,
-          password: formValues.password,
-        });
+        const result = await signIn
+          ?.create({
+            identifier: formValues.email,
+            password: formValues.password,
+          })
+          .then(async (result) => {
+            if (result.status === "complete") {
+              setModalOpen(true);
+              setModalContent("Success");
+              setModalBgColor("bg-gray-800");
 
-        if (result && result.status === "complete") {
-          if (getRole.data === "ADMIN") {
-            console.log("role");
-            console.log(getRole.data);
-            router.push("/admin");
-          } else {
-            console.log("role");
-            console.log(getRole.data);
-            router.push("/home");
-          }
+              await new Promise((resolve) => setTimeout(resolve, 2000));
 
-          setModalOpen(true);
-          setModalContent("Success");
-          setModalBgColor("bg-gray-800");
+              setModalOpen(false);
+              setLoading(false);
+              if (user.data === "ADMIN") {
+                router.push("/admin");
+                console.log("admin");
 
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-
-          setModalOpen(false);
-          setLoading(false);
-
-          router.push("/home");
-          return;
-        }
+              } else {
+                router.push("/home");
+                console.log("home");
+              }
+              setActive({ session: result.createdSessionId });
+              return;
+            } else {
+              console.log(result);
+            }
+          });
       } catch (err: any) {
         console.error(err.errors[0].longMessage);
       }
@@ -220,6 +217,7 @@ export const LoginForm = () => {
                 </Link>
               </div>
             </div>
+
             <Modal
               isOpen={isModalOpen}
               onClose={closeModal}
