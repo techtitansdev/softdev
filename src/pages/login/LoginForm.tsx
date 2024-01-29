@@ -1,3 +1,4 @@
+
 import { useSignIn } from "@clerk/nextjs";
 import Link from "next/link";
 import router from "next/router";
@@ -11,18 +12,20 @@ import {
 } from "react-icons/ai";
 import { Modal } from "~/components/Modal";
 import { validateLogin } from "~/utils/validateLogin";
+import { api } from "~/utils/api";
 
+
+const useGetRoleQuery = (email: string) => {
+  return api.user.getRole.useQuery({ email });
+};
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
-  
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
   });
-  
-   const { isLoaded, signIn, setActive } = useSignIn();
+  const { isLoaded, signIn, setActive } = useSignIn();
 
   const [formErrors, setFormErrors] = useState({
     emailError: "",
@@ -33,33 +36,38 @@ export const LoginForm = () => {
 
   const closeModal = () => {
     setModalOpen(false);
-  };
-
+  }
+  
+  const getRole = useGetRoleQuery(formValues.email);
+  // const getRole = api.user.getRole.useQuery({ email: formValues.email });
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const validate = handleValidate();
 
     if (validate) {
       console.log("form submited", formValues);
       await signIn!
-      .create({
-        identifier: formValues.email,
-        password:formValues.password,
-      })
-      .then((result) => {
-        if (result.status === "complete") {
-          console.log(result);
-          router.push('/home')
-        } else {
-          console.log(result);
-          console.log(result);
-        }
-      })
-      .catch((err) => console.error("error", err.errors[0].longMessage));
+        .create({
+          identifier: formValues.email,
+          password: formValues.password,
+        })
+        .then((result) => {
+          if (result.status === "complete") {
+            if (getRole.data === "ADMIN") {
+              console.log("role");
+              console.log(getRole.data);
+              router.push("/admin");
+            }else{
+              console.log("role");
+              console.log(getRole.data);
+              router.push("/home");
+            }
+          } else {
+            console.log(result);
+          }
+        })
+        .catch((err) => console.error("error", err.errors[0].longMessage));
       setModalOpen(true);
-
-      
 
       setTimeout(() => {
         setModalOpen(false);
@@ -203,7 +211,6 @@ export const LoginForm = () => {
                 </Link>
               </div>
             </div>
-
             <Modal
               isOpen={isModalOpen}
               onClose={closeModal}

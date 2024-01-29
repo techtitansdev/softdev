@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, useAnimation } from "framer-motion"; // Import motion and useAnimation
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import router from "next/router";
 
 interface CarouselProps {
   slides: string[];
@@ -9,7 +10,6 @@ interface CarouselProps {
 export const Carousel = ({ slides }: CarouselProps) => {
   const [current, setCurrent] = useState(0);
   const controls = useAnimation();
-
   const previousSlide = () => {
     setCurrent((prevCurrent) =>
       prevCurrent === 0 ? slides.length - 1 : prevCurrent - 1,
@@ -54,6 +54,7 @@ export const Carousel = ({ slides }: CarouselProps) => {
           );
         })}
       </motion.div>
+      
 
       <div className="absolute top-0 flex h-full w-full items-center justify-between px-10 text-2xl text-white">
         <button onClick={previousSlide}>
