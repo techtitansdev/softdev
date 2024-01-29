@@ -88,15 +88,15 @@ export const LoginForm = () => {
           });
       } catch (err: any) {
         console.error(err.errors[0].longMessage);
+        
+        setModalOpen(true);
+        setModalContent("Make sure your email and password are correct.");
+        setModalBgColor("bg-red-500");
+        
+        setTimeout(() => {
+          setModalOpen(false);
+        }, 3000);
       }
-
-      setModalOpen(true);
-      setModalContent("Make sure your email and password are correct.");
-      setModalBgColor("bg-red-500");
-
-      setTimeout(() => {
-        setModalOpen(false);
-      }, 3000);
     }
   };
 
