@@ -2,7 +2,7 @@ import Head from "next/head";
 import React from "react";
 import { Sidebar } from "~/components/Sidebar";
 
-const Admin = () => {
+export const Admin = () => {
   return (
     <>
       <Head>
@@ -19,5 +19,3 @@ const Admin = () => {
     </>
   );
 };
-
-export default Admin;
