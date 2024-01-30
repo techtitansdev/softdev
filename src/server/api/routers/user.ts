@@ -86,7 +86,7 @@ export const userRouter = createTRPCRouter({
                 }
             })
         }),
-    getRole: protectedProcedure
+    getRole: publicProcedure
         .input(z.object({
             email: z.string().toLowerCase()
         }))

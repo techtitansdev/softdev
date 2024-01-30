@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { motion, useAnimation } from "framer-motion"; // Import motion and useAnimation
+import { motion, useAnimation } from "framer-motion";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
 interface CarouselProps {
   slides: string[];
 }
 
-export const Carousel = ({ slides }: CarouselProps) => {
+const Carousel = ({ slides }: CarouselProps) => {
   const [current, setCurrent] = useState(0);
   const controls = useAnimation();
 
@@ -29,7 +29,7 @@ export const Carousel = ({ slides }: CarouselProps) => {
   };
 
   return (
-    <div className="relative mx-auto mb-8 mt-8 min-w-[200px] max-w-[1240px] overflow-hidden">
+    <div className="relative mx-auto my-4 max-h-[700px] min-w-[200px] max-w-[1395px] overflow-hidden md:my-12">
       <motion.div
         className={`duration-400 flex transition-transform ease-out`}
         style={{
@@ -43,16 +43,10 @@ export const Carousel = ({ slides }: CarouselProps) => {
         }}
         transition={{ duration: 0.8, ease: "easeInOut" }}
       >
-        {slides.map((s, index) => {
-          return (
-            <img
-              src={s}
-              key={index}
-              alt={`Slide ${index}`}
-              style={{ width: "100%", height: "auto" }}
-            />
-          );
-        })}
+        {slides &&
+          slides.map((s, index) => {
+            return <img src={s} alt="Carousel" key={index} className="object-obtain" />;
+          })}
       </motion.div>
 
       <div className="absolute top-0 flex h-full w-full items-center justify-between px-10 text-2xl text-white">
@@ -65,21 +59,24 @@ export const Carousel = ({ slides }: CarouselProps) => {
       </div>
 
       <div className="absolute bottom-0 flex w-full justify-center gap-3 py-4">
-        {slides.map((_, i) => {
-          return (
-            <div
-              onClick={() => {
-                setCurrent(i);
-                controls.start(slideVariants.animate);
-              }}
-              key={"circle" + i}
-              className={`h-3 w-3 cursor-pointer rounded-full  ${
-                i === current ? "bg-white" : "bg-gray-400"
-              }`}
-            ></div>
-          );
-        })}
+        {slides &&
+          slides.map((_, i) => {
+            return (
+              <div
+                onClick={() => {
+                  setCurrent(i);
+                  controls.start(slideVariants.animate);
+                }}
+                key={"circle" + i}
+                className={`h-3 w-3 cursor-pointer rounded-full  ${
+                  i === current ? "bg-white" : "bg-gray-400"
+                }`}
+              ></div>
+            );
+          })}
       </div>
     </div>
   );
 };
+
+export default Carousel;
