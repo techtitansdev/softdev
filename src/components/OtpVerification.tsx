@@ -28,34 +28,35 @@ export const OtpVerification = () => {
     }
   };
 
-  const handleChange = (
-    e: React.KeyboardEvent<HTMLInputElement>,
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
     index: number,
   ) => {
-    if (e.key === "Backspace") {
-      const newOtp = [...otp];
-      newOtp[index] = "";
-      setOtp(newOtp);
+    const inputValue = e.target.value;
+
+    // Check if the input is a numeric digit (0-9)
+    if (/^\d$/.test(inputValue)) {
+      setOtp((prevOtp) => {
+        prevOtp[index] = inputValue;
+        return [...prevOtp];
+      });
+
+      // Move focus to the next input field
+      if (index < otp.length - 1) {
+        const nextInput = e.currentTarget.nextSibling as HTMLInputElement;
+        setTimeout(() => nextInput?.focus(), 0);
+      }
+    } else if (inputValue === "") {
+      // Handle Backspace key
+      setOtp((prevOtp) => {
+        prevOtp[index] = "";
+        return [...prevOtp];
+      });
 
       // Move focus to the previous input field
       if (index > 0) {
         const prevInput = e.currentTarget.previousSibling as HTMLInputElement;
-        prevInput.focus();
-      }
-    } else {
-      const inputValue = e.key;
-
-      // Check if the input is a numeric digit (0-9)
-      if (/^\d$/.test(inputValue)) {
-        const newOtp = [...otp];
-        newOtp[index] = inputValue;
-        setOtp(newOtp);
-
-        // Move focus to the next input field
-        if (index < otp.length - 1) {
-          const nextInput = e.currentTarget.nextSibling as HTMLInputElement;
-          nextInput.focus();
-        }
+        setTimeout(() => prevInput?.focus(), 0);
       }
     }
   };
@@ -77,8 +78,8 @@ export const OtpVerification = () => {
               className="m-auto h-12 w-12 border-b-2 border-gray-600 text-center text-2xl"
               maxLength={1}
               key={i}
-              value={data}
-              onKeyDown={(e) => handleChange(e, i)}
+              value={data || ""}
+              onChange={(e) => handleInputChange(e, i)}
               onFocus={(e) => e.target.select()}
             />
           ))}
@@ -87,7 +88,7 @@ export const OtpVerification = () => {
           <button
             onClick={() => {
               const enteredOtp = otp.join("");
-              console.log(otp.join(""));
+              console.log(enteredOtp);
               setCode(otp.join(""));
               setTimeout(() => {
                 onPressVerify();
