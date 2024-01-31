@@ -1,6 +1,6 @@
 import { useSignUp } from "@clerk/nextjs";
 import router from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export const OtpVerification = () => {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
@@ -27,6 +27,13 @@ export const OtpVerification = () => {
       console.error(JSON.stringify(err, null, 2));
     }
   };
+
+  useEffect(() => {
+    // Trigger the verification when the code state changes
+    if (code !== "") {
+      onPressVerify();
+    }
+  }, [code]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -90,9 +97,6 @@ export const OtpVerification = () => {
               const enteredOtp = otp.join("");
               console.log(enteredOtp);
               setCode(otp.join(""));
-              setTimeout(() => {
-                onPressVerify();
-              }, 200);
             }}
             className="mt-6 block w-80 rounded-2xl bg-blue-800 py-2 text-lg font-semibold text-white hover:bg-blue-900 md:py-3 xl:mb-6"
           >
