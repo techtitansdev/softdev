@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { db } from "~/server/db";
+import { db } from "../../db";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const project = createTRPCRouter({
   /**
@@ -102,3 +102,5 @@ export const project = createTRPCRouter({
       });
     }),
 });
+
+export const projectCaller = project.createCaller;
