@@ -7,7 +7,7 @@ const ERROR_MESSAGES = {
   invalidPassword: "Invalid password",
 };
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=.*\d).*$/i;
+const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[@#$%^&+=!-])(?=.*\d)(?!.*\s).*$/;
 
 const validateRegistration = (form: Register) => {
   const errors: Record<string, string> = {};
