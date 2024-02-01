@@ -72,12 +72,13 @@ export const project = createTRPCRouter({
       };
 
       //update project details in the database
-      await db.projects.update({
+      const updatedProject = await db.projects.update({
         where: {
           id: input.id,
         },
         data: newDetails,
       });
+      return updatedProject;
     }),
   delete: protectedProcedure
     .input(
