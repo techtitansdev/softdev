@@ -58,15 +58,17 @@ model Blogs {
 
 model Projects {
   id                      String                    @id @default(cuid())
-  name                    String
   title                   String
   description             String
   image                   String
+  hub                     String
+  category                String
+  type                    String
   beneficiaries           String
   created                 DateTime                  @default(now())
   updated                 DateTime                  @updatedAt()
   about                   String
-  status                  String
+  published               Boolean                   @default(false)
   assignAdminsProjects    AssignAdminsProjects[]
   assignCategoriesProject AssignCategoriesProject[]
   fundraisers             Fundraisers[]
