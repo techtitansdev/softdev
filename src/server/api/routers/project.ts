@@ -22,13 +22,14 @@ export const project = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        name: z.string(),
         title: z.string(),
         description: z.string(),
         image: z.string(),
+        hub: z.string(),
+        category: z.string(),
+        type: z.string(),
         beneficiaries: z.string(),
         about: z.string(),
-        status: z.string(),
       }),
     )
     .mutation(async (opts) => {
@@ -47,13 +48,14 @@ export const project = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        name: z.string(),
         title: z.string(),
         description: z.string(),
         image: z.string(),
+        hub: z.string(),
+        category: z.string(),
+        type: z.string(),
         beneficiaries: z.string(),
         about: z.string(),
-        status: z.string(),
       }),
     )
     .mutation(async (opts) => {

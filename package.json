@@ -23,6 +23,7 @@
     "@t3-oss/env-core": "^0.7.3",
     "@t3-oss/env-nextjs": "^0.7.0",
     "@tanstack/react-query": "^4.32.6",
+    "@tinymce/tinymce-react": "^4.3.2",
     "@trpc/client": "^10.37.1",
     "@trpc/next": "^10.37.1",
     "@trpc/react-query": "^10.37.1",
@@ -37,6 +38,7 @@
     "react-icons": "^4.11.0",
     "react-intersection-observer": "^9.5.3",
     "react-phone-input-2": "^2.15.1",
+    "react-select": "^5.8.0",
     "superjson": "^1.13.1",
     "zod": "^3.22.4"
   },
