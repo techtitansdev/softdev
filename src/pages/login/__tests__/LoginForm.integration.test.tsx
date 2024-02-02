@@ -1,53 +1,68 @@
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
-import userEvent from "@testing-library/user-event";
-import { act } from "react-dom/test-utils";
-import { MemoryRouter } from "react-router-dom";
-import { LoginForm } from "../LoginForm"; 
-import { server } from "../../../../msw-setup";
+import { render, fireEvent, act } from "@testing-library/react";
+import { LoginForm } from "../LoginForm";
+import { useSignIn } from "@clerk/nextjs";
+import router from "next/router";
+import { api } from "~/utils/api";
 
 jest.mock("@clerk/nextjs", () => ({
-  useSignIn: jest.fn(() => ({
-    isLoaded: true,
-    signIn: {
-      create: jest.fn(),
+  useSignIn: jest.fn(),
+}));
+
+jest.mock("next/router", () => ({
+  push: jest.fn(),
+}));
+
+jest.mock("~/utils/api", () => ({
+  api: {
+    user: {
+      getRole: {
+        useQuery: jest.fn(),
+      },
     },
-    setActive: jest.fn(),
-  })),
+  },
 }));
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useRouter: () => ({
-    push: jest.fn(),
-  }),
-}));
+const mockSignIn = jest.fn();
 
-describe("LoginForm Integration Test", () => {
-  beforeAll(() => server.listen());
-  afterEach(() => server.resetHandlers());
-  afterAll(() => server.close());
-
-  it("should successfully submit the login form", async () => {
-    render(
-      <MemoryRouter>
-        <LoginForm />
-      </MemoryRouter>,
-    );
-
-    userEvent.type(screen.getByPlaceholderText(/Email/i), "john.doe@example.com");
-    userEvent.type(screen.getByPlaceholderText(/Password/i), "Password123!");
-
-    await act(async () => {
-      fireEvent.submit(screen.getByRole("button", { name: /Log In/i }));
+describe("LoginForm", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (useSignIn as jest.Mock).mockReturnValue({
+      isLoaded: true,
+      signIn: { create: mockSignIn },
+      setActive: jest.fn(),
     });
 
-    await waitFor(() =>
-      expect(screen.getByTestId("loading-indicator")).toBeInTheDocument(),
-    );
-    
-    await waitFor(() =>
-      expect(screen.getByTestId("dashboard-page")).toBeInTheDocument(),
-    );
+    (api.user.getRole.useQuery as jest.Mock).mockReturnValue({
+      data: "USER",
+    });
+  });
+
+  test("login form submission and redirection", async () => {
+    const { getByPlaceholderText, getByText } = render(<LoginForm />);
+
+    fireEvent.change(getByPlaceholderText("Email"), {
+      target: { value: "johndoe@gmail.com" },
+    });
+    fireEvent.change(getByPlaceholderText("Password"), {
+      target: { value: "Password123!" },
+    });
+
+    mockSignIn.mockResolvedValueOnce({ status: "complete" });
+
+    router.push = jest.fn().mockResolvedValueOnce(true);
+    fireEvent.submit(getByText("Sign In"));
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    });
+    expect(router.push).toHaveBeenCalledWith("/home");
+    expect(mockSignIn).toHaveBeenCalledWith({
+      identifier: "johndoe@gmail.com",
+      password: "Password123!",
+    });
+    expect(api.user.getRole.useQuery).toHaveBeenCalledWith({
+      email: "johndoe@gmail.com",
+    });
   });
 });
