@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { db } from "~/server/db";
+import { db } from "../../db";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const project = createTRPCRouter({
   /**
@@ -22,13 +22,14 @@ export const project = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        name: z.string(),
         title: z.string(),
         description: z.string(),
         image: z.string(),
+        hub: z.string(),
+        category: z.string(),
+        type: z.string(),
         beneficiaries: z.string(),
         about: z.string(),
-        status: z.string(),
       }),
     )
     .mutation(async (opts) => {
@@ -47,13 +48,15 @@ export const project = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        name: z.string(),
         title: z.string(),
         description: z.string(),
         image: z.string(),
+        hub: z.string(),
+        category: z.string(),
+        type: z.string(),
         beneficiaries: z.string(),
         about: z.string(),
-        status: z.string(),
+        published: z.boolean()
       }),
     )
     .mutation(async (opts) => {
@@ -72,12 +75,13 @@ export const project = createTRPCRouter({
       };
 
       //update project details in the database
-      await db.projects.update({
+      const updatedProject = await db.projects.update({
         where: {
           id: input.id,
         },
         data: newDetails,
       });
+      return updatedProject;
     }),
   delete: protectedProcedure
     .input(
@@ -102,3 +106,5 @@ export const project = createTRPCRouter({
       });
     }),
 });
+
+export const projectCaller = project.createCaller;
