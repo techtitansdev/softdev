@@ -30,6 +30,7 @@
     "@trpc/server": "^10.37.1",
     "framer-motion": "^10.16.4",
     "libphonenumber-js": "^1.10.51",
+    "msw": "^2.1.5",
     "next": "^14.0.0",
     "next-auth": "^4.24.4",
     "nodemailer": "^6.9.7",
