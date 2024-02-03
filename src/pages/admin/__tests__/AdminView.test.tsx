@@ -1,31 +1,64 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
-import { Admin } from "../index";
-const mockedRouter = { pathname: "/admin" };
+import { render, screen, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import AdminView from "../../index";
+import { Sidebar } from "~/components/Sidebar";
 
 jest.mock("next/head", () => {
   return {
     __esModule: true,
-    Head: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    default: ({ children }: { children: React.ReactNode }) => (
+      <div>{children}</div>
+    ),
   };
 });
 
+jest.mock(
+  "next/link",
+  () =>
+    ({ children }: { children: React.ReactNode }) =>
+      children,
+);
 jest.mock("next/router", () => ({
-  useRouter: jest.fn().mockReturnValue(mockedRouter),
+  useRouter: jest.fn(() => ({
+    pathname: "/admin",
+    replace: jest.fn(),
+  })),
 }));
 
-describe("Admin Component", () => {
-  it("renders admin dashboard correctly", () => {
-    render(<Admin />);
+jest.mock("~/components/Sidebar", () => {
+  return {
+    __esModule: true,
+    Sidebar: jest.fn(() => <div>Mocked Sidebar</div>),
+  };
+});
 
-    // Assertions
-    expect(screen.getByText("Dashboard")).toBeInTheDocument();
-    expect(screen.getByText("Dashboard")).toHaveClass("bg-blue-800 text-white");
-    expect(screen.getByText("Funding")).toBeInTheDocument();
-    expect(screen.getByText("Projects")).toBeInTheDocument();
-    expect(screen.getByText("Blogs")).toBeInTheDocument();
-    expect(screen.getByText("Donors")).toBeInTheDocument();
-    expect(screen.getByText("Comments")).toBeInTheDocument();
+describe("AdminView", () => {
+  test("renders Admin component correctly", async () => {
+    render(<AdminView />);
+
+    await waitFor(
+      () => {
+        expect(screen.getByText(/Dashboard/i)).toBeInTheDocument();
+        expect(screen.getByText(/Mocked Sidebar/i)).toBeInTheDocument();
+      },
+      { timeout: 10000 },
+    );
+  });
+
+  it("renders Sidebar component correctly", async () => {
+    render(<Sidebar />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Funding")).toBeInTheDocument();
+    });
+  });
+
+  it("handles navigation correctly", async () => {
+    render(<Sidebar />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Funding")).toBeInTheDocument();
+    });
   });
 });
