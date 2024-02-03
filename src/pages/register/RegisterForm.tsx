@@ -229,7 +229,7 @@ export const RegisterForm = () => {
                   />
 
                   {formErrors.phone && (
-                    <div className="flex items-center text-sm text-red-600">
+                    <div className="mt-2 flex items-center text-sm text-red-600">
                       <AiOutlineExclamationCircle className="mr-1" size={18} />
                       {formErrors.phone}
                     </div>
@@ -260,22 +260,25 @@ export const RegisterForm = () => {
                       />
                     )}
                   </div>
-                  {formErrors.password && (
-                    <div className="flex-col text-red-600">
-                      <div className="text-xs">
-                        <span className="text-gray-700">At least</span> 6
-                        characters, a capital letter, a special character
-                        <span className="text-gray-700"> and</span> a number.
-                      </div>
-                      <div className="mt-1 flex items-center text-sm">
+
+                  <div className="flex-col">
+                    <div
+                      className={`text-xs ${formErrors.password ? "text-red-600" : "text-gray-800"}`}
+                    >
+                      <span className="text-gray-700">At least</span> 6
+                      characters, a capital letter, a special character
+                      <span className="text-gray-700"> and</span> a number.
+                    </div>
+                    {formErrors.password && (
+                      <div className="mt-1 flex items-center text-sm text-red-600">
                         <AiOutlineExclamationCircle
                           className="mr-1"
                           size={18}
                         />
                         {formErrors.password}
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
 
                 <div className="relative mb-2">
@@ -314,7 +317,6 @@ export const RegisterForm = () => {
                   <button
                     type="submit"
                     className="block w-full rounded-lg bg-gray-600 px-4 py-3 font-bold text-white hover:bg-gray-800"
-                    
                   >
                     Sign Up
                   </button>
@@ -335,9 +337,7 @@ export const RegisterForm = () => {
           </div>
         </form>
       )}
-      {pendingVerification && (
-      <OtpVerification />
-      )}
+      {pendingVerification && <OtpVerification />}
     </div>
   );
 };
