@@ -86,6 +86,11 @@ export const RegisterForm = () => {
         setModalOpen(true);
         setModalError(err.errors[0].message);
         setModalBgColor("bg-red-500");
+
+        setTimeout(() => {
+          setModalOpen(false);
+        }, 3000);
+        
       } finally {
         setLoading(false);
       }
