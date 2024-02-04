@@ -3,15 +3,18 @@ import { useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import Select from "react-select";
+import { api } from "~/utils/api";
 
 function CreateProjects() {
+  const createProject = api.project.create.useMutation();
   const [projectData, setProjectData] = useState({
-    projectTitle: "",
-    projectDescription: "",
-    projectImage: "",
+    title: "",
+    description: "",
+    image: "",
     hub: "",
     category: "",
     type: "",
+    beneficiaries: "",
     about: "",
   });
 
@@ -32,8 +35,17 @@ function CreateProjects() {
     setProjectData({ ...projectData, [name]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    try {
+      const result = await createProject.mutateAsync({
+        ...projectData,
+      });
+      console.log("Project created:", result);
+    } catch (error) {
+      console.error("Error creating project:", error);
+    }
 
     console.log("Form data:", projectData);
   };
@@ -58,18 +70,15 @@ function CreateProjects() {
 
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label
-                htmlFor="projectTitle"
-                className="font-medium text-gray-700"
-              >
+              <label htmlFor="title" className="font-medium text-gray-700">
                 Project Title
               </label>
 
               <input
                 type="text"
-                id="projectTitle"
-                name="projectTitle"
-                value={projectData.projectTitle}
+                id="title"
+                name="title"
+                value={projectData.title}
                 onChange={handleChange}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm"
                 required
@@ -78,7 +87,7 @@ function CreateProjects() {
 
             <div className="mb-4">
               <label
-                htmlFor="projectDescription"
+                htmlFor="description"
                 className="font-medium text-gray-700"
               >
                 Project Description
@@ -86,9 +95,9 @@ function CreateProjects() {
 
               <input
                 type="text"
-                id="projectDescription"
-                name="projectDescription"
-                value={projectData.projectDescription}
+                id="description"
+                name="description"
+                value={projectData.description}
                 onChange={handleChange}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm"
                 required
@@ -96,17 +105,14 @@ function CreateProjects() {
             </div>
 
             <div className="mb-4">
-              <label
-                htmlFor="projectImage"
-                className="font-medium text-gray-700"
-              >
+              <label htmlFor="image" className="font-medium text-gray-700">
                 Featured Image
               </label>
 
               <input
                 type="file"
-                id="projectImage"
-                name="projectImage"
+                id="image"
+                name="image"
                 onChange={handleChange}
                 className="w-full bg-white py-1 shadow"
                 required
@@ -169,6 +175,25 @@ function CreateProjects() {
                   });
                 }}
                 className="z-10"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="beneficiaries"
+                className="font-medium text-gray-700"
+              >
+                Beneficiaries
+              </label>
+
+              <input
+                type="text"
+                id="beneficiaries"
+                name="beneficiaries"
+                value={projectData.beneficiaries}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                required
               />
             </div>
 
