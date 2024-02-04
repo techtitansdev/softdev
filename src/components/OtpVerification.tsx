@@ -1,11 +1,19 @@
 import { useSignUp } from "@clerk/nextjs";
 import router from "next/router";
 import React, { useEffect, useState } from "react";
+import { Modal } from "./Modal";
 
 export const OtpVerification = () => {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
   const { isLoaded, signUp, setActive } = useSignUp();
   const [code, setCode] = useState("");
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState("");
+  const [modalColor, setModalColor] = useState("");
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
 
   const onPressVerify = async () => {
     if (!isLoaded) {
@@ -18,13 +26,31 @@ export const OtpVerification = () => {
       });
       if (completeSignUp.status !== "complete") {
         console.log(JSON.stringify(completeSignUp, null, 2));
+        setModalContent("Verification failed. Please try again.");
+        setModalColor("bg-red-500");
+        setModalOpen(true);
       }
       if (completeSignUp.status === "complete") {
         await setActive({ session: completeSignUp.createdSessionId });
-        router.push("/");
+
+        setModalContent("Success");
+        setModalColor("bg-gray-800");
+        setModalOpen(true);
+
+        setTimeout(() => {
+          setModalOpen(false);
+          router.push("/");
+        }, 2000);
       }
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
+      setModalContent(err.errors[0].longMessage);
+      setModalColor("bg-red-500");
+      setModalOpen(true);
+
+      setTimeout(() => {
+        setModalOpen(false);
+      }, 3000);
     }
   };
 
@@ -104,6 +130,12 @@ export const OtpVerification = () => {
           </button>
         </div>
       </div>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        message={modalContent}
+        bgColor={modalColor}
+      />
     </div>
   );
 };
