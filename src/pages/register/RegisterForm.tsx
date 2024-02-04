@@ -12,6 +12,7 @@ import "react-phone-input-2/lib/style.css";
 import { useSignUp } from "@clerk/nextjs";
 import { OtpVerification } from "~/components/OtpVerification";
 import { api } from "~/utils/api";
+import { Modal } from "~/components/Modal";
 
 export const RegisterForm = () => {
   const initialValues: Register = {
@@ -26,6 +27,11 @@ export const RegisterForm = () => {
   const [formValues, setFormValues] = useState<Register>(initialValues);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [pendingVerification, setPendingVerification] = useState(false);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalError, setModalError] = useState("");
+  const [modalBgColor, setModalBgColor] = useState("");
+
   const createUser = api.user.create.useMutation();
   const { signUp } = useSignUp();
 
@@ -38,6 +44,10 @@ export const RegisterForm = () => {
   };
 
   const [loading, setLoading] = useState(false);
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -73,7 +83,9 @@ export const RegisterForm = () => {
 
         setPendingVerification(true);
       } catch (err: any) {
-        console.error(JSON.stringify(err, null, 2));
+        setModalOpen(true);
+        setModalError(err.errors[0].message);
+        setModalBgColor("bg-red-500");
       } finally {
         setLoading(false);
       }
@@ -82,7 +94,7 @@ export const RegisterForm = () => {
 
   useEffect(() => {
     if (Object.keys(formErrors).length === 0) {
-      console.log("Form values submitted:", formValues);
+      console.log("Form values met the condition:", formValues);
     } else {
       console.log("Form submission conditions not met");
     }
@@ -335,6 +347,12 @@ export const RegisterForm = () => {
               </div>
             </div>
           </div>
+          <Modal
+            isOpen={modalOpen}
+            onClose={closeModal}
+            message={modalError}
+            bgColor={modalBgColor}
+          />
         </form>
       )}
       {pendingVerification && <OtpVerification />}
