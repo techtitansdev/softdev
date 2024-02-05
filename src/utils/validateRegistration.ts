@@ -2,10 +2,12 @@ import { parsePhoneNumberFromString } from "libphonenumber-js";
 import { Register } from "~/types/register";
 
 const ERROR_MESSAGES = {
+  invalidName: "Invalid name",
   invalidEmail: "Please enter a valid email address",
   invalidPhone: "Invalid phone number",
   invalidPassword: "Invalid password",
 };
+const NAME_REGEX = /^[a-zA-Z]+(?: [a-zA-Z]+)*$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[@#$%^&+=!-])(?=.*\d)(?!.*\s).*$/;
 
@@ -14,10 +16,18 @@ const validateRegistration = (form: Register) => {
 
   if (!form.firstName) {
     errors.firstName = "Required";
+  } else if (form.firstName.length > 20) {
+    errors.firstName = "First name is too long";
+  } else if (!NAME_REGEX.test(form.firstName)) {
+    errors.firstName = ERROR_MESSAGES.invalidName;
   }
 
   if (!form.lastName) {
     errors.lastName = "Required";
+  } else if (form.lastName.length > 20) {
+    errors.lastName = "Last name is too long";
+  } else if (!NAME_REGEX.test(form.lastName)) {
+    errors.lastName = ERROR_MESSAGES.invalidName;
   }
 
   if (!form.email) {
@@ -31,7 +41,7 @@ const validateRegistration = (form: Register) => {
   }
 
   if (!form.phone) {
-    errors.phone = "Required!";
+    errors.phone = "Required";
   } else {
     const parsedPhoneNumber = parsePhoneNumberFromString(form.phone, "PH");
     if (!parsedPhoneNumber || !parsedPhoneNumber.isValid()) {

@@ -10,7 +10,7 @@ import {
 
 
 import { env } from "~/env.mjs";
-import { db } from "~/server/db";
+import { db } from "./db";
 import Email, { EmailProvider } from "next-auth/providers/email";
 
 /**

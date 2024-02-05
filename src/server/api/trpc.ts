@@ -13,8 +13,8 @@ import { type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { getServerAuthSession } from "~/server/auth";
-import { db } from "~/server/db";
+import { getServerAuthSession } from "../auth";
+import { db } from "../db";
 
 /**
  * 1. CONTEXT
