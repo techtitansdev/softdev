@@ -238,9 +238,16 @@ function CreateProjects() {
 
             <button
               type="submit"
-              className="mt-4 rounded-lg bg-blue-800 px-4 py-2 font-medium text-white"
+              className="mr-4 mt-4 rounded-lg bg-gray-600 px-6 py-2 font-medium text-white"
             >
-              PUBLISH
+              Save as Draft
+            </button>
+
+            <button
+              type="submit"
+              className="mt-4 rounded-lg bg-blue-800 px-12 py-2 font-medium text-white"
+            >
+              Publish
             </button>
           </form>
         </div>
