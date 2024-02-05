@@ -4,6 +4,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import Select from "react-select";
 import { api } from "~/utils/api";
+import { categoriesOption } from "~/data/categories";
 
 function CreateProjects() {
   const createProject = api.project.create.useMutation();
@@ -18,15 +19,9 @@ function CreateProjects() {
     about: "",
   });
 
-  const categoriesOption = [
-    { label: "Education", value: "Education" },
-    { label: "Civic Participation", value: "Civic Participation" },
-    { label: "Entrepreneurship", value: "Entrepreneurship" },
-  ];
-
   const type = [
-    { label: "Project", value: "Project" },
     { label: "Activity", value: "Activity" },
+    { label: "Project", value: "Project" },
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
