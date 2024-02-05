@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState } from "react";
+import { MutableRefObject, useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import Select from "react-select";
@@ -19,6 +19,8 @@ function CreateProjects() {
     about: "",
   });
 
+  const editorRef: MutableRefObject<any> = useRef(null);
+
   const type = [
     { label: "Activity", value: "Activity" },
     { label: "Project", value: "Project" },
@@ -36,13 +38,12 @@ function CreateProjects() {
     try {
       const result = await createProject.mutateAsync({
         ...projectData,
+        about: editorRef.current.getContent(),
       });
       console.log("Project created:", result);
     } catch (error) {
       console.error("Error creating project:", error);
     }
-
-    console.log("Form data:", projectData);
   };
 
   return (
@@ -200,6 +201,11 @@ function CreateProjects() {
 
             <Editor
               apiKey="fzxkrfx87iwnxv1apdgkca9xsai3dyq8iipq78om26tuyb1f"
+              onInit={(evt, editor) => {
+                if (editorRef.current === null) {
+                  editorRef.current = editor;
+                }
+              }}
               init={{
                 width: "100%",
                 height: 600,
