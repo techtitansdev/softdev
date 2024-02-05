@@ -1,29 +1,29 @@
 import Head from "next/head";
-import { useState } from "react";
+import { MutableRefObject, useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import Select from "react-select";
+import { api } from "~/utils/api";
+import { categoriesOption } from "~/data/categories";
 
 function CreateProjects() {
+  const createProject = api.project.create.useMutation();
   const [projectData, setProjectData] = useState({
-    projectTitle: "",
-    projectDescription: "",
-    projectImage: "",
+    title: "",
+    description: "",
+    image: "",
     hub: "",
     category: "",
     type: "",
+    beneficiaries: "",
     about: "",
   });
 
-  const categoriesOption = [
-    { label: "Education", value: "Education" },
-    { label: "Civic Participation", value: "Civic Participation" },
-    { label: "Entrepreneurship", value: "Entrepreneurship" },
-  ];
+  const editorRef: MutableRefObject<any> = useRef(null);
 
   const type = [
-    { label: "Project", value: "Project" },
     { label: "Activity", value: "Activity" },
+    { label: "Project", value: "Project" },
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,10 +32,18 @@ function CreateProjects() {
     setProjectData({ ...projectData, [name]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log("Form data:", projectData);
+    try {
+      const result = await createProject.mutateAsync({
+        ...projectData,
+        about: editorRef.current.getContent(),
+      });
+      console.log("Project created:", result);
+    } catch (error) {
+      console.error("Error creating project:", error);
+    }
   };
 
   return (
@@ -58,18 +66,15 @@ function CreateProjects() {
 
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label
-                htmlFor="projectTitle"
-                className="font-medium text-gray-700"
-              >
+              <label htmlFor="title" className="font-medium text-gray-700">
                 Project Title
               </label>
 
               <input
                 type="text"
-                id="projectTitle"
-                name="projectTitle"
-                value={projectData.projectTitle}
+                id="title"
+                name="title"
+                value={projectData.title}
                 onChange={handleChange}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm"
                 required
@@ -78,7 +83,7 @@ function CreateProjects() {
 
             <div className="mb-4">
               <label
-                htmlFor="projectDescription"
+                htmlFor="description"
                 className="font-medium text-gray-700"
               >
                 Project Description
@@ -86,9 +91,9 @@ function CreateProjects() {
 
               <input
                 type="text"
-                id="projectDescription"
-                name="projectDescription"
-                value={projectData.projectDescription}
+                id="description"
+                name="description"
+                value={projectData.description}
                 onChange={handleChange}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm"
                 required
@@ -96,17 +101,14 @@ function CreateProjects() {
             </div>
 
             <div className="mb-4">
-              <label
-                htmlFor="projectImage"
-                className="font-medium text-gray-700"
-              >
+              <label htmlFor="image" className="font-medium text-gray-700">
                 Featured Image
               </label>
 
               <input
                 type="file"
-                id="projectImage"
-                name="projectImage"
+                id="image"
+                name="image"
                 onChange={handleChange}
                 className="w-full bg-white py-1 shadow"
                 required
@@ -173,6 +175,25 @@ function CreateProjects() {
             </div>
 
             <div className="mb-4">
+              <label
+                htmlFor="beneficiaries"
+                className="font-medium text-gray-700"
+              >
+                Beneficiaries
+              </label>
+
+              <input
+                type="text"
+                id="beneficiaries"
+                name="beneficiaries"
+                value={projectData.beneficiaries}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                required
+              />
+            </div>
+
+            <div className="mb-4">
               <label htmlFor="about" className="font-medium text-gray-700">
                 About
               </label>
@@ -180,6 +201,11 @@ function CreateProjects() {
 
             <Editor
               apiKey="fzxkrfx87iwnxv1apdgkca9xsai3dyq8iipq78om26tuyb1f"
+              onInit={(evt, editor) => {
+                if (editorRef.current === null) {
+                  editorRef.current = editor;
+                }
+              }}
               init={{
                 width: "100%",
                 height: 600,
@@ -212,9 +238,16 @@ function CreateProjects() {
 
             <button
               type="submit"
-              className="mt-4 rounded-lg bg-blue-800 px-4 py-2 font-medium text-white"
+              className="mr-4 mt-4 rounded-lg bg-gray-600 px-6 py-2 font-medium text-white"
             >
-              PUBLISH
+              Save as Draft
+            </button>
+
+            <button
+              type="submit"
+              className="mt-4 rounded-lg bg-blue-800 px-12 py-2 font-medium text-white"
+            >
+              Publish
             </button>
           </form>
         </div>
