@@ -1,12 +1,15 @@
 import { useState } from "react";
 import Link from "next/link";
 import { IoLocationSharp } from "react-icons/io5";
+import { api } from "~/utils/api";
+import { useRouter } from "next/router";
 
 interface ProjectCardProps {
   projectData: any;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ projectData}) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ projectData }) => {
+  const router = useRouter();
   const [isModalOpen, setModalOpen] = useState(false);
 
   const openModal = () => {
@@ -17,10 +20,19 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ projectData}) => {
     setModalOpen(false);
   };
 
-  const handleDelete = () => {
-    // Handle the delete logic here
-    // You can call an API or perform any other actions
-    closeModal();
+  const deleteProject = api.project.delete.useMutation();
+
+  const handleDelete = async () => {
+    try {
+      const scrollPosition = window.scrollY;
+      deleteProject.mutate({ id: projectData.id });
+      console.log("Project deleted successfully.");
+      closeModal();
+      router.reload();
+      window.scrollTo(0, scrollPosition);
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
   };
 
   return (
@@ -30,10 +42,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ projectData}) => {
           key={projectData.id}
           className="hover:scale-104 w-84 h-96 transform shadow-lg transition duration-500 ease-in-out hover:-translate-y-1"
         >
-          <Link
-            href={`/projects/${encodeURIComponent(projectData.title)}`}
-          >
-            <img  
+          <Link href={`/projects/${encodeURIComponent(projectData.title)}`}>
+            <img
               className="h-64 w-full rounded-lg"
               src={projectData.projectImage}
             />
@@ -55,7 +65,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ projectData}) => {
           </Link>
 
           <button
-            className="ml-2 mt-2 border bg-blue-800 px-8 py-1 text-white shadow-md hover:bg-blue-600"
+            className="ml-2 mt-2 border bg-red-600 px-8 py-1 text-white shadow-md hover:bg-red-800"
             onClick={openModal}
           >
             Delete
@@ -103,8 +113,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ projectData}) => {
                         </h3>
                         <div className="mt-2">
                           <p className="text-sm text-gray-500">
-                            Are you sure you want to delete this project?
-                            All of the project data will be permanently removed. This
+                            Are you sure you want to delete this project? All of
+                            the project data will be permanently removed. This
                             action cannot be undone.
                           </p>
                         </div>

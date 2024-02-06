@@ -15,8 +15,8 @@ const AdminProjectPage = () => {
     if (getProjects.data) {
       setProjectData(getProjects.data);
     }
-  });
-  console.log(projectData)
+  }, [getProjects.data]);
+
   return (
     <>
       <Head>
