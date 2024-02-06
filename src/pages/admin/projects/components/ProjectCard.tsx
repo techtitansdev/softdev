@@ -4,21 +4,20 @@ import { IoLocationSharp } from "react-icons/io5";
 
 interface ProjectCardProps {
   projectData: any;
-  index: any;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ projectData, index }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ projectData }) => {
   return (
     <div>
       <ul>
         <li
-          key={index}
+          key={projectData.id}
           className="hover:scale-104 w-84 h-96 transform shadow-lg transition duration-500 ease-in-out hover:-translate-y-1"
         >
           <Link
-            href={`/projects/${encodeURIComponent(projectData.projectName)}`}
+            href={`/projects/${encodeURIComponent(projectData.title)}`}
           >
-            <img
+            <img  
               className="h-64 w-full rounded-lg"
               src={projectData.projectImage}
             />
@@ -26,10 +25,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ projectData, index }) => {
 
           <div className="my-2 ml-2">
             <h5 className="text-lg tracking-tight text-gray-900">
-              {projectData.projectTitle}
+              {projectData.title}
             </h5>
             <p className="flex flex-row items-center font-normal text-gray-700 dark:text-gray-500">
-              <IoLocationSharp size={15} /> {projectData.location}
+              <IoLocationSharp size={15} /> {projectData.hub}
             </p>
           </div>
 
