@@ -4,10 +4,10 @@ import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import Select from "react-select";
 import { useRouter } from "next/router";
+import { api } from "~/utils/api";
 
 function EditProjects() {
   const router = useRouter();
-  const { projectId } = router.query;
 
   const [projectData, setProjectData] = useState({
     title: "",
@@ -31,9 +31,11 @@ function EditProjects() {
     { label: "Activity", value: "Activity" },
   ];
 
-  useEffect(() => {
-    // Fetch project data based on projectId and update the state
-  }, [projectId]);
+  const editProject = api.project.edit.useMutation({
+    onError: (error) => {
+      console.log("Error editing project:", error);
+    },
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -42,6 +44,19 @@ function EditProjects() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    editProject.mutate({
+      title: projectData.title,
+      description: projectData.description,
+      image: projectData.image,
+      hub: projectData.hub,
+      category: projectData.category,
+      type: projectData.type,
+      beneficiaries: projectData.beneficiaries,
+      about: projectData.about,
+      id: "",
+      published: false,
+    });
     console.log("Updated Form data:", projectData);
   };
 
