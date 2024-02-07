@@ -1,23 +1,20 @@
 import Link from "next/link";
-import { Key } from "react";
 import { IoLocationSharp } from "react-icons/io5";
 
 interface ProjectCardProps {
   projectData: any;
-  index: any;
+  onDelete: () => void;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ projectData, index }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ projectData, onDelete }) => {
   return (
     <div>
       <ul>
         <li
-          key={index}
+          key={projectData.id}
           className="hover:scale-104 w-84 h-96 transform shadow-lg transition duration-500 ease-in-out hover:-translate-y-1"
         >
-          <Link
-            href={`/projects/${encodeURIComponent(projectData.projectName)}`}
-          >
+          <Link href={`/projects/${encodeURIComponent(projectData.title)}`}>
             <img
               className="h-64 w-full rounded-lg"
               src={projectData.projectImage}
@@ -26,10 +23,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ projectData, index }) => {
 
           <div className="my-2 ml-2">
             <h5 className="text-lg tracking-tight text-gray-900">
-              {projectData.projectTitle}
+              {projectData.title}
             </h5>
             <p className="flex flex-row items-center font-normal text-gray-700 dark:text-gray-500">
-              <IoLocationSharp size={15} /> {projectData.location}
+              <IoLocationSharp size={15} /> {projectData.hub}
             </p>
           </div>
 
@@ -39,11 +36,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ projectData, index }) => {
             </button>
           </Link>
 
-          <Link href={''}>
-          <button className="ml-2 mt-2 border px-8 py-1 text-white shadow-md bg-blue-800 hover:bg-blue-600">
+          <button
+            className="ml-2 mt-2 border bg-red-600 px-8 py-1 text-white shadow-md hover:bg-red-800"
+            onClick={onDelete}
+          >
             Delete
-            </button>
-          </Link>
+          </button>
         </li>
       </ul>
     </div>
