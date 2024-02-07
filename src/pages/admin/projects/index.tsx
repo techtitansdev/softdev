@@ -7,7 +7,7 @@ import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 
 const AdminProjectPage = () => {
-  const [projectData, setProjectData] = useState<any[]>([]);
+  const [projectData, setProjectData] = useState<any>([]);
 
   const getProjects = api.project.getAll.useQuery();
 
@@ -16,6 +16,16 @@ const AdminProjectPage = () => {
       setProjectData(getProjects.data);
     }
   }, [getProjects.data]);
+
+  const deleteProject = api.project.delete.useMutation();
+
+  const handleDelete = () => {
+    try {
+      deleteProject.mutate({ id: projectData.id });
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
+  };
 
   return (
     <>
@@ -61,7 +71,11 @@ const AdminProjectPage = () => {
             >
               {projectData.map((card: any, index: any) => (
                 <div className=" hover:bg-neutral-400/10">
-                  <ProjectCard projectData={card} />
+                  <ProjectCard
+                    key={index}
+                    projectData={card}
+                    onDelete={() => handleDelete()}
+                  />
                 </div>
               ))}
             </div>
