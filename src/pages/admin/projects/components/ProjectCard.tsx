@@ -1,15 +1,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { IoLocationSharp } from "react-icons/io5";
-import { api } from "~/utils/api";
-import { useRouter } from "next/router";
 
 interface ProjectCardProps {
   projectData: any;
+  handleDelete: () => void;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ projectData }) => {
-  const router = useRouter();
+const ProjectCard: React.FC<ProjectCardProps> = ({
+  projectData,
+  handleDelete,
+}) => {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const openModal = () => {
@@ -18,21 +19,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ projectData }) => {
 
   const closeModal = () => {
     setModalOpen(false);
-  };
-
-  const deleteProject = api.project.delete.useMutation();
-
-  const handleDelete = async () => {
-    try {
-      const scrollPosition = window.scrollY; 
-      deleteProject.mutate({ id: projectData.id });
-      console.log("Project deleted successfully.");
-      closeModal();
-       router.reload();
-      window.scrollTo(0, scrollPosition); 
-    } catch (error) {
-      console.error("Error deleting project:", error);
-    }
   };
 
   return (
@@ -93,13 +79,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ projectData }) => {
                           className="h-6 w-6 text-red-600"
                           fill="none"
                           viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           aria-hidden="true"
                         >
                           <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                             d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
                           />
                         </svg>
@@ -125,7 +112,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ projectData }) => {
                     <button
                       type="button"
                       className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                      onClick={handleDelete}
+                      onClick={() => {
+                        handleDelete();
+                        closeModal();
+                      }}
                     >
                       Delete
                     </button>
