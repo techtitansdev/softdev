@@ -31,7 +31,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           <Link href={`/projects/${encodeURIComponent(projectData.title)}`}>
             <img
               className="h-64 w-full rounded-lg"
-              src={projectData.projectImage}
+              src={projectData.image} 
             />
           </Link>
 
