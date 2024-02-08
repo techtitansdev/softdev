@@ -89,6 +89,11 @@ export const project = createTRPCRouter({
         where: { id: input.id },
       });
     }),
+    getAll: publicProcedure
+    .query(async () => {
+      const allProjects = await db.projects.findMany();
+      return allProjects;
+    }),
 });
 
 export const projectCaller = project.createCaller;
