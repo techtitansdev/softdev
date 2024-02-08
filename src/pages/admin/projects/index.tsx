@@ -10,6 +10,7 @@ const AdminProjectPage = () => {
   const [projectData, setProjectData] = useState<any>([]);
 
   const getProjects = api.project.getAll.useQuery();
+  const deleteProject = api.project.delete.useMutation(); 
 
   useEffect(() => {
     if (getProjects.data) {
@@ -17,16 +18,17 @@ const AdminProjectPage = () => {
     }
   }, [getProjects.data]);
 
-  const deleteProject = api.project.delete.useMutation();
-
-  const handleDelete = () => {
+  const handleDelete = async (id: string) => {
     try {
-      deleteProject.mutate({ id: projectData.id });
+      deleteProject.mutate({ id });
+      console.log("Project deleted successfully.");
+      setProjectData((prevProjects: any[]) =>
+        prevProjects.filter((project: { id: string }) => project.id !== id),
+      );
     } catch (error) {
       console.error("Error deleting project:", error);
     }
   };
-
   return (
     <>
       <Head>
@@ -48,33 +50,13 @@ const AdminProjectPage = () => {
             </div>
           </div>
 
-          <div
-            className="
-          mb-12
-           mt-4 
-           flex 
-           items-center 
-           justify-center
-          "
-          >
-            <div
-              className="
-          mt-4
-          grid
-          grid-cols-1
-          gap-4
-          sm:grid-cols-2
-          md:grid-cols-2
-          lg:grid-cols-2
-          xl:grid-cols-4
-            "
-            >
-              {projectData.map((card: any, index: any) => (
-                <div className=" hover:bg-neutral-400/10">
+          <div className="mb-12 mt-4 flex items-center justify-center">
+            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
+              {projectData.map((project: any) => (
+                <div key={project.id} className="hover:bg-neutral-400/10">
                   <ProjectCard
-                    key={index}
-                    projectData={card}
-                    onDelete={() => handleDelete()}
+                    projectData={project}
+                    handleDelete={() => handleDelete(project.id)}
                   />
                 </div>
               ))}

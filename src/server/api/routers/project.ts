@@ -67,7 +67,7 @@ export const project = createTRPCRouter({
       });
       return updatedProject;
     }),
-  delete: protectedProcedure
+  delete: publicProcedure
     .input(
       z.object({
         id: z.string(),
