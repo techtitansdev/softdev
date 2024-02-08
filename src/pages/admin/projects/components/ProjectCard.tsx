@@ -1,12 +1,27 @@
+import { useState } from "react";
 import Link from "next/link";
 import { IoLocationSharp } from "react-icons/io5";
+import DeleteModal from "~/components/DeleteModal";
 
 interface ProjectCardProps {
   projectData: any;
-  onDelete: () => void;
+  handleDelete: () => void;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ projectData, onDelete }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({
+  projectData,
+  handleDelete,
+}) => {
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
   return (
     <div>
       <ul>
@@ -17,7 +32,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ projectData, onDelete }) => {
           <Link href={`/projects/${encodeURIComponent(projectData.title)}`}>
             <img
               className="h-64 w-full rounded-lg"
-              src={projectData.projectImage}
+              src={projectData.image} 
             />
           </Link>
 
@@ -38,12 +53,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ projectData, onDelete }) => {
 
           <button
             className="ml-2 mt-2 border bg-red-600 px-8 py-1 text-white shadow-md hover:bg-red-800"
-            onClick={onDelete}
+            onClick={openModal}
           >
             Delete
           </button>
         </li>
       </ul>
+
+      {isModalOpen && (
+        <DeleteModal subject={"Project"} handleDelete={handleDelete} closeModal={closeModal}></DeleteModal>
+      )}
     </div>
   );
 };
