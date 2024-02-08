@@ -31,9 +31,9 @@ describe("project procedures testing", () => {
   describe("procedure 1 - tests", () => {
     it("should create a new project", async () => {
       const input = {
-        title: "Project Title",
+        title: "Project 11111",
         description: "Project Description",
-        image: "project-image.jpg",
+        image: "/tech4all.png",
         hub: "Project Hub",
         category: "Project Category",
         type: "Project Type",
@@ -72,7 +72,7 @@ describe("project procedures testing", () => {
         id: `${project.id}`,
         title: "Edited Project Title",
         description: "Edited Project Description",
-        image: "Edited project-image.jpg",
+        image: "/tech4all.png",
         hub: "edited hub",
         category: "edited category",
         type: "edited type",
@@ -105,7 +105,7 @@ describe("project procedures testing", () => {
       const input = {
         title: "Project Title",
         description: "Project Description",
-        image: "project-image.jpg",
+        image: "/tech4all.png",
         hub: "project hub",
         category: "project category",
         type: "project type",
