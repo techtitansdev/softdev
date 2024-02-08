@@ -17,16 +17,7 @@ const AdminProjectPage = () => {
     }
   }, [getProjects.data]);
 
-  const deleteProject = api.project.delete.useMutation();
-
-  const handleDelete = () => {
-    try {
-      deleteProject.mutate({ id: projectData.id });
-    } catch (error) {
-      console.error("Error deleting project:", error);
-    }
-  };
-
+  
   return (
     <>
       <Head>
@@ -71,11 +62,7 @@ const AdminProjectPage = () => {
             >
               {projectData.map((card: any, index: any) => (
                 <div className=" hover:bg-neutral-400/10">
-                  <ProjectCard
-                    key={index}
-                    projectData={card}
-                    onDelete={() => handleDelete()}
-                  />
+                  <ProjectCard projectData={card} />
                 </div>
               ))}
             </div>
