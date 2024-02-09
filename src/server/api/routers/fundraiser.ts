@@ -2,7 +2,7 @@ import { z } from "zod";
 import { db } from "../../db";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
-export const project = createTRPCRouter({
+export const fundraiser = createTRPCRouter({
   create: publicProcedure
     .input(
       z.object({
