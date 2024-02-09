@@ -27,12 +27,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       <ul>
         <li
           key={projectData.id}
-          className="hover:scale-104 w-84 h-96 transform shadow-lg transition duration-500 ease-in-out hover:-translate-y-1"
+          className="hover:scale-104 transform pb-6 shadow-lg transition duration-500 ease-in-out hover:-translate-y-1"
         >
           <Link href={`/projects/${encodeURIComponent(projectData.title)}`}>
             <img
-              className="h-64 w-full rounded-lg"
-              src={projectData.image} 
+              className="w-full h-64 rounded-lg"
+              src={projectData.image}
+              alt="project-image"
             />
           </Link>
 
@@ -61,7 +62,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       </ul>
 
       {isModalOpen && (
-        <DeleteModal subject={"Project"} handleDelete={handleDelete} closeModal={closeModal}></DeleteModal>
+        <DeleteModal
+          subject={"Project"}
+          handleDelete={handleDelete}
+          closeModal={closeModal}
+        />
       )}
     </div>
   );
