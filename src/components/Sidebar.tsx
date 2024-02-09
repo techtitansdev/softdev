@@ -38,7 +38,7 @@ export const Sidebar = () => {
       <div
         className={` ${
           open ? "w-52" : "w-20"
-        } fixed z-50 h-screen bg-white p-5 pt-8 text-gray-700 shadow duration-300`}
+        } fixed z-50 h-full bg-white p-5 pt-8 text-gray-700 shadow duration-300`}
       >
         <img
           src="https://static.thenounproject.com/png/1535376-200.png"
