@@ -76,14 +76,15 @@ model Projects {
 
 model Fundraisers {
   id         String     @id @default(cuid())
-  projectId  String
+  projectId  String     @unique()
   funds      Int
   goal       Int
   targetDate DateTime
   created    DateTime   @default(now())
   updated    DateTime   @updatedAt()
-  complete   String
-  status     String
+  complete   Boolean    @default(false)
+  published  Boolean    @default(false)
+  ongoing    Boolean    @default(false)
   featured   Boolean    @default(false)
   project    Projects   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   fundings   Fundings[]
