@@ -40,7 +40,7 @@ const AdminProjectPage = () => {
       <div className="flex">
         <Sidebar />
 
-        <div className="p-10">
+        <div className="p-10 mx-auto">
           <div className="mt-20 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
             PROJECTS
           </div>
