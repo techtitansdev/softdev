@@ -90,7 +90,6 @@ export const RegisterForm = () => {
         setTimeout(() => {
           setModalOpen(false);
         }, 3000);
-        
       } finally {
         setLoading(false);
       }
@@ -131,25 +130,23 @@ export const RegisterForm = () => {
               ></div>
             </div>
 
-            <div className="absolute left-2 top-2 z-30">
+            <div className="absolute left-3 top-2 z-30 md:left-2">
               <img
                 src="gsi-logo2.png"
-                height={90}
-                width={90}
-                alt="Logo"
-                className="cursor-pointer"
+                alt="logo"
+                className="h-[55px] w-[55px] cursor-pointer md:h-[90px] md:w-[90px]"
               />
             </div>
 
             <div className="flex w-full flex-col sm:w-full md:w-full  lg:w-1/2 xl:min-h-screen xl:w-1/2">
-              <div className="ml-5 mt-28 flex flex-col text-3xl font-semibold md:ml-10 lg:ml-16 xl:ml-24 xl:text-4xl">
+              <div className="ml-5 mt-20 flex flex-col text-3xl font-semibold md:ml-5 md:mt-28 lg:ml-16 xl:ml-24 xl:text-4xl">
                 Register
               </div>
-              <div className="mx-5 mb-8 mt-1 flex flex-col text-sm sm:text-base md:ml-10 lg:ml-16 xl:ml-24 xl:text-lg">
+              <div className="mx-5 mb-8 mt-1 flex flex-col text-sm sm:text-base md:ml-5 lg:ml-16 xl:ml-24 xl:text-lg">
                 Create New Account! Please Enter your details
               </div>
 
-              <div className="flex w-full flex-col px-5 md:px-10 lg:px-16 xl:px-24">
+              <div className="flex w-full flex-col px-5 md:px-5 lg:px-16 xl:px-24">
                 <div className="flex">
                   <div className="relative mb-2 flex-1">
                     <input
@@ -330,7 +327,7 @@ export const RegisterForm = () => {
                   )}
                 </div>
 
-                <div className="mb-12 mt-4 px-10 md:px-24 lg:w-full lg:px-0">
+                <div className="mb-8 mt-4 px-10 md:mb-12 md:px-24 lg:w-full lg:px-0">
                   <button
                     type="submit"
                     className="block w-full rounded-lg bg-gray-600 px-4 py-3 font-bold text-white hover:bg-gray-800"
