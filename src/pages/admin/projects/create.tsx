@@ -304,7 +304,7 @@ function CreateProjects() {
                 menubar: "file edit insert view  format table tools",
                 content_style:
                   "body{font-family:Helvetica,Arial,sans-serif; font-size:16px}",
-                images_upload_url: "http://localhost:8000/server.php",
+                // images_upload_url: "http://localhost:8000/server.php",
               }}
             />
 
