@@ -16,7 +16,7 @@ function CreateProjects() {
   const createProject = api.project.create.useMutation();
   const animatedComponents = makeAnimated();
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
-  const router = useRouter(); 
+  const router = useRouter();
 
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
@@ -76,7 +76,7 @@ function CreateProjects() {
       setSuccessModalOpen(true);
 
       setTimeout(() => {
-        router.push("/admin/projects"); 
+        router.push("/admin/projects");
       }, 2000);
       console.log("Project created:", result);
     } catch (error) {
@@ -169,6 +169,7 @@ function CreateProjects() {
                   <Image
                     src={imageUrl}
                     fill
+                    sizes="72"
                     className="absolute inset-0 object-cover"
                     alt={projectData.title}
                   />
