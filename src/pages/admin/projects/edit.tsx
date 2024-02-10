@@ -5,11 +5,16 @@ import { Sidebar } from "~/components/Sidebar";
 import Select from "react-select";
 import { api } from "~/utils/api";
 import { categoriesOption } from "~/data/categories";
-import { useRouter } from "next/router";
 
 function EditProjects() {
-  const router = useRouter();
-const { projectId } = router.query;
+  const getProject = api.project.getById.useMutation();
+  console.log("Project data", getProject);
+
+  const editProject = api.project.edit.useMutation({
+    onError: (error) => {
+      console.log("Error editing project:", error);
+    },
+  });
 
   const [projectData, setProjectData] = useState({
     title: "",
@@ -24,53 +29,38 @@ const { projectId } = router.query;
 
   const editorRef: MutableRefObject<any> = useRef(null);
 
+  useEffect(() => {
+    if (getProject.data) {
+      setProjectData(getProject.data);
+    }
+  }, [getProject.data]);
+
   const typeOptions = [
     { label: "Activity", value: "Activity" },
     { label: "Project", value: "Project" },
   ];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: { target: { name: any; value: any } }) => {
     const { name, value } = e.target;
     setProjectData({ ...projectData, [name]: value });
   };
 
-  const handleCategoryChange = (selectedOption: any) => {
+  const handleCategoryChange = (selectedOption: { value: any }) => {
     setProjectData({ ...projectData, category: selectedOption.value });
   };
 
-  const handleTypeChange = (selectedOption: any) => {
+  const handleTypeChange = (selectedOption: { value: any }) => {
     setProjectData({ ...projectData, type: selectedOption.value });
   };
 
-  const editProject = api.project.edit.useMutation({
-    onError: (error) => {
-      console.log("Error editing project:", error);
-    },
-  });
-
-  useEffect(() => {
-    const getProject = api.project.get.useMutation({ id: projectId as string });
-    if (getProject.data) {
-      setProjectData(getProject.data);
-    }
-  }, [projectId]);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
     editProject.mutate({
-      title: projectData.title,
-      description: projectData.description,
-      image: projectData.image,
-      hub: projectData.hub,
-      category: projectData.category,
-      type: projectData.type,
-      beneficiaries: projectData.beneficiaries,
-      about: projectData.about,
+      ...projectData,
       id: "",
       published: false,
     });
-    console.log("Updated Form data:", projectData);
   };
 
   return (
@@ -96,7 +86,6 @@ const { projectId } = router.query;
               <label htmlFor="title" className="font-medium text-gray-700">
                 Project Title
               </label>
-
               <input
                 type="text"
                 id="title"
@@ -115,7 +104,6 @@ const { projectId } = router.query;
               >
                 Project Description
               </label>
-
               <input
                 type="text"
                 id="description"
@@ -131,15 +119,6 @@ const { projectId } = router.query;
               <label htmlFor="image" className="font-medium text-gray-700">
                 Featured Image
               </label>
-
-              <input
-                type="file"
-                id="image"
-                name="image"
-                onChange={handleChange}
-                className="w-full bg-white py-1 shadow"
-                required
-              />
             </div>
 
             <div className="mb-4">
@@ -149,7 +128,6 @@ const { projectId } = router.query;
               >
                 Beneficiaries
               </label>
-
               <input
                 type="text"
                 id="beneficiaries"
@@ -165,7 +143,6 @@ const { projectId } = router.query;
               <label htmlFor="hub" className="block font-medium text-gray-700">
                 Hub
               </label>
-
               <input
                 type="text"
                 id="hub"
@@ -181,13 +158,14 @@ const { projectId } = router.query;
               <label htmlFor="category" className="font-medium text-gray-700">
                 Category
               </label>
-
               <Select
                 options={categoriesOption}
                 value={categoriesOption.find(
                   (option) => option.value === projectData.category,
                 )}
-                onChange={handleCategoryChange}
+                onChange={(selectedOption: { value: any } | null) =>
+                  handleCategoryChange(selectedOption?.value)
+                }
                 className="z-20"
               />
             </div>
@@ -196,13 +174,14 @@ const { projectId } = router.query;
               <label htmlFor="type" className="font-medium text-gray-700">
                 Type
               </label>
-
               <Select
                 options={typeOptions}
                 value={typeOptions.find(
                   (option) => option.value === projectData.type,
                 )}
-                onChange={handleTypeChange}
+                onChange={(selectedOption: { value: any } | null) =>
+                  handleTypeChange(selectedOption?.value)
+                }
                 className="z-10"
               />
             </div>
@@ -214,7 +193,7 @@ const { projectId } = router.query;
             </div>
 
             <Editor
-              apiKey="fzxkrfx87iwnxv1apdgkca9xsai3dyq8iipq78om26tuyb1f"
+              apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
               onInit={(evt, editor) => {
                 if (editorRef.current === null) {
                   editorRef.current = editor;
@@ -237,7 +216,7 @@ const { projectId } = router.query;
                   "media",
                   "table",
                   "emoticons",
-                  "image code",
+                  "code",
                 ],
                 toolbar:
                   "undo redo |fontfamily fontsize | bold italic underline | alignleft aligncenter alignright alignjustify |" +
@@ -247,7 +226,7 @@ const { projectId } = router.query;
                 menubar: "file edit insert view  format table tools",
                 content_style:
                   "body{font-family:Helvetica,Arial,sans-serif; font-size:16px}",
-                images_upload_url: "http://localhost:8000/server.php",
+                // images_upload_url: "http://localhost:8000/server.php",
               }}
             />
 
