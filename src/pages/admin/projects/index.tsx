@@ -41,7 +41,7 @@ const AdminProjectPage = () => {
         <Sidebar />
 
         <div className="p-10 mx-auto">
-          <div className="mt-20 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
+          <div className="mt-16 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
             PROJECTS
           </div>
 

@@ -60,7 +60,7 @@ function CreateProjects() {
         <Sidebar />
 
         <div className="mx-auto p-10">
-          <div className="mb-10 mt-20 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
+          <div className="mb-10 mt-16 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
             CREATE PROJECT
           </div>
 
