@@ -16,7 +16,7 @@ function CreateProjects() {
 
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
-  
+
   const [projectData, setProjectData] = useState<ProjectData>({
     title: "",
     description: "",
@@ -57,7 +57,7 @@ function CreateProjects() {
   const removeImage = async (e: React.FormEvent) => {
     e.preventDefault();
 
-   // logic for removing the image
+    // logic for removing the image
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -262,7 +262,7 @@ function CreateProjects() {
             </div>
 
             <Editor
-              apiKey="fzxkrfx87iwnxv1apdgkca9xsai3dyq8iipq78om26tuyb1f"
+              apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
               onInit={(evt, editor) => {
                 if (editorRef.current === null) {
                   editorRef.current = editor;
