@@ -2,12 +2,14 @@ import Head from "next/head";
 import { MutableRefObject, useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
-import Select from "react-select";
 import { api } from "~/utils/api";
 import { categoriesOption } from "~/data/categories";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
 
 function CreateProjects() {
   const createProject = api.project.create.useMutation();
+  const animatedComponents = makeAnimated();
   const [projectData, setProjectData] = useState({
     title: "",
     description: "",
@@ -57,12 +59,10 @@ function CreateProjects() {
       <div className="flex">
         <Sidebar />
 
-        <div className="flex-1 p-8">
-          <div className="mt-10 text-4xl font-normal text-gray-800">
-            Create Project
+        <div className="mx-auto p-10">
+          <div className="mb-10 mt-16 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
+            CREATE PROJECT
           </div>
-
-          <hr className="dark-bg-gray-800 my-4 h-px border-0 bg-gray-800"></hr>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
@@ -138,15 +138,19 @@ function CreateProjects() {
 
               <Select
                 options={categoriesOption}
-                value={
-                  categoriesOption.find(
-                    (option) => option.value === projectData.category,
-                  ) || null
-                }
+                closeMenuOnSelect={false}
+                components={animatedComponents}
+                isMulti
+                value={categoriesOption.find(
+                  (option) => option.value === projectData.category,
+                )}
                 onChange={(selectedOption) => {
+                  const selectedValues = selectedOption
+                    ? selectedOption.map((option) => option.value)
+                    : [];
                   setProjectData({
                     ...projectData,
-                    category: selectedOption ? selectedOption.value : "",
+                    category: selectedValues.join(","),
                   });
                 }}
                 className="z-20"
@@ -160,10 +164,7 @@ function CreateProjects() {
 
               <Select
                 options={type}
-                value={
-                  type.find((option) => option.value === projectData.type) ||
-                  null
-                }
+                value={type.find((option) => option.value === projectData.type)}
                 onChange={(selectedOption) => {
                   setProjectData({
                     ...projectData,
@@ -238,14 +239,14 @@ function CreateProjects() {
 
             <button
               type="submit"
-              className="mr-4 mt-4 rounded-lg bg-gray-600 px-6 py-2 font-medium text-white"
+              className="mr-2 mt-4 rounded-lg bg-gray-600 px-2 py-2 font-medium text-white md:mr-4 md:px-6"
             >
               Save as Draft
             </button>
 
             <button
               type="submit"
-              className="mt-4 rounded-lg bg-blue-800 px-12 py-2 font-medium text-white"
+              className="mt-4 rounded-lg bg-blue-800 px-4 py-2 font-medium text-white md:px-12"
             >
               Publish
             </button>
