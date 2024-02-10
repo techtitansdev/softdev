@@ -9,10 +9,14 @@ import makeAnimated from "react-select/animated";
 import { ProjectData } from "~/types/projectData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
+import { Modal } from "~/components/Modal";
+import { useRouter } from "next/router";
 
 function CreateProjects() {
   const createProject = api.project.create.useMutation();
   const animatedComponents = makeAnimated();
+  const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
+  const router = useRouter(); 
 
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
@@ -69,6 +73,11 @@ function CreateProjects() {
         about: editorRef.current.getContent(),
         image: imageUrl,
       });
+      setSuccessModalOpen(true);
+
+      setTimeout(() => {
+        router.push("/admin/projects"); 
+      }, 2000);
       console.log("Project created:", result);
     } catch (error) {
       console.error("Error creating project:", error);
@@ -300,20 +309,26 @@ function CreateProjects() {
 
             <button
               type="submit"
-              className="mr-2 mt-4 rounded-lg bg-gray-600 px-2 py-2 font-medium text-white md:mr-4 md:px-6"
+              className="mr-2 mt-4 rounded-lg bg-gray-600 px-2 py-2 font-medium text-white hover:bg-gray-800 md:mr-4 md:px-6"
             >
               Save as Draft
             </button>
 
             <button
               type="submit"
-              className="mt-4 rounded-lg bg-blue-800 px-4 py-2 font-medium text-white md:px-12"
+              className="mt-4 rounded-lg bg-blue-800 px-4 py-2 font-medium text-white hover:bg-blue-900 md:px-12"
             >
               Publish
             </button>
           </form>
         </div>
       </div>
+      <Modal
+        isOpen={isSuccessModalOpen}
+        onClose={() => setSuccessModalOpen(false)}
+        message="Project Created Successfully."
+        bgColor="bg-green-700"
+      />
     </div>
   );
 }
