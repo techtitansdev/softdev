@@ -40,3 +40,5 @@ export const fundraiser = createTRPCRouter({
     return allFundraisers;  
   }),
 });
+
+export const fundraiserCaller = fundraiser.createCaller;
