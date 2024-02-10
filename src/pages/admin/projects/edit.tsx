@@ -1,13 +1,15 @@
 import Head from "next/head";
-import { useState, useEffect } from "react";
+import { useState, useEffect, MutableRefObject, useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import Select from "react-select";
-import { useRouter } from "next/router";
 import { api } from "~/utils/api";
+import { categoriesOption } from "~/data/categories";
+import { useRouter } from "next/router";
 
 function EditProjects() {
   const router = useRouter();
+const { projectId } = router.query;
 
   const [projectData, setProjectData] = useState({
     title: "",
@@ -20,16 +22,25 @@ function EditProjects() {
     about: "",
   });
 
-  const categoriesOption = [
-    { label: "Education", value: "Education" },
-    { label: "Civic Participation", value: "Civic Participation" },
-    { label: "Entrepreneurship", value: "Entrepreneurship" },
+  const editorRef: MutableRefObject<any> = useRef(null);
+
+  const typeOptions = [
+    { label: "Activity", value: "Activity" },
+    { label: "Project", value: "Project" },
   ];
 
-  const type = [
-    { label: "Project", value: "Project" },
-    { label: "Activity", value: "Activity" },
-  ];
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setProjectData({ ...projectData, [name]: value });
+  };
+
+  const handleCategoryChange = (selectedOption: any) => {
+    setProjectData({ ...projectData, category: selectedOption.value });
+  };
+
+  const handleTypeChange = (selectedOption: any) => {
+    setProjectData({ ...projectData, type: selectedOption.value });
+  };
 
   const editProject = api.project.edit.useMutation({
     onError: (error) => {
@@ -37,10 +48,12 @@ function EditProjects() {
     },
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setProjectData({ ...projectData, [name]: value });
-  };
+  useEffect(() => {
+    const getProject = api.project.get.useMutation({ id: projectId as string });
+    if (getProject.data) {
+      setProjectData(getProject.data);
+    }
+  }, [projectId]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -165,44 +178,31 @@ function EditProjects() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="categories" className="font-medium text-gray-700">
-                Categories
+              <label htmlFor="category" className="font-medium text-gray-700">
+                Category
               </label>
 
               <Select
                 options={categoriesOption}
-                value={
-                  categoriesOption.find(
-                    (option) => option.value === projectData.category,
-                  ) || null
-                }
-                onChange={(selectedOption) => {
-                  setProjectData({
-                    ...projectData,
-                    category: selectedOption ? selectedOption.value : "",
-                  });
-                }}
+                value={categoriesOption.find(
+                  (option) => option.value === projectData.category,
+                )}
+                onChange={handleCategoryChange}
                 className="z-20"
               />
             </div>
 
             <div className="mb-4">
-              <label htmlFor="categories" className="font-medium text-gray-700">
+              <label htmlFor="type" className="font-medium text-gray-700">
                 Type
               </label>
 
               <Select
-                options={type}
-                value={
-                  type.find((option) => option.value === projectData.type) ||
-                  null
-                }
-                onChange={(selectedOption) => {
-                  setProjectData({
-                    ...projectData,
-                    type: selectedOption ? selectedOption.value : "",
-                  });
-                }}
+                options={typeOptions}
+                value={typeOptions.find(
+                  (option) => option.value === projectData.type,
+                )}
+                onChange={handleTypeChange}
                 className="z-10"
               />
             </div>
@@ -215,6 +215,12 @@ function EditProjects() {
 
             <Editor
               apiKey="fzxkrfx87iwnxv1apdgkca9xsai3dyq8iipq78om26tuyb1f"
+              onInit={(evt, editor) => {
+                if (editorRef.current === null) {
+                  editorRef.current = editor;
+                }
+              }}
+              initialValue={projectData.about}
               init={{
                 width: "100%",
                 height: 600,
