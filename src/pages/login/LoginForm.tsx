@@ -75,7 +75,6 @@ export const LoginForm = () => {
               if (user.data === "ADMIN") {
                 router.push("/admin");
                 console.log("admin");
-
               } else {
                 router.push("/home");
                 console.log("home");
@@ -88,11 +87,11 @@ export const LoginForm = () => {
           });
       } catch (err: any) {
         console.error(err.errors[0].longMessage);
-        
+
         setModalOpen(true);
         setModalContent("Make sure your email and password are correct.");
         setModalBgColor("bg-red-500");
-        
+
         setTimeout(() => {
           setModalOpen(false);
         }, 3000);
@@ -114,25 +113,23 @@ export const LoginForm = () => {
           ></div>
         </div>
 
-        <div className="absolute left-2 top-2 z-30 block md:left-6 md:top-4 lg:left-2 lg:top-2">
+        <div className="absolute left-3 top-2 z-30 md:left-2">
           <img
             src="gsi-logo2.png"
-            height={90}
-            width={90}
-            alt="Logo"
-            className="cursor-pointer"
+            alt="logo"
+            className="h-[55px] w-[55px] cursor-pointer md:h-[90px] md:w-[90px]"
           />
         </div>
 
         <div className="flex w-full flex-col sm:w-full md:w-full lg:w-1/2 xl:w-1/2">
-          <div className="ml-5 mt-40 flex flex-col text-3xl font-semibold md:ml-10 lg:ml-16 lg:mt-36 xl:ml-24 xl:mt-40 xl:text-4xl">
+          <div className="ml-5 mt-32 flex flex-col text-3xl font-semibold md:ml-5 md:mt-36 lg:ml-16 lg:mt-44 xl:ml-24 xl:text-4xl">
             Login
           </div>
-          <div className="mb-8 ml-5 mt-1 flex flex-col text-base md:ml-10 md:text-lg lg:ml-16 xl:ml-24">
+          <div className="mb-8 ml-5 mt-1 flex flex-col text-base md:ml-5 md:text-lg lg:ml-16 xl:ml-24">
             Welcome back! Please Enter your details
           </div>
 
-          <div className="flex w-full flex-col px-5 md:px-10 lg:px-16 xl:px-24">
+          <div className="flex w-full flex-col px-5 lg:px-16 xl:px-24">
             <div className="relative mb-2">
               <div className="relative flex items-center">
                 <AiOutlineMail
