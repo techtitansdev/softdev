@@ -53,7 +53,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </Link>
 
           <button
-            className="ml-2 mt-2 border bg-red-600 px-8 py-1 text-white shadow-md hover:bg-red-800"
+            className="ml-2 mt-2 border bg-red-600 px-8 py-1 text-white shadow-md hover:bg-red-700"
             onClick={openModal}
           >
             Delete
@@ -63,7 +63,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
       {isModalOpen && (
         <DeleteModal
-          subject={"Project"}
+          subject={projectData.title}
           handleDelete={handleDelete}
           closeModal={closeModal}
         />
