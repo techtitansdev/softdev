@@ -37,8 +37,33 @@ export const fundraiser = createTRPCRouter({
     }),
   getAll: publicProcedure.query(async () => {
     const allFundraisers = await db.fundraisers.findMany();
-    return allFundraisers;  
+    return allFundraisers;
   }),
+  getById: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+
+      try {
+        const foundFundraiser = await db.fundraisers.findUnique({
+          where: {
+            id: input.id,
+          },
+        });
+
+        if (!foundFundraiser) {
+          throw new Error("Fundraiser not found");
+        }
+
+        return foundFundraiser;
+      } catch (error) {
+        throw new Error(`Failed to fetch fundraiser: ${error}`);
+      }
+    }),
 });
 
 export const fundraiserCaller = fundraiser.createCaller;
