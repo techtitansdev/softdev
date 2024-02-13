@@ -100,7 +100,7 @@ export const project = createTRPCRouter({
         id: z.string(),
       }),
     )
-    .mutation(async (opts) => {
+    .query(async (opts) => {
       const { input } = opts;
 
       try {
