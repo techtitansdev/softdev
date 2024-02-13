@@ -135,5 +135,38 @@ describe("Fundraiser procedures testing", () => {
         throw error;
       }
     });
+    it("Should get a fundraiser by id", async () => {
+      const projectInput = {
+        title: "Project 01",
+        description: "Description",
+        image: "/tech4all.png",
+        hub: "Hub",
+        category: "Category",
+        type: "Type",
+        beneficiaries: "Beneficiaries",
+        about: "About",
+      };
+      try {
+        const project = await callerProject.create(projectInput);
+
+        const fundraiserInput = {
+          projectId: project.id,
+          funds: 127,
+          goal: 999,
+          targetDate: new Date("2024-02-08T05:47:17.947Z"),
+        };
+
+        const fundraiser = await callerFundraiser.create(fundraiserInput);
+        const result = await callerFundraiser.getById({ id: fundraiser.id });
+
+        expect(result.projectId).toBe(project.id);
+        expect(result.funds).toBe(fundraiserInput.funds);
+        expect(result.goal).toBe(fundraiserInput.goal);
+        expect(result.targetDate).toStrictEqual(fundraiserInput.targetDate);
+      } catch (error) {
+        console.error("Error during test:", error);
+        throw error;
+      }
+    });
   });
 });
