@@ -18,8 +18,9 @@ function EditProject() {
 
   const editProject = api.project.edit.useMutation({
     onSuccess: () => {
-      setSuccessModalOpen(true)
+      setSuccessModalOpen(true);
       router.push("/admin/projects")
+      console.log(projectData);
     },
     onError: (error) => {
       console.error("Edit Project Failed", error);
@@ -46,7 +47,18 @@ function EditProject() {
   });
 
   useEffect(() => {
-    if (getProject.data && id) {
+    if (getProject.data && id && imageUrl != "") {
+      setProjectData({
+        title: getProject.data.title,
+        description: getProject.data.description,
+        image: imageUrl,
+        hub: getProject.data.hub,
+        category: getProject.data.category,
+        type: getProject.data.type,
+        beneficiaries: getProject.data.beneficiaries,
+        about: getProject.data.about,
+      });
+    } else if (getProject.data && id && imageUrl === "") {
       setProjectData({
         title: getProject.data.title,
         description: getProject.data.description,
@@ -58,7 +70,7 @@ function EditProject() {
         about: getProject.data.about,
       });
     }
-  }, [getProject.data,id]);
+  }, [getProject.data, id, imageUrl]);
 
   const editorRef: MutableRefObject<any> = useRef(null);
 
@@ -80,7 +92,7 @@ function EditProject() {
       const url = info.secure_url as string;
       const public_id = info.public_id as string;
       setImageUrl(url);
-      setPublicId(public_id);
+      projectData.image = url;
       console.log("url: ", url);
       console.log("public_id: ", public_id);
     }
@@ -98,6 +110,7 @@ function EditProject() {
       ...projectData,
       id: id as string,
       published: false,
+      image: imageUrl,
     });
   };
 
