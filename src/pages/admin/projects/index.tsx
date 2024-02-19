@@ -12,8 +12,6 @@ const AdminProjectPage = () => {
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin;
   const router = useRouter();
-  const secretMessage = api.post.getSecretMessage.useQuery()
-  console.log(secretMessage.data)
   useEffect(() => {
     if (isLoaded && user_role !== 'admin') {
       router.push('/home');

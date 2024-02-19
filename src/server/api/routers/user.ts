@@ -5,13 +5,12 @@ import { createTRPCRouter, protectedProcedure, publicProcedure, } from "~/server
 import { db } from "~/server/db";
 import bcrypt from 'bcrypt';
 import { Prisma } from "@prisma/client";
-import { useUser } from "@clerk/nextjs";
 
 export const userRouter = createTRPCRouter({
     hello: publicProcedure.query(({ctx}) => {
-        const user = useUser()
+
         return {
-          greeting: `hello! ${user.user?.publicMetadata}`
+          greeting: `hello! ${ctx.user?.publicMetadata}`
         }
       }),
     create: publicProcedure

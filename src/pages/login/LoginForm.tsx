@@ -73,8 +73,7 @@ export const LoginForm = () => {
               await new Promise((resolve) => setTimeout(resolve, 3000));
               
               setModalOpen(false);
-              setLoading(false);
-              router.push('/home')
+
               setActive({ session: result.createdSessionId });
 
              
@@ -98,7 +97,7 @@ export const LoginForm = () => {
   };
 
   return (
-    <><OrganizationSwitcher /><form onSubmit={handleSubmit}>
+    <><form onSubmit={handleSubmit}>
       <div className="flex sm:flex-col md:flex-col lg:flex-row xl:h-screen xl:flex-row">
         <div className="relative z-10 mx-auto hidden w-1/2 sm:hidden md:hidden lg:flex">
           <div
