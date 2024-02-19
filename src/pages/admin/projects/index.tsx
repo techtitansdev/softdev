@@ -4,8 +4,28 @@ import Link from "next/link";
 import ProjectCard from "./components/ProjectCard";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/router";
 
 const AdminProjectPage = () => {
+
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
+  const router = useRouter();
+  const secretMessage = api.post.getSecretMessage.useQuery()
+  console.log(secretMessage.data)
+  useEffect(() => {
+    if (isLoaded && user_role !== 'admin') {
+      router.push('/home');
+    }
+  }, [isLoaded, user_role]);
+
+  if (!isLoaded) {
+    return <div>Loading...</div>;
+  }
+  if (isLoaded && user_role !== 'admin'){
+    return <div>UNAUTHORIZED</div>;
+  }
   const [projectData, setProjectData] = useState<any>([]);
 
   const getProjects = api.project.getAll.useQuery();

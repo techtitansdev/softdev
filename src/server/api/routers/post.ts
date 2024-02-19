@@ -7,13 +7,11 @@ import {
 } from "~/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
+  hello: publicProcedure.query(({ctx}) => {
+    return {
+      greeting: `hello! ${ctx.user?.privateMetadata.role}`
+    }
+  }),
     
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
