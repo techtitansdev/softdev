@@ -27,18 +27,18 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       <ul>
         <li
           key={projectData.id}
-          className="hover:scale-104 transform pb-6 shadow-lg transition duration-500 ease-in-out hover:-translate-y-1"
+          className="transform rounded-lg pb-4 shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105"
         >
           <Link href={`/projects/${encodeURIComponent(projectData.title)}`}>
             <img
-              className="h-64 w-[280px] rounded-sm lg:w-[300px]"
+              className="object-obtain h-56 w-[280px] rounded-sm lg:w-[300px]"
               src={projectData.image}
               alt="project-image"
             />
           </Link>
 
           <div className="my-2 ml-2">
-            <h5 className="text-lg tracking-tight text-gray-900">
+            <h5 className="text-lg font-medium tracking-tight text-gray-900">
               {projectData.title}
             </h5>
             <p className="flex flex-row items-center font-normal text-gray-700 dark:text-gray-500">

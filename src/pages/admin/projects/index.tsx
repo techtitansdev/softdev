@@ -40,7 +40,7 @@ const AdminProjectPage = () => {
       <div className="flex">
         <Sidebar />
 
-        <div className="p-10 mx-auto">
+        <div className="mx-auto p-10">
           <div className="mt-16 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
             PROJECTS
           </div>
@@ -53,10 +53,10 @@ const AdminProjectPage = () => {
             </Link>
           </div>
 
-          <div className="mb-12 mt-4 flex items-center justify-center">
-            <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mb-12 mt-1 flex items-center justify-center">
+            <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {projectData.map((project: any) => (
-                <div key={project.id} className="hover:bg-neutral-400/10">
+                <div key={project.id}>
                   <ProjectCard
                     projectData={project}
                     handleDelete={() => handleDelete(project.id)}
