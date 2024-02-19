@@ -16,7 +16,7 @@ function EditProject() {
   const router = useRouter();
   const { id } = router.query;
 
-  const deleteImage =  api.project.removeImage.useMutation()
+  const deleteImage = api.project.removeImage.useMutation();
 
   const editProject = api.project.edit.useMutation({
     onSuccess: () => {
@@ -49,7 +49,10 @@ function EditProject() {
   });
 
   useEffect(() => {
-    if (getProject.data && id && imageUrl != "") {
+    if (getProject.data && id) {
+      if (getProject.data.image) {
+        setImageUrl(getProject.data.image);
+      }
       setProjectData({
         title: getProject.data.title,
         description: getProject.data.description,
@@ -94,7 +97,7 @@ function EditProject() {
       const url = info.secure_url as string;
       const public_id = info.public_id as string;
       setImageUrl(url);
-      setPublicId(public_id)
+      setPublicId(public_id);
       projectData.image = url;
       console.log("url: ", url);
       console.log("public_id: ", public_id);
@@ -103,19 +106,19 @@ function EditProject() {
 
   const removeImage = async (e: React.FormEvent) => {
     e.preventDefault();
-    try{
+    try {
       deleteImage.mutate({
-        id: id as string
+        id: id as string,
       });
       setImageUrl("");
       setPublicId("");
 
       setProjectData({
         ...projectData,
-        image: ""
+        image: "",
       });
-    }catch(error){
-      console.error(error)
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -269,8 +272,8 @@ function EditProject() {
                   closeMenuOnSelect={false}
                   components={animatedComponents}
                   isMulti
-                  value={categoriesOption.find(
-                    (option) => option.value === projectData.category,
+                  value={categoriesOption.filter((option) =>
+                    projectData.category.split(",").includes(option.value),
                   )}
                   onChange={(selectedOption) => {
                     const selectedValues = selectedOption
