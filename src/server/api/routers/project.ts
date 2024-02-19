@@ -117,6 +117,30 @@ export const project = createTRPCRouter({
         throw new Error(`Failed to fetch project: ${error}`);
       }
     }),
+    removeImage: publicProcedure.input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .mutation(async(opts)=>{
+      const {input} = opts;
+
+      try {
+        const foundProject = await db.projects.findUnique({
+          where: { id: input.id },
+        });
+
+        if (!foundProject) {
+          throw new Error("Project not found");
+        }
+
+        else{
+          foundProject.image = ""
+        }
+      } catch (error) {
+        throw new Error(`Failed to fetch project: ${error}`);
+      }
+    })
 
 });
 

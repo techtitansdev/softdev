@@ -16,6 +16,8 @@ function EditProject() {
   const router = useRouter();
   const { id } = router.query;
 
+  const deleteImage =  api.project.removeImage.useMutation()
+
   const editProject = api.project.edit.useMutation({
     onSuccess: () => {
       setSuccessModalOpen(true);
@@ -92,6 +94,7 @@ function EditProject() {
       const url = info.secure_url as string;
       const public_id = info.public_id as string;
       setImageUrl(url);
+      setPublicId(public_id)
       projectData.image = url;
       console.log("url: ", url);
       console.log("public_id: ", public_id);
@@ -100,7 +103,20 @@ function EditProject() {
 
   const removeImage = async (e: React.FormEvent) => {
     e.preventDefault();
-    // logic for removing the image
+    try{
+      deleteImage.mutate({
+        id: id as string
+      });
+      setImageUrl("");
+      setPublicId("");
+
+      setProjectData({
+        ...projectData,
+        image: ""
+      });
+    }catch(error){
+      console.error(error)
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
