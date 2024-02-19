@@ -69,22 +69,20 @@ function CreateFunding() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+  //     const result = await createFundraiser.mutateAsync({
+  //       ...fundingData,
+  //       about: editorRef.current.getContent(),
+  //       image: imageUrl,
+  //     });
+  //     setSuccessModalOpen(true);
 
-    try {
-      const result = await createFundraiser.mutateAsync({
-        ...fundingData,
-        about: editorRef.current.getContent(),
-        image: imageUrl,
-      });
-      setSuccessModalOpen(true);
-
-      setTimeout(() => {
-        router.push("/admin/funding");
-      }, 2000);
-      console.log("Funded project has been created:", result);
-    } catch (error) {
-      console.error("Error creating funded project:", error);
-    }
+  //     setTimeout(() => {
+  //       router.push("/admin/funding");
+  //     }, 2000);
+  //     console.log("Funded project has been created:", result);
+  //   } catch (error) {
+  //     console.error("Error creating funded project:", error);
+  //   }   try {
   };
 
   return (
