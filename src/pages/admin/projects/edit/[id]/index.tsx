@@ -19,7 +19,7 @@ function EditProject() {
   const editProject = api.project.edit.useMutation({
     onSuccess: () => {
       setSuccessModalOpen(true);
-      router.push("/admin/projects")
+      router.push("/admin/projects");
       console.log(projectData);
     },
     onError: (error) => {
@@ -320,6 +320,7 @@ function EditProject() {
               </div>
 
               <Editor
+                value={projectData.about}
                 id="long-value-select"
                 apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
                 onInit={(evt, editor) => {
