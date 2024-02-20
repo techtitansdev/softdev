@@ -100,7 +100,7 @@ const AdminFunding = () => {
           <div className="mt-10 py-2 md:flex">
             <Link href={`/admin/projects/create`}>
               <button className="w-72 rounded-lg bg-blue-800 py-2 text-lg font-light text-white hover:bg-blue-900">
-                Create Project
+                Create Funding
               </button>
             </Link>
           </div>
