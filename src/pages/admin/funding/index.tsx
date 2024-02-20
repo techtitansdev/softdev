@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
-import FundingCard from "./components/fundinCard";
+import FundingCard from "./components/fundingCard";
 import Link from "next/link";
 
 const AdminFunding = () => {
