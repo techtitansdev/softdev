@@ -47,12 +47,23 @@ function EditProject() {
     beneficiaries: "",
     about: "",
   });
+
+  const [editorContent, setEditorContent] = useState("");
+
+  const handleEditorChange = (content: any) => {
+    setEditorContent(content);
+  };
+
+  useEffect(() => {
+    setEditorContent(projectData.about);
+  }, [projectData.about]);
+
   useEffect(() => {
     if (getProject.data) {
       setProjectData({
         title: getProject.data.title,
         description: getProject.data.description,
-        image: getProject.data.image, 
+        image: getProject.data.image,
         hub: getProject.data.hub,
         category: getProject.data.category,
         type: getProject.data.type,
@@ -114,6 +125,7 @@ function EditProject() {
       id: id as string,
       published: false,
       image: imageUrl,
+      about: editorContent,
     });
   };
 
@@ -323,41 +335,22 @@ function EditProject() {
               </div>
 
               <Editor
-                value={projectData.about}
-                id="long-value-select"
+                initialValue={projectData.about}
+                value={editorContent}
+                onEditorChange={handleEditorChange}
                 apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-                onInit={(evt, editor) => {
-                  if (editorRef.current === null) {
-                    editorRef.current = editor;
-                  }
-                }}
                 init={{
-                  width: "100%",
-                  height: 600,
+                  height: 500,
+                  menubar: false,
                   plugins: [
-                    "advlist",
-                    "link",
-                    "image",
-                    "lists",
-                    "preview",
-                    "pagebreak",
-                    "wordcount",
-                    "fullscreen",
-                    "insertdatetime",
-                    "media",
-                    "table",
-                    "emoticons",
-                    "image code",
+                    "advlist autolink lists link image charmap print preview anchor",
+                    "searchreplace visualblocks code fullscreen",
+                    "insertdatetime media table paste code help wordcount",
                   ],
                   toolbar:
-                    "undo redo |fontfamily fontsize | bold italic underline | alignleft aligncenter alignright alignjustify |" +
-                    "bullist numlist outdent indent | link image | preview media fullscreen | " +
-                    "forecolor backcolor emoticons",
-
-                  menubar: "file edit insert view  format table tools",
-                  content_style:
-                    "body{font-family:Helvetica,Arial,sans-serif; font-size:16px}",
-                  // images_upload_url: "http://localhost:8000/server.php",
+                    "undo redo | formatselect | bold italic backcolor | \
+            alignleft aligncenter alignright alignjustify | \
+            bullist numlist outdent indent | removeformat | help",
                 }}
               />
 
