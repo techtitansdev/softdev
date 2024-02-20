@@ -29,7 +29,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           key={projectData.id}
           className="transform rounded-lg pb-4 shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105"
         >
-          <Link href={`/projects/${encodeURIComponent(projectData.title)}`}>
+          <Link href={`/admin/projects/${encodeURIComponent(projectData.id)}`}>
             <img
               className="object-obtain h-56 w-[280px] rounded-sm lg:w-[300px]"
               src={projectData.image}
