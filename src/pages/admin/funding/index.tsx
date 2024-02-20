@@ -33,7 +33,7 @@ const AdminFunding = () => {
       hub: "Iloilo",
       id: "clss7s8zg0000woh4g0hbzugm",
       image:
-        "https://res.cloudinary.com/dzpghgd8d/image/upload/v1708303458/iua56fiskfmcxbjcrs2n.jpg",
+      "https://res.cloudinary.com/dzpghgd8d/image/upload/v1708336690/ulmg842orgunuqtn65h0.jpg",
       published: false,
       title: "New Project",
       type: "Project",
@@ -49,13 +49,13 @@ const AdminFunding = () => {
       hub: "Iloilo",
       id: "clss7s8zg0000woh4g0hbzugm",
       image:
-        "https://res.cloudinary.com/dzpghgd8d/image/upload/v1708303458/iua56fiskfmcxbjcrs2n.jpg",
+      "https://res.cloudinary.com/dzpghgd8d/image/upload/v1708306080/t8jhy2wyllbmcjawbfqf.png",
       published: false,
       title: "New Project 2",
       type: "Project",
-      goal: "150000",
-      donors: "35",
-      raised: "30500"
+      goal: "100000",
+      donors: "25",
+      raised: "19500"
     }
   ];
   const [projectData, setProjectData] = useState<any>([]);
