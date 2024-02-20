@@ -3,7 +3,7 @@ import { db } from "../../db";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const project = createTRPCRouter({
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         title: z.string(),
@@ -89,7 +89,7 @@ export const project = createTRPCRouter({
         where: { id: input.id },
       });
     }),
-    getAll: publicProcedure
+    getAll: protectedProcedure
     .query(async () => {
       const allProjects = await db.projects.findMany();
       return allProjects;

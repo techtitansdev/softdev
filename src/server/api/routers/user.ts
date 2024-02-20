@@ -7,22 +7,12 @@ import bcrypt from 'bcrypt';
 import { Prisma } from "@prisma/client";
 
 export const userRouter = createTRPCRouter({
-    /**
-     * 
-     *  const createNewUser = api.user.create.useMutation({
-        onError: error => {
-            console.log(error.name)
-        },
-        onSuccess: () => {
-            
-        }
-    });
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
+    hello: publicProcedure.query(({ctx}) => {
 
-        createNewUser.mutate({ email, firstName, lastName, address, phone, password });
-    }
-     */
+        return {
+          greeting: `hello! ${ctx.user?.publicMetadata}`
+        }
+      }),
     create: publicProcedure
         .input(z.object({
             email: z.string().toLowerCase(),
