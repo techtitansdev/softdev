@@ -1,7 +1,26 @@
+import { useUser } from "@clerk/nextjs";
 import Head from "next/head";
+import router, { useRouter } from "next/router";
+import { useEffect } from "react";
 import { Sidebar } from "~/components/Sidebar";
+import { api } from "~/utils/api";
 
 const AdminBlog = () => {
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
+
+  useEffect(() => {
+    if (isLoaded && user_role !== 'admin') {
+      router.push('/home');
+    }
+  }, [isLoaded, user_role]);
+
+  if (!isLoaded) {
+    return <div>Loading...</div>;
+  }
+  if (isLoaded && user_role !== 'admin'){
+    return <div>UNAUTHORIZED</div>;
+  }
   return (
     <>
       <Head>
