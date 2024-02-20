@@ -24,7 +24,7 @@ function EditProject() {
       router.push("/admin/projects");
       console.log(projectData);
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Edit Project Failed", error);
     },
   });
