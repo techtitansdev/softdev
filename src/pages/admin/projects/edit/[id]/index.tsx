@@ -47,35 +47,21 @@ function EditProject() {
     beneficiaries: "",
     about: "",
   });
-
   useEffect(() => {
-    if (getProject.data && id) {
-      if (getProject.data.image) {
-        setImageUrl(getProject.data.image);
-      }
+    if (getProject.data) {
       setProjectData({
         title: getProject.data.title,
         description: getProject.data.description,
-        image: imageUrl,
+        image: getProject.data.image, 
         hub: getProject.data.hub,
         category: getProject.data.category,
         type: getProject.data.type,
         beneficiaries: getProject.data.beneficiaries,
         about: getProject.data.about,
       });
-    } else if (getProject.data && id && imageUrl === "") {
-      setProjectData({
-        title: getProject.data.title,
-        description: getProject.data.description,
-        image: getProject.data.image,
-        hub: getProject.data.hub,
-        category: getProject.data.category,
-        type: getProject.data.type,
-        beneficiaries: getProject.data.beneficiaries,
-        about: getProject.data.about,
-      });
+      setImageUrl(getProject.data.image);
     }
-  }, [getProject.data, id, imageUrl]);
+  }, [getProject.data]);
 
   const editorRef: MutableRefObject<any> = useRef(null);
 
@@ -111,8 +97,6 @@ function EditProject() {
         id: id as string,
       });
       setImageUrl("");
-      setPublicId("");
-
       setProjectData({
         ...projectData,
         image: "",
@@ -228,7 +212,7 @@ function EditProject() {
                   )}
                 </CldUploadButton>
 
-                {publicId && (
+                {imageUrl && (
                   <button
                     onClick={removeImage}
                     className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700"
