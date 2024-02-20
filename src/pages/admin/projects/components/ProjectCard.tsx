@@ -46,7 +46,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             </p>
           </div>
 
-          <Link href={`/admin/projects/edit`}>
+          <Link href={`/admin/projects/edit/${projectData.id}`}>
             <button className="ml-2 mt-2 border border-gray-500 px-8 py-1 text-gray-800 shadow-md hover:bg-gray-200">
               Edit
             </button>
