@@ -10,22 +10,16 @@ const ProjectDetailsPage = () => {
   const getProject = api.project.getById.useQuery({ id: id as string });
 
   useEffect(() => {
-    if (id) {
-      getProject.refetch();
-    }
-  }, [id, getProject]);
-
-  useEffect(() => {
-    if (getProject.data) {
+    if (getProject.data && !projectData && getProject.data !== projectData) {
       setProjectData(getProject.data);
     }
-  }, [getProject.data]);
+  }, [getProject.data, projectData]);
 
   return (
     <div>
       {projectData && (
         <>
-         <div dangerouslySetInnerHTML={{ __html: projectData.about }} />
+          <div dangerouslySetInnerHTML={{ __html: projectData.about }} />
         </>
       )}
     </div>
