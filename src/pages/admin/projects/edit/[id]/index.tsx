@@ -48,22 +48,18 @@ function EditProject() {
     about: "",
   });
 
+  const [editorContent, setEditorContent] = useState("");
+
+  const handleEditorChange = (content: any) => {
+    setEditorContent(content);
+  };
+
   useEffect(() => {
-    if (getProject.data && id) {
-      if (getProject.data.image) {
-        setImageUrl(getProject.data.image);
-      }
-      setProjectData({
-        title: getProject.data.title,
-        description: getProject.data.description,
-        image: imageUrl,
-        hub: getProject.data.hub,
-        category: getProject.data.category,
-        type: getProject.data.type,
-        beneficiaries: getProject.data.beneficiaries,
-        about: getProject.data.about,
-      });
-    } else if (getProject.data && id && imageUrl === "") {
+    setEditorContent(projectData.about);
+  }, [projectData.about]);
+
+  useEffect(() => {
+    if (getProject.data) {
       setProjectData({
         title: getProject.data.title,
         description: getProject.data.description,
@@ -74,8 +70,9 @@ function EditProject() {
         beneficiaries: getProject.data.beneficiaries,
         about: getProject.data.about,
       });
+      setImageUrl(getProject.data.image);
     }
-  }, [getProject.data, id, imageUrl]);
+  }, [getProject.data]);
 
   const editorRef: MutableRefObject<any> = useRef(null);
 
@@ -111,8 +108,6 @@ function EditProject() {
         id: id as string,
       });
       setImageUrl("");
-      setPublicId("");
-
       setProjectData({
         ...projectData,
         image: "",
@@ -130,6 +125,7 @@ function EditProject() {
       id: id as string,
       published: false,
       image: imageUrl,
+      about: editorContent,
     });
   };
 
@@ -228,7 +224,7 @@ function EditProject() {
                   )}
                 </CldUploadButton>
 
-                {publicId && (
+                {imageUrl && (
                   <button
                     onClick={removeImage}
                     className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700"
@@ -339,41 +335,22 @@ function EditProject() {
               </div>
 
               <Editor
-                value={projectData.about}
-                id="long-value-select"
+                initialValue={projectData.about}
+                value={editorContent}
+                onEditorChange={handleEditorChange}
                 apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-                onInit={(evt, editor) => {
-                  if (editorRef.current === null) {
-                    editorRef.current = editor;
-                  }
-                }}
                 init={{
-                  width: "100%",
-                  height: 600,
+                  height: 500,
+                  menubar: false,
                   plugins: [
-                    "advlist",
-                    "link",
-                    "image",
-                    "lists",
-                    "preview",
-                    "pagebreak",
-                    "wordcount",
-                    "fullscreen",
-                    "insertdatetime",
-                    "media",
-                    "table",
-                    "emoticons",
-                    "image code",
+                    "advlist autolink lists link image charmap print preview anchor",
+                    "searchreplace visualblocks code fullscreen",
+                    "insertdatetime media table paste code help wordcount",
                   ],
                   toolbar:
-                    "undo redo |fontfamily fontsize | bold italic underline | alignleft aligncenter alignright alignjustify |" +
-                    "bullist numlist outdent indent | link image | preview media fullscreen | " +
-                    "forecolor backcolor emoticons",
-
-                  menubar: "file edit insert view  format table tools",
-                  content_style:
-                    "body{font-family:Helvetica,Arial,sans-serif; font-size:16px}",
-                  // images_upload_url: "http://localhost:8000/server.php",
+                    "undo redo | formatselect | bold italic backcolor | \
+            alignleft aligncenter alignright alignjustify | \
+            bullist numlist outdent indent | removeformat | help",
                 }}
               />
 
