@@ -28,7 +28,7 @@ export const project = createTRPCRouter({
       });
       return project;
     }),
-  edit: publicProcedure
+  edit: protectedProcedure
     .input(
       z.object({
         id: z.string(),
