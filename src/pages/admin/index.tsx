@@ -1,8 +1,28 @@
+import { useUser } from "@clerk/nextjs";
 import Head from "next/head";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
 import { Sidebar } from "~/components/Sidebar";
+import { api } from "~/utils/api";
 
 const Admin = () => {
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoaded && user_role !== 'admin') {
+      router.push('/home');
+    }
+  }, [isLoaded, user_role]);
+
+  if (!isLoaded) {
+    return <div>Loading...</div>;
+  }
+  if (isLoaded && user_role !== 'admin'){
+    return <div>UNAUTHORIZED</div>;
+  }
+
   return (
     <>
       <Head>
@@ -13,7 +33,6 @@ const Admin = () => {
 
       <div className="flex">
         <Sidebar />
-
         <div className="mx-auto mt-72 text-5xl"> Dashboard </div>
       </div>
     </>
