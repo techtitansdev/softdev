@@ -1,4 +1,4 @@
-import { useSignIn } from "@clerk/nextjs";
+import { OrganizationSwitcher, useAuth, useSignIn } from "@clerk/nextjs";
 import Link from "next/link";
 import router from "next/router";
 import { useState } from "react";
@@ -12,6 +12,7 @@ import {
 import { Modal } from "~/components/Modal";
 import { api } from "~/utils/api";
 import { validateLogin } from "~/utils/validateLogin";
+
 
 export const LoginForm = () => {
   const { isLoaded, signIn, setActive } = useSignIn();
@@ -43,16 +44,17 @@ export const LoginForm = () => {
 
     setFormErrors(validation);
     if (validation.state === "validated") {
+      
       return true;
     } else {
       return false;
     }
   };
 
-  const user = api.user.getRole.useQuery({ email: formValues.email });
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+    e.preventDefault(); 
+    
     const isValid = handleValidate();
 
     if (isValid) {
@@ -67,20 +69,14 @@ export const LoginForm = () => {
               setModalOpen(true);
               setModalContent("Success");
               setModalBgColor("bg-gray-800");
-
-              await new Promise((resolve) => setTimeout(resolve, 2000));
-
+              
+              await new Promise((resolve) => setTimeout(resolve, 3000));
+              
               setModalOpen(false);
-              setLoading(false);
-              if (user.data === "ADMIN") {
-                router.push("/admin");
-                console.log("admin");
 
-              } else {
-                router.push("/home");
-                console.log("home");
-              }
               setActive({ session: result.createdSessionId });
+
+             
               return;
             } else {
               console.log(result);
@@ -101,7 +97,7 @@ export const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <><form onSubmit={handleSubmit}>
       <div className="flex sm:flex-col md:flex-col lg:flex-row xl:h-screen xl:flex-row">
         <div className="relative z-10 mx-auto hidden w-1/2 sm:hidden md:hidden lg:flex">
           <div
@@ -120,8 +116,7 @@ export const LoginForm = () => {
             height={90}
             width={90}
             alt="Logo"
-            className="cursor-pointer"
-          />
+            className="cursor-pointer" />
         </div>
 
         <div className="flex w-full flex-col sm:w-full md:w-full lg:w-1/2 xl:w-1/2">
@@ -137,17 +132,13 @@ export const LoginForm = () => {
               <div className="relative flex items-center">
                 <AiOutlineMail
                   size={20}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 transform text-gray-800"
-                />
+                  className="absolute left-0 top-1/2 -translate-y-1/2 transform text-gray-800" />
                 <input
                   className="my-2 w-full border-b border-gray-800 py-2 pl-6 pr-3 text-black outline-none focus:outline-none"
                   type="email"
                   placeholder="Email"
                   value={formValues.email}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, email: e.target.value })
-                  }
-                />
+                  onChange={(e) => setFormValues({ ...formValues, email: e.target.value })} />
               </div>
               {formErrors.emailError && (
                 <div className="flex items-center text-sm text-red-600">
@@ -161,29 +152,23 @@ export const LoginForm = () => {
               <div className="relative flex items-center">
                 <AiOutlineLock
                   size={20}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 transform text-gray-800"
-                />
+                  className="absolute left-0 top-1/2 -translate-y-1/2 transform text-gray-800" />
                 <input
                   className="my-2 w-full border-b border-gray-800 py-2 pl-6 pr-3 text-black outline-none focus:outline-none"
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   value={formValues.password}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, password: e.target.value })
-                  }
-                />
+                  onChange={(e) => setFormValues({ ...formValues, password: e.target.value })} />
                 {showPassword ? (
                   <AiOutlineEye
                     size={20}
                     onClick={togglePasswordVisibility}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 transform cursor-pointer text-gray-800"
-                  />
+                    className="absolute right-4 top-1/2 -translate-y-1/2 transform cursor-pointer text-gray-800" />
                 ) : (
                   <AiOutlineEyeInvisible
                     size={20}
                     onClick={togglePasswordVisibility}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 transform cursor-pointer text-gray-800"
-                  />
+                    className="absolute right-4 top-1/2 -translate-y-1/2 transform cursor-pointer text-gray-800" />
                 )}
               </div>
               {formErrors.passwordError && (
@@ -222,11 +207,10 @@ export const LoginForm = () => {
               isOpen={isModalOpen}
               onClose={closeModal}
               message={modalContent}
-              bgColor={modalBgColor}
-            />
+              bgColor={modalBgColor} />
           </div>
         </div>
       </div>
-    </form>
+    </form></>
   );
 };

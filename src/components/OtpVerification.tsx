@@ -95,8 +95,14 @@ export const OtpVerification = () => {
   };
 
   return (
-    <div className="m-auto flex min-h-screen items-center justify-center">
-      <div className="rounded-xl border-2 py-5 md:mx-2 md:px-8">
+    <div
+      className="z-30 m-auto flex min-h-screen items-center justify-center"
+      style={{
+        backgroundImage: "url('/texture.png')",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="z-20 mx-2 rounded-xl border-2 bg-white py-5 md:px-8">
         <div className="text:xl mb-2 text-center font-semibold md:text-2xl">
           Verify your Email
         </div>
@@ -124,7 +130,7 @@ export const OtpVerification = () => {
               console.log(enteredOtp);
               setCode(otp.join(""));
             }}
-            className="mt-6 block w-80 rounded-2xl bg-blue-800 py-2 text-lg font-semibold text-white hover:bg-blue-900 md:py-3 xl:mb-6"
+            className="mt-6 block w-80 rounded-2xl bg-blue-800 py-2 text-sm font-semibold text-white hover:bg-blue-900 md:py-3 md:text-lg xl:mb-6"
           >
             VERIFY & PROCEED
           </button>

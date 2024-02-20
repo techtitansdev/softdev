@@ -34,11 +34,11 @@ export const Sidebar = () => {
   const router = useRouter();
 
   return (
-    <div className="flex">
+    <div className={`flex ${open ? "mr-52" : "mr-20"}`}>
       <div
         className={` ${
           open ? "w-52" : "w-20"
-        } relative h-screen bg-white p-5 pt-8 text-gray-700 shadow duration-300`}
+        } fixed z-50 h-full bg-white p-5 pt-8 text-gray-700 shadow duration-300`}
       >
         <img
           src="https://static.thenounproject.com/png/1535376-200.png"
@@ -62,6 +62,7 @@ export const Sidebar = () => {
             ADMIN
           </h1>
         </div>
+
         <ul className="pt-6">
           {Menus.map((Menu, index) => (
             <Link key={index} href={Menu.link}>

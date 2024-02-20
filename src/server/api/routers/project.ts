@@ -1,24 +1,8 @@
 import { z } from "zod";
 import { db } from "../../db";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const project = createTRPCRouter({
-  /**
-   * const createNewProject = api.projects.create.useMutation({
-   * onError: error =>{
-   * console.log(error.name)
-   * },
-   * onSuccess: () => {
-   *
-   * }
-   * });
-   *
-   * const handleSubmit = (e: FormEvent) => {
-   * e.preventDefault();
-   *
-   * createNewProject.mutate({name, title, description, image, beneficiaries, about, status})
-   * }
-   */
   create: protectedProcedure
     .input(
       z.object({
@@ -56,7 +40,7 @@ export const project = createTRPCRouter({
         type: z.string(),
         beneficiaries: z.string(),
         about: z.string(),
-        published: z.boolean()
+        published: z.boolean(),
       }),
     )
     .mutation(async (opts) => {
@@ -83,7 +67,7 @@ export const project = createTRPCRouter({
       });
       return updatedProject;
     }),
-  delete: protectedProcedure
+  delete: publicProcedure
     .input(
       z.object({
         id: z.string(),
@@ -104,6 +88,11 @@ export const project = createTRPCRouter({
       await db.projects.delete({
         where: { id: input.id },
       });
+    }),
+    getAll: protectedProcedure
+    .query(async () => {
+      const allProjects = await db.projects.findMany();
+      return allProjects;
     }),
 });
 

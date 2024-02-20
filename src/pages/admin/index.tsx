@@ -1,6 +1,9 @@
+import { useUser } from "@clerk/nextjs";
 import Head from "next/head";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
 import { Sidebar } from "~/components/Sidebar";
+import { api } from "~/utils/api";
 
 export const Admin = () => {
   return (
@@ -13,7 +16,6 @@ export const Admin = () => {
 
       <div className="flex">
         <Sidebar />
-
         <div className="mx-auto mt-72 text-5xl"> Dashboard </div>
       </div>
     </>
