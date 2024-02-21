@@ -3,7 +3,7 @@ import Head from "next/head";
 import { Footer } from "~/components/Footer";
 import { LoginForm } from "./LoginForm";
 
-const Register = () => {
+const Login = () => {
   return (
     <>
       <Head>
@@ -18,4 +18,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;
