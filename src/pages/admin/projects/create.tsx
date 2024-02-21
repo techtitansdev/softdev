@@ -209,7 +209,7 @@ function CreateProjects() {
 
               <Select
                 options={categoriesOption}
-                closeMenuOnSelect={true}
+                closeMenuOnSelect={false}
                 components={animatedComponents}
                 isMulti
                 value={categoriesOption.find(
