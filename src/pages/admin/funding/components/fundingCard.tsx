@@ -31,18 +31,18 @@ const FundingCard: React.FC<ProjectCardProps> = ({
           <Link href={`/projects/${encodeURIComponent(fundingData.title)}`}>
             <img
               className="object-obtain h-56 w-[358px] rounded-md"
-              src={fundingData.image}
+              src={fundingData.project.image}
               alt="funding-image"
             />
           </Link>
 
           <div className="mx-2 my-2">
             <h5 className="text-lg font-medium tracking-tight text-gray-900">
-              {fundingData.title}
+              {fundingData.project.title}
             </h5>
 
             <div className="max-w-[330px] items-center truncate text-xs font-light text-gray-700 dark:text-gray-500">
-              {fundingData.description}
+              {fundingData.project.description}
             </div>
           </div>
 
@@ -58,7 +58,7 @@ const FundingCard: React.FC<ProjectCardProps> = ({
               </div>
               <div className="mx-14 text-center md:mx-20">
                 <div className="text-sm font-bold text-black">
-                  ₱{fundingData.raised}
+                  ₱{fundingData.funds}
                 </div>
                 <div className="text-xs font-normal">Raised</div>
               </div>
