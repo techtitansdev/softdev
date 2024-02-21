@@ -9,6 +9,7 @@ const Admin = () => {
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin;
   const router = useRouter();
+  console.log(user_role)
 
   useEffect(() => {
     if (isLoaded && user_role !== 'admin') {
