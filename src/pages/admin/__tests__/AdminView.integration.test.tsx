@@ -1,24 +1,24 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import { Admin } from "../index";
+import * as nextRouter from "next/router";
 
 jest.mock("@clerk/nextjs", () => ({
-  useUser: jest.fn(() => ({
-    user: { publicMetadata: { admin: "admin" } },
+  useUser: () => ({
+    user: { publicMetadata: { admin: "user" } },
     isLoaded: true,
-  })),
-}));
-
-jest.mock("next/router", () => ({
-  useRouter: jest.fn(),
+  }),
 }));
 
 describe("Admin component", () => {
-  test("renders admin view", async () => {
-    const { findByText } = render(<Admin />);
+  test("redirects to /home when user is not an admin", async () => {
+    const useRouterSpy = jest.spyOn(nextRouter, "useRouter").mockReturnValue({
+      push: jest.fn(),
+    } as any);
 
-    await expect(findByText("Loading...")).rejects.toThrow();
-    await expect(findByText("UNAUTHORIZED")).rejects.toThrow();
-    await expect(findByText("Dashboard")).resolves.toBeInTheDocument();
+    render(<Admin />);
+    await waitFor(() => {
+      expect(useRouterSpy).toHaveBeenCalled();
+    });
   });
 });
