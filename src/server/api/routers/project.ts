@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { db } from "../../db";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const project = createTRPCRouter({
   create: protectedProcedure
@@ -28,7 +28,7 @@ export const project = createTRPCRouter({
       });
       return project;
     }),
-  edit: publicProcedure
+  edit: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -141,54 +141,6 @@ export const project = createTRPCRouter({
         throw new Error(`Failed to fetch project: ${error}`);
       }
     }),
-  getById: publicProcedure
-    .input(
-      z.object({
-        id: z.string(),
-      }),
-    )
-    .query(async (opts) => {
-      const { input } = opts;
-
-      try {
-        const foundProject = await db.projects.findUnique({
-          where: { id: input.id },
-        });
-
-        if (!foundProject) {
-          throw new Error("Project not found");
-        }
-
-        return foundProject;
-      } catch (error) {
-        throw new Error(`Failed to fetch project: ${error}`);
-      }
-    }),
-    removeImage: publicProcedure.input(
-      z.object({
-        id: z.string(),
-      }),
-    )
-    .mutation(async(opts)=>{
-      const {input} = opts;
-
-      try {
-        const foundProject = await db.projects.findUnique({
-          where: { id: input.id },
-        });
-
-        if (!foundProject) {
-          throw new Error("Project not found");
-        }
-
-        else{
-          foundProject.image = ""
-        }
-      } catch (error) {
-        throw new Error(`Failed to fetch project: ${error}`);
-      }
-    })
-
 });
 
 export const projectCaller = project.createCaller;

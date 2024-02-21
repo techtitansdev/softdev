@@ -15,27 +15,27 @@ import { useRouter } from "next/router";
 export const EditProject = () => {
   const router = useRouter();
   const { id } = router.query;
+  const animatedComponents = makeAnimated();
+  const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
+  const [publicId, setPublicId] = useState("");
+
+  const getProject = api.project.getById.useQuery({ id: id as string });
 
   const deleteImage = api.project.removeImage.useMutation();
 
   const editProject = api.project.edit.useMutation({
     onSuccess: () => {
       setSuccessModalOpen(true);
-      router.push("/admin/projects");
+      setTimeout(() => {
+        router.push("/admin/projects");
+      }, 2000);
       console.log(projectData);
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Edit Project Failed", error);
     },
   });
-
-  const animatedComponents = makeAnimated();
-  const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
-
-  const [imageUrl, setImageUrl] = useState("");
-  const [publicId, setPublicId] = useState("");
-
-  const getProject = api.project.getById.useQuery({ id: id as string });
 
   const [projectData, setProjectData] = useState<ProjectData>({
     title: "",
@@ -340,17 +340,31 @@ export const EditProject = () => {
                 onEditorChange={handleEditorChange}
                 apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
                 init={{
-                  height: 500,
-                  menubar: false,
+                  width: "100%",
+                  height: 600,
                   plugins: [
-                    "advlist autolink lists link image charmap print preview anchor",
-                    "searchreplace visualblocks code fullscreen",
-                    "insertdatetime media table paste code help wordcount",
+                    "advlist",
+                    "link",
+                    "image",
+                    "lists",
+                    "preview",
+                    "pagebreak",
+                    "wordcount",
+                    "fullscreen",
+                    "insertdatetime",
+                    "media",
+                    "table",
+                    "emoticons",
+                    "image code",
                   ],
                   toolbar:
-                    "undo redo | formatselect | bold italic backcolor | \
-            alignleft aligncenter alignright alignjustify | \
-            bullist numlist outdent indent | removeformat | help",
+                    "undo redo |fontfamily fontsize | bold italic underline | alignleft aligncenter alignright alignjustify |" +
+                    "bullist numlist outdent indent | link image | preview media fullscreen | " +
+                    "forecolor backcolor emoticons",
+
+                  menubar: "file edit insert view  format table tools",
+                  content_style:
+                    "body{font-family:Helvetica,Arial,sans-serif; font-size:16px}",
                 }}
               />
 
