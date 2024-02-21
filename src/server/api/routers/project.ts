@@ -3,7 +3,7 @@ import { db } from "../../db";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const project = createTRPCRouter({
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         title: z.string(),
@@ -67,7 +67,7 @@ export const project = createTRPCRouter({
       });
       return updatedProject;
     }),
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -89,10 +89,87 @@ export const project = createTRPCRouter({
         where: { id: input.id },
       });
     }),
-    getAll: publicProcedure
-    .query(async () => {
-      const allProjects = await db.projects.findMany();
-      return allProjects;
+  getAll: protectedProcedure.query(async () => {
+    const allProjects = await db.projects.findMany();
+    return allProjects;
+  }),
+  getAllProjectTitles: protectedProcedure.query(async () => {
+    const allProjects = await db.projects.findMany({ select: { title: true } });
+    return allProjects.map(project => project.title);
+  }),
+
+  getByTitle: protectedProcedure
+  .input(
+    z.object({
+      title: z.string(),
+    }),
+  )
+  .query(async (opts) => {
+    const { input } = opts;
+
+    try {
+      const foundProject = await db.projects.findFirst({
+        where: { title: input.title },
+      });
+
+      if (!foundProject) {
+        throw new Error("Project not found");
+      }
+
+      return foundProject;
+    } catch (error) {
+      throw new Error(`Failed to fetch project: ${error}`);
+    }
+  }),
+
+
+  
+  getById: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .query(async (opts) => {
+      const { input } = opts;
+
+      try {
+        const foundProject = await db.projects.findUnique({
+          where: { id: input.id },
+        });
+
+        if (!foundProject) {
+          throw new Error("Project not found");
+        }
+
+        return foundProject;
+      } catch (error) {
+        throw new Error(`Failed to fetch project: ${error}`);
+      }
+    }),
+
+  removeImage: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+
+      try {
+        const foundProject = await db.projects.findUnique({
+          where: { id: input.id },
+        });
+
+        if (!foundProject) {
+          throw new Error("Project not found");
+        } else {
+          foundProject.image = "";
+        }
+      } catch (error) {
+        throw new Error(`Failed to fetch project: ${error}`);
+      }
     }),
 });
 

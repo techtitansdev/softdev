@@ -10,6 +10,7 @@ export const fundraiser = createTRPCRouter({
         funds: z.number(),
         goal: z.number(),
         targetDate: z.date(),
+        donors: z.number()
       }),
     )
     .mutation(async (opts) => {
@@ -36,7 +37,11 @@ export const fundraiser = createTRPCRouter({
       return fundraiser;
     }),
   getAll: publicProcedure.query(async () => {
-    const allFundraisers = await db.fundraisers.findMany();
+    const allFundraisers = await db.fundraisers.findMany({
+      include: {
+        project:true
+      }
+    });
     return allFundraisers;
   }),
   getById: publicProcedure
