@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { db } from "../../db";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const project = createTRPCRouter({
   create: protectedProcedure
