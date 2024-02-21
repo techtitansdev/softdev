@@ -86,6 +86,8 @@
 
 //         console.log("Original project:", input);
 //         console.log("Edited project:", result);
+//         console.log("Original project:", input);
+//         console.log("Edited project:", result);
 
 //         expect(result.title).toBe(editInput.title);
 //         expect(result.description).toBe(editInput.description);
