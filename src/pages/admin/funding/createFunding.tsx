@@ -6,29 +6,61 @@ import { api } from "~/utils/api";
 import { categoriesOption } from "~/data/categories";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import { ProjectData } from "~/types/projectData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 
-function CreateProjects() {
-  const createProject = api.project.create.useMutation();
+interface FundingData {
+  title: string;
+  project: string;
+  description: string;
+  image: string;
+  hub: string;
+  category: string;
+  type: string;
+  beneficiaries: string;
+  milestones: string;
+  goal: number;
+  date: string;
+  about: string;
+}
+
+function CreateFunding() {
+  const createFundraiser = api.fundraiser.create.useMutation();
+  const [project, setProject] = useState("");
+  const getProjects = api.project.getAllProjectTitles.useQuery();
+  const getSpecificProjects = api.project.getByTitle.useQuery({title:project});
+  console.log(getSpecificProjects.data)
+  // Check if getProjects.data is defined before accessing it
+  const transformedProjects =
+    getProjects.data?.map((project) => ({
+      label: project,
+      value: project,
+    })) || [];
+
+  //   console.log(transformedProjects);
+
   const animatedComponents = makeAnimated();
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
   const router = useRouter();
 
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
+  
 
-  const [projectData, setProjectData] = useState<ProjectData>({
+  const [fundingData, setFundingData] = useState<FundingData>({
     title: "",
+    project: "",
     description: "",
     image: "",
     hub: "",
     category: "",
     type: "",
     beneficiaries: "",
+    milestones: "",
+    goal: 0,
+    date: "",
     about: "",
   });
 
@@ -41,7 +73,7 @@ function CreateProjects() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setProjectData({ ...projectData, [name]: value });
+    setFundingData({ ...fundingData, [name]: value });
   };
 
   const handleImageUpload = (result: CldUploadWidgetResults) => {
@@ -66,24 +98,23 @@ function CreateProjects() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    //     const result = await createFundraiser.mutateAsync({
+    //       ...fundingData,
+    //       about: editorRef.current.getContent(),
+    //       image: imageUrl,
+    //     });
+    //     setSuccessModalOpen(true);
 
-    try {
-      const result = await createProject.mutateAsync({
-        ...projectData,
-        about: editorRef.current.getContent(),
-        image: imageUrl,
-      });
-      setSuccessModalOpen(true);
-
-      setTimeout(() => {
-        router.push("/admin/projects");
-      }, 2000);
-      console.log("Project created:", result);
-    } catch (error) {
-      console.error("Error creating project:", error);
-    }
+    //     setTimeout(() => {
+    //       router.push("/admin/funding");
+    //     }, 2000);
+    //     console.log("Funded project has been created:", result);
+    //   } catch (error) {
+    //     console.error("Error creating funded project:", error);
+    //   }   try {
   };
-
+  console.log(project);
+  console.log(fundingData.hub);
   return (
     <div>
       <Head>
@@ -97,20 +128,42 @@ function CreateProjects() {
 
         <div className="mx-auto p-10">
           <div className="mb-10 mt-16 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
-            CREATE PROJECT
+            CREATE FUNDING
           </div>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
+              <label htmlFor="categories" className="font-medium text-gray-700">
+                Project
+              </label>
+
+              <Select
+                options={transformedProjects}
+                value={transformedProjects.find((option) => option.value === fundingData.project)}
+                onChange={(selectedOption) => {
+      
+                  setFundingData({
+                    ...fundingData,
+                    project: selectedOption ? selectedOption.value : "",
+                    hub: getSpecificProjects.data?.hub ?? "" ,
+                    category: getSpecificProjects.data?.category ?? "" ,
+                    beneficiaries: getSpecificProjects.data?.beneficiaries ?? "" ,     
+                  });
+                  setProject(selectedOption ? selectedOption.value : "")
+                }}
+                className="z-20"
+              />
+            </div>
+            <div className="mb-4">
               <label htmlFor="title" className="font-medium text-gray-700">
-                Project Title
+                Fundraiser Title
               </label>
 
               <input
                 type="text"
                 id="title"
                 name="title"
-                value={projectData.title}
+                value={fundingData.title}
                 onChange={handleChange}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm"
                 required
@@ -122,14 +175,14 @@ function CreateProjects() {
                 htmlFor="description"
                 className="font-medium text-gray-700"
               >
-                Project Description
+                Fundraiser Description
               </label>
 
               <input
                 type="text"
                 id="description"
                 name="description"
-                value={projectData.description}
+                value={fundingData.description}
                 onChange={handleChange}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm"
                 required
@@ -171,7 +224,7 @@ function CreateProjects() {
                     fill
                     sizes="72"
                     className="absolute inset-0 object-cover"
-                    alt={projectData.title}
+                    alt={fundingData.title}
                   />
                 )}
               </CldUploadButton>
@@ -195,7 +248,7 @@ function CreateProjects() {
                 type="text"
                 id="hub"
                 name="hub"
-                value={projectData.hub}
+                value={fundingData.hub}
                 onChange={handleChange}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm"
                 required
@@ -209,18 +262,18 @@ function CreateProjects() {
 
               <Select
                 options={categoriesOption}
-                closeMenuOnSelect={true}
+                closeMenuOnSelect={false}
                 components={animatedComponents}
                 isMulti
                 value={categoriesOption.find(
-                  (option) => option.value === projectData.category,
+                  (option) => option.value === fundingData.category,
                 )}
                 onChange={(selectedOption) => {
                   const selectedValues = selectedOption
                     ? selectedOption.map((option) => option.value)
                     : [];
-                  setProjectData({
-                    ...projectData,
+                  setFundingData({
+                    ...fundingData,
                     category: selectedValues.join(","),
                   });
                 }}
@@ -235,10 +288,10 @@ function CreateProjects() {
 
               <Select
                 options={type}
-                value={type.find((option) => option.value === projectData.type)}
+                value={type.find((option) => option.value === fundingData.type)}
                 onChange={(selectedOption) => {
-                  setProjectData({
-                    ...projectData,
+                  setFundingData({
+                    ...fundingData,
                     type: selectedOption ? selectedOption.value : "",
                   });
                 }}
@@ -258,7 +311,55 @@ function CreateProjects() {
                 type="text"
                 id="beneficiaries"
                 name="beneficiaries"
-                value={projectData.beneficiaries}
+                value={fundingData.beneficiaries}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                required
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="milestones" className="font-medium text-gray-700">
+                Milestones
+              </label>
+
+              <input
+                type="text"
+                id="milestones"
+                name="milestones"
+                value={fundingData.beneficiaries}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                required
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="funding" className="font-medium text-gray-700">
+                Funding Goal
+              </label>
+
+              <input
+                type="text"
+                id="funding"
+                name="funding"
+                value={fundingData.beneficiaries}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                required
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="date" className="font-medium text-gray-700">
+                Target Date
+              </label>
+
+              <input
+                type="date"
+                id="date"
+                name="date"
+                value={fundingData.date}
                 onChange={handleChange}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm"
                 required
@@ -334,4 +435,4 @@ function CreateProjects() {
   );
 }
 
-export default CreateProjects;
+export default CreateFunding;

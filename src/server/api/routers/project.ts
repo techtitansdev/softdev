@@ -93,7 +93,37 @@ export const project = createTRPCRouter({
     const allProjects = await db.projects.findMany();
     return allProjects;
   }),
+  getAllProjectTitles: protectedProcedure.query(async () => {
+    const allProjects = await db.projects.findMany({ select: { title: true } });
+    return allProjects.map(project => project.title);
+  }),
 
+  getByTitle: protectedProcedure
+  .input(
+    z.object({
+      title: z.string(),
+    }),
+  )
+  .query(async (opts) => {
+    const { input } = opts;
+
+    try {
+      const foundProject = await db.projects.findFirst({
+        where: { title: input.title },
+      });
+
+      if (!foundProject) {
+        throw new Error("Project not found");
+      }
+
+      return foundProject;
+    } catch (error) {
+      throw new Error(`Failed to fetch project: ${error}`);
+    }
+  }),
+
+
+  
   getById: protectedProcedure
     .input(
       z.object({
