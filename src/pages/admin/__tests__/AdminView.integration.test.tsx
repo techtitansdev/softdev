@@ -2,27 +2,23 @@ import React from "react";
 import { render } from "@testing-library/react";
 import { Admin } from "../index";
 
+jest.mock("@clerk/nextjs", () => ({
+  useUser: jest.fn(() => ({
+    user: { publicMetadata: { admin: "admin" } },
+    isLoaded: true,
+  })),
+}));
+
 jest.mock("next/router", () => ({
-  useRouter() {
-    return {
-      route: "",
-      pathname: "",
-      query: "",
-      asPath: "",
-    };
-  },
+  useRouter: jest.fn(),
 }));
 
 describe("Admin component", () => {
-    test("renders title and meta description in head", () => {
-        render(<Admin />);
-        
-        const titleElement = document.querySelector("title");
-        expect(titleElement).toBeDefined();
+  test("renders admin view", async () => {
+    const { findByText } = render(<Admin />);
 
-        const descriptionMetaElement = document.querySelector(
-            'meta[name="description"]'
-        );
-        expect(descriptionMetaElement).toBeDefined();
-    });
+    await expect(findByText("Loading...")).rejects.toThrow();
+    await expect(findByText("UNAUTHORIZED")).rejects.toThrow();
+    await expect(findByText("Dashboard")).resolves.toBeInTheDocument();
+  });
 });
