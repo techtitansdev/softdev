@@ -1,4 +1,4 @@
-import ProjectDetailsPage from "../../[id]";
+import ProjectDetailsPage from "../[id]";
 import { render } from "@testing-library/react";
 
 // Mock useRouter

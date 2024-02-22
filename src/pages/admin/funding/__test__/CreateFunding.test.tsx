@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 
 import { api } from "~/utils/api";
 import { CldUploadButton } from "next-cloudinary";
-import CreateFunding from "../../create";
+import CreateFunding from "../create";
 
 // Mocking external dependencies
 jest.mock("~/utils/api", () => ({
