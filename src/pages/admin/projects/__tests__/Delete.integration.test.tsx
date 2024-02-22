@@ -1,24 +1,32 @@
-const { Builder, By, Key, until } = require('selenium-webdriver');
+import { Builder, By, Key, until, WebDriver } from 'selenium-webdriver';
+import chrome from 'selenium-webdriver/chrome';
+import path from 'chromedriver';
 
-(async function example() {
-  let driver = await new Builder().forBrowser('chrome').build();
+// const service = new chrome.ServiceBuilder(path).build();
+// chrome.setDefaultService(service);
 
-  try {
-    await driver.get('http://localhost:3000/admin/projects');
+const appUrl = 'http://localhost:3000/admin/project';
 
-    const projectId = 'your_project_id';
-    const deleteButton = await driver.findElement(By.id(`delete-button-${projectId}`));
+describe('Delete Project Feature', () => {
+  let driver: WebDriver;
+
+  beforeAll(async () => {
+    driver = await new Builder().forBrowser('chrome').build();
+    await driver.get(appUrl);
+  });
+
+  afterAll(async () => {
+    await driver.quit();
+  });
+
+  it('should delete a project', async () => {
+    const projectId = 'example-project-id';
+    const deleteButton = await driver.findElement(By.id(`delete-${projectId}`));
     await deleteButton.click();
 
-    await driver.wait(until.elementLocated(By.id('delete-modal')), 10000);
-
-    const confirmButton = await driver.findElement(By.id('confirm-delete-button'));
+    const confirmButton = await driver.findElement(By.id('confirm-delete'));
     await confirmButton.click();
 
-    await driver.wait(until.stalenessOf(deleteButton), 10000);
-
-    console.log('Project deleted successfully!');
-  } finally {
-    await driver.quit();
-  }
-})();
+    await driver.wait(until.stalenessOf(deleteButton), 5000);
+  });
+});
