@@ -4,60 +4,12 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
-import FundingCard from "./components/fundingCard";
 import Link from "next/link";
+import FundingCard from "./components/FundingCard";
 
 const AdminFunding = () => {
-  const mockFundingData = [
-    {
-      about: "<p>aasdasdasd</p>",
-      beneficiaries: "ALl",
-      category: "Air Pollution,Ageing,Justice",
-      description:
-        " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aeneaneu ante ac nisi rutrum viverra at eget ligula. Duis egestascondimentum nunc ut egestas.",
-      hub: "Iloilo",
-      id: "clss7s8zddsdfg0000woh4g0hbzugm",
-      image: "/tech4all.png",
-      published: false,
-      title: "Tech For All",
-      type: "Project",
-      goal: "10000",
-      donors: "35",
-      raised: "3000",
-    },
-    {
-      about: "<p>aasdasdasd</p>",
-      beneficiaries: "All",
-      category: "Air Pollution,Ageing,Justice",
-      description: "Lorem ipsum dolor sit amet",
-      hub: "Iloilo",
-      id: "clss7fsds8zg0000woh4g0hbzugm",
-      image: "/lungti.png",
-      published: false,
-      title: "Lungti",
-      type: "Project",
-      goal: "10000",
-      donors: "25",
-      raised: "19500",
-    },
-    {
-      about: "<p>aasdasdasd</p>",
-      beneficiaries: "All",
-      category: "Air Pollution,Ageing,Justice",
-      description: "Lorem ipsum dolor sit amet",
-      hub: "Iloilo",
-      id: "clss7s5348zg0000woh4g0hbzugm",
-      image: "/youvote.png",
-      published: false,
-      title: "YouVote",
-      type: "Project",
-      goal: "10000",
-      donors: "25",
-      raised: "19500",
-    },
-  ];
   const [projectData, setProjectData] = useState<any>([]);
-  
+
   const getFunding = api.fundraiser.getAll.useQuery();
   const deleteProject = api.project.delete.useMutation();
   console.log(getFunding.data);
@@ -112,7 +64,7 @@ const AdminFunding = () => {
           </div>
 
           <div className="mt-10 py-2 md:flex">
-            <Link href={`/admin/funding/createFunding`}>
+            <Link href={`/admin/funding/create`}>
               <button className="w-72 rounded-lg bg-blue-800 py-2 text-lg font-light text-white hover:bg-blue-900">
                 Create Funding
               </button>

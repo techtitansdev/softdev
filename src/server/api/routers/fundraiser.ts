@@ -10,7 +10,7 @@ export const fundraiser = createTRPCRouter({
         funds: z.number(),
         goal: z.number(),
         targetDate: z.date(),
-        donors: z.number()
+        donors: z.number(),
       }),
     )
     .mutation(async (opts) => {
@@ -39,32 +39,33 @@ export const fundraiser = createTRPCRouter({
   getAll: publicProcedure.query(async () => {
     const allFundraisers = await db.fundraisers.findMany({
       include: {
-        project:true
-      }
+        project: true,
+      },
     });
     return allFundraisers;
   }),
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(
       z.object({
         id: z.string(),
       }),
     )
-    .mutation(async (opts) => {
+    .query(async (opts) => {
       const { input } = opts;
 
       try {
-        const foundFundraiser = await db.fundraisers.findUnique({
-          where: {
-            id: input.id,
+        const foundFunding = await db.fundraisers.findUnique({
+          where: { id: input.id },
+          include: {
+            project: true,
           },
         });
 
-        if (!foundFundraiser) {
+        if (!foundFunding) {
           throw new Error("Fundraiser not found");
         }
 
-        return foundFundraiser;
+        return foundFunding;
       } catch (error) {
         throw new Error(`Failed to fetch fundraiser: ${error}`);
       }
