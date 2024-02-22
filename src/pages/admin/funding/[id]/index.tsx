@@ -53,7 +53,7 @@ const FundingPage: React.FC = () => {
       <div className="flex">
         <Sidebar />
 
-        <div className="flex-col">
+        <div className="flex-col mx-aut">
           <div className="mx-auto mt-16 flex flex-col-reverse items-center justify-between px-6 pb-10 sm:px-10 lg:flex-row lg:px-12 lg:pt-20 xl:px-20">
             {fundingData && (
               <div key={fundingData.id} className="w-full lg:w-1/2">

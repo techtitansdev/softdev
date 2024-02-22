@@ -1,10 +1,6 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
- // Update the path accordingly
 import { api } from "~/utils/api";
-import { useRouter } from "next/router";
-import CreateFunding from "../../create";
-
-
+import CreateFunding from "../create";
 
 jest.mock("~/utils/api", () => ({
   api: {
