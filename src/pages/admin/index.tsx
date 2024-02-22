@@ -3,7 +3,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { Sidebar } from "~/components/Sidebar";
-import { api } from "~/utils/api";
 
 export const Admin = () => {
   const { user, isLoaded } = useUser();
@@ -39,3 +38,5 @@ export const Admin = () => {
     </>
   );
 };
+
+export default Admin;
