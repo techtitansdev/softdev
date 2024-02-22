@@ -1,6 +1,7 @@
 import Head from "next/head";
-import { LoginForm } from "./LoginForm";
+
 import { Footer } from "~/components/Footer";
+import { LoginForm } from "./LoginForm";
 
 const Login = () => {
   return (

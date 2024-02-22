@@ -57,15 +57,15 @@ const AdminFunding = () => {
     },
   ];
   const [projectData, setProjectData] = useState<any>([]);
-
-  const getProjects = api.project.getAll.useQuery();
+  
+  const getFunding = api.fundraiser.getAll.useQuery();
   const deleteProject = api.project.delete.useMutation();
-  console.log(getProjects.data);
+  console.log(getFunding.data);
   useEffect(() => {
-    if (getProjects.data) {
-      setProjectData(mockFundingData);
+    if (getFunding.data) {
+      setProjectData(getFunding.data);
     }
-  }, [getProjects.data]);
+  }, [getFunding.data]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -112,7 +112,7 @@ const AdminFunding = () => {
           </div>
 
           <div className="mt-10 py-2 md:flex">
-            <Link href={`/admin/projects/create`}>
+            <Link href={`/admin/funding/createFunding`}>
               <button className="w-72 rounded-lg bg-blue-800 py-2 text-lg font-light text-white hover:bg-blue-900">
                 Create Funding
               </button>

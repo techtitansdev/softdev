@@ -5,21 +5,22 @@ import React, { useEffect } from "react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 
-const Admin = () => {
+export const Admin = () => {
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin;
   const router = useRouter();
+  console.log(user_role);
 
   useEffect(() => {
-    if (isLoaded && user_role !== 'admin') {
-      router.push('/home');
+    if (isLoaded && user_role !== "admin") {
+      router.push("/home");
     }
   }, [isLoaded, user_role]);
 
   if (!isLoaded) {
     return <div>Loading...</div>;
   }
-  if (isLoaded && user_role !== 'admin'){
+  if (isLoaded && user_role !== "admin") {
     return <div>UNAUTHORIZED</div>;
   }
 
@@ -38,5 +39,3 @@ const Admin = () => {
     </>
   );
 };
-
-export default Admin;

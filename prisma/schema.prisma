@@ -79,6 +79,7 @@ model Fundraisers {
   projectId  String     @unique()
   funds      Int
   goal       Int
+  donors     Int
   targetDate DateTime
   created    DateTime   @default(now())
   updated    DateTime   @updatedAt()
