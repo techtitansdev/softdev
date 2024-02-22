@@ -28,7 +28,7 @@ const FundingCard: React.FC<ProjectCardProps> = ({
           key={fundingData.id}
           className="hover:scale-104 transform rounded-md pb-6 shadow transition duration-500 ease-in-out hover:-translate-y-1"
         >
-          <Link href={`/projects/${encodeURIComponent(fundingData.title)}`}>
+          <Link href={`/admin/funding/${encodeURIComponent(fundingData.id)}`}>
             <img
               className="object-obtain h-56 w-[358px] rounded-md"
               src={fundingData.project.image}

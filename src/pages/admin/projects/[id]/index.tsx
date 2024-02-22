@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 
 const ProjectDetailsPage = () => {
@@ -16,7 +17,9 @@ const ProjectDetailsPage = () => {
   }, [getProject.data, projectData]);
 
   return (
-    <div>
+    <div className="flex">
+      <Sidebar />
+
       {projectData && (
         <>
           <div dangerouslySetInnerHTML={{ __html: projectData.about }} />
