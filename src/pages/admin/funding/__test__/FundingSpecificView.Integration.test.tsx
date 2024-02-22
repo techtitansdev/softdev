@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import FundingPage from "../../[id]";
+import FundingPage from "../[id]";
 
 
 jest.mock("next/router", () => ({
