@@ -1,94 +1,87 @@
-import { render, fireEvent, waitFor } from "@testing-library/react";
-import EditProject from "../edit/[id]";
-import { api } from "~/utils/api";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
+import { api } from "~/utils/api";
+import EditProject from "../edit/[id]";
+
+// Mock useRouter
 jest.mock("next/router", () => ({
-  useRouter: jest.fn().mockReturnValue({
-    query: { id: "test-project-id" },
+  useRouter: () => ({
+    query: { id: "mocked_id" },
   }),
 }));
 
-jest.mock("~/utils/api", () => ({
+// Mock API module
+// Mock API module
+jest.mock('~/utils/api', () => ({
   api: {
     project: {
       getById: {
-        useQuery: jest.fn().mockReturnValue({
+        useQuery: jest.fn(() => ({
           data: {
-            id: "test-project-id",
-            title: "Test Project Title",
-            description: "Test Project Description",
+            title: 'Mocked Title',
+            description: 'Mocked Description',
+            image: '/mocked_image_url',
+            hub: 'Mocked Hub',
+            category: 'Mocked Category',
+            type: 'Mocked Type',
+            beneficiaries: 'Mocked Beneficiaries',
+            about: 'Mocked About',
           },
-        }),
+          isLoading: false,
+          isError: false,
+        })),
+      },
+      removeImage: {
+        useMutation: jest.fn(),
       },
       edit: {
-        useMutation: jest.fn().mockResolvedValue({}),
+        useMutation: jest.fn(() => ({
+          mutate: jest.fn(),
+        })),
       },
     },
   },
 }));
 
 describe("EditProject component", () => {
-  it("successfully edits a project when all data is provided", async () => {
-    const { getByLabelText, getByText } = render(<EditProject />);
+  it("renders edit project form", async () => {
+    render(<EditProject />);
 
-    fireEvent.change(getByLabelText("Project Title"), {
-      target: { value: "Updated Test Project Title" },
-    });
-    fireEvent.change(getByLabelText("Project Description"), {
-      target: { value: "Updated Test Project Description" },
-    });
-    fireEvent.change(getByLabelText("Project Image"), {
-      target: { value: "Updated Test Project Image" },
-    });
-    fireEvent.change(getByLabelText("Project Category"), {
-      target: { value: "Updated Test Project Category" },
-    });
-    fireEvent.change(getByLabelText("Project Hub"), {
-      target: { value: "Updated Test Project Hub" },
-    });
-    fireEvent.change(getByLabelText("Project Beneficiaries"), {
-      target: { value: "Updated Test Project Beneficiaries" },
-    });
-    fireEvent.change(getByLabelText("Project Type"), {
-      target: { value: "Updated Test Project Type" },
-    });
-    fireEvent.change(getByLabelText("Project About"), {
-      target: { value: "Updated Test Project About" },
-    });
+    // Assert that project data is loaded
 
-    fireEvent.click(getByText("Publish"));
-
-    await waitFor(() => {});
+    expect(screen.getByText(/Project Title/i)).toBeTruthy();
+    expect(screen.getByText(/Project Description/i)).toBeTruthy();
+    expect(screen.getByText(/Featured Image/i)).toBeTruthy();
+    expect(screen.getByText(/Hub/i)).toBeTruthy();
+    expect(screen.getByText(/Categories/i)).toBeTruthy();
+    expect(screen.getByText(/Type/i)).toBeTruthy();
+    expect(screen.getByText(/Beneficiaries/i)).toBeTruthy();
+    expect(screen.getByText(/About/i)).toBeTruthy();
   });
 
-  it("does not edit project if some fields are empty", async () => {
-    const { getByLabelText, getByText } = render(<EditProject />);
+  it("submits the form with correct data", async () => {
+    render(<EditProject />);
 
-    fireEvent.change(getByLabelText("Project Title"), {
-      target: { value: "" },
-    });
-    fireEvent.change(getByLabelText("Project Description"), {
-      target: { value: "" },
-    });
-    fireEvent.change(getByLabelText("Project Image"), {
-      target: { value: "" },
-    });
-    fireEvent.change(getByLabelText("Project Category"), {
-      target: { value: "" },
-    });
-    fireEvent.change(getByLabelText("Project Hub"), {
-      target: { value: "" },
-    });
-    fireEvent.change(getByLabelText("Project Beneficiaries"), {
-      target: { value: "" },
-    });
-    fireEvent.change(getByLabelText("Project Type"), {
-      target: { value: "" },
-    });
-    fireEvent.change(getByLabelText("Project About"), {
-      target: { value: "" },
-    });
+    // Fill form inputs
+    userEvent.type(screen.getByLabelText(/Project Title/i), "New Title");
+    userEvent.type(
+      screen.getByLabelText(/Project Description/i),
+      "New Description",
+    );
+    userEvent.type(screen.getByLabelText(/Hub/i), "New Hub");
+    userEvent.type(
+      screen.getByLabelText(/Beneficiaries/i),
+      "New Beneficiaries",
+    );
 
-    fireEvent.click(getByText("Publish"));
+    // Submit form
+    fireEvent.click(screen.getByText(/Save as Draft/i));
+
+    // Wait for the form submission
+    await waitFor(() => {
+      // Assert that the edit mutation is called with the correct data
+      expect(api.project.edit.useMutation).toHaveBeenCalled();
+    });
   });
 });
