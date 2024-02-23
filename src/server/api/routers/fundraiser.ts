@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { db } from "../../db";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const fundraiser = createTRPCRouter({
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         projectId: z.string(),
@@ -46,11 +46,11 @@ export const fundraiser = createTRPCRouter({
       const { input } = opts;
 
       //check if project exists:
-      const existingProject = await db.fundraisers.findUnique({
+      const existingFundraiser = await db.fundraisers.findUnique({
         where: { id: input.id },
       });
 
-      if (!existingProject) {
+      if (!existingFundraiser) {
         throw new Error("Fundraiser Does Not Exist");
       }
 
@@ -59,7 +59,7 @@ export const fundraiser = createTRPCRouter({
       });
     }),
 
-  getAll: publicProcedure.query(async () => {
+  getAll: protectedProcedure.query(async () => {
     const allFundraisers = await db.fundraisers.findMany({
       include: {
         project: true,

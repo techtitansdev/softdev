@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import Link from "next/link";
-import FundingCard from "./components/FundingCard";
+import FundingCard from "./components/FundingCardComponent";
 
 const AdminFunding = () => {
   const [projectData, setProjectData] = useState<any>([]);

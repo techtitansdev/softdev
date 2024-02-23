@@ -2,12 +2,12 @@ import { useState } from "react";
 import Link from "next/link";
 import DeleteModal from "~/components/DeleteModal";
 
-interface ProjectCardProps {
+interface FundingCardProps {
   fundingData: any;
   handleDelete: () => void;
 }
 
-const FundingCard: React.FC<ProjectCardProps> = ({
+const FundingCard: React.FC<FundingCardProps> = ({
   fundingData,
   handleDelete,
 }) => {
