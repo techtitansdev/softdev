@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import FundingCard from "../FundingCard";
+import FundingCard from "../FundingCardComponent";
 
 describe("FundingCard", () => {
   const mockFundingData = {

@@ -5,13 +5,14 @@ import React, { useEffect, useState } from "react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import Link from "next/link";
-import FundingCard from "./components/FundingCard";
+import FundingCard from "./components/FundingCardComponent";
 
 const AdminFunding = () => {
   const [projectData, setProjectData] = useState<any>([]);
 
   const getFunding = api.fundraiser.getAll.useQuery();
-  const deleteProject = api.project.delete.useMutation();
+  const deleteProject = api.fundraiser.delete.useMutation();
+
   console.log(getFunding.data);
   useEffect(() => {
     if (getFunding.data) {
@@ -22,12 +23,12 @@ const AdminFunding = () => {
   const handleDelete = async (id: string) => {
     try {
       deleteProject.mutate({ id });
-      console.log("Project deleted successfully.");
+      console.log("Fundraiser deleted successfully.");
       setProjectData((prevProjects: any[]) =>
-        prevProjects.filter((project: { id: string }) => project.id !== id),
+        prevProjects.filter((funding: { id: string }) => funding.id !== id),
       );
     } catch (error) {
-      console.error("Error deleting project:", error);
+      console.error("Error deleting fundraiser:", error);
     }
   };
 

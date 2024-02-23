@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import FundingCard from "../components/FundingCard";
+import FundingCard from "../components/FundingCardComponent";
 
 describe("FundingCard component", () => {
   const fundingData = {
