@@ -12,7 +12,7 @@ import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 
-export const EditProject = () => {
+function EditProject() {
   const router = useRouter();
   const { id } = router.query;
   const animatedComponents = makeAnimated();
