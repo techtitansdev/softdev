@@ -33,7 +33,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             <img
               className="object-obtain h-56 w-[280px] rounded-sm lg:w-[300px]"
               src={projectData.image}
-              alt="project-image"
+              alt={projectData.image}
             />
           </Link>
 
