@@ -24,7 +24,7 @@ describe("Collection of Projects", () => {
   const handleDelete = jest.fn();
 
   test("renders project cards correctly", () => {
-    const { getAllByText, getAllByAltText } = render(
+    const { getAllByText } = render(
       <>
         {projectData.map((project) => (
           <ProjectCard
