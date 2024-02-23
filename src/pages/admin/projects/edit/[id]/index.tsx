@@ -60,19 +60,35 @@ function EditProject() {
 
   useEffect(() => {
     if (getProject.data) {
-      setProjectData({
-        title: getProject.data.title,
-        description: getProject.data.description,
-        image: getProject.data.image,
-        hub: getProject.data.hub,
-        category: getProject.data.category,
-        type: getProject.data.type,
-        beneficiaries: getProject.data.beneficiaries,
-        about: getProject.data.about,
+      setProjectData(prevData => {
+        if (
+          prevData.title !== getProject.data.title ||
+          prevData.description !== getProject.data.description ||
+          prevData.image !== getProject.data.image ||
+          prevData.hub !== getProject.data.hub ||
+          prevData.category !== getProject.data.category ||
+          prevData.type !== getProject.data.type ||
+          prevData.beneficiaries !== getProject.data.beneficiaries ||
+          prevData.about !== getProject.data.about
+        ) {
+          return {
+            title: getProject.data.title,
+            description: getProject.data.description,
+            image: getProject.data.image,
+            hub: getProject.data.hub,
+            category: getProject.data.category,
+            type: getProject.data.type,
+            beneficiaries: getProject.data.beneficiaries,
+            about: getProject.data.about,
+          };
+        } else {
+          return prevData;
+        }
       });
       setImageUrl(getProject.data.image);
     }
   }, [getProject.data]);
+  
 
   const editorRef: MutableRefObject<any> = useRef(null);
 
@@ -156,6 +172,7 @@ function EditProject() {
                   type="text"
                   id="title"
                   name="title"
+                  placeholder="title"
                   value={projectData.title}
                   className="mt-1 w-full rounded-md border p-2 shadow-sm"
                   required
@@ -175,6 +192,7 @@ function EditProject() {
                   type="text"
                   id="description"
                   name="description"
+                  placeholder="description"
                   value={projectData.description}
                   onChange={handleChange}
                   className="mt-1 w-full rounded-md border p-2 shadow-sm"
@@ -246,6 +264,7 @@ function EditProject() {
                   type="text"
                   id="hub"
                   name="hub"
+                  placeholder="hub"
                   value={projectData.hub}
                   onChange={handleChange}
                   className="mt-1 w-full rounded-md border p-2 shadow-sm"
@@ -264,6 +283,7 @@ function EditProject() {
                 <Select
                   id="long-value-select"
                   instanceId="long-value-select"
+                  placeholder="categories"
                   options={categoriesOption}
                   closeMenuOnSelect={false}
                   components={animatedComponents}
@@ -295,6 +315,7 @@ function EditProject() {
                 <Select
                   id="long-value-select"
                   instanceId="long-value-select"
+                  placeholder="type"
                   options={type}
                   value={type.find(
                     (option) => option.value === projectData.type,
@@ -321,6 +342,7 @@ function EditProject() {
                   type="text"
                   id="beneficiaries"
                   name="beneficiaries"
+                  placeholder="beneficiaries"
                   value={projectData.beneficiaries}
                   onChange={handleChange}
                   className="mt-1 w-full rounded-md border p-2 shadow-sm"
