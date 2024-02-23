@@ -1,9 +1,11 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
 import { api } from "~/utils/api";
 import ProjectCard from "./ProjectCard";
+import FilterByCategory from "~/components/FilterByCategory";
+import { RiSearchLine } from "react-icons/ri";
 
 const Projects = () => {
   const [projectData, setProjectData] = useState<any>([]);
@@ -15,6 +17,36 @@ const Projects = () => {
     }
   }, [getProjects.data]);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Categories");
+  const [isCategoryListOpen, setIsCategoryListOpen] = useState(false);
+
+  const toggleCategoryList = () => {
+    setIsCategoryListOpen(!isCategoryListOpen);
+  };
+
+  const handleCategorySelect = (category: SetStateAction<string>) => {
+    setSelectedCategory(category);
+    setIsCategoryListOpen(false);
+  };
+
+  const filteredProjects = projectData.filter((project: any) => {
+    if (selectedCategory === "Categories") {
+      return true;
+    } else {
+      // Split categories string into an array and trim each category
+      const projectCategories = project.category
+        .split(",")
+        .map((category: string) => category.trim());
+      // Check if any of the project categories match the selected category
+      return projectCategories.some(
+        (category: string) => category === selectedCategory,
+      );
+    }
+  });
+
+  console.log("filteredProjects:", filteredProjects);
+
   return (
     <>
       <Head>
@@ -24,17 +56,42 @@ const Projects = () => {
       </Head>
 
       <Navbar />
-      <div className="mx-auto p-10 pt-32">
-        <div className="mb-12 mt-1 flex items-center justify-center">
-          <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {projectData.map((project: any) => (
-              <div key={project.id}>
-                <ProjectCard projectData={project} />
-              </div>
-            ))}
-          </div>
+
+      <div className="mx-auto mt-36 flex max-w-[1275px] items-center justify-between">
+        <div className="relative flex items-center">
+          <FilterByCategory
+            selectedCategory={selectedCategory}
+            isCategoryListOpen={isCategoryListOpen}
+            toggleCategoryList={toggleCategoryList}
+            handleCategorySelect={handleCategorySelect}
+          />
+        </div>
+
+        <div className="relative ml-auto">
+          <input
+            type="text"
+            placeholder="Search"
+            className="w-[300px] rounded-md border border-gray-600 py-2 pl-8 pr-4"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <RiSearchLine
+            className="absolute left-2 top-3 text-gray-500"
+            size={20}
+          />
         </div>
       </div>
+
+      <div className="mb-20 mt-1 flex items-center justify-center">
+        <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {filteredProjects.map((project: any) => (
+            <div key={project.id}>
+              <ProjectCard projectData={project} />
+            </div>
+          ))}
+        </div>
+      </div>
+
       <Footer />
     </>
   );

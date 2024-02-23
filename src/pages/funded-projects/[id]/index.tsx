@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Sidebar } from "~/components/Sidebar";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import AboutComponent from "../components/AboutComponent";
@@ -53,7 +52,7 @@ const Funding: React.FC = () => {
       <Navbar />
 
       <div className="mx-auto max-w-[1460px] flex-col">
-        <div className="mx-auto mt-16 flex flex-col-reverse items-center justify-between px-6 pb-10 sm:px-10 lg:flex-row lg:px-12 lg:pt-20 xl:px-24">
+        <div className="mx-auto mt-24 flex flex-col-reverse items-center justify-between px-6 pb-10 sm:px-10 lg:flex-row lg:px-12 lg:pt-20 xl:px-24">
           {fundingData && (
             <div key={fundingData.id} className="w-full lg:w-1/2">
               <p className="mb-2 text-2xl font-semibold text-gray-700 sm:text-3xl md:mb-5 md:text-4xl lg:text-5xl xl:text-6xl">
