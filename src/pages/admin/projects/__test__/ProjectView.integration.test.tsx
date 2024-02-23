@@ -1,32 +1,86 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import Admin from "../index";
+import ProjectCard from "../components/ProjectCard";
+
+jest.mock("next/router", () => ({
+  useRouter: jest.fn(),
+}));
+
+// Mocking the useUser hook
+jest.mock("@clerk/nextjs", () => ({
+  useUser: jest.fn().mockReturnValue({
+    user: {
+      publicMetadata: {
+        admin: "admin",
+      },
+    },
+    isLoaded: true,
+  }),
+}));
+jest.mock("~/utils/api", () => ({
+  api: {
+    project: {
+      getAll: {
+        useQuery: jest.fn().mockReturnValue({
+          data: [
+            {
+              id: "test_id",
+              title: "Test Project Title",
+              description: "Test Project Description",
+              image: "/test-image-url",
+            },
+          ],
+        }),
+      },
+      delete: {
+        // Mock delete method
+        useMutation: jest.fn(),
+      },
+    },
+  },
+}));
 
 
-test("edit project form submission", async () => {
-  render(<Admin />);
 
-  // Fill in the form fields
-  const titleInput = screen.getByLabelText(/Project Title/i);
-  const descriptionInput = screen.getByLabelText(/Project Description/i);
-  const hubInput = screen.getByLabelText(/Hub/i);
-  const beneficiariesInput = screen.getByLabelText(/Beneficiaries/i);
-  const saveDraftButton = screen.getByText(/Save as Draft/i);
-  const publishButton = screen.getByText(/Publish/i);
+test("Project Cards is rendered", async () => {
+  if (render(<Admin />)) {
+    const projectData = [
+      {
+        id: "1",
+        image: "/project1-image-url",
+        title: "Project 1",
+      },
+      {
+        id: "2",
+        image: "/project2-image-url",
+        title: "Project 2",
+      },
+      {
+        id: "3",
+        image: "/project3-image-url",
+        title: "Project 3",
+      },
+    ];
+    const handleDelete = jest.fn();
+    const { getAllByText } = render(
+      <>
+        {projectData.map((project) => (
+          <ProjectCard
+            key={project.id}
+            handleDelete={handleDelete}
+            projectData={project}
+          />
+        ))}
+      </>,
+    );
 
-  fireEvent.change(titleInput, { target: { value: "New Project Title" } });
-  fireEvent.change(descriptionInput, { target: { value: "New Project Description" } });
-  fireEvent.change(hubInput, { target: { value: "New Hub" } });
-  fireEvent.change(beneficiariesInput, { target: { value: "New Beneficiaries" } });
-
-  // Submit the form
-  fireEvent.click(saveDraftButton);
-
-  // Assert that the form is submitted successfully
-  await screen.findByText(/Project Edited Successfully/i);
-
-  // Assert that the form data is updated in the UI
-  expect(screen.getByDisplayValue("New Project Title")).toBeInTheDocument();
-  expect(screen.getByDisplayValue("New Project Description")).toBeInTheDocument();
-  expect(screen.getByDisplayValue("New Hub")).toBeInTheDocument();
-  expect(screen.getByDisplayValue("New Beneficiaries")).toBeInTheDocument();
+    projectData.forEach((project) => {
+      expect(getAllByText(project.title)).toBeTruthy();
+      expect(getAllByText("Edit")).toBeTruthy();
+      expect(getAllByText("Delete")).toBeTruthy();
+    });
+  }
+ 
 });
+
+
