@@ -50,14 +50,14 @@ describe("EditProject component", () => {
 
     // Assert that project data is loaded
 
-    expect(screen.getByText(/Project Title/i)).toBeTruthy();
-    expect(screen.getByText(/Project Description/i)).toBeTruthy();
-    expect(screen.getByText(/Featured Image/i)).toBeTruthy();
-    expect(screen.getByText(/Hub/i)).toBeTruthy();
-    expect(screen.getByText(/Categories/i)).toBeTruthy();
-    expect(screen.getByText(/Type/i)).toBeTruthy();
-    expect(screen.getByText(/Beneficiaries/i)).toBeTruthy();
-    expect(screen.getByText(/About/i)).toBeTruthy();
+    expect(screen.getByText('Project Title')).toBeTruthy();
+    expect(screen.getByText('Project Description')).toBeTruthy();
+    expect(screen.getByText('Featured Image')).toBeTruthy();
+    expect(screen.getByText('Hub')).toBeTruthy();
+    expect(screen.getByText('Categories')).toBeTruthy();
+    expect(screen.getByText('Type')).toBeTruthy();
+    expect(screen.getByText('Beneficiaries')).toBeTruthy();
+    expect(screen.getByText('About')).toBeTruthy();
   });
 
   it("submits the form with correct data", async () => {
