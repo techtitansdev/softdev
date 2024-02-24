@@ -1,8 +1,10 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Navbar } from "~/components/Navbar";
 import { api } from "~/utils/api";
 import FundingCard from "./components/FundingCard";
+import { RiSearchLine } from "react-icons/ri";
+import FilterByCategory from "~/components/FilterByCategory";
 
 const FundedProjects = () => {
   const [projectData, setProjectData] = useState<any>([]);
@@ -15,6 +17,34 @@ const FundedProjects = () => {
     }
   }, [getFunding.data]);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Categories");
+  const [isCategoryListOpen, setIsCategoryListOpen] = useState(false);
+
+  const toggleCategoryList = () => {
+    setIsCategoryListOpen(!isCategoryListOpen);
+  };
+
+  const handleCategorySelect = (category: SetStateAction<string>) => {
+    setSelectedCategory(category);
+    setIsCategoryListOpen(false);
+  };
+
+  const filteredFundraiser = projectData.filter((funding: any) => {
+    if (selectedCategory === "Categories") {
+      return true;
+    } else {
+      // Split categories string into an array and trim each category
+      const projectCategories = funding.project.category
+        .split(",")
+        .map((category: string) => category.trim());
+      // Check if any of the project categories match the selected category
+      return projectCategories.some(
+        (category: string) => category === selectedCategory,
+      );
+    }
+  });
+
   return (
     <>
       <Head>
@@ -24,10 +54,36 @@ const FundedProjects = () => {
       </Head>
 
       <Navbar />
-      <div className="mx-auto p-10 pt-32">
+
+      <div className="mx-auto mt-36 flex max-w-[1235px] items-center justify-between">
+        <div className="relative flex items-center">
+          <FilterByCategory
+            selectedCategory={selectedCategory}
+            isCategoryListOpen={isCategoryListOpen}
+            toggleCategoryList={toggleCategoryList}
+            handleCategorySelect={handleCategorySelect}
+          />
+        </div>
+
+        <div className="relative ml-auto">
+          <input
+            type="text"
+            placeholder="Search"
+            className="w-[300px] rounded-md border border-gray-600 py-2 pl-8 pr-4"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <RiSearchLine
+            className="absolute left-2 top-3 text-gray-500"
+            size={20}
+          />
+        </div>
+      </div>
+
+      <div className="mx-auto">
         <div className="mb-12 mt-1 flex items-center justify-center">
           <div className="mt-4 grid grid-cols-1 gap-12 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-            {projectData.map((project: any) => (
+            {filteredFundraiser.map((project: any) => (
               <div key={project.id}>
                 <FundingCard fundingData={project} />
               </div>

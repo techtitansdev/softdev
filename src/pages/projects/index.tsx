@@ -14,12 +14,14 @@ const Projects = () => {
   useEffect(() => {
     if (getProjects.data) {
       setProjectData(getProjects.data);
+      setFilteredProjects(getProjects.data);
     }
   }, [getProjects.data]);
-
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Categories");
   const [isCategoryListOpen, setIsCategoryListOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
+  const [filteredProjects, setFilteredProjects] = useState<any[]>([]);
 
   const toggleCategoryList = () => {
     setIsCategoryListOpen(!isCategoryListOpen);
@@ -28,24 +30,56 @@ const Projects = () => {
   const handleCategorySelect = (category: SetStateAction<string>) => {
     setSelectedCategory(category);
     setIsCategoryListOpen(false);
+    setFilteredProjects(projectData);
   };
 
-  const filteredProjects = projectData.filter((project: any) => {
-    if (selectedCategory === "Categories") {
-      return true;
-    } else {
-      // Split categories string into an array and trim each category
-      const projectCategories = project.category
-        .split(",")
-        .map((category: string) => category.trim());
-      // Check if any of the project categories match the selected category
-      return projectCategories.some(
-        (category: string) => category === selectedCategory,
-      );
-    }
-  });
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
 
-  console.log("filteredProjects:", filteredProjects);
+    if (value !== "") {
+      const suggestions = projectData
+        .filter((project: any) =>
+          project.title.toLowerCase().includes(value.toLowerCase()),
+        )
+        .map((project: any) => project.title);
+      setSearchSuggestions(
+        suggestions.length > 0 ? suggestions : ["No results found"],
+      );
+    } else {
+      setSearchSuggestions([]);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchQuery(suggestion);
+    setSearchSuggestions([]);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearchButtonClick();
+    }
+  };
+
+  const handleSearchButtonClick = () => {
+    const filtered = projectData.filter((project: any) =>
+      project.title.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+    setFilteredProjects(filtered);
+  };
+
+  const filterProjects = (
+    searchQuery !== "" ? filteredProjects : projectData
+  ).filter((project: any) => {
+    const matchesCategory =
+      selectedCategory === "Categories" ||
+      project.category
+        .split(",")
+        .map((category: string) => category.trim())
+        .includes(selectedCategory);
+
+    return matchesCategory;
+  });
 
   return (
     <>
@@ -68,23 +102,45 @@ const Projects = () => {
         </div>
 
         <div className="relative ml-auto">
-          <input
-            type="text"
-            placeholder="Search"
-            className="w-[300px] rounded-md border border-gray-600 py-2 pl-8 pr-4"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <RiSearchLine
-            className="absolute left-2 top-3 text-gray-500"
-            size={20}
-          />
+          <div className="flex items-center">
+            <input
+              type="text"
+              placeholder="Search"
+              className="w-[320px] rounded-md border border-gray-600 py-2 pl-4 pr-4"
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+            <button
+              className="absolute right-0 rounded-r-md bg-blue-700 px-3 py-2.5 text-white hover:bg-blue-800"
+              onClick={handleSearchButtonClick}
+            >
+              <RiSearchLine size={20} className="text-white" />
+            </button>
+          </div>
+
+          {searchSuggestions.length > 0 && (
+            <ul className="absolute z-10 mt-1 max-h-[325px] w-[320px] overflow-scroll rounded border border-gray-300 bg-white">
+              {searchSuggestions.map((suggestion, index) => (
+                <li
+                  key={index}
+                  className="cursor-pointer px-2 py-1 hover:bg-gray-400"
+                  onClick={() => handleSuggestionClick(suggestion)}
+                >
+                  <div className="flex items-center">
+                    <RiSearchLine size={15} className="mr-2" />
+                    {suggestion}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
 
       <div className="mb-20 mt-1 flex items-center justify-center">
         <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredProjects.map((project: any) => (
+          {filterProjects.map((project: any) => (
             <div key={project.id}>
               <ProjectCard projectData={project} />
             </div>
