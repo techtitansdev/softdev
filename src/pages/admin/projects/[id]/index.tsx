@@ -22,7 +22,10 @@ const ProjectDetailsPage = () => {
 
       {projectData && (
         <>
-          <div dangerouslySetInnerHTML={{ __html: projectData.about }} />
+          <div
+            dangerouslySetInnerHTML={{ __html: projectData.about }}
+            className="mx-auto mt-32"
+          />
         </>
       )}
     </div>

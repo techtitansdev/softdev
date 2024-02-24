@@ -5,21 +5,25 @@ import { api } from "~/utils/api";
 import FundingCard from "./components/FundingCard";
 import { RiSearchLine } from "react-icons/ri";
 import FilterByCategory from "~/components/FilterByCategory";
+import SearchInput from "~/components/SearchInput";
 
 const FundedProjects = () => {
-  const [projectData, setProjectData] = useState<any>([]);
+  const [fundingData, setFundingData] = useState<any>([]);
   const getFunding = api.fundraiser.getAll.useQuery();
 
-  console.log(getFunding.data);
   useEffect(() => {
     if (getFunding.data) {
-      setProjectData(getFunding.data);
+      setFundingData(getFunding.data);
+      setFilteredFunding(getFunding.data);
     }
   }, [getFunding.data]);
 
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Categories");
   const [isCategoryListOpen, setIsCategoryListOpen] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
+  const [filteredFunding, setFilteredFunding] = useState<any[]>([]);
 
   const toggleCategoryList = () => {
     setIsCategoryListOpen(!isCategoryListOpen);
@@ -28,21 +32,49 @@ const FundedProjects = () => {
   const handleCategorySelect = (category: SetStateAction<string>) => {
     setSelectedCategory(category);
     setIsCategoryListOpen(false);
+    setFilteredFunding(fundingData);
   };
 
-  const filteredFundraiser = projectData.filter((funding: any) => {
-    if (selectedCategory === "Categories") {
-      return true;
-    } else {
-      // Split categories string into an array and trim each category
-      const projectCategories = funding.project.category
-        .split(",")
-        .map((category: string) => category.trim());
-      // Check if any of the project categories match the selected category
-      return projectCategories.some(
-        (category: string) => category === selectedCategory,
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+
+    if (value !== "") {
+      const suggestions = fundingData
+        .filter((funding: any) =>
+          funding.project.title.toLowerCase().includes(value.toLowerCase()),
+        )
+        .map((funding: any) => funding.project.title);
+      setSearchSuggestions(
+        suggestions.length > 0 ? suggestions : ["No results found"],
       );
+    } else {
+      setSearchSuggestions([]);
     }
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchQuery(suggestion);
+    setSearchSuggestions([]);
+  };
+
+  const handleSearchButtonClick = () => {
+    const filtered = fundingData.filter((funding: any) =>
+      funding.project.title.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+    setFilteredFunding(filtered);
+  };
+
+  const filterFunding = (
+    searchQuery !== "" ? filteredFunding : fundingData
+  ).filter((funding: any) => {
+    const matchesCategory =
+      selectedCategory === "Categories" ||
+      funding.project.category
+        .split(",")
+        .map((category: string) => category.trim())
+        .includes(selectedCategory);
+
+    return matchesCategory;
   });
 
   return (
@@ -66,24 +98,37 @@ const FundedProjects = () => {
         </div>
 
         <div className="relative ml-auto">
-          <input
-            type="text"
-            placeholder="Search"
-            className="w-[300px] rounded-md border border-gray-600 py-2 pl-8 pr-4"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <RiSearchLine
-            className="absolute left-2 top-3 text-gray-500"
-            size={20}
-          />
+          <div className="flex items-center">
+            <SearchInput
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onSearch={handleSearchButtonClick}
+            />
+          </div>
+
+          {searchSuggestions.length > 0 && (
+            <ul className="absolute z-10 mt-1 max-h-[325px] w-[320px] overflow-scroll rounded border border-gray-300 bg-white">
+              {searchSuggestions.map((suggestion, index) => (
+                <li
+                  key={index}
+                  className="cursor-pointer px-2 py-1 hover:bg-gray-400"
+                  onClick={() => handleSuggestionClick(suggestion)}
+                >
+                  <div className="flex items-center">
+                    <RiSearchLine size={15} className="mr-2" />
+                    {suggestion}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
 
       <div className="mx-auto">
         <div className="mb-12 mt-1 flex items-center justify-center">
           <div className="mt-4 grid grid-cols-1 gap-12 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-            {filteredFundraiser.map((project: any) => (
+            {filterFunding.map((project: any) => (
               <div key={project.id}>
                 <FundingCard fundingData={project} />
               </div>

@@ -56,12 +56,6 @@ const Projects = () => {
     setSearchSuggestions([]);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSearchButtonClick();
-    }
-  };
-
   const handleSearchButtonClick = () => {
     const filtered = projectData.filter((project: any) =>
       project.title.toLowerCase().includes(searchQuery.toLowerCase()),
