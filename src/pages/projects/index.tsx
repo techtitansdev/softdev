@@ -6,6 +6,7 @@ import { api } from "~/utils/api";
 import ProjectCard from "./ProjectCard";
 import FilterByCategory from "~/components/FilterByCategory";
 import { RiSearchLine } from "react-icons/ri";
+import SearchInput from "~/components/SearchInput";
 
 const Projects = () => {
   const [projectData, setProjectData] = useState<any>([]);
@@ -103,20 +104,11 @@ const Projects = () => {
 
         <div className="relative ml-auto">
           <div className="flex items-center">
-            <input
-              type="text"
-              placeholder="Search"
-              className="w-[320px] rounded-md border border-gray-600 py-2 pl-4 pr-4"
+            <SearchInput
               value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              onKeyDown={handleKeyDown}
+              onChange={handleSearchChange}
+              onSearch={handleSearchButtonClick}
             />
-            <button
-              className="absolute right-0 rounded-r-md bg-blue-700 px-3 py-2.5 text-white hover:bg-blue-800"
-              onClick={handleSearchButtonClick}
-            >
-              <RiSearchLine size={20} className="text-white" />
-            </button>
           </div>
 
           {searchSuggestions.length > 0 && (
