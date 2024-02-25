@@ -64,15 +64,15 @@ function CreateProjects() {
     // Logic for removing the image
   };
 
-  // handleSubmit function takes a boolean indicating if the project should be published
   const handleSubmit = async (isPublished: boolean) => {
     try {
       const result = await createProject.mutateAsync({
         ...projectData,
         about: editorRef.current.getContent(),
         image: imageUrl,
-        published: isPublished, // Set published value based on the argument
+        published: isPublished, 
       });
+      
       setSuccessModalOpen(true);
 
       setTimeout(() => {
