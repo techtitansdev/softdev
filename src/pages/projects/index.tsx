@@ -73,7 +73,7 @@ const Projects = () => {
         .map((category: string) => category.trim())
         .includes(selectedCategory);
 
-    return matchesCategory;
+    return matchesCategory && project.published;
   });
 
   return (

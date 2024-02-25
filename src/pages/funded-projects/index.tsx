@@ -74,7 +74,7 @@ const FundedProjects = () => {
         .map((category: string) => category.trim())
         .includes(selectedCategory);
 
-    return matchesCategory;
+    return matchesCategory && funding.published;
   });
 
   return (
