@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Sidebar } from "~/components/Sidebar";
+import { Footer } from "~/components/Footer";
+import { Navbar } from "~/components/Navbar";
 import { api } from "~/utils/api";
 
-const ProjectDetailsPage = () => {
+const SpecificProjectDetails = () => {
   const router = useRouter();
   const { id } = router.query;
   const [projectData, setProjectData] = useState<any>(null);
@@ -17,19 +18,18 @@ const ProjectDetailsPage = () => {
   }, [getProject.data, projectData]);
 
   return (
-    <div className="flex">
-      <Sidebar />
+    <div>
+      <Navbar />
 
       {projectData && (
-        <>
-          <div
-            dangerouslySetInnerHTML={{ __html: projectData.about }}
-            className="mx-auto mt-32"
-          />
-        </>
+        <div
+          dangerouslySetInnerHTML={{ __html: projectData.about }}
+          className="mx-16 mb-20 mt-32"
+        />
       )}
+      <Footer />
     </div>
   );
 };
 
-export default ProjectDetailsPage;
+export default SpecificProjectDetails;

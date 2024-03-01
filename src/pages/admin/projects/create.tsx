@@ -30,6 +30,7 @@ function CreateProjects() {
     type: "",
     beneficiaries: "",
     about: "",
+    published: false,
   });
 
   const editorRef: MutableRefObject<any> = useRef(null);
@@ -60,19 +61,18 @@ function CreateProjects() {
 
   const removeImage = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // logic for removing the image
+    // Logic for removing the image
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const handleSubmit = async (isPublished: boolean) => {
     try {
       const result = await createProject.mutateAsync({
         ...projectData,
         about: editorRef.current.getContent(),
         image: imageUrl,
+        published: isPublished, 
       });
+      
       setSuccessModalOpen(true);
 
       setTimeout(() => {
@@ -100,7 +100,7 @@ function CreateProjects() {
             CREATE PROJECT
           </div>
 
-          <form onSubmit={handleSubmit}>
+          <form>
             <div className="mb-4">
               <label htmlFor="title" className="font-medium text-gray-700">
                 Project Title
@@ -304,19 +304,20 @@ function CreateProjects() {
                 menubar: "file edit insert view  format table tools",
                 content_style:
                   "body{font-family:Helvetica,Arial,sans-serif; font-size:16px}",
-                // images_upload_url: "http://localhost:8000/server.php",
               }}
             />
 
             <button
-              type="submit"
+              type="button"
+              onClick={() => handleSubmit(false)} // Save as Draft
               className="mr-2 mt-4 rounded-lg bg-gray-600 px-2 py-2 font-medium text-white hover:bg-gray-800 md:mr-4 md:px-6"
             >
               Save as Draft
             </button>
 
             <button
-              type="submit"
+              type="button"
+              onClick={() => handleSubmit(true)} // Publish
               className="mt-4 rounded-lg bg-blue-800 px-4 py-2 font-medium text-white hover:bg-blue-900 md:px-12"
             >
               Publish
