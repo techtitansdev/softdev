@@ -46,6 +46,7 @@ function EditProject() {
     type: "",
     beneficiaries: "",
     about: "",
+    published: false,
   });
 
   const [editorContent, setEditorContent] = useState("");
@@ -60,7 +61,7 @@ function EditProject() {
 
   useEffect(() => {
     if (getProject.data) {
-      setProjectData(prevData => {
+      setProjectData((prevData) => {
         if (
           prevData.title !== getProject.data.title ||
           prevData.description !== getProject.data.description ||
@@ -69,7 +70,8 @@ function EditProject() {
           prevData.category !== getProject.data.category ||
           prevData.type !== getProject.data.type ||
           prevData.beneficiaries !== getProject.data.beneficiaries ||
-          prevData.about !== getProject.data.about
+          prevData.about !== getProject.data.about ||
+          prevData.published !== getProject.data.published
         ) {
           return {
             title: getProject.data.title,
@@ -80,6 +82,7 @@ function EditProject() {
             type: getProject.data.type,
             beneficiaries: getProject.data.beneficiaries,
             about: getProject.data.about,
+            published: getProject.data.published,
           };
         } else {
           return prevData;
@@ -88,7 +91,6 @@ function EditProject() {
       setImageUrl(getProject.data.image);
     }
   }, [getProject.data]);
-  
 
   const editorRef: MutableRefObject<any> = useRef(null);
 
@@ -139,9 +141,9 @@ function EditProject() {
     editProject.mutate({
       ...projectData,
       id: id as string,
-      published: false,
       image: imageUrl,
       about: editorContent,
+      published: false,
     });
   };
 

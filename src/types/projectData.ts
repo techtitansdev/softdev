@@ -7,4 +7,5 @@ export interface ProjectData {
   type: string;
   beneficiaries: string;
   about: string;
+  published: boolean;
 }
