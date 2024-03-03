@@ -37,13 +37,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             />
           </Link>
 
-          <div className="my-2 ml-2">
-            <h5 className="text-lg font-medium tracking-tight text-gray-900">
+          <div className="mx-2 my-2">
+            <div className="truncate text-lg font-medium tracking-tight text-gray-900">
               {projectData.title}
-            </h5>
-            <p className="flex flex-row items-center font-normal text-gray-700 dark:text-gray-500">
-              <IoLocationSharp size={15} /> {projectData.hub}
-            </p>
+            </div>
+            <div className="flex flex-row items-center overflow-hidden font-normal text-gray-700 dark:text-gray-500">
+              <IoLocationSharp size={15} />
+              {projectData.hub}
+            </div>
           </div>
 
           <Link href={`/admin/projects/edit/${projectData.id}`}>
