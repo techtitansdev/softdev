@@ -47,13 +47,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </div>
 
           <Link href={`/admin/projects/edit/${projectData.id}`}>
-            <button className="ml-2 mt-2 border border-gray-500 px-8 py-1 text-gray-800 shadow-md hover:bg-gray-200">
+            <button className="ml-2 mt-2 rounded-md border border-gray-500 px-8 py-1 text-gray-800 shadow-md hover:bg-gray-200">
               Edit
             </button>
           </Link>
 
           <button
-            className="ml-2 mt-2 border bg-red-600 px-8 py-1 text-white shadow-md hover:bg-red-700"
+            className="ml-2 mt-2 rounded-md border bg-red-600 px-8 py-1 text-white shadow-md hover:bg-red-700"
             onClick={openModal}
           >
             Delete
