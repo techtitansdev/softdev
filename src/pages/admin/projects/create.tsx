@@ -70,9 +70,9 @@ function CreateProjects() {
         ...projectData,
         about: editorRef.current.getContent(),
         image: imageUrl,
-        published: isPublished, 
+        published: isPublished,
       });
-      
+
       setSuccessModalOpen(true);
 
       setTimeout(() => {
@@ -324,13 +324,14 @@ function CreateProjects() {
             </button>
           </form>
         </div>
+        
+        <Modal
+          isOpen={isSuccessModalOpen}
+          onClose={() => setSuccessModalOpen(false)}
+          message="Project Created Successfully."
+          bgColor="bg-green-700"
+        />
       </div>
-      <Modal
-        isOpen={isSuccessModalOpen}
-        onClose={() => setSuccessModalOpen(false)}
-        message="Project Created Successfully."
-        bgColor="bg-green-700"
-      />
     </div>
   );
 }
