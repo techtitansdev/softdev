@@ -50,7 +50,7 @@ model Blogs {
   content              String
   created              DateTime               @default(now())
   updated              DateTime               @updatedAt()
-  status               Boolean                @default(false)
+  published            Boolean                @default(false)
   featured             Boolean                @default(false)
   assignAdminBlogs     AssignAdminBlogs[]
   assignCategoriesBlog AssignCategoriesBlog[]
