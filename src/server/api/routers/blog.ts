@@ -117,17 +117,17 @@ export const blog = createTRPCRouter({
       const { input } = opts;
 
       try {
-        const foundProject = await db.blogs.findUnique({
+        const foundBlog = await db.blogs.findUnique({
           where: { id: input.id },
         });
 
-        if (!foundProject) {
-          throw new Error("Project not found");
+        if (!foundBlog) {
+          throw new Error("Blog not found");
         }
 
-        return foundProject;
+        return foundBlog;
       } catch (error) {
-        throw new Error(`Failed to fetch project: ${error}`);
+        throw new Error(`Failed to fetch blog: ${error}`);
       }
     }),
 
@@ -141,17 +141,17 @@ export const blog = createTRPCRouter({
       const { input } = opts;
 
       try {
-        const foundProject = await db.blogs.findUnique({
+        const foundBlog = await db.blogs.findUnique({
           where: { id: input.id },
         });
 
-        if (!foundProject) {
-          throw new Error("Project not found");
+        if (!foundBlog) {
+          throw new Error("Blog not found");
         } else {
-          foundProject.image = "";
+          foundBlog.image = "";
         }
       } catch (error) {
-        throw new Error(`Failed to fetch project: ${error}`);
+        throw new Error(`Failed to fetch blog: ${error}`);
       }
     }),
 });
