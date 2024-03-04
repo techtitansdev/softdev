@@ -1,43 +1,27 @@
-import { useState } from "react";
 import Link from "next/link";
-import DeleteModal from "~/components/DeleteModal";
 
 interface FundingCardProps {
   fundingData: any;
-  handleDelete: () => void;
 }
 
-const FundingCard: React.FC<FundingCardProps> = ({
-  fundingData,
-  handleDelete,
-}) => {
-  const [isModalOpen, setModalOpen] = useState(false);
-
-  const openModal = () => {
-    setModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
-  };
-
+const FundingCard: React.FC<FundingCardProps> = ({ fundingData }) => {
   return (
     <div className="rounded-lg">
       <ul>
         <li
           key={fundingData.id}
-          className="hover:scale-104 transform rounded-md pb-6 shadow transition duration-500 ease-in-out hover:-translate-y-1"
+          className="hover:scale-104 transform rounded-md transition duration-500 ease-in-out hover:-translate-y-1"
         >
-          <Link href={`/admin/funding/${encodeURIComponent(fundingData.id)}`}>
+          <Link href={`/funded-projects/${encodeURIComponent(fundingData.id)}`}>
             <img
-              className="object-obtain h-56 w-[358px] rounded-md"
+              className="object-obtain h-56 w-[380px] rounded-md"
               src={fundingData.project.image}
               alt="funding-image"
             />
           </Link>
 
           <div className="mx-2 my-2">
-            <h5 className="text-lg font-medium tracking-tight text-gray-900 truncate">
+            <h5 className="text-lg font-medium tracking-tight text-gray-900">
               {fundingData.project.title}
             </h5>
 
@@ -70,29 +54,8 @@ const FundingCard: React.FC<FundingCardProps> = ({
               </div>
             </div>
           </div>
-
-          <Link href={`/admin/funding/edit`}>
-            <button className="ml-2 mt-3 border border-gray-500 px-8 py-1 text-gray-800 shadow-md hover:bg-gray-200 rounded-md">
-              Edit
-            </button>
-          </Link>
-
-          <button
-            className="ml-2 mt-3 border bg-red-600 px-8 py-1 text-white shadow-md hover:bg-red-700 rounded-md"
-            onClick={openModal}
-          >
-            Delete
-          </button>
         </li>
       </ul>
-
-      {isModalOpen && (
-        <DeleteModal
-          subject={fundingData.title}
-          handleDelete={handleDelete}
-          closeModal={closeModal}
-        />
-      )}
     </div>
   );
 };

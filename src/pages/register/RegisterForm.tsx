@@ -131,11 +131,13 @@ export const RegisterForm = () => {
             </div>
 
             <div className="absolute left-3 top-2 z-30 md:left-2">
-              <img
-                src="gsi-logo2.png"
-                alt="logo"
-                className="h-[55px] w-[55px] cursor-pointer md:h-[90px] md:w-[90px]"
-              />
+              <Link href={"/home"}>
+                <img
+                  src="gsi-logo2.png"
+                  alt="logo"
+                  className="h-[55px] w-[55px] cursor-pointer md:h-[90px] md:w-[90px]"
+                />
+              </Link>
             </div>
 
             <div className="flex w-full flex-col sm:w-full md:w-full  lg:w-1/2 xl:min-h-screen xl:w-1/2">

@@ -36,6 +36,42 @@ export const fundraiser = createTRPCRouter({
       });
       return fundraiser;
     }),
+  edit: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        funds: z.number(),
+        goal: z.number(),
+        targetDate: z.date(),
+        donors: z.number(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+
+      //check if fundraiser exists
+      const existingFundraiser = await db.fundraisers.findUnique({
+        where: { id: input.id },
+      });
+
+      if(!existingFundraiser){
+        throw new Error("Fundraiser does not exist")
+      }
+
+      const newDetails = {
+        ... input,
+      }
+
+      //update fundraiser details in the database
+      const updatedFundraiser = await db.fundraisers.update({
+        where:{
+          id: input.id,
+        },
+        data: newDetails
+      });
+      return updatedFundraiser
+    }),
+
   delete: protectedProcedure
     .input(
       z.object({
