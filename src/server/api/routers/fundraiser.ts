@@ -11,7 +11,6 @@ export const fundraiser = createTRPCRouter({
         goal: z.number(),
         targetDate: z.date(),
         donors: z.number(),
-        milestones: z.string(),
       }),
     )
     .mutation(async (opts) => {

@@ -21,7 +21,6 @@ interface FundingData {
   category: string;
   type: string;
   beneficiaries: string;
-  milestones: string;
   goal: string;
   date: string;
   about: string;
@@ -65,7 +64,6 @@ function CreateFunding() {
     category: "",
     type: "",
     beneficiaries: "",
-    milestones: "",
     goal: "",
     date: "",
     about: "",
@@ -130,7 +128,7 @@ function CreateFunding() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log("milestone data:",milestoneData)
+    console.log("milestone data:", milestoneData);
 
     try {
       const result = await createFundRaiser.mutateAsync({
@@ -138,7 +136,6 @@ function CreateFunding() {
         targetDate: new Date(fundingData.date),
         projectId: getSpecificProjects.data?.id ?? "",
         funds: 0,
-        milestones: JSON.stringify(milestoneData),
         donors: 0,
       });
       setSuccessModalOpen(true);
