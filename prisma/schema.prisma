@@ -73,6 +73,7 @@ model Projects {
   assignAdminsProjects    AssignAdminsProjects[]
   assignCategoriesProject AssignCategoriesProject[]
   fundraisers             Fundraisers[]
+  Milestones              Milestones[]
 }
 
 model Fundraisers {
@@ -118,11 +119,16 @@ model Fundings {
 }
 
 model Milestones {
-  id      String   @id @default(cuid())
-  name    String
-  date    DateTime
-  created DateTime @default(now())
-  updated DateTime @updatedAt()
+  id        String   @id @default(cuid())
+  name      String
+  value     Int
+  unit      String
+  created   DateTime @default(now())
+  updated   DateTime @updatedAt()
+  projectId String
+  project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
 }
 
 model AssignAdminBlogs {
