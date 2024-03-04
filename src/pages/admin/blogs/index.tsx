@@ -1,26 +1,59 @@
-import { useUser } from "@clerk/nextjs";
 import Head from "next/head";
-import router, { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/router";
+import { Modal } from "~/components/Modal";
+import BlogCard from "./components/BlogCard";
 
-const AdminBlog = () => {
-  const { user, isLoaded } = useUser();
-  const user_role = user?.publicMetadata.admin;
+const AdminBlogPage = () => {
+  const [blogData, setBlogData] = useState<any>([]);
+  const getBlogs = api.blog.getAll.useQuery();
+  const deleteBlog = api.blog.delete.useMutation();
+  const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
 
   useEffect(() => {
-    if (isLoaded && user_role !== 'admin') {
-      router.push('/home');
+    if (getBlogs.data) {
+      setBlogData(getBlogs.data);
+    }
+  }, [getBlogs.data]);
+
+  const handleDelete = async (id: string) => {
+    try {
+      deleteBlog.mutate({ id });
+      console.log("Blog deleted successfully.");
+
+      setSuccessModalOpen(true);
+      setBlogData((prevBlogs: any[]) =>
+        prevBlogs.filter((blog: { id: string }) => blog.id !== id),
+      );
+      setTimeout(() => {
+        setSuccessModalOpen(false);
+      }, 2000);
+    } catch (error) {
+      console.error("Error deleting blog:", error);
+    }
+  };
+
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoaded && user_role !== "admin") {
+      router.push("/home");
     }
   }, [isLoaded, user_role]);
 
   if (!isLoaded) {
     return <div>Loading...</div>;
   }
-  if (isLoaded && user_role !== 'admin'){
+  if (isLoaded && user_role !== "admin") {
     return <div>UNAUTHORIZED</div>;
   }
+
   return (
     <>
       <Head>
@@ -32,10 +65,41 @@ const AdminBlog = () => {
       <div className="flex">
         <Sidebar />
 
-        <div className="mx-auto mt-72 text-5xl"> Blogs </div>
+        <div className="mx-auto p-10">
+          <div className="mt-16 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
+            BLOGS
+          </div>
+
+          <div className="mt-10 py-2 md:flex">
+            <Link href={`/admin/blogs/create`}>
+              <button className="w-72 rounded-lg bg-blue-800 py-2 text-lg font-light text-white hover:bg-blue-900">
+                Create Blog
+              </button>
+            </Link>
+          </div>
+
+          <div className="mb-12 mt-1 flex items-center justify-center">
+            <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {blogData.map((blog: any) => (
+                <div key={blog.id}>
+                  <BlogCard
+                    blogData={blog}
+                    handleDelete={() => handleDelete(blog.id)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <Modal
+          isOpen={isSuccessModalOpen}
+          onClose={() => setSuccessModalOpen(false)}
+          message="Project Deleted Successfully."
+          bgColor="bg-red-500"
+        />
       </div>
     </>
   );
 };
 
-export default AdminBlog;
+export default AdminBlogPage;
