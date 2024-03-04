@@ -6,6 +6,7 @@ import FundingCard from "./components/FundingCard";
 import { RiSearchLine } from "react-icons/ri";
 import FilterByCategory from "~/components/FilterByCategory";
 import SearchInput from "~/components/SearchInput";
+import { Footer } from "~/components/Footer";
 
 const FundedProjects = () => {
   const [fundingData, setFundingData] = useState<any>([]);
@@ -136,6 +137,8 @@ const FundedProjects = () => {
           </div>
         </div>
       </div>
+
+      <Footer />
     </>
   );
 };

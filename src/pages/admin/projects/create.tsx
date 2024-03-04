@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { MutableRefObject, useRef, useState } from "react";
+import { ChangeEvent, MutableRefObject, useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
@@ -40,7 +40,9 @@ function CreateProjects() {
     { label: "Project", value: "Project" },
   ];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setProjectData({ ...projectData, [name]: value });
   };
@@ -70,9 +72,9 @@ function CreateProjects() {
         ...projectData,
         about: editorRef.current.getContent(),
         image: imageUrl,
-        published: isPublished, 
+        published: isPublished,
       });
-      
+
       setSuccessModalOpen(true);
 
       setTimeout(() => {
@@ -124,14 +126,12 @@ function CreateProjects() {
               >
                 Project Description
               </label>
-
-              <input
-                type="text"
+              <textarea
                 id="description"
                 name="description"
                 value={projectData.description}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm"
                 required
               />
             </div>
@@ -324,13 +324,14 @@ function CreateProjects() {
             </button>
           </form>
         </div>
+
+        <Modal
+          isOpen={isSuccessModalOpen}
+          onClose={() => setSuccessModalOpen(false)}
+          message="Project Created Successfully."
+          bgColor="bg-green-700"
+        />
       </div>
-      <Modal
-        isOpen={isSuccessModalOpen}
-        onClose={() => setSuccessModalOpen(false)}
-        message="Project Created Successfully."
-        bgColor="bg-green-700"
-      />
     </div>
   );
 }

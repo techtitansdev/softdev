@@ -6,12 +6,15 @@ import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import Link from "next/link";
 import FundingCard from "./components/FundingCardComponent";
+import { Modal } from "~/components/Modal";
 
 const AdminFunding = () => {
   const [projectData, setProjectData] = useState<any>([]);
 
   const getFunding = api.fundraiser.getAll.useQuery();
   const deleteProject = api.fundraiser.delete.useMutation();
+
+  const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
 
   console.log(getFunding.data);
   useEffect(() => {
@@ -24,9 +27,13 @@ const AdminFunding = () => {
     try {
       deleteProject.mutate({ id });
       console.log("Fundraiser deleted successfully.");
+      setSuccessModalOpen(true);
       setProjectData((prevProjects: any[]) =>
         prevProjects.filter((funding: { id: string }) => funding.id !== id),
       );
+      setTimeout(() => {
+        setSuccessModalOpen(false);
+      }, 2000);
     } catch (error) {
       console.error("Error deleting fundraiser:", error);
     }
@@ -85,6 +92,12 @@ const AdminFunding = () => {
             </div>
           </div>
         </div>
+        <Modal
+          isOpen={isSuccessModalOpen}
+          onClose={() => setSuccessModalOpen(false)}
+          message="Funding Deleted Successfully."
+          bgColor="bg-red-500"
+        />
       </div>
     </>
   );

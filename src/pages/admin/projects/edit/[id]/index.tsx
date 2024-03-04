@@ -1,5 +1,11 @@
 import Head from "next/head";
-import { MutableRefObject, useRef, useState, useEffect } from "react";
+import {
+  MutableRefObject,
+  useRef,
+  useState,
+  useEffect,
+  ChangeEvent,
+} from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
@@ -99,7 +105,9 @@ function EditProject() {
     { label: "Project", value: "Project" },
   ];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setProjectData({ ...projectData, [name]: value });
   };
@@ -190,14 +198,12 @@ function EditProject() {
                   Project Description
                 </label>
 
-                <input
-                  type="text"
+                <textarea
                   id="description"
                   name="description"
-                  placeholder="description"
                   value={projectData.description}
                   onChange={handleChange}
-                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                  className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm"
                   required
                 />
               </div>

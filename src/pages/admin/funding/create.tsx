@@ -83,15 +83,19 @@ function CreateFunding() {
   const handleEditorChange = (content: any) => {
     setEditorContent(content);
   };
+
   const type = [
     { label: "Activity", value: "Activity" },
     { label: "Project", value: "Project" },
   ];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFundingData({ ...fundingData, [name]: value });
   };
+
   const [editorContent, setEditorContent] = useState("");
   const handleImageUpload = (result: CldUploadWidgetResults) => {
     console.log("result: ", result);
@@ -188,13 +192,12 @@ function CreateFunding() {
                 Fundraiser Title
               </label>
 
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={fundingData.title}
+              <textarea
+                id="description"
+                name="description"
+                value={fundingData.description}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm"
                 required
               />
             </div>

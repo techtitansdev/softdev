@@ -37,7 +37,7 @@ const FundingCard: React.FC<FundingCardProps> = ({
           </Link>
 
           <div className="mx-2 my-2">
-            <h5 className="text-lg font-medium tracking-tight text-gray-900">
+            <h5 className="text-lg font-medium tracking-tight text-gray-900 truncate">
               {fundingData.project.title}
             </h5>
 
@@ -72,13 +72,13 @@ const FundingCard: React.FC<FundingCardProps> = ({
           </div>
 
           <Link href={`/admin/funding/edit`}>
-            <button className="ml-2 mt-3 border border-gray-500 px-8 py-1 text-gray-800 shadow-md hover:bg-gray-200">
+            <button className="ml-2 mt-3 border border-gray-500 px-8 py-1 text-gray-800 shadow-md hover:bg-gray-200 rounded-md">
               Edit
             </button>
           </Link>
 
           <button
-            className="ml-4 mt-3 border bg-red-600 px-8 py-1 text-white shadow-md hover:bg-red-700"
+            className="ml-2 mt-3 border bg-red-600 px-8 py-1 text-white shadow-md hover:bg-red-700 rounded-md"
             onClick={openModal}
           >
             Delete
