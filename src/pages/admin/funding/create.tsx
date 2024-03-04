@@ -10,7 +10,7 @@ import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
-import MileStoneTable from "./components/MilestoneTable";
+import MileStoneTable, { TableRow } from "./components/MilestoneTable";
 
 interface FundingData {
   title: string;
@@ -29,14 +29,18 @@ interface FundingData {
 
 function CreateFunding() {
   const [project, setProject] = useState("");
-  const [milestones, setMilestones] = useState<string[]>([]);
   const getProjects = api.project.getAllProjectTitles.useQuery();
   const getSpecificProjects = api.project.getByTitle.useQuery({
     title: project,
   });
 
-  const handleMilestoneChange = (milestoneData: string[]) => {
-    setMilestones(milestoneData);
+  const [milestoneData, setMilestoneData] = useState<TableRow[]>([
+    { milestone: "1", goalValue: "", unit: "" },
+  ]);
+
+  // Function to handle changes in milestone data
+  const handleMilestoneDataChange = (data: TableRow[]) => {
+    setMilestoneData(data);
   };
 
   const transformedProjects =
@@ -126,12 +130,15 @@ function CreateFunding() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    console.log("milestone data:",milestoneData)
+
     try {
       const result = await createFundRaiser.mutateAsync({
         goal: parseFloat(fundingData.goal),
         targetDate: new Date(fundingData.date),
         projectId: getSpecificProjects.data?.id ?? "",
         funds: 0,
+        milestones: JSON.stringify(milestoneData),
         donors: 0,
       });
       setSuccessModalOpen(true);
@@ -363,7 +370,7 @@ function CreateFunding() {
                 Milestones
               </label>
 
-              <MileStoneTable />
+              <MileStoneTable onRowDataChange={handleMilestoneDataChange} />
             </div>
 
             <div className="mb-4">

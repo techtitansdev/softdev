@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 
-interface TableRow {
+export interface TableRow {
   milestone: string;
   goalValue: string;
   unit: string;
 }
 
-const MileStoneTable: React.FC = () => {
+interface MileStoneTableProps {
+  onRowDataChange: (rows: TableRow[]) => void;
+}
+
+const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
   const [rows, setRows] = useState<TableRow[]>([
     { milestone: "1", goalValue: "", unit: "" },
   ]);
@@ -34,6 +38,7 @@ const MileStoneTable: React.FC = () => {
     });
 
     setRows(newRows);
+    onRowDataChange(newRows);
   };
 
   return (
