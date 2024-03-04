@@ -23,4 +23,20 @@ export const milestone = createTRPCRouter({
       });
       return milestone;
     }),
+  getByProject: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+      }),
+    )
+    .query(async (opts) => {
+      const { input } = opts;
+
+      const allMilestones = await db.milestones.findMany({
+        where: {
+          projectId: input.projectId,
+        },
+      });
+      return allMilestones;
+    }),
 });
