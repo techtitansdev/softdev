@@ -6,11 +6,13 @@ import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
+import { Modal } from "~/components/Modal";
 
 const AdminProjectPage = () => {
   const [projectData, setProjectData] = useState<any>([]);
   const getProjects = api.project.getAll.useQuery();
   const deleteProject = api.project.delete.useMutation();
+  const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
 
   useEffect(() => {
     if (getProjects.data) {
@@ -22,9 +24,14 @@ const AdminProjectPage = () => {
     try {
       deleteProject.mutate({ id });
       console.log("Project deleted successfully.");
+      setSuccessModalOpen(true);
       setProjectData((prevProjects: any[]) =>
         prevProjects.filter((project: { id: string }) => project.id !== id),
       );
+
+      setTimeout(() => {
+        setSuccessModalOpen(false);
+      }, 2000);
     } catch (error) {
       console.error("Error deleting project:", error);
     }
@@ -84,6 +91,12 @@ const AdminProjectPage = () => {
             </div>
           </div>
         </div>
+        <Modal
+          isOpen={isSuccessModalOpen}
+          onClose={() => setSuccessModalOpen(false)}
+          message="Project Deleted Successfully."
+          bgColor="bg-red-500"
+        />
       </div>
     </>
   );

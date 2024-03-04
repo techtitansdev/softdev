@@ -1,17 +1,13 @@
 import { useState } from "react";
 import Link from "next/link";
-import { IoLocationSharp } from "react-icons/io5";
 import DeleteModal from "~/components/DeleteModal";
 
-interface ProjectCardProps {
-  projectData: any;
+interface BlogCardProps {
+  blogData: any;
   handleDelete: () => void;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({
-  projectData,
-  handleDelete,
-}) => {
+const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const openModal = () => {
@@ -26,28 +22,28 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     <div>
       <ul>
         <li
-          key={projectData.id}
+          key={blogData.id}
           className="transform rounded-lg pb-4 shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105"
         >
-          <Link href={`/admin/projects/${encodeURIComponent(projectData.id)}`}>
+          <Link href={`/admin/projects/${encodeURIComponent(blogData.id)}`}>
             <img
               className="object-obtain h-56 w-[280px] rounded-sm lg:w-[300px]"
-              src={projectData.image}
-              alt={projectData.image}
+              src={blogData.image}
+              alt={blogData.image}
             />
           </Link>
 
           <div className="mx-2 my-2">
             <div className="truncate text-lg font-medium tracking-tight text-gray-900">
-              {projectData.title}
+              {blogData.title}
             </div>
-            <div className="flex flex-row items-center overflow-hidden font-normal text-gray-700 dark:text-gray-500">
-              <IoLocationSharp size={15} />
-              {projectData.hub}
+
+            <div className="max-w-[330px] items-center truncate text-xs font-light text-gray-700 dark:text-gray-500">
+              {blogData.excerpt}
             </div>
           </div>
 
-          <Link href={`/admin/projects/edit/${projectData.id}`}>
+          <Link href={`/admin/blogs/edit/${blogData.id}`}>
             <button className="ml-2 mt-2 rounded-md border border-gray-500 px-8 py-1 text-gray-800 shadow-md hover:bg-gray-200">
               Edit
             </button>
@@ -64,7 +60,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
       {isModalOpen && (
         <DeleteModal
-          subject={projectData.title}
+          subject={blogData.title}
           handleDelete={handleDelete}
           closeModal={closeModal}
         />
@@ -73,4 +69,4 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   );
 };
 
-export default ProjectCard;
+export default BlogCard;

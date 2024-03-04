@@ -14,6 +14,7 @@ export const project = createTRPCRouter({
         type: z.string(),
         beneficiaries: z.string(),
         about: z.string(),
+        published: z.boolean()
       }),
     )
     .mutation(async (opts) => {

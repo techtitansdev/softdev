@@ -1,58 +1,44 @@
 import Head from "next/head";
-import {
-  MutableRefObject,
-  useRef,
-  useState,
-  useEffect,
-  ChangeEvent,
-} from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
-import { categoriesOption } from "~/data/categories";
-import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import { ProjectData } from "~/types/projectData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
+import { BlogData } from "~/types/blogData";
 
-function EditProject() {
+function EditBlog() {
   const router = useRouter();
   const { id } = router.query;
-  const animatedComponents = makeAnimated();
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
 
-  const getProject = api.project.getById.useQuery({ id: id as string });
+  const [blogData, setBlogData] = useState<BlogData>({
+    title: "",
+    excerpt: "",
+    image: "",
+    content: "",
+    published: false,
+  });
 
-  const deleteImage = api.project.removeImage.useMutation();
+  const getBlog = api.blog.getById.useQuery({ id: id as string });
+  const deleteImage = api.blog.removeImage.useMutation();
 
-  const editProject = api.project.edit.useMutation({
+  const editProject = api.blog.edit.useMutation({
     onSuccess: () => {
       setSuccessModalOpen(true);
       setTimeout(() => {
-        router.push("/admin/projects");
+        router.push("/admin/blogs");
       }, 2000);
-      console.log(projectData);
+      console.log(blogData);
     },
     onError: (error: any) => {
-      console.error("Edit Project Failed", error);
+      console.error("Edit Blog Failed", error);
     },
-  });
-
-  const [projectData, setProjectData] = useState<ProjectData>({
-    title: "",
-    description: "",
-    image: "",
-    hub: "",
-    category: "",
-    type: "",
-    beneficiaries: "",
-    about: "",
-    published: false,
   });
 
   const [editorContent, setEditorContent] = useState("");
@@ -62,54 +48,39 @@ function EditProject() {
   };
 
   useEffect(() => {
-    setEditorContent(projectData.about);
-  }, [projectData.about]);
+    setEditorContent(blogData.content);
+  }, [blogData.content]);
 
   useEffect(() => {
-    if (getProject.data) {
-      setProjectData((prevData) => {
+    if (getBlog.data) {
+      setBlogData((prevData) => {
         if (
-          prevData.title !== getProject.data.title ||
-          prevData.description !== getProject.data.description ||
-          prevData.image !== getProject.data.image ||
-          prevData.hub !== getProject.data.hub ||
-          prevData.category !== getProject.data.category ||
-          prevData.type !== getProject.data.type ||
-          prevData.beneficiaries !== getProject.data.beneficiaries ||
-          prevData.about !== getProject.data.about ||
-          prevData.published !== getProject.data.published
+          prevData.title !== getBlog.data.title ||
+          prevData.excerpt !== getBlog.data.excerpt ||
+          prevData.image !== getBlog.data.image ||
+          prevData.content !== getBlog.data.content ||
+          prevData.published !== getBlog.data.published
         ) {
           return {
-            title: getProject.data.title,
-            description: getProject.data.description,
-            image: getProject.data.image,
-            hub: getProject.data.hub,
-            category: getProject.data.category,
-            type: getProject.data.type,
-            beneficiaries: getProject.data.beneficiaries,
-            about: getProject.data.about,
-            published: getProject.data.published,
+            title: getBlog.data.title,
+            excerpt: getBlog.data.excerpt,
+            image: getBlog.data.image,
+            content: getBlog.data.content,
+            published: getBlog.data.published,
           };
         } else {
           return prevData;
         }
       });
-      setImageUrl(getProject.data.image);
+      setImageUrl(getBlog.data.image);
     }
-  }, [getProject.data]);
-
-  const editorRef: MutableRefObject<any> = useRef(null);
-
-  const type = [
-    { label: "Activity", value: "Activity" },
-    { label: "Project", value: "Project" },
-  ];
+  }, [getBlog.data]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
-    setProjectData({ ...projectData, [name]: value });
+    setBlogData({ ...blogData, [name]: value });
   };
 
   const handleImageUpload = (result: CldUploadWidgetResults) => {
@@ -121,7 +92,7 @@ function EditProject() {
       const public_id = info.public_id as string;
       setImageUrl(url);
       setPublicId(public_id);
-      projectData.image = url;
+      blogData.image = url;
       console.log("url: ", url);
       console.log("public_id: ", public_id);
     }
@@ -134,8 +105,8 @@ function EditProject() {
         id: id as string,
       });
       setImageUrl("");
-      setProjectData({
-        ...projectData,
+      setBlogData({
+        ...blogData,
         image: "",
       });
     } catch (error) {
@@ -147,10 +118,10 @@ function EditProject() {
     e.preventDefault();
 
     editProject.mutate({
-      ...projectData,
+      ...blogData,
       id: id as string,
       image: imageUrl,
-      about: editorContent,
+      content: editorContent,
       published: false,
     });
   };
@@ -159,7 +130,7 @@ function EditProject() {
     <>
       <div>
         <Head>
-          <title>Edit Project | Global shapers</title>
+          <title>Edit Blog | Global shapers</title>
           <meta name="description" content="Generated by create-next-app" />
           <link rel="icon" href="/gsi-logo.png" />
         </Head>
@@ -169,13 +140,13 @@ function EditProject() {
 
           <div className="mx-auto p-10">
             <div className="mb-10 mt-16 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
-              EDIT PROJECT
+              EDIT BLOG
             </div>
 
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label htmlFor="title" className="font-medium text-gray-700">
-                  Project Title
+                  Blog Title
                 </label>
 
                 <input
@@ -183,7 +154,7 @@ function EditProject() {
                   id="title"
                   name="title"
                   placeholder="title"
-                  value={projectData.title}
+                  value={blogData.title}
                   className="mt-1 w-full rounded-md border p-2 shadow-sm"
                   required
                   onChange={handleChange}
@@ -191,17 +162,14 @@ function EditProject() {
               </div>
 
               <div className="mb-4">
-                <label
-                  htmlFor="description"
-                  className="font-medium text-gray-700"
-                >
-                  Project Description
+                <label htmlFor="excerpt" className="font-medium text-gray-700">
+                  Blog Description
                 </label>
 
                 <textarea
-                  id="description"
-                  name="description"
-                  value={projectData.description}
+                  id="excerpt"
+                  name="excerpt"
+                  value={blogData.excerpt}
                   onChange={handleChange}
                   className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm"
                   required
@@ -245,7 +213,7 @@ function EditProject() {
                       fill
                       sizes="72"
                       className="absolute inset-0 object-cover"
-                      alt={projectData.title}
+                      alt={blogData.title}
                     />
                   )}
                 </CldUploadButton>
@@ -261,111 +229,13 @@ function EditProject() {
               </div>
 
               <div className="mb-4">
-                <label
-                  htmlFor="hub"
-                  className="block font-medium text-gray-700"
-                >
-                  Hub
-                </label>
-
-                <input
-                  type="text"
-                  id="hub"
-                  name="hub"
-                  placeholder="hub"
-                  value={projectData.hub}
-                  onChange={handleChange}
-                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                  required
-                />
-              </div>
-
-              <div className="mb-4">
-                <label
-                  htmlFor="categories"
-                  className="font-medium text-gray-700"
-                >
-                  Categories
-                </label>
-
-                <Select
-                  id="long-value-select"
-                  instanceId="long-value-select"
-                  placeholder="categories"
-                  options={categoriesOption}
-                  closeMenuOnSelect={false}
-                  components={animatedComponents}
-                  isMulti
-                  value={categoriesOption.filter((option) =>
-                    projectData.category.split(",").includes(option.value),
-                  )}
-                  onChange={(selectedOption) => {
-                    const selectedValues = selectedOption
-                      ? selectedOption.map((option) => option.value)
-                      : [];
-                    setProjectData({
-                      ...projectData,
-                      category: selectedValues.join(","),
-                    });
-                  }}
-                  className="z-20"
-                />
-              </div>
-
-              <div className="mb-4">
-                <label
-                  htmlFor="categories"
-                  className="font-medium text-gray-700"
-                >
-                  Type
-                </label>
-
-                <Select
-                  id="long-value-select"
-                  instanceId="long-value-select"
-                  placeholder="type"
-                  options={type}
-                  value={type.find(
-                    (option) => option.value === projectData.type,
-                  )}
-                  onChange={(selectedOption) => {
-                    setProjectData({
-                      ...projectData,
-                      type: selectedOption ? selectedOption.value : "",
-                    });
-                  }}
-                  className="z-10"
-                />
-              </div>
-
-              <div className="mb-4">
-                <label
-                  htmlFor="beneficiaries"
-                  className="font-medium text-gray-700"
-                >
-                  Beneficiaries
-                </label>
-
-                <input
-                  type="text"
-                  id="beneficiaries"
-                  name="beneficiaries"
-                  placeholder="beneficiaries"
-                  value={projectData.beneficiaries}
-                  onChange={handleChange}
-                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                  required
-                />
-              </div>
-
-              <div className="mb-4">
                 <label htmlFor="about" className="font-medium text-gray-700">
                   About
                 </label>
               </div>
 
               <Editor
-                initialValue={projectData.about}
+                initialValue={blogData.content}
                 value={editorContent}
                 onEditorChange={handleEditorChange}
                 apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
@@ -385,7 +255,6 @@ function EditProject() {
                     "media",
                     "table",
                     "emoticons",
-                    "image code",
                   ],
                   toolbar:
                     "undo redo |fontfamily fontsize | bold italic underline | alignleft aligncenter alignright alignjustify |" +
@@ -417,7 +286,7 @@ function EditProject() {
         <Modal
           isOpen={isSuccessModalOpen}
           onClose={() => setSuccessModalOpen(false)}
-          message="Project Edited Successfully."
+          message="Blog Edited Successfully."
           bgColor="bg-green-700"
         />
       </div>
@@ -425,4 +294,4 @@ function EditProject() {
   );
 }
 
-export default EditProject;
+export default EditBlog;

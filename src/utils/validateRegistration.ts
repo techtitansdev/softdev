@@ -7,7 +7,8 @@ const ERROR_MESSAGES = {
   invalidPhone: "Invalid phone number",
   invalidPassword: "Invalid password",
 };
-const NAME_REGEX = /^[a-zA-Z]+(?: [a-zA-Z]+)*$/;
+
+const NAME_REGEX = /^[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[@#$%^&+=!-])(?=.*\d)(?!.*\s).*$/;
 
