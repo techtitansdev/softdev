@@ -10,6 +10,7 @@ export const blog = createTRPCRouter({
         excerpt: z.string(),
         image: z.string(),
         content: z.string(),
+        published: z.boolean(),
       }),
     )
     .mutation(async (opts) => {
@@ -105,5 +106,4 @@ export const blog = createTRPCRouter({
         where: { id: input.id },
       });
     }),
-
 });
