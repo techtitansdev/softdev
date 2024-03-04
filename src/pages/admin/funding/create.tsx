@@ -10,6 +10,7 @@ import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
+import MileStoneTable from "./components/MilestoneTable";
 
 interface FundingData {
   title: string;
@@ -28,10 +29,15 @@ interface FundingData {
 
 function CreateFunding() {
   const [project, setProject] = useState("");
+  const [milestones, setMilestones] = useState<string[]>([]);
   const getProjects = api.project.getAllProjectTitles.useQuery();
   const getSpecificProjects = api.project.getByTitle.useQuery({
     title: project,
   });
+
+  const handleMilestoneChange = (milestoneData: string[]) => {
+    setMilestones(milestoneData);
+  };
 
   const transformedProjects =
     getProjects.data?.map((project) => ({
@@ -357,15 +363,7 @@ function CreateFunding() {
                 Milestones
               </label>
 
-              <input
-                type="text"
-                id="milestones"
-                name="milestones"
-                value={fundingData.milestones}
-                onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                required
-              />
+              <MileStoneTable />
             </div>
 
             <div className="mb-4">
