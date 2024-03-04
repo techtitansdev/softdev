@@ -1,7 +1,7 @@
 export interface BlogData {
   title: string;
-  description: string;
+  excerpt: string;
   image: string;
-  about: string;
+  content: string;
   published: boolean;
 }
