@@ -125,25 +125,44 @@ function CreateFunding() {
     // logic for removing the image
   };
   const createFundRaiser = api.fundraiser.create.useMutation();
+  const createMilestone = api.milestone.create.useMutation();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     console.log("milestone data:", milestoneData);
 
     try {
-      const result = await createFundRaiser.mutateAsync({
+      // Create milestones
+      const milestoneResults = await Promise.all(
+        milestoneData.map(async (milestone) => {
+          const result = await createMilestone.mutateAsync({
+            name: milestone.milestone,
+            value: parseFloat(milestone.goalValue),
+            unit: milestone.unit,
+            projectId: getSpecificProjects.data?.id ?? "",
+          });
+          return result;
+        }),
+      );
+
+      // Create fundraiser
+      const fundraiserResult = await createFundRaiser.mutateAsync({
         goal: parseFloat(fundingData.goal),
         targetDate: new Date(fundingData.date),
         projectId: getSpecificProjects.data?.id ?? "",
         funds: 0,
         donors: 0,
       });
+
       setSuccessModalOpen(true);
 
       setTimeout(() => {
         router.push("/admin/funding");
       }, 2000);
-      console.log("Project created:", result);
+
+      console.log("Project created:", fundraiserResult);
+      console.log("Milestones created:", milestoneResults);
     } catch (error) {
       console.error("Error creating project:", error);
     }
