@@ -3,28 +3,15 @@ import FundedProjects from "../index";
 import FilterByCategory from "~/components/FilterByCategory";
 import SearchInput from "~/components/SearchInput";
 import { Footer } from "~/components/Footer";
+import { Navbar } from "~/components/Navbar";
 
-jest.mock("next/router", () => ({
-  useRouter: () => ({
-    query: { id: "mocked_id" },
-  }),
-}));
-
-jest.mock("@clerk/nextjs", () => ({
-  useUser: jest.fn().mockReturnValue({
-    user: {
-      publicMetadata: {
-        user: "user",
-      },
-    },
-    isLoaded: true,
-  }),
-  useClerk: jest.fn().mockReturnValue({
-    signOut: jest.fn(),
-  }),
+jest.mock("~/components/Navbar", () => ({
+  __esModule: true,
+  Navbar: () => <div data-testid="navbar"></div>,
 }));
 
 jest.mock("~/utils/api", () => ({
+  __esModule: true,
   api: {
     fundraiser: {
       getAll: {
@@ -45,9 +32,15 @@ jest.mock("~/utils/api", () => ({
   },
 }));
 
-describe("FundedProjects component", () => {
+describe("FundedProjects view", () => {
   test("renders FundedProjects view correctly", () => {
     render(<FundedProjects />);
+  });
+});
+
+describe("Navbar component", () => {
+  test("renders Navbar component correctly", () => {
+    render(<Navbar />);
   });
 });
 
