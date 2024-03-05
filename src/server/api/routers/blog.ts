@@ -60,7 +60,7 @@ export const blog = createTRPCRouter({
         excerpt: z.string(),
         image: z.string(),
         content: z.string(),
-        status: z.boolean(),
+        published: z.boolean(),
       }),
     )
     .mutation(async (opts) => {
@@ -105,5 +105,53 @@ export const blog = createTRPCRouter({
       await db.blogs.delete({
         where: { id: input.id },
       });
+    }),
+
+  getById: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .query(async (opts) => {
+      const { input } = opts;
+
+      try {
+        const foundBlog = await db.blogs.findUnique({
+          where: { id: input.id },
+        });
+
+        if (!foundBlog) {
+          throw new Error("Blog not found");
+        }
+
+        return foundBlog;
+      } catch (error) {
+        throw new Error(`Failed to fetch blog: ${error}`);
+      }
+    }),
+
+  removeImage: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+
+      try {
+        const foundBlog = await db.blogs.findUnique({
+          where: { id: input.id },
+        });
+
+        if (!foundBlog) {
+          throw new Error("Blog not found");
+        } else {
+          foundBlog.image = "";
+        }
+      } catch (error) {
+        throw new Error(`Failed to fetch blog: ${error}`);
+      }
     }),
 });
