@@ -5,6 +5,7 @@ import { adminRouter } from "./routers/admin";
 import { project } from "./routers/project";
 import { fundraiser } from "./routers/fundraiser";
 import { blog } from "./routers/blog";
+import { milestone } from "./routers/milestone";
 
 /**
  * This is the primary router for your server.
@@ -18,6 +19,7 @@ export const appRouter = createTRPCRouter({
   project: project,
   fundraiser: fundraiser,
   blog: blog,
+  milestone: milestone,
 });
 
 // export type definition of API

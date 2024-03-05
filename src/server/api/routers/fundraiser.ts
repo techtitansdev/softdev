@@ -54,22 +54,22 @@ export const fundraiser = createTRPCRouter({
         where: { id: input.id },
       });
 
-      if(!existingFundraiser){
-        throw new Error("Fundraiser does not exist")
+      if (!existingFundraiser) {
+        throw new Error("Fundraiser does not exist");
       }
 
       const newDetails = {
-        ... input,
-      }
+        ...input,
+      };
 
       //update fundraiser details in the database
       const updatedFundraiser = await db.fundraisers.update({
-        where:{
+        where: {
           id: input.id,
         },
-        data: newDetails
+        data: newDetails,
       });
-      return updatedFundraiser
+      return updatedFundraiser;
     }),
 
   delete: protectedProcedure

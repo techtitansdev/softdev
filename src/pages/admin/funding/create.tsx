@@ -10,6 +10,7 @@ import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
+import MileStoneTable, { TableRow } from "./components/MilestoneTable";
 
 interface FundingData {
   title: string;
@@ -20,7 +21,6 @@ interface FundingData {
   category: string;
   type: string;
   beneficiaries: string;
-  milestones: string;
   goal: string;
   date: string;
   about: string;
@@ -32,6 +32,15 @@ function CreateFunding() {
   const getSpecificProjects = api.project.getByTitle.useQuery({
     title: project,
   });
+
+  const [milestoneData, setMilestoneData] = useState<TableRow[]>([
+    { milestone: "1", goalValue: "", unit: "" },
+  ]);
+
+  // Function to handle changes in milestone data
+  const handleMilestoneDataChange = (data: TableRow[]) => {
+    setMilestoneData(data);
+  };
 
   const transformedProjects =
     getProjects.data?.map((project) => ({
@@ -55,7 +64,6 @@ function CreateFunding() {
     category: "",
     type: "",
     beneficiaries: "",
-    milestones: "",
     goal: "",
     date: "",
     about: "",
@@ -117,23 +125,44 @@ function CreateFunding() {
     // logic for removing the image
   };
   const createFundRaiser = api.fundraiser.create.useMutation();
+  const createMilestone = api.milestone.create.useMutation();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    console.log("milestone data:", milestoneData);
+
     try {
-      const result = await createFundRaiser.mutateAsync({
+      // Create milestones
+      const milestoneResults = await Promise.all(
+        milestoneData.map(async (milestone) => {
+          const result = await createMilestone.mutateAsync({
+            name: milestone.milestone,
+            value: parseFloat(milestone.goalValue),
+            unit: milestone.unit,
+            projectId: getSpecificProjects.data?.id ?? "",
+          });
+          return result;
+        }),
+      );
+
+      // Create fundraiser
+      const fundraiserResult = await createFundRaiser.mutateAsync({
         goal: parseFloat(fundingData.goal),
         targetDate: new Date(fundingData.date),
         projectId: getSpecificProjects.data?.id ?? "",
         funds: 0,
         donors: 0,
       });
+
       setSuccessModalOpen(true);
 
       setTimeout(() => {
         router.push("/admin/funding");
       }, 2000);
-      console.log("Project created:", result);
+
+      console.log("Project created:", fundraiserResult);
+      console.log("Milestones created:", milestoneResults);
     } catch (error) {
       console.error("Error creating project:", error);
     }
@@ -357,15 +386,7 @@ function CreateFunding() {
                 Milestones
               </label>
 
-              <input
-                type="text"
-                id="milestones"
-                name="milestones"
-                value={fundingData.milestones}
-                onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                required
-              />
+              <MileStoneTable onRowDataChange={handleMilestoneDataChange} />
             </div>
 
             <div className="mb-4">
