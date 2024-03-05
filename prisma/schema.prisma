@@ -120,7 +120,7 @@ model Fundings {
 
 model Milestones {
   id          String   @id @default(cuid())
-  name        String
+  milestone   String
   value       Int
   unit        String
   description String

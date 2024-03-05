@@ -6,7 +6,7 @@ export const milestone = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        name: z.string(),
+        milestone: z.string(),
         value: z.number(),
         unit: z.string(),
         projectId: z.string(),
