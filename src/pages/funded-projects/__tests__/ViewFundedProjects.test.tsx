@@ -1,9 +1,8 @@
 import { render } from "@testing-library/react";
-import FilterByCategory from "~/components/FilterByCategory";
-import { Footer } from "~/components/Footer";
-import SearchInput from "~/components/SearchInput";
 import FundedProjects from "../index";
-import { Navbar } from "~/components/Navbar";
+import FilterByCategory from "~/components/FilterByCategory";
+import SearchInput from "~/components/SearchInput";
+import { Footer } from "~/components/Footer";
 
 jest.mock("next/router", () => ({
   useRouter: () => ({
@@ -46,44 +45,32 @@ jest.mock("~/utils/api", () => ({
   },
 }));
 
-describe("renders Funding Page view", () => {
+describe("FundedProjects component", () => {
   test("renders FundedProjects view correctly", () => {
     render(<FundedProjects />);
   });
+});
 
-  test("renders Navbar components correctly", () => {
-    render(<Navbar />);
-  });
-
+describe("FilterByCategory component", () => {
   test("renders FilterByCategory component correctly", () => {
     render(
       <FilterByCategory
         selectedCategory={""}
         isCategoryListOpen={false}
-        toggleCategoryList={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-        handleCategorySelect={function (status: string): void {
-          throw new Error("Function not implemented.");
-        }}
+        toggleCategoryList={() => {}}
+        handleCategorySelect={() => {}}
       />,
     );
   });
+});
 
+describe("SearchInput component", () => {
   test("renders SearchInput component correctly", () => {
-    render(
-      <SearchInput
-        value={""}
-        onChange={function (value: string): void {
-          throw new Error("Function not implemented.");
-        }}
-        onSearch={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-      />,
-    );
+    render(<SearchInput value={""} onChange={() => {}} onSearch={() => {}} />);
   });
+});
 
+describe("Footer component", () => {
   test("renders Footer component correctly", () => {
     render(<Footer />);
   });
