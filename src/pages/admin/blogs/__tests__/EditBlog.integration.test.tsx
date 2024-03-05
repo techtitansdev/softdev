@@ -1,4 +1,4 @@
-import { render, fireEvent, screen, waitFor } from "@testing-library/react";
+import { render, fireEvent, screen, getByTestId } from "@testing-library/react";
 import EditBlog from "../edit/[id]";
 import { api } from "~/utils/api";
 
@@ -38,33 +38,33 @@ jest.mock("~/utils/api", () => ({
 
 describe("EditBlog component", () => {
   it("successfully edits a blog when all data is provided", async () => {
-    render(<EditBlog />);
+    const { getByPlaceholderText, getByText, getByTestId } = render(
+      <EditBlog />,
+    );
 
-    expect(screen.getByText("Blog Title")).toBeTruthy();
-    expect(screen.getByText("Blog Description")).toBeTruthy();
-    expect(screen.getByText("Featured Image")).toBeTruthy();
+    expect(getByTestId("blog-title-input")).toBeTruthy();
+    expect(getByTestId("blog-description-input")).toBeTruthy();
+    expect(getByTestId("blog-image-input")).toBeTruthy();
 
-    fireEvent.change(screen.getByText("Blog Title"), {
+    fireEvent.change(getByTestId("blog-title-input"), {
       target: { value: "Updated Test Blog Title" },
     });
-    fireEvent.change(screen.getByPlaceholderText("Blog Description"), {
+    fireEvent.change(getByTestId("blog-description-input"), {
       target: { value: "Updated Test Blog Description" },
     });
-    fireEvent.change(screen.getByPlaceholderText("Featured Image"), {
+    fireEvent.change(getByTestId("blog-image-input"), {
       target: { value: "Updated Test Blog Image" },
     });
 
-    fireEvent.click(screen.getByText("Publish"));
-    expect(api.project.edit.useMutation).toHaveBeenCalled();
+    fireEvent.click(getByText("Publish"));
+    expect(api.blog.edit.useMutation).toHaveBeenCalled();
   });
 
   it("does not edit blog if some fields are empty", async () => {
-    render(<EditBlog />);
+    const { getByText } = render(<EditBlog />);
 
-    fireEvent.click(screen.getByText("Publish"));
+    fireEvent.click(getByText("Publish"));
 
-    await waitFor(() => {
-      expect(api.blog.edit.useMutation).toHaveBeenCalled();
-    });
+    expect(api.blog.edit.useMutation).toHaveBeenCalled();
   });
 });
