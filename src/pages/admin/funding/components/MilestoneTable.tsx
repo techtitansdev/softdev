@@ -22,13 +22,6 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
     ]);
   };
 
-  const deleteRow = (index: number) => {
-    const newRows = [...rows];
-    newRows.splice(index, 1);
-    setRows(newRows);
-    onRowDataChange(newRows);
-  };
-
   const handleChange = (
     index: number,
     field: keyof TableRow,
@@ -61,9 +54,6 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
             </th>
             <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-600">
               Unit
-            </th>
-            <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-600">
-              Actions
             </th>
           </tr>
         </thead>
@@ -100,14 +90,6 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
                   onChange={(e) => handleChange(index, "unit", e.target.value)}
                   className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm"
                 />
-              </td>
-              <td>
-                <button
-                  onClick={() => deleteRow(index)}
-                  className="block w-full rounded-sm border border-gray-300 py-2 text-red-500 hover:text-red-600 sm:text-sm"
-                >
-                  Delete
-                </button>
               </td>
             </tr>
           ))}
