@@ -102,6 +102,7 @@ function CreateBlogs() {
                 onChange={handleChange}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm"
                 required
+                data-testid="blog-title-input"
               />
             </div>
 
@@ -116,6 +117,7 @@ function CreateBlogs() {
                 onChange={handleChange}
                 className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm"
                 required
+                data-testid="blog-description-input"
               />
             </div>
 
@@ -130,6 +132,7 @@ function CreateBlogs() {
                   imageUrl && "pointer-events-none"
                 }`}
                 onUpload={handleImageUpload}
+                data-testid="blog-image-input"
               >
                 <div>
                   <svg
