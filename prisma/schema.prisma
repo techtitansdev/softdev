@@ -119,14 +119,15 @@ model Fundings {
 }
 
 model Milestones {
-  id        String   @id @default(cuid())
-  name      String
-  value     Int
-  unit      String
-  created   DateTime @default(now())
-  updated   DateTime @updatedAt()
-  projectId String
-  project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  id          String   @id @default(cuid())
+  name        String
+  value       Int
+  unit        String
+  description String
+  created     DateTime @default(now())
+  updated     DateTime @updatedAt()
+  projectId   String
+  project     Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([projectId])
 }

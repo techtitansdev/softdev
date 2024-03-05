@@ -10,6 +10,7 @@ export const milestone = createTRPCRouter({
         value: z.number(),
         unit: z.string(),
         projectId: z.string(),
+        description: z.string(),
       }),
     )
     .mutation(async (opts) => {
