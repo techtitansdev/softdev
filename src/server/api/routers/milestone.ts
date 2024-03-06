@@ -9,7 +9,7 @@ export const milestone = createTRPCRouter({
         milestone: z.string(),
         value: z.number(),
         unit: z.string(),
-        projectId: z.string(),
+        fundraiserId: z.string(),
         description: z.string(),
       }),
     )
@@ -24,10 +24,10 @@ export const milestone = createTRPCRouter({
       });
       return milestone;
     }),
-  getByProject: protectedProcedure
+  getByFundraiser: protectedProcedure
     .input(
       z.object({
-        projectId: z.string(),
+        fundraiserId: z.string(),
       }),
     )
     .query(async (opts) => {
@@ -35,7 +35,7 @@ export const milestone = createTRPCRouter({
 
       const allMilestones = await db.milestones.findMany({
         where: {
-          projectId: input.projectId,
+          fundraiserId: input.fundraiserId,
         },
       });
       return allMilestones;
