@@ -12,14 +12,26 @@ const FundingPage: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
   const [fundingData, setFundingData] = useState<any>(null);
+  // const [milestones, setMilestones] = useState<any[]>([]);
 
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
+
+  // const getMilestones = api.milestone.getByProject.useQuery({
+  //   projectId: id as string,
+  // });
 
   useEffect(() => {
     if (getFunding.data && !fundingData && getFunding.data !== fundingData) {
       setFundingData(getFunding.data);
     }
   }, [getFunding.data, fundingData]);
+
+  // useEffect(() => {
+  //   if (getMilestones.data) {
+  //     console.log("Milestones data:", getMilestones.data);
+  //     setMilestones(getMilestones.data);
+  //   }
+  // }, [getMilestones.data]);
 
   const [content, setContent] = useState("about");
 
@@ -100,15 +112,9 @@ const FundingPage: React.FC = () => {
                   {fundingData.project?.description}
                 </p>
 
-                <Link
-                  href={{
-                    pathname: "/funding/payment",
-                  }}
-                >
-                  <button className="w-72 rounded-lg bg-blue-800 py-2 text-xl text-white hover:bg-blue-900 md:text-2xl">
-                    Donate
-                  </button>
-                </Link>
+                <button className="w-72 rounded-lg bg-blue-800 py-2 text-xl text-white hover:bg-blue-900 md:text-2xl">
+                  Donate
+                </button>
 
                 <div className="mt-4 flex space-x-24 lg:mt-8">
                   <div className="ml-4 flex flex-col items-center justify-center">
