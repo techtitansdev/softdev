@@ -382,7 +382,11 @@ function CreateFunding() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="milestones" className="font-medium text-gray-700">
+              <label
+                htmlFor="milestones"
+                className="font-medium text-gray-700"
+                data-testid="milestone-title-input"
+              >
                 Milestones
               </label>
 
