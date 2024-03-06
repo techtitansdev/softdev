@@ -2,8 +2,9 @@ import React, { useState } from "react";
 
 export interface TableRow {
   milestone: string;
-  goalValue: string;
+  value: string;
   unit: string;
+  description: string;
 }
 
 interface MileStoneTableProps {
@@ -12,13 +13,18 @@ interface MileStoneTableProps {
 
 const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
   const [rows, setRows] = useState<TableRow[]>([
-    { milestone: "1", goalValue: "", unit: "" },
+    { milestone: "1", value: "", unit: "", description: "" },
   ]);
 
   const addRow = () => {
     setRows([
       ...rows,
-      { milestone: `${rows.length + 1}`, goalValue: "", unit: "" },
+      {
+        milestone: `${rows.length + 1}`,
+        value: "",
+        unit: "",
+        description: "",
+      },
     ]);
   };
 
@@ -55,6 +61,9 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
             <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-600">
               Unit
             </th>
+            <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-600">
+              Description
+            </th>
           </tr>
         </thead>
 
@@ -66,18 +75,16 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
                   type="text"
                   value={row.milestone}
                   readOnly
-                  className="block w-full rounded-sm border border-gray-300 py-2 text-center sm:text-sm" // Add text-center for alignment
+                  className="block w-full rounded-sm border border-gray-300 py-2 text-center sm:text-sm"
                 />
               </td>
               <td>
                 <input
                   type="text"
-                  value={row.goalValue}
+                  value={row.value}
                   placeholder=" Ex: 100"
                   required
-                  onChange={(e) =>
-                    handleChange(index, "goalValue", e.target.value)
-                  }
+                  onChange={(e) => handleChange(index, "value", e.target.value)}
                   className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm"
                 />
               </td>
@@ -88,6 +95,18 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
                   required
                   placeholder=" Ex: books"
                   onChange={(e) => handleChange(index, "unit", e.target.value)}
+                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  value={row.description}
+                  required
+                  placeholder=" sample description"
+                  onChange={(e) =>
+                    handleChange(index, "description", e.target.value)
+                  }
                   className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm"
                 />
               </td>
