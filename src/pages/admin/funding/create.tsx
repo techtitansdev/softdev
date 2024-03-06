@@ -34,7 +34,7 @@ function CreateFunding() {
   });
 
   const [milestoneData, setMilestoneData] = useState<TableRow[]>([
-    { milestone: "1", goalValue: "", unit: "" },
+    { milestone: "1", value: "", unit: "", description: "" },
   ]);
 
   // Function to handle changes in milestone data
@@ -137,9 +137,10 @@ function CreateFunding() {
       const milestoneResults = await Promise.all(
         milestoneData.map(async (milestone) => {
           const result = await createMilestone.mutateAsync({
-            name: milestone.milestone,
-            value: parseFloat(milestone.goalValue),
+            milestone: milestone.milestone,
+            value: parseFloat(milestone.value),
             unit: milestone.unit,
+            description: milestone.description,
             projectId: getSpecificProjects.data?.id ?? "",
           });
           return result;
