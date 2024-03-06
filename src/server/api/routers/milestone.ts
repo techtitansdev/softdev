@@ -41,3 +41,6 @@ export const milestone = createTRPCRouter({
       return allMilestones;
     }),
 });
+
+export const milestoneCaller = milestone.createCaller;
+
