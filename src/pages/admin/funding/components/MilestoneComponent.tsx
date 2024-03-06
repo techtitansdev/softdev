@@ -1,58 +1,40 @@
-const MilestoneComponent: React.FC = () => {
+// components/MilestoneComponent.js
+import React from "react";
+
+interface Milestone {
+  milestone: number;
+  value: number;
+  unit: string;
+  date: string;
+  description: string;
+}
+
+interface Props {
+  milestones: Milestone[];
+}
+
+const MilestoneComponent: React.FC<Props> = ({ milestones }) => {
   return (
-    <div className="content mb-12">
-      <div className="content mb-12">
-        <section className="bg-gray-50 shadow-lg dark:text-gray-800">
-          <div className="container mx-auto max-w-5xl px-4 py-12">
-            <div className="mx-4 grid gap-16 sm:grid-cols-12">
-              <div className="col-span-12 sm:col-span-3">
-                <div className="mb-14 text-center">
-                  <h3 className="mt-12 text-3xl font-semibold">
-                    {/* {fund.projectTitle} */} Title
-                  </h3>
-                  <span className="tracki text-sm font-light dark:text-gray-600">
-                    {/* {fund.projectDescription} */} Description
-                  </span>
-                </div>
-              </div>
-              <div className="relative col-span-12 space-y-6 px-4 sm:col-span-9">
-                <div className="relative col-span-12 space-y-12 px-4 sm:col-span-8 sm:space-y-8 sm:before:absolute sm:before:-left-3 sm:before:bottom-0 sm:before:top-2 sm:before:w-0.5 before:dark:bg-gray-700">
-                  <div className="flex flex-col sm:relative sm:before:absolute sm:before:left-[-35px] sm:before:top-2 sm:before:z-[1] sm:before:h-4 sm:before:w-4 sm:before:rounded-full before:dark:bg-blue-800">
-                    <h3 className="tracki text-xl font-semibold">50 books</h3>
-                    <time className="tracki text-xs uppercase dark:text-gray-400">
-                      Nov 2023
-                    </time>
-                    <p className="mt-3 text-gray-800">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    </p>
-                  </div>
-                  <div className="flex flex-col sm:relative sm:before:absolute sm:before:left-[-35px] sm:before:top-2 sm:before:z-[1] sm:before:h-4 sm:before:w-4 sm:before:rounded-full before:dark:bg-blue-800">
-                    <h3 className="tracki text-xl font-semibold">100 books</h3>
-                    <time className="tracki text-xs uppercase dark:text-gray-400">
-                      Dec 2023
-                    </time>
-                    <p className="mt-3 text-gray-800">
-                      Morbi vulputate aliquam libero non dictum. Aliquam sit
-                      amet nunc ut diam aliquet tincidunt nec nec dui. Donec
-                      mollis turpis eget egestas sodales.
-                    </p>
-                  </div>
-                  <div className="flex flex-col sm:relative sm:before:absolute sm:before:left-[-35px] sm:before:top-2 sm:before:z-[1] sm:before:h-4 sm:before:w-4 sm:before:rounded-full before:dark:bg-blue-800">
-                    <h3 className="tracki text-xl font-semibold">300 books</h3>
-                    <time className="tracki text-xs uppercase dark:text-gray-400">
-                      Jan 2023
-                    </time>
-                    <p className="mt-3 text-gray-800">
-                      Suspendisse tincidunt, arcu nec faucibus efficitur, justo
-                      velit consectetur nisl, sit amet condimentum lacus orci
-                      nec purus. Mauris quis quam suscipit
-                    </p>
-                  </div>
-                </div>
+    <div className="flex items-center justify-center bg-gray-50 shadow">
+      <div className="mx-2 my-6 md:mx-20">
+        {milestones.map((milestone, index) => (
+          <div key={index} className="group relative py-6 pl-8 sm:pl-32">
+            <div className="font-caveat mb-1 text-sm font-medium text-indigo-500 sm:mb-0">
+              Milestone {milestone.milestone}
+            </div>
+            <div className="mb-1 flex flex-col items-start before:absolute before:left-2 before:h-full before:-translate-x-1/2 before:translate-y-3 before:self-start before:bg-slate-300 before:px-px after:absolute after:left-2 after:box-content after:h-2 after:w-2 after:-translate-x-1/2 after:translate-y-1.5 after:rounded-full after:border-4 after:border-slate-50 after:bg-indigo-600 group-last:before:hidden sm:flex-row sm:before:left-0 sm:before:ml-[6.5rem] sm:after:left-0 sm:after:ml-[6.5rem]">
+              <time className="left-0 mb-3 inline-flex h-6 w-20 translate-y-0.5 items-center justify-center rounded-full bg-emerald-100 text-xs font-semibold uppercase text-emerald-600 sm:absolute sm:mb-0">
+                {milestone.date}
+              </time>
+              <div className="text-lg font-bold text-slate-900">
+                {milestone.value} {milestone.unit}
               </div>
             </div>
+            <div className="text-sm font-light text-slate-600">
+              {milestone.description}
+            </div>
           </div>
-        </section>
+        ))}
       </div>
     </div>
   );
