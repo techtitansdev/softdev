@@ -19,7 +19,7 @@ const FilterByCategory = ({
     <div className="relative z-10">
       <div className="mx-1 ml-2 lg:mx-2 lg:hidden">
         <IoFilterOutline
-          size={28}
+          size={26}
           onClick={toggleCategoryList}
           className="cursor-pointer"
         />
@@ -34,7 +34,7 @@ const FilterByCategory = ({
         <BiChevronDown size={20} />
       </div>
       {isCategoryListOpen && (
-        <div className="absolute mt-2 max-h-52 w-[300px] overflow-y-auto border border-gray-500 bg-white lg:left-0">
+        <div className="absolute right-0 mt-7 max-h-52 w-[280px] overflow-y-auto border border-gray-500 bg-white md:right-[-8px] lg:left-0 lg:mt-2 lg:w-[300px]">
           {categoriesOption.map((option, index) => (
             <div
               key={index}
