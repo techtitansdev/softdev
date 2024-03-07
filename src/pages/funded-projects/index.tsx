@@ -5,8 +5,8 @@ import { api } from "~/utils/api";
 import FundingCard from "./components/FundingCard";
 import { RiSearchLine } from "react-icons/ri";
 import FilterByCategory from "~/components/FilterByCategory";
-import SearchInput from "~/components/SearchInput";
 import { Footer } from "~/components/Footer";
+import FundraiserSearchInput from "~/components/FundraiserSearch";
 
 const FundedProjects = () => {
   const [fundingData, setFundingData] = useState<any>([]);
@@ -88,7 +88,7 @@ const FundedProjects = () => {
 
       <Navbar />
 
-      <div className="mx-auto mt-36 flex max-w-[1235px] items-center justify-between">
+      <div className="mx-auto mt-24 flex max-w-[363px] flex-row-reverse items-center justify-between md:mt-32 lg:mt-36 lg:max-w-[768px] lg:flex-row xl:max-w-[1177px]">
         <div className="relative flex items-center">
           <FilterByCategory
             selectedCategory={selectedCategory}
@@ -100,7 +100,7 @@ const FundedProjects = () => {
 
         <div className="relative ml-auto">
           <div className="flex items-center">
-            <SearchInput
+            <FundraiserSearchInput
               value={searchQuery}
               onChange={handleSearchChange}
               onSearch={handleSearchButtonClick}
@@ -108,7 +108,7 @@ const FundedProjects = () => {
           </div>
 
           {searchSuggestions.length > 0 && (
-            <ul className="absolute z-10 mt-1 max-h-[325px] w-[320px] overflow-scroll rounded border border-gray-300 bg-white">
+            <ul className="absolute z-10 mt-1 max-h-[325px] w-[352px] overflow-scroll rounded border border-gray-300 bg-white lg:w-[316px]">
               {searchSuggestions.map((suggestion, index) => (
                 <li
                   key={index}

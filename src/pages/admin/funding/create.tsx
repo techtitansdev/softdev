@@ -141,7 +141,7 @@ function CreateFunding() {
             value: parseFloat(milestone.value),
             unit: milestone.unit,
             description: milestone.description,
-            projectId: getSpecificProjects.data?.id ?? "",
+            fundraiserId: getSpecificProjects.data?.id ?? "",
           });
           return result;
         }),
@@ -222,12 +222,13 @@ function CreateFunding() {
                 Fundraiser Title
               </label>
 
-              <textarea
-                id="description"
-                name="description"
-                value={fundingData.description}
+              <input
+                type="text"
+                id="titile"
+                name="title"
+                value={fundingData.title}
                 onChange={handleChange}
-                className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm"
+                className="mt-1 w-full rounded-md border p-2 shadow-sm"
                 required
               />
             </div>
@@ -239,14 +240,12 @@ function CreateFunding() {
               >
                 Fundraiser Description
               </label>
-
-              <input
-                type="text"
+              <textarea
                 id="description"
                 name="description"
                 value={fundingData.description}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm"
                 required
               />
             </div>
