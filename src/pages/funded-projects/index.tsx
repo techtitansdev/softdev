@@ -108,7 +108,7 @@ const FundedProjects = () => {
           </div>
 
           {searchSuggestions.length > 0 && (
-            <ul className="absolute z-10 mt-1 max-h-[325px] w-[352px] overflow-scroll rounded border border-gray-300 bg-white lg:w-[316px]">
+            <ul className="absolute z-10 mt-1 max-h-[325px] w-[325px] overflow-scroll rounded border border-gray-300 bg-white lg:w-[316px]">
               {searchSuggestions.map((suggestion, index) => (
                 <li
                   key={index}
