@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { db } from "~/server/db";
+import { db } from "../../db";
 
 export const blog = createTRPCRouter({
   create: protectedProcedure
@@ -155,3 +155,5 @@ export const blog = createTRPCRouter({
       }
     }),
 });
+
+export const blogCaller = blog.createCaller;
