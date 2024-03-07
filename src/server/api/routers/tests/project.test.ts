@@ -1,72 +1,76 @@
-// import { beforeEach, describe, expect, it, vi } from "vitest";
-// import { PrismaClient } from "@prisma/client";
-// import type { Session } from "next-auth";
-// import { projectCaller } from "../project";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { PrismaClient } from "@prisma/client";
+import type { Session } from "next-auth";
+import { projectCaller } from "../project";
 
-// vi.mock("src/server/__mocks__/db.ts");
+vi.mock("src/server/__mocks__/db.ts");
 
-// describe("project procedures testing", () => {
-//   beforeEach(() => {
-//     vi.restoreAllMocks();
-//   });
+describe("project procedures testing", () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
 
-//   function createInnerTRPCContext(session: Session) {
-//     const prismaMock = new PrismaClient();
-//     return {
-//       session,
-//       db: prismaMock,
-//     };
-//   }
+  function createInnerTRPCContext(session: Session) {
+    const prismaMock = new PrismaClient();
+    return {
+      session,
+      user: session.user,
+      db: prismaMock,
+    };
+  }
 
-//   const session: Session = {
-//     expires: "1",
-//     user: {
-//       id: "clgb17vnp000008jjere5g15i",
-//       name: "",
-//     },
-//   };
-//   const ctx = createInnerTRPCContext(session);
-//   const caller = projectCaller(ctx);
+  const session: Session = {
+    expires: "1",
+    user: {
+      id: "clgb17vnp000008jjere5g15i",
+      name: "",
+    },
+  };
+  const ctx = createInnerTRPCContext(session);
+  const caller = projectCaller(ctx);
 
-//   describe("procedure 1 - tests", () => {
-//     it("should create a new project", async () => {
-//       const input = {
-//         title: "Project 11111",
-//         description: "Project Description",
-//         image: "/tech4all.png",
-//         hub: "Project Hub",
-//         category: "Project Category",
-//         type: "Project Type",
-//         beneficiaries: "Beneficiaries",
-//         about: "About Project",
-//       };
-//       try {
-//         const result = await caller.create(input);
-//         expect(result.title).toBe(input.title);
-//         expect(result.description).toBe(input.description);
-//         expect(result.image).toBe(input.image);
-//         expect(result.hub).toBe(input.hub);
-//         expect(result.category).toBe(input.category);
-//         expect(result.type).toBe(input.type);
-//         expect(result.beneficiaries).toBe(input.beneficiaries);
-//         expect(result.about).toBe(input.about);
-//       } catch (error) {
-//         console.error("Error during creation:", error);
-//         throw error;
-//       }
-//     });
-//     it("should edit existing projects", async () => {
-//       const input = {
-//         title: "Project Title",
-//         description: "Project Description",
-//         image: "project-image.jpg",
-//         hub: "Project Hub",
-//         category: "Project Category",
-//         type: "Project Type",
-//         beneficiaries: "Beneficiaries",
-//         about: "About Project",
-//       };
-//       const project = await caller.create(input);
+  describe("procedure 1 - tests", () => {
+    it("should create a new project", async () => {
+      const input = {
+        title: "Project 11111",
+        description: "Project Description",
+        image: "/tech4all.png",
+        hub: "Project Hub",
+        category: "Project Category",
+        type: "Project Type",
+        beneficiaries: "Beneficiaries",
+        about: "About Project",
+        published: false,
+      };
+      try {
+        const result = await caller.create(input);
+        expect(result.title).toBe(input.title);
+        expect(result.description).toBe(input.description);
+        expect(result.image).toBe(input.image);
+        expect(result.hub).toBe(input.hub);
+        expect(result.category).toBe(input.category);
+        expect(result.type).toBe(input.type);
+        expect(result.beneficiaries).toBe(input.beneficiaries);
+        expect(result.about).toBe(input.about);
+      } catch (error) {
+        console.error("Error during creation:", error);
+        throw error;
+      }
+    });
+    it("should edit existing projects", async () => {
+      const input = {
+        title: "Project Title",
+        description: "Project Description",
+        image: "project-image.jpg",
+        hub: "Project Hub",
+        category: "Project Category",
+        type: "Project Type",
+        beneficiaries: "Beneficiaries",
+        about: "About Project",
+        published: false,
+
+      };
+      const project = await caller.create(input);
 
       const editInput = {
         id: `${project.id}`,
@@ -81,44 +85,46 @@
         published: true,
       };
 
-//       try {
-//         const result = await caller.edit(editInput);
+            try {
+              const result = await caller.edit(editInput);
 
-//         console.log("Original project:", input);
-//         console.log("Edited project:", result);
-//         console.log("Original project:", input);
-//         console.log("Edited project:", result);
+              console.log("Original project:", input);
+              console.log("Edited project:", result);
+              console.log("Original project:", input);
+              console.log("Edited project:", result);
 
-//         expect(result.title).toBe(editInput.title);
-//         expect(result.description).toBe(editInput.description);
-//         expect(result.image).toBe(editInput.image);
-//         expect(result.hub).toBe(editInput.hub);
-//         expect(result.category).toBe(editInput.category);
-//         expect(result.type).toBe(editInput.type);
-//         expect(result.beneficiaries).toBe(editInput.beneficiaries);
-//         expect(result.about).toBe(editInput.about);
-//         expect(result.published).toBe(editInput.published);
-//       } catch (error) {
-//         console.error("Error during edit:", error);
-//         throw error;
-//       }
-//     });
-//     it("should delete existing projects", async () => {
-//       const input = {
-//         title: "Project Title",
-//         description: "Project Description",
-//         image: "/tech4all.png",
-//         hub: "project hub",
-//         category: "project category",
-//         type: "project type",
-//         beneficiaries: "Beneficiaries",
-//         about: "About Project",
-//       };
-//       const project = await caller.create(input);
+              expect(result.title).toBe(editInput.title);
+              expect(result.description).toBe(editInput.description);
+              expect(result.image).toBe(editInput.image);
+              expect(result.hub).toBe(editInput.hub);
+              expect(result.category).toBe(editInput.category);
+              expect(result.type).toBe(editInput.type);
+              expect(result.beneficiaries).toBe(editInput.beneficiaries);
+              expect(result.about).toBe(editInput.about);
+              expect(result.published).toBe(editInput.published);
+            } catch (error) {
+              console.error("Error during edit:", error);
+              throw error;
+            }
+          });
+          it("should delete existing projects", async () => {
+            const input = {
+              title: "Project Title",
+              description: "Project Description",
+              image: "/tech4all.png",
+              hub: "project hub",
+              category: "project category",
+              type: "project type",
+              beneficiaries: "Beneficiaries",
+              about: "About Project",
+              published: false,
 
-//       const deleteInput = {
-//         id: project.id,
-//       };
+            };
+            const project = await caller.create(input);
+
+            const deleteInput = {
+              id: project.id,
+            };
 
       try {
         await caller.delete(deleteInput);
@@ -137,6 +143,8 @@
         type: "Project Type",
         beneficiaries: "Beneficiaries",
         about: "About Project",
+        published: false,
+
       };
       const input2 = {
         title: "Project 222",
@@ -147,6 +155,8 @@
         type: "Project Type 2",
         beneficiaries: "Beneficiaries 2",
         about: "About Project 2",
+        published: false,
+
       };
       try {
         await ctx.db.projects.deleteMany({});
@@ -189,16 +199,18 @@
         type: "Project Type",
         beneficiaries: "Beneficiaries",
         about: "About Project",
+        published: false,
+
       };
 
-      try{
-        const project = await caller.create(input)
+      try {
+        const project = await caller.create(input);
 
         const id = {
           id: project.id,
-        }
+        };
 
-        const projectQuery = await caller.getById(id)
+        const projectQuery = await caller.getById(id);
 
         expect(project.id).toBe(projectQuery.id);
         expect(project.title).toBe(projectQuery.title);
@@ -209,7 +221,7 @@
         expect(project.type).toBe(projectQuery.type);
         expect(project.beneficiaries).toBe(projectQuery.beneficiaries);
         expect(project.about).toBe(projectQuery.about);
-      }catch(error){
+      } catch (error) {
         console.error("Error:", error);
         throw error;
       }
