@@ -230,6 +230,7 @@ function CreateFunding() {
                 onChange={handleChange}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm"
                 required
+                data-testid="project-select"
               />
             </div>
 
@@ -382,10 +383,7 @@ function CreateFunding() {
             </div>
 
             <div className="mb-4">
-              <label
-                htmlFor="milestones"
-                className="font-medium text-gray-700"
-              >
+              <label htmlFor="milestones" className="font-medium text-gray-700">
                 Milestones
               </label>
 

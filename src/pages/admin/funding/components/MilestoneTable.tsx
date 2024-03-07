@@ -87,6 +87,7 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
                   required
                   onChange={(e) => handleChange(index, "value", e.target.value)}
                   className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm"
+                  data-testid="funding-goal-input"
                 />
               </td>
               <td>
@@ -97,6 +98,7 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
                   placeholder=" Ex: books"
                   onChange={(e) => handleChange(index, "unit", e.target.value)}
                   className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm"
+                  data-testid="milestone-unit-input"
                 />
               </td>
               <td>
@@ -109,6 +111,7 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
                     handleChange(index, "description", e.target.value)
                   }
                   className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm"
+                  data-testid="milestone-description-input"
                 />
               </td>
             </tr>
