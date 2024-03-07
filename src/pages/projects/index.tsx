@@ -86,7 +86,7 @@ const Projects = () => {
 
       <Navbar />
 
-      <div className="mx-auto mt-36 flex max-w-[1275px] items-center justify-between">
+      <div className="mx-auto mt-24 flex max-w-[280px] flex-row-reverse items-center justify-between md:mt-32 md:max-w-[570px] lg:mt-36 lg:max-w-[950px] lg:flex-row xl:max-w-[1275px]">
         <div className="relative flex items-center">
           <FilterByCategory
             selectedCategory={selectedCategory}
@@ -106,7 +106,7 @@ const Projects = () => {
           </div>
 
           {searchSuggestions.length > 0 && (
-            <ul className="absolute z-10 mt-1 max-h-[325px] w-[320px] overflow-scroll rounded border border-gray-300 bg-white">
+            <ul className="absolute z-10 mt-1 max-h-[325px] w-[242px] overflow-scroll rounded border border-gray-300 bg-white md:w-[536px] lg:w-[316px]">
               {searchSuggestions.map((suggestion, index) => (
                 <li
                   key={index}

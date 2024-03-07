@@ -7,7 +7,7 @@ interface SearchInputProps {
   onSearch: () => void;
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({
+const FundraiserSearchInput: React.FC<SearchInputProps> = ({
   value,
   onChange,
   onSearch,
@@ -23,7 +23,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
       <input
         type="text"
         placeholder="Search"
-        className="mr-4 w-full rounded-md border border-gray-600 py-2 pl-4 pr-10 md:w-[520px] lg:w-[288px]"
+        className="mr-4 w-[308px]  rounded-md border border-gray-600 py-2 pl-4 pr-10 lg:w-[344px]"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
@@ -38,4 +38,4 @@ const SearchInput: React.FC<SearchInputProps> = ({
   );
 };
 
-export default SearchInput;
+export default FundraiserSearchInput;
