@@ -175,5 +175,51 @@ describe("Fundraiser procedures testing", () => {
         throw error;
       }
     });
+    it("should edit an existing fundraiser", async () => {
+      const projectInput = {
+        title: "Project 11111",
+        description: "Project Description",
+        image: "/tech4all.png",
+        hub: "Project Hub",
+        category: "Project Category",
+        type: "Project Type",
+        beneficiaries: "Beneficiaries",
+        about: "About Project",
+        published: false,
+      };
+
+      const project = await callerProject.create(projectInput);
+
+      try {
+        const fundraiserInput = {
+          projectId: project.id,
+          funds: 127,
+          goal: 999,
+          targetDate: new Date("2024-02-08T05:47:17.947Z"),
+          donors: 10,
+        };
+
+        const fundraiser = await callerFundraiser.create(fundraiserInput);
+
+        const editedFundraiserInput = {
+          id: fundraiser.id,
+          funds: 911,
+          goal: 127,
+          targetDate: new Date("2024-02-08T05:47:17.947Z"),
+          donors: 143
+        }
+
+        const result = await callerFundraiser.edit(editedFundraiserInput);
+
+        expect(result.id).toBe(fundraiser.id)
+        expect(result.funds).toBe(911)
+        expect(result.goal).toBe(127)
+        expect(result.targetDate).toStrictEqual(editedFundraiserInput.targetDate)
+        expect(result.donors).toBe(143)
+      } catch (error) {
+        console.error("Error during creation:", error);
+        throw error;
+      }
+    });
   });
 });
