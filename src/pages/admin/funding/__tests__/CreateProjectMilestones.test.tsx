@@ -1,6 +1,8 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import { api } from "~/utils/api";
 import CreateFunding from "../create";
+import MileStoneTable, { TableRow } from "../components/MilestoneTable";
+import MilestoneComponent from "~/pages/funded-projects/components/MilestoneComponent";
 
 jest.mock("next/image", () => ({
   __esModule: true,
@@ -57,12 +59,26 @@ describe("CreateFunding", () => {
     render(<CreateFunding />);
   });
 
+  it("renders milestone table correctly", () => {
+    render(
+      <MileStoneTable
+        onRowDataChange={function (rows: TableRow[]): void {
+          throw new Error("");
+        }}
+      />,
+    );
+  });
+
+  it("renders milestone component with rows", () => {
+    render(<MilestoneComponent />);
+  });
+
   it("submits the form", async () => {
     const { getByText, getByTestId } = render(<CreateFunding />);
 
     const milestoneTitleInput = getByTestId("milestone-title-input");
     fireEvent.change(milestoneTitleInput, {
-      target: { value: "Test Title" },
+      target: { value: "Test Milestone Title" },
     });
 
     fireEvent.click(getByText(/Publish/i));

@@ -385,7 +385,6 @@ function CreateFunding() {
               <label
                 htmlFor="milestones"
                 className="font-medium text-gray-700"
-                data-testid="milestone-title-input"
               >
                 Milestones
               </label>

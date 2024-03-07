@@ -76,6 +76,7 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
                   value={row.milestone}
                   readOnly
                   className="block w-full rounded-sm border border-gray-300 py-2 text-center sm:text-sm"
+                  data-testid="milestone-title-input"
                 />
               </td>
               <td>
