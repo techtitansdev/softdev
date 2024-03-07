@@ -23,13 +23,13 @@ const SearchInput: React.FC<SearchInputProps> = ({
       <input
         type="text"
         placeholder="Search"
-        className="w-[320px] rounded-md border border-gray-600 py-2 pl-4 pr-10"
+        className="mr-4 w-full rounded-md border border-gray-600 py-2 pl-4 pr-10 md:w-[520px] lg:w-[300px]"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
       />
       <button
-        className="absolute bottom-0 right-0 top-0 rounded-r-md bg-blue-700 px-3 py-2.5 text-white hover:bg-blue-800"
+        className="absolute bottom-0 right-0 top-0 rounded-r-md border border-gray-600 bg-gray-400 px-3 py-2.5 text-white hover:bg-gray-500"
         onClick={onSearch}
       >
         <RiSearchLine size={20} className="text-white" />
