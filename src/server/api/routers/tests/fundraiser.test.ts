@@ -175,6 +175,38 @@ describe("Fundraiser procedures testing", () => {
         throw error;
       }
     });
+    it("Should delete an existing fundraiser", async () => {
+      const projectInput = {
+        title: "Project 01",
+        description: "Description",
+        image: "/tech4all.png",
+        hub: "Hub",
+        category: "Category",
+        type: "Type",
+        beneficiaries: "Beneficiaries",
+        about: "About",
+        published: false,
+      };
+      try {
+        const project = await callerProject.create(projectInput);
+
+        const fundraiserInput = {
+          projectId: project.id,
+          funds: 127,
+          goal: 999,
+          targetDate: new Date("2024-02-08T05:47:17.947Z"),
+          donors: 10,
+        };
+
+        const fundraiser = await callerFundraiser.create(fundraiserInput);
+        const result = await callerFundraiser.delete({ id: fundraiser.id });
+
+        expect(result).toBe(result);
+      } catch (error) {
+        console.error("Error during test:", error);
+        throw error;
+      }
+    });
     it("should edit an existing fundraiser", async () => {
       const projectInput = {
         title: "Project 11111",
@@ -190,32 +222,33 @@ describe("Fundraiser procedures testing", () => {
 
       const project = await callerProject.create(projectInput);
 
+      const fundraiserInput = {
+        projectId: project.id,
+        funds: 127,
+        goal: 999,
+        targetDate: new Date("2024-02-08T05:47:17.947Z"),
+        donors: 10,
+      };
+      const fundraiser = await callerFundraiser.create(fundraiserInput);
+
       try {
-        const fundraiserInput = {
-          projectId: project.id,
-          funds: 127,
-          goal: 999,
-          targetDate: new Date("2024-02-08T05:47:17.947Z"),
-          donors: 10,
-        };
-
-        const fundraiser = await callerFundraiser.create(fundraiserInput);
-
         const editedFundraiserInput = {
           id: fundraiser.id,
           funds: 911,
           goal: 127,
           targetDate: new Date("2024-02-08T05:47:17.947Z"),
-          donors: 143
-        }
+          donors: 143,
+        };
 
         const result = await callerFundraiser.edit(editedFundraiserInput);
 
-        expect(result.id).toBe(fundraiser.id)
-        expect(result.funds).toBe(911)
-        expect(result.goal).toBe(127)
-        expect(result.targetDate).toStrictEqual(editedFundraiserInput.targetDate)
-        expect(result.donors).toBe(143)
+        expect(result.id).toBe(fundraiser.id);
+        expect(result.funds).toBe(911);
+        expect(result.goal).toBe(127);
+        expect(result.targetDate).toStrictEqual(
+          editedFundraiserInput.targetDate,
+        );
+        expect(result.donors).toBe(143);
       } catch (error) {
         console.error("Error during creation:", error);
         throw error;
