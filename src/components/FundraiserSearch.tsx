@@ -23,7 +23,7 @@ const FundraiserSearchInput: React.FC<SearchInputProps> = ({
       <input
         type="text"
         placeholder="Search"
-        className="mr-4 w-[308px]  rounded-md border border-gray-600 py-2 pl-4 pr-10 lg:w-[300px]"
+        className="mr-4 w-[308px]  rounded-md border border-gray-600 py-2 pl-4 pr-10 lg:w-[344px]"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
