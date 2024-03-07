@@ -25,7 +25,7 @@ export const categoriesOption = [
   { label: "Oceans", value: "Oceans" },
   { label: "Water", value: "Water" },
   { label: "Air Pollution", value: "Air Pollution" },
-  { label: "Civic Participation", value: "Justice" },
+  { label: "Civic Participation", value: "Civic Participation" },
 ];
 
 categoriesOption.sort((a, b) => a.label.localeCompare(b.label));
