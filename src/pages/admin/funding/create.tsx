@@ -230,6 +230,7 @@ function CreateFunding() {
                 onChange={handleChange}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm"
                 required
+                data-testid="project-select"
               />
             </div>
 
