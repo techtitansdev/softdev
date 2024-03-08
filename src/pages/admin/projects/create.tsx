@@ -294,7 +294,6 @@ function CreateProjects() {
                   "media",
                   "table",
                   "emoticons",
-                  "image code",
                 ],
                 toolbar:
                   "undo redo |fontfamily fontsize | bold italic underline | alignleft aligncenter alignright alignjustify |" +

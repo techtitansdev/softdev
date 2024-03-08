@@ -1,18 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
+import { CiFilter } from "react-icons/ci";
+import { IoFilterCircleOutline, IoFilterOutline } from "react-icons/io5";
 import { categoriesOption } from "~/data/categories";
 import { FilteredCategoriesProps } from "~/types/filter";
 
 const FilterByCategory = ({
   selectedCategory,
-  isCategoryListOpen,
-  toggleCategoryList,
   handleCategorySelect,
 }: FilteredCategoriesProps) => {
+  const [isCategoryListOpen, setIsCategoryListOpen] = useState(false);
+
+  const toggleCategoryList = () => {
+    setIsCategoryListOpen(!isCategoryListOpen);
+  };
+
   return (
     <div className="relative z-10">
+      <div className="mx-1 ml-2 lg:mx-2 lg:hidden">
+        <IoFilterOutline
+          size={26}
+          onClick={toggleCategoryList}
+          className="cursor-pointer"
+        />
+      </div>
       <div
-        className={`flex w-[300px] cursor-pointer items-center justify-between rounded-md border border-gray-500 bg-white p-2 ${
+        className={`hidden w-[300px] cursor-pointer items-center justify-between rounded-md border border-gray-500 bg-white p-2 lg:flex ${
           isCategoryListOpen ? "z-10" : "z-0"
         }`}
         onClick={toggleCategoryList}
@@ -21,12 +34,15 @@ const FilterByCategory = ({
         <BiChevronDown size={20} />
       </div>
       {isCategoryListOpen && (
-        <div className="absolute left-0 mt-2 max-h-52 w-[300px] overflow-y-auto border border-gray-500 bg-white">
+        <div className="absolute right-0 mt-7 max-h-52 w-[280px] overflow-y-auto border border-gray-500 bg-white md:right-[-8px] lg:left-0 lg:mt-2 lg:w-[300px]">
           {categoriesOption.map((option, index) => (
             <div
               key={index}
               className="cursor-pointer p-2 hover:bg-gray-200"
-              onClick={() => handleCategorySelect(option.value)}
+              onClick={() => {
+                handleCategorySelect(option.value);
+                toggleCategoryList();
+              }}
             >
               {option.label}
               <hr className="border-t-1 mt-2 border-dashed border-gray-500"></hr>

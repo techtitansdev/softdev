@@ -34,7 +34,7 @@ function CreateFunding() {
   });
 
   const [milestoneData, setMilestoneData] = useState<TableRow[]>([
-    { milestone: "1", goalValue: "", unit: "" },
+    { milestone: "1", value: "", unit: "", description: "" },
   ]);
 
   // Function to handle changes in milestone data
@@ -137,10 +137,11 @@ function CreateFunding() {
       const milestoneResults = await Promise.all(
         milestoneData.map(async (milestone) => {
           const result = await createMilestone.mutateAsync({
-            name: milestone.milestone,
-            value: parseFloat(milestone.goalValue),
+            milestone: milestone.milestone,
+            value: parseFloat(milestone.value),
             unit: milestone.unit,
-            projectId: getSpecificProjects.data?.id ?? "",
+            description: milestone.description,
+            fundraiserId: getSpecificProjects.data?.id ?? "",
           });
           return result;
         }),
@@ -221,12 +222,13 @@ function CreateFunding() {
                 Fundraiser Title
               </label>
 
-              <textarea
-                id="description"
-                name="description"
-                value={fundingData.description}
+              <input
+                type="text"
+                id="titile"
+                name="title"
+                value={fundingData.title}
                 onChange={handleChange}
-                className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm"
+                className="mt-1 w-full rounded-md border p-2 shadow-sm"
                 required
               />
             </div>
@@ -238,14 +240,12 @@ function CreateFunding() {
               >
                 Fundraiser Description
               </label>
-
-              <input
-                type="text"
+              <textarea
                 id="description"
                 name="description"
                 value={fundingData.description}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm"
                 required
               />
             </div>
