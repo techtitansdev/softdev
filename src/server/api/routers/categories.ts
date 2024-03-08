@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { db } from "~/server/db";
+import { db } from "../../db";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const categories = createTRPCRouter({
@@ -18,3 +18,6 @@ export const categories = createTRPCRouter({
       return newCategory;
     }),
 });
+
+export const categoriesCaller = categories.createCaller;
+
