@@ -34,7 +34,7 @@ function CreateFunding() {
   });
 
   const [milestoneData, setMilestoneData] = useState<TableRow[]>([
-    { milestone: "1", value: "", unit: "", description: "" },
+    { milestone: "1", value: 0, unit: "", description: "" },
   ]);
 
   // Function to handle changes in milestone data
@@ -134,18 +134,6 @@ function CreateFunding() {
 
     try {
       // Create milestones
-      const milestoneResults = await Promise.all(
-        milestoneData.map(async (milestone) => {
-          const result = await createMilestone.mutateAsync({
-            milestone: milestone.milestone,
-            value: parseFloat(milestone.value),
-            unit: milestone.unit,
-            description: milestone.description,
-            fundraiserId: getSpecificProjects.data?.id ?? "",
-          });
-          return result;
-        }),
-      );
 
       // Create fundraiser
       const fundraiserResult = await createFundRaiser.mutateAsync({
@@ -154,6 +142,9 @@ function CreateFunding() {
         projectId: getSpecificProjects.data?.id ?? "",
         funds: 0,
         donors: 0,
+        milestones: [
+          { milestone: "1", value: 3, unit: "", description: "" }
+        ]
       });
 
       setSuccessModalOpen(true);
@@ -163,7 +154,6 @@ function CreateFunding() {
       }, 2000);
 
       console.log("Project created:", fundraiserResult);
-      console.log("Milestones created:", milestoneResults);
     } catch (error) {
       console.error("Error creating project:", error);
     }

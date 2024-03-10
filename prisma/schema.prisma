@@ -73,7 +73,6 @@ model Projects {
   assignAdminsProjects    AssignAdminsProjects[]
   assignCategoriesProject AssignCategoriesProject[]
   fundraisers             Fundraisers[]
-  Milestones              Milestones[]
 }
 
 model Fundraisers {
@@ -91,6 +90,7 @@ model Fundraisers {
   featured   Boolean    @default(false)
   project    Projects   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   fundings   Fundings[]
+  milestones Milestones[]
 
   @@index([projectId])
 }
@@ -127,8 +127,8 @@ model Milestones {
   created      DateTime @default(now())
   updated      DateTime @updatedAt()
   fundraiserId String
-  fundraiser   Projects @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
-
+  fundraiser   Fundraisers @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
+  
   @@index([fundraiserId])
 }
 

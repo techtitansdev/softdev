@@ -5,37 +5,62 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 export const fundraiser = createTRPCRouter({
   create: protectedProcedure
     .input(
-      z.object({
-        projectId: z.string(),
-        funds: z.number(),
-        goal: z.number(),
-        targetDate: z.date(),
-        donors: z.number(),
-      }),
+        z.object({
+            projectId: z.string(),
+            funds: z.number(),
+            goal: z.number(),
+            targetDate: z.date(),
+            donors: z.number(),
+            milestones: z.array(z.object({
+                milestone: z.string(),
+                value: z.number(),
+                unit: z.string(),
+                description: z.string(),
+            })),
+        }),
     )
     .mutation(async (opts) => {
-      const { input } = opts;
+        const { input } = opts;
 
-      // Check if a fundraiser with the given project id already exists
-      const existingFundraiser = await db.fundraisers.findUnique({
-        where: {
-          projectId: input.projectId,
-        },
-      });
+        // Check if a fundraiser with the given project id already exists
+        const existingFundraiser = await db.fundraisers.findUnique({
+            where: {
+                projectId: input.projectId,
+            },
+        });
 
-      if (existingFundraiser) {
-        throw new Error("This project already has a fundraiser");
-      }
+        if (existingFundraiser) {
+            throw new Error("This project already has a fundraiser");
+        }
 
-      const newFundraiser = {
-        ...input,
-      };
+        // Prepare the data for creating the fundraiser
+        const newFundraiserData = {
+            projectId: input.projectId,
+            funds: input.funds,
+            goal: input.goal,
+            targetDate: input.targetDate,
+            donors: input.donors,
+        };
+        // Create the fundraiser
+        const fundraiser = await db.fundraisers.create({
+            data: newFundraiserData,
+        });
+        // If milestones are provided, create them one by one and associate them with the fundraiser
+        if (input.milestones && input.milestones.length > 0) {
+            for (const milestoneInput of input.milestones) {
+                const newMilestoneData = {
+                    ...milestoneInput,
+                    fundraiserId: fundraiser.id,
+                };
+                await db.milestones.create({
+                    data: newMilestoneData,
+                });
+            }
+        }
 
-      const fundraiser = await db.fundraisers.create({
-        data: newFundraiser,
-      });
-      return fundraiser;
+        return fundraiser;
     }),
+
   edit: protectedProcedure
     .input(
       z.object({
