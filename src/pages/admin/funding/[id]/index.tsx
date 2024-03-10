@@ -38,7 +38,7 @@ const FundingPage: React.FC = () => {
   const changeContent = (newContent: string) => {
     setContent(newContent);
   };
-
+  
   const calculateDaysLeft = (targetDate: string): number => {
     // Convert target date string to Date object
     const target = new Date(targetDate);
@@ -53,7 +53,7 @@ const FundingPage: React.FC = () => {
 
     return differenceDays;
   };
-
+  console.log(fundingData)
   const milestones = [
     {
       milestone: 1,
@@ -216,7 +216,7 @@ const FundingPage: React.FC = () => {
               <AboutComponent about={fundingData.project.about} />
             )}
             {content === "milestone" && (
-              <MilestoneComponent milestones={milestones} />
+              <MilestoneComponent milestones={fundingData.milestones} />
             )}
             {content === "comment" && <CommentComponent />}
           </div>

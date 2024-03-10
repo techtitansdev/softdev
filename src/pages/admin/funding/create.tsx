@@ -143,7 +143,8 @@ function CreateFunding() {
         funds: 0,
         donors: 0,
         milestones: [
-          { milestone: "1", value: 3, unit: "", description: "" }
+          { milestone: "1", value: 100, unit: "Students", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
+          { milestone: "2", value: 200, unit: "Students", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." }
         ]
       });
 

@@ -142,6 +142,7 @@ export const fundraiser = createTRPCRouter({
           where: { id: input.id },
           include: {
             project: true,
+            milestones:true,
           },
         });
 
