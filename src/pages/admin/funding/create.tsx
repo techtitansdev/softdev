@@ -11,20 +11,7 @@ import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import MileStoneTable, { TableRow } from "./components/MilestoneTable";
-
-interface FundingData {
-  title: string;
-  project: string;
-  description: string;
-  image: string;
-  hub: string;
-  category: string;
-  type: string;
-  beneficiaries: string;
-  goal: string;
-  date: string;
-  about: string;
-}
+import { FundingData } from "~/types/fundingData";
 
 function CreateFunding() {
   const [project, setProject] = useState("");
@@ -33,14 +20,8 @@ function CreateFunding() {
     title: project,
   });
 
-  const [milestoneData, setMilestoneData] = useState<TableRow[]>([
-    { milestone: "1", value: 0, unit: "", description: "" },
-  ]);
-
-  // Function to handle changes in milestone data
-  const handleMilestoneDataChange = (data: TableRow[]) => {
-    setMilestoneData(data);
-  };
+  const [imageUrl, setImageUrl] = useState("");
+  const [publicId, setPublicId] = useState("");
 
   const transformedProjects =
     getProjects.data?.map((project) => ({
@@ -51,9 +32,6 @@ function CreateFunding() {
   const animatedComponents = makeAnimated();
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
   const router = useRouter();
-
-  const [imageUrl, setImageUrl] = useState("");
-  const [publicId, setPublicId] = useState("");
 
   const [fundingData, setFundingData] = useState<FundingData>({
     title: "",
@@ -68,6 +46,11 @@ function CreateFunding() {
     date: "",
     about: "",
   });
+
+  const type = [
+    { label: "Activity", value: "Activity" },
+    { label: "Project", value: "Project" },
+  ];
 
   useEffect(() => {
     if (getSpecificProjects.data) {
@@ -91,11 +74,6 @@ function CreateFunding() {
   const handleEditorChange = (content: any) => {
     setEditorContent(content);
   };
-
-  const type = [
-    { label: "Activity", value: "Activity" },
-    { label: "Project", value: "Project" },
-  ];
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -124,16 +102,34 @@ function CreateFunding() {
 
     // logic for removing the image
   };
+
+  const [milestoneData, setMilestoneData] = useState<TableRow[]>([
+    { milestone: "1", value: "", unit: "", description: "" },
+  ]);
+
+  const handleMilestoneDataChange = (data: TableRow[]) => {
+    setMilestoneData(data);
+  };
+
   const createFundRaiser = api.fundraiser.create.useMutation();
   const createMilestone = api.milestone.create.useMutation();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log("milestone data:", milestoneData);
-
     try {
       // Create milestones
+      const createdMilestones = await Promise.all(
+        milestoneData.map(async (milestone) => {
+          return await createMilestone.mutateAsync({
+            milestone: milestone.milestone,
+            value: parseFloat(milestone.value),
+            unit: milestone.unit,
+            description: milestone.description,
+            fundraiserId: "",
+          });
+        }),
+      );
 
       // Create fundraiser
       const fundraiserResult = await createFundRaiser.mutateAsync({
@@ -142,10 +138,7 @@ function CreateFunding() {
         projectId: getSpecificProjects.data?.id ?? "",
         funds: 0,
         donors: 0,
-        milestones: [
-          { milestone: "1", value: 100, unit: "Students", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
-          { milestone: "2", value: 200, unit: "Students", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." }
-        ]
+        milestones: createdMilestones,
       });
 
       setSuccessModalOpen(true);
