@@ -9,7 +9,7 @@ import {
 import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
-import { categoriesOption } from "~/data/categories";
+
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { ProjectData } from "~/types/projectData";
@@ -17,7 +17,7 @@ import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
-
+import CreatableSelect from "react-select/creatable";
 function EditProject() {
   const router = useRouter();
   const { id } = router.query;
@@ -27,6 +27,9 @@ function EditProject() {
   const [publicId, setPublicId] = useState("");
 
   const getProject = api.project.getById.useQuery({ id: id as string });
+  console.log(getProject.data)
+  const categories = api.categories.getAllCategories.useQuery()
+  const categoriesOption = categories.data || [];
 
   const deleteImage = api.project.removeImage.useMutation();
 
@@ -288,13 +291,12 @@ function EditProject() {
                   Categories
                 </label>
 
-                <Select
+                <CreatableSelect
                   id="long-value-select"
+                  placeholder="select option"
                   instanceId="long-value-select"
-                  placeholder="categories"
                   options={categoriesOption}
                   closeMenuOnSelect={false}
-                  components={animatedComponents}
                   isMulti
                   value={categoriesOption.filter((option) =>
                     projectData.category.split(",").includes(option.value),
@@ -308,7 +310,6 @@ function EditProject() {
                       category: selectedValues.join(","),
                     });
                   }}
-                  className="z-20"
                 />
               </div>
 
