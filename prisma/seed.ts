@@ -31,7 +31,6 @@ async function main() {
     { label: "Water", value: "Water" },
     { label: "Air Pollution", value: "Air Pollution" },
     { label: "Civic Participation", value: "Civic Participation" },
-    { label: 'Input', value: 'input' },
   ];
 
   for (let cardData of categoriesOption) {

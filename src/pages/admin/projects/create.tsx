@@ -23,6 +23,7 @@ function CreateProjects() {
   const [publicId, setPublicId] = useState("");
   const [newcategory, setNewCategory] = useState<Category[]>([]);
   const categoriesOption: Category[] = allcategory.data || [];
+  categoriesOption.sort((a, b) => a.label.localeCompare(b.label));
   const editorRef: MutableRefObject<any> = useRef(null);
   const [projectData, setProjectData] = useState<ProjectData>({
     title: "",

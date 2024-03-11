@@ -30,6 +30,7 @@ function EditProject() {
   console.log(getProject.data)
   const categories = api.categories.getAllCategories.useQuery()
   const categoriesOption = categories.data || [];
+  categoriesOption.sort((a, b) => a.label.localeCompare(b.label));
 
   const deleteImage = api.project.removeImage.useMutation();
 
@@ -310,6 +311,7 @@ function EditProject() {
                       category: selectedValues.join(","),
                     });
                   }}
+                  className="z-20"
                 />
               </div>
 
