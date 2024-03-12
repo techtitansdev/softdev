@@ -47,16 +47,16 @@ function EditProject() {
 
   const [projectData, setProjectData] = useState<FundingData>({
     title: "",
+    project: "",
     description: "",
     image: "",
     hub: "",
     category: "",
     type: "",
     beneficiaries: "",
+    goal: "",
+    date: "",
     about: "",
-    goal: 0,
-    date:new Date(),
-    published: false,
   });
 
   const [editorContent, setEditorContent] = useState("");
@@ -74,6 +74,7 @@ function EditProject() {
       setProjectData((prevData) => {
         if (
           prevData.title !== getProject.data.project.title ||
+          prevData.project !== getProject.data.project.title ||
           prevData.description !== getProject.data.project.description ||
           prevData.image !== getProject.data.project.image ||
           prevData.hub !== getProject.data.project.hub ||
@@ -81,12 +82,12 @@ function EditProject() {
           prevData.type !== getProject.data.project.type ||
           prevData.beneficiaries !== getProject.data.project.beneficiaries ||
           prevData.about !== getProject.data.project.about ||
-          prevData.goal !== getProject.data.goal ||
-          prevData.date !== getProject.data.targetDate ||
-          prevData.published !== getProject.data.published
+          prevData.date !== getProject.data.targetDate.toString() ||
+          prevData.goal !== getProject.data.goal.toString()
         ) {
           return {
             title: getProject.data.project.title,
+            project: getProject.data.project.title,
             description: getProject.data.project.description,
             image: getProject.data.project.image,
             hub: getProject.data.project.hub,
@@ -94,9 +95,8 @@ function EditProject() {
             type: getProject.data.project.type,
             beneficiaries: getProject.data.project.beneficiaries,
             about: getProject.data.project.about,
-            goal: getProject.data.goal,
-            date: getProject.data.targetDate,
-            published: getProject.data.published,
+            goal: getProject.data.goal.toString(),
+            date: getProject.data.targetDate.toString(),
           };
         } else {
           return prevData;
@@ -117,16 +117,31 @@ function EditProject() {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
-    if (name === 'goal') {
+    if (name === "goal") {
       // Parse the value to a number before setting it in the state
-      setProjectData({ ...projectData, [name]: parseInt(value, 10) });
+      setProjectData({
+        ...projectData,
+        [name]: parseInt(value, 10).toString(),
+      });
     } else {
       setProjectData({ ...projectData, [name]: value });
     }
   };
-  
 
-  
+  // Create a new Date object from the original date string
+  const dateObject = new Date(projectData.date);
+
+  // Extract year, month, and day from the date object
+  const year = dateObject.getFullYear();
+  // getMonth() returns zero-based month, so we add 1 to it
+  const month = (dateObject.getMonth() + 1).toString().padStart(2, "0");
+  const day = dateObject.getDate().toString().padStart(2, "0");
+
+  // Construct the desired format
+  const convertedDate = `${year}-${month}-${day}`;
+
+  console.log(convertedDate);
+
   const handleImageUpload = (result: CldUploadWidgetResults) => {
     console.log("result: ", result);
     const info = result.info as object;
@@ -164,10 +179,10 @@ function EditProject() {
     editProject.mutate({
       ...projectData,
       id: id as string,
-      goal: projectData.goal,
+      goal: parseInt(projectData.goal, 10),
       donors: 0,
       targetDate: new Date(projectData.date),
-      funds: 0
+      funds: 0,
     });
   };
 
@@ -354,65 +369,66 @@ function EditProject() {
                 />
               </div>
               <div className="mb-4">
-              <label
-                htmlFor="beneficiaries"
-                className="font-medium text-gray-700"
-              >
-                Beneficiaries
-              </label>
+                <label
+                  htmlFor="beneficiaries"
+                  className="font-medium text-gray-700"
+                >
+                  Beneficiaries
+                </label>
 
-              <input
-                type="text"
-                id="beneficiaries"
-                name="beneficiaries"
-                value={projectData.beneficiaries}
-                onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                required
-              />
-            </div>
+                <input
+                  type="text"
+                  id="beneficiaries"
+                  name="beneficiaries"
+                  value={projectData.beneficiaries}
+                  onChange={handleChange}
+                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                  required
+                />
+              </div>
 
-            <div className="mb-4">
-              <label htmlFor="milestones" className="font-medium text-gray-700">
-                Milestones
-              </label>
+              <div className="mb-4">
+                <label
+                  htmlFor="milestones"
+                  className="font-medium text-gray-700"
+                >
+                  Milestones
+                </label>
 
-              <MileStoneTable onRowDataChange={()=>{}} />
-            </div>
+                <MileStoneTable onRowDataChange={() => {}} />
+              </div>
 
-            <div className="mb-4">
-              <label htmlFor="funding" className="font-medium text-gray-700">
-                Funding Goal
-              </label>
+              <div className="mb-4">
+                <label htmlFor="funding" className="font-medium text-gray-700">
+                  Funding Goal
+                </label>
 
-              <input
-                type="number"
-                id="goal"
-                name="goal"
-                value={projectData.goal}
-                onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                required
-              />
-            </div>
+                <input
+                  type="number"
+                  id="goal"
+                  name="goal"
+                  value={projectData.goal}
+                  onChange={handleChange}
+                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                  required
+                />
+              </div>
 
-            {/* <div className="mb-4">
-              <label htmlFor="date" className="font-medium text-gray-700">
-                Target Date
-              </label>
+              <div className="mb-4">
+                <label htmlFor="date" className="font-medium text-gray-700">
+                  Target Date
+                </label>
 
-              <input
-                type="date"
-                id="date"
-                name="date"
-                value={projectData.date}
-                onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                required
-              /> 
-            </div> */}
-
-              
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  value={convertedDate}
+                  onChange={handleChange}
+                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                  required
+                />
+              </div>
 
               <div className="mb-4">
                 <label htmlFor="about" className="font-medium text-gray-700">
