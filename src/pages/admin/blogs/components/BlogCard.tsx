@@ -30,15 +30,22 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
               className="object-obtain h-56 w-[280px] rounded-sm lg:w-[300px]"
               src={blogData.image}
               alt={blogData.image}
+              data-testid="blog-image"
             />
           </Link>
 
           <div className="mx-2 my-2">
-            <div className="truncate text-lg font-medium tracking-tight text-gray-900">
+            <div
+              className="truncate text-lg font-medium tracking-tight text-gray-900"
+              data-testid="blog-title-input"
+            >
               {blogData.title}
             </div>
 
-            <div className="max-w-[330px] items-center truncate text-xs font-light text-gray-700 dark:text-gray-500">
+            <div
+              className="max-w-[330px] items-center truncate text-xs font-light text-gray-700 dark:text-gray-500"
+              data-testid="blog-description-input"
+            >
               {blogData.excerpt}
             </div>
           </div>
