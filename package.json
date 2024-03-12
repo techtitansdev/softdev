@@ -5,7 +5,7 @@
   "scripts": {
     "build": "next build",
     "db:push": "prisma db push",
-    "db:seed": "node prisma/seed.js",
+    "db:seed": "node ./prisma/seed.ts",
     "db:studio": "prisma studio",
     "dev": "next dev",
     "postinstall": "prisma generate",
@@ -14,7 +14,8 @@
     "test": "npm run test:jest && npm run test:vitest",
     "test:jest": "jest",
     "test:vitest": "vitest",
-    "test:watch": "jest --watchAll"
+    "test:watch": "jest --watchAll",
+    "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm.mjs prisma/seed.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.29.7",
@@ -88,5 +89,9 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   }
+
 }
