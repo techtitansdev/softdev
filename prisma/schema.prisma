@@ -37,7 +37,8 @@ model Admins {
 
 model Categories {
   id                      String                    @id @default(cuid())
-  name                    String
+  label                   String
+  value                   String
   assignCategoriesBlog    AssignCategoriesBlog[]
   assignCategoriesProject AssignCategoriesProject[]
 }
