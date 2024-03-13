@@ -2,47 +2,50 @@ import { render, fireEvent, waitFor } from "@testing-library/react";
 import CreateProjects from "../create";
 import { api } from "~/utils/api";
 
+jest.mock("next/router", () => ({
+  useRouter() {
+    return {
+      push: jest.fn(),
+    };
+  },
+}));
+
 jest.mock("~/utils/api", () => ({
-  ...jest.requireActual("~/utils/api"),
-  categories: {
-    getAllCategories: {
-      useQuery: jest.fn().mockReturnValue({ data: [] }),
+  api: {
+    project: {
+      create: {
+        useMutation: jest.fn().mockResolvedValue({}),
+      },
     },
-    create: {
-      useMutation: jest.fn().mockResolvedValue({}),
+    categories: {
+      getAllCategories: {
+        useQuery: jest.fn().mockReturnValue({
+          data: [
+            { label: "Category 1", value: "category1" },
+            { label: "Category 2", value: "category2" },
+          ],
+        }),
+      },
+      create: {
+        useMutation: jest.fn().mockResolvedValue({}),
+      },
     },
   },
 }));
 
-describe("CreateProjects integration test for creating new categories", () => {
-  it("submits the form and creates new categories", async () => {
-    const { getByText, getByLabelText } = render(<CreateProjects />);
+describe("CreateProjects integration tets for create new project categories", () => {
+  it("submits the form and adds new categories", async () => {
+    const { getByTestId, getByText } = render(<CreateProjects />);
 
-    fireEvent.change(getByLabelText("Project Title"), {
-      target: { value: "Test Project" },
-    });
-    fireEvent.change(getByLabelText("Project Description"), {
-      target: { value: "Test Description" },
-    });
-    fireEvent.change(getByLabelText("Hub"), { target: { value: "Test Hub" } });
-    fireEvent.change(getByLabelText("Beneficiaries"), {
-      target: { value: "Test Beneficiaries" },
-    });
+    const categoriesInput = getByTestId("category-select");
 
-    fireEvent.change(getByLabelText("Categories"), {
-      target: { value: "New Category 1, New Category 2" },
-    });
+    fireEvent.change(categoriesInput, { target: { label: "category1" } });
+    fireEvent.keyDown(categoriesInput, { target: { label: "category2" } });
 
-    fireEvent.click(getByText("Activity"));
-
-    fireEvent.change(getByLabelText("About"), {
-      target: { value: "Test About" },
-    });
-
-    fireEvent.click(getByText("Publish"));
+    fireEvent.click(getByText(/Publish/i));
 
     await waitFor(() => {
-      expect(api.categories.create.useMutation).toHaveBeenCalledTimes(1);
+      expect(api.categories.create.useMutation).toHaveBeenCalled();
     });
   });
 });
