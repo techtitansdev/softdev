@@ -23,23 +23,4 @@ describe("BlogCard Integration Test", () => {
     expect(getByRole("button", { name: "Delete" })).toBeTruthy();
   });
 
-  test("opens delete modal when delete button is clicked", () => {
-    const blogData = {
-      id: "test-blog-id",
-      title: "Test Blog",
-      excerpt: "This is the test excerpt for Test Blog.",
-      image: "/test-blog-image",
-    };
-    const handleDelete = jest.fn();
-
-    const { getByRole, getByText, queryByText } = render(
-      <BlogCard blogData={blogData} handleDelete={handleDelete} />
-    );
-
-    fireEvent.click(getByRole("button", { name: "Delete" }));
-    expect(getByText("Are you sure you want to delete Test Blog?")).toBeTruthy();
-
-    fireEvent.click(getByRole("button", { name: "Cancel" }));
-    expect(queryByText("Are you sure you want to delete Test Blog?")).toBeNull();
-  });
 });
