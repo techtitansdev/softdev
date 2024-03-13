@@ -59,6 +59,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
           <button
             className="ml-2 mt-2 rounded-md border bg-red-600 px-8 py-1 text-white shadow-md hover:bg-red-700"
             onClick={openModal}
+            data-testid="modal-subject"
           >
             Delete
           </button>
