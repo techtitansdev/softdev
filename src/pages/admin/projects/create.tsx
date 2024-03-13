@@ -40,31 +40,36 @@ function CreateProjects() {
     label: string;
     value: string;
   }
-  
 
-  
   const addNewCategory = (input: string) => {
-    const newCategories = input.split(',').map(category => category.trim());
-  
-    newCategories.forEach(newCategory => {
+    const newCategories = input.split(",").map((category) => category.trim());
+
+    newCategories.forEach((newCategory) => {
       // Check if the input already exists in categoriesOption
       const existsInCategoriesOption = categoriesOption.some(
-        (category) => category.value.toLowerCase() === newCategory.toLowerCase()
+        (category) =>
+          category.value.toLowerCase() === newCategory.toLowerCase(),
       );
-  
+
       // Check if the input already exists in newcategory
       const existsInNewCategory = newcategory.some(
-        (category) => category.value.toLowerCase() === newCategory.toLowerCase()
+        (category) =>
+          category.value.toLowerCase() === newCategory.toLowerCase(),
       );
-  
+
       // If the input is not in categoriesOption and not already in newcategory, add it to newcategory
-      if (!existsInCategoriesOption && !existsInNewCategory && newCategory.trim() !== "") {
-        setNewCategory((prevNewCategory) => [...prevNewCategory, { label: newCategory, value: newCategory }]);
+      if (
+        !existsInCategoriesOption &&
+        !existsInNewCategory &&
+        newCategory.trim() !== ""
+      ) {
+        setNewCategory((prevNewCategory) => [
+          ...prevNewCategory,
+          { label: newCategory, value: newCategory },
+        ]);
       }
     });
   };
-  
-
 
   const type = [
     { label: "Activity", value: "Activity" },
@@ -99,14 +104,15 @@ function CreateProjects() {
 
   const handleSubmit = async (isPublished: boolean) => {
     try {
-
       if (newcategory.length > 0) {
-        await Promise.all(newcategory.map(async (category) => {
-          await createCategory.mutateAsync({
-            label: category.label,
-            value: category.value
-          });
-        }));
+        await Promise.all(
+          newcategory.map(async (category) => {
+            await createCategory.mutateAsync({
+              label: category.label,
+              value: category.value,
+            });
+          }),
+        );
       }
 
       const result = await createProject.mutateAsync({
@@ -243,13 +249,16 @@ function CreateProjects() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="categories" className="font-medium text-gray-700">
+              <label
+                htmlFor="categories"
+                className="font-medium text-gray-700"
+                data-testid="category-select"
+              >
                 Categories
               </label>
-             
+
               <CreatableSelect
                 options={allcategory.data}
-                
                 placeholder="select option"
                 isMulti
                 value={categoriesOption.find(
@@ -263,8 +272,7 @@ function CreateProjects() {
                     ...projectData,
                     category: selectedValues.join(","),
                   });
-                  addNewCategory(selectedValues.join(","))
-                  
+                  addNewCategory(selectedValues.join(","));
                 }}
                 className="z-20"
               />
