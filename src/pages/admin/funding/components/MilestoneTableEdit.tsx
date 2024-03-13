@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export interface TableRow {
   milestone: string;
@@ -9,12 +9,19 @@ export interface TableRow {
 
 interface MileStoneTableProps {
   onRowDataChange: (rows: TableRow[]) => void;
+  existingMilestone: TableRow[];
 }
 
-const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
-  const [rows, setRows] = useState<TableRow[]>([
-    { milestone: "1", value: 0, unit: "", description: "" },
-  ]);
+const MileStoneTableEdit: React.FC<MileStoneTableProps> = ({ onRowDataChange, existingMilestone }) => {
+  const [rows, setRows] = useState<TableRow[]>([]);
+
+  useEffect(() => {
+    if (existingMilestone.length > 0) {
+      setRows(existingMilestone);
+    } else {
+      setRows([{ milestone: "1", value: 0, unit: "", description: "" }]);
+    }
+  }, [existingMilestone]);
 
   const addRow = () => {
     setRows([
@@ -130,4 +137,4 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
   );
 };
 
-export default MileStoneTable;
+export default MileStoneTableEdit;

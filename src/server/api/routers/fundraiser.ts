@@ -40,7 +40,7 @@ export const fundraiser = createTRPCRouter({
             goal: input.goal,
             targetDate: input.targetDate,
             donors: input.donors,
-        };
+        };9
         // Create the fundraiser
         const fundraiser = await db.fundraisers.create({
             data: newFundraiserData,
@@ -62,40 +62,62 @@ export const fundraiser = createTRPCRouter({
     }),
 
   edit: protectedProcedure
-    .input(
-      z.object({
-        id: z.string(),
-        funds: z.number(),
-        goal: z.number(),
-        targetDate: z.date(),
-        donors: z.number(),
-      }),
-    )
-    .mutation(async (opts) => {
-      const { input } = opts;
+  .input(
+    z.object({
+      id: z.string(),
+      funds: z.number(),
+      goal: z.number(),
+      targetDate: z.date(),
+      donors: z.number(),
+      milestones: z.array(
+        z.object({
+          milestone: z.string(),
+          value: z.number(),
+          unit: z.string(),
+          description: z.string(),
+        })
+      ),
+    })
+  )
+  .mutation(async (opts) => {
+    const { input } = opts;
 
-      //check if fundraiser exists
-      const existingFundraiser = await db.fundraisers.findUnique({
-        where: { id: input.id },
-      });
+    // Check if fundraiser exists
+    const existingFundraiser = await db.fundraisers.findUnique({
+      where: { id: input.id },
+    });
 
-      if (!existingFundraiser) {
-        throw new Error("Fundraiser does not exist");
-      }
+    if (!existingFundraiser) {
+      throw new Error("Fundraiser does not exist");
+    }
 
-      const newDetails = {
-        ...input,
-      };
+    // Prepare updated details
+    const newDetails = {
+      ...input,
+      milestones: {
+        // Map milestones to the appropriate format for database update
+        // Assuming milestones is an array of objects
+        // with properties 'milestone', 'value', 'unit', 'description'
+        // and there's a nested relationship 'milestones' in the database model
+        // that needs to be updated.
+        updateMany: input.milestones.map((milestone) => ({
+          where: { milestone: milestone.milestone }, // Assuming 'milestone' is unique
+          data: milestone,
+        })),
+      },
+    };
 
-      //update fundraiser details in the database
-      const updatedFundraiser = await db.fundraisers.update({
-        where: {
-          id: input.id,
-        },
-        data: newDetails,
-      });
-      return updatedFundraiser;
-    }),
+    // Update fundraiser details in the database
+    const updatedFundraiser = await db.fundraisers.update({
+      where: {
+        id: input.id,
+      },
+      data: newDetails,
+    });
+
+    return updatedFundraiser;
+  }),
+
 
   delete: protectedProcedure
     .input(
@@ -106,15 +128,25 @@ export const fundraiser = createTRPCRouter({
     .mutation(async (opts) => {
       const { input } = opts;
 
-      //check if project exists:
+      // Check if fundraiser exists:
       const existingFundraiser = await db.fundraisers.findUnique({
         where: { id: input.id },
+        include: { milestones: true }, // Include associated milestones
       });
 
       if (!existingFundraiser) {
         throw new Error("Fundraiser Does Not Exist");
       }
 
+      // Delete associated milestones
+      const deleteMilestonePromises = existingFundraiser.milestones.map(async (milestone) => {
+        await db.milestones.delete({
+          where: { id: milestone.id },
+        });
+      });
+      await Promise.all(deleteMilestonePromises);
+
+      // Delete the fundraiser
       await db.fundraisers.delete({
         where: { id: input.id },
       });

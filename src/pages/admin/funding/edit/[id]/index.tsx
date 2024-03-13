@@ -18,7 +18,7 @@ import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import { FundingData } from "~/types/fundingData";
-import MileStoneTable from "../../components/MilestoneTable";
+import MileStoneTableEdit, { TableRow } from "../../components/MilestoneTableEdit";
 
 function EditProject() {
   const router = useRouter();
@@ -57,6 +57,7 @@ function EditProject() {
     goal: "",
     date: "",
     about: "",
+    milestones: [],
   });
 
   const [editorContent, setEditorContent] = useState("");
@@ -83,6 +84,7 @@ function EditProject() {
           prevData.beneficiaries !== getProject.data.project.beneficiaries ||
           prevData.about !== getProject.data.project.about ||
           prevData.date !== getProject.data.targetDate.toString() ||
+          prevData.milestones !== getProject.data.milestones || 
           prevData.goal !== getProject.data.goal.toString()
         ) {
           return {
@@ -97,6 +99,7 @@ function EditProject() {
             about: getProject.data.project.about,
             goal: getProject.data.goal.toString(),
             date: getProject.data.targetDate.toString(),
+            milestones: getProject.data.milestones, // Assuming milestones is part of FundingData
           };
         } else {
           return prevData;
@@ -126,6 +129,15 @@ function EditProject() {
     } else {
       setProjectData({ ...projectData, [name]: value });
     }
+  };
+  const [milestoneData, setMilestoneData] = useState<TableRow[]>([
+    { milestone: "1", value: 100, unit: "1", description: "this is description" },
+  ]);
+  
+  // Ensure getProject.data?.milestones is not undefined before setting milestoneData
+
+  const handleMilestoneDataChange = (data: TableRow[]) => {
+    setMilestoneData(projectData.milestones);
   };
 
   // Create a new Date object from the original date string
@@ -183,6 +195,7 @@ function EditProject() {
       donors: 0,
       targetDate: new Date(projectData.date),
       funds: 0,
+      milestones: projectData.milestones
     });
   };
 
@@ -395,7 +408,10 @@ function EditProject() {
                   Milestones
                 </label>
 
-                <MileStoneTable onRowDataChange={() => {}} />
+                <MileStoneTableEdit
+                  onRowDataChange={() => {
+                    handleMilestoneDataChange;
+                  } } existingMilestone={projectData.milestones}                />
               </div>
 
               <div className="mb-4">

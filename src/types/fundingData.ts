@@ -1,3 +1,14 @@
+interface Milestone {
+  id: string;
+  milestone: string;
+  value: number;
+  unit: string;
+  description: string;
+  created: Date;
+  updated: Date;
+  fundraiserId: string;
+}
+
 export interface FundingData {
   title: string;
   project: string;
@@ -7,7 +18,8 @@ export interface FundingData {
   category: string;
   type: string;
   beneficiaries: string;
+  about: string;
   goal: string;
   date: string;
-  about: string;
+  milestones: Milestone[]; // Define the milestone type here
 }

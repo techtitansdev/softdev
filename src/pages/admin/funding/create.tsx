@@ -12,6 +12,7 @@ import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import MileStoneTable, { TableRow } from "./components/MilestoneTable";
 import { FundingData } from "~/types/fundingData";
+import { milestone } from "~/server/api/routers/milestone";
 
 function CreateFunding() {
   const [project, setProject] = useState("");
@@ -45,6 +46,7 @@ function CreateFunding() {
     goal: "",
     date: "",
     about: "",
+    milestones: [],
   });
 
   const type = [
@@ -103,33 +105,40 @@ function CreateFunding() {
     // logic for removing the image
   };
 
+  
   const [milestoneData, setMilestoneData] = useState<TableRow[]>([
     { milestone: "1", value: 0, unit: "", description: "" },
   ]);
-
+  
   const handleMilestoneDataChange = (data: TableRow[]) => {
-    setMilestoneData(data);
+    // No need to parse the value field if it's already a number
+    const updatedData = data.map((item) => ({
+      ...item,
+      value: typeof item.value === 'string' ? parseFloat(item.value) : item.value,
+    }));
+    setMilestoneData(updatedData);
   };
+  
 
   const createFundRaiser = api.fundraiser.create.useMutation();
   const createMilestone = api.milestone.create.useMutation();
-
+console.log(milestoneData)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
       // Create milestones
-      const createdMilestones = await Promise.all(
-        milestoneData.map(async (milestone) => {
-          return await createMilestone.mutateAsync({
-            milestone: milestone.milestone,
-            value: parseFloat(milestone.value.toString()),
-            unit: milestone.unit,
-            description: milestone.description,
-            fundraiserId: "",
-          });
-        }),
-      );
+      // const createdMilestones = await Promise.all(
+      //   milestoneData.map(async (milestone) => {
+      //     return await createMilestone.mutateAsync({
+      //       milestone: milestone.milestone,
+      //       value: parseFloat(milestone.value.toString()),
+      //       unit: milestone.unit,
+      //       description: milestone.description,
+      //       fundraiserId: "",
+      //     });
+      //   }),
+      // );
 
       // Create fundraiser
       const fundraiserResult = await createFundRaiser.mutateAsync({
@@ -138,7 +147,7 @@ function CreateFunding() {
         projectId: getSpecificProjects.data?.id ?? "",
         funds: 0,
         donors: 0,
-        milestones: createdMilestones,
+        milestones: milestoneData,
       });
 
       setSuccessModalOpen(true);
@@ -152,7 +161,7 @@ function CreateFunding() {
       console.error("Error creating project:", error);
     }
   };
-
+  console.log({ milestone: "1", value: 0, unit: "", description: "" })
   return (
     <div>
       <Head>
