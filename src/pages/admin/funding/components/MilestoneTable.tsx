@@ -1,20 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export interface TableRow {
+  id: string | undefined;
   milestone: string;
-  value: number; // Assuming value is a number based on the previous schema
+  value: number;
   unit: string;
   description: string;
 }
 
 interface MileStoneTableProps {
   onRowDataChange: (rows: TableRow[]) => void;
+  existingMilestone: TableRow[];
 }
 
-const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
-  const [rows, setRows] = useState<TableRow[]>([
-    { milestone: "1", value: 0, unit: "", description: "" },
-  ]);
+const MileStoneTable: React.FC<MileStoneTableProps> = ({
+  onRowDataChange,
+  existingMilestone,
+}) => {
+  const [rows, setRows] = useState<TableRow[]>([]);
+
+  useEffect(() => {
+    if (existingMilestone.length > 0) {
+      setRows(existingMilestone);
+    } 
+  }, [existingMilestone]);
 
   const addRow = () => {
     setRows([
@@ -30,8 +39,8 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
 
   const handleChange = (
     index: number,
-    field: keyof TableRow,
-    value: string,
+    field: keyof TableRow,  
+    value: string
   ) => {
     const newRows = rows.map((row, rowIndex) => {
       if (rowIndex === index) {
@@ -75,13 +84,16 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
                   type="text"
                   value={row.milestone}
                   readOnly
+                  onChange={(e) =>
+                    handleChange(index, "milestone", e.target.value)
+                  }
                   className="block w-full rounded-sm border border-gray-300 py-2 text-center sm:text-sm"
                   data-testid="milestone-title-input"
                 />
               </td>
               <td>
                 <input
-                  type="text"
+                  type="number"
                   value={row.value}
                   placeholder=" Ex: 100"
                   required

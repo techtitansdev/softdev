@@ -117,6 +117,7 @@ function CreateFunding() {
       value: typeof item.value === 'string' ? parseFloat(item.value) : item.value,
     }));
     setMilestoneData(updatedData);
+    console.log('updated data',updatedData)
   };
   
 
@@ -380,7 +381,7 @@ console.log(milestoneData)
                 Milestones
               </label>
 
-              <MileStoneTable onRowDataChange={handleMilestoneDataChange} />
+              <MileStoneTable onRowDataChange={handleMilestoneDataChange} existingMilestone={milestoneData} />
             </div>
 
             <div className="mb-4">
