@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
-
+import axios from 'axios';
 import { z } from 'zod'
 
 
@@ -80,6 +80,9 @@ export const NewEditor: React.FC<EditorProps> = ({ subredditId }) => {
     const LinkTool = (await import('@editorjs/link')).default
     const InlineCode = (await import('@editorjs/inline-code')).default
     const ImageTool = (await import('@editorjs/image')).default
+    const Paragraph = (await import('@editorjs/paragraph')).default
+    const Underline = (await import('@editorjs/underline')).default
+    const AlignmentTuneTool = (await import('editorjs-text-alignment-blocktune')).default
 
     if (!ref.current) {
       const editor = new EditorJS({
@@ -87,16 +90,76 @@ export const NewEditor: React.FC<EditorProps> = ({ subredditId }) => {
         onReady() {
           ref.current = editor
         },
+        onChange: () => {
+          // Ensure ref.current is defined before accessing its properties
+          if (ref.current) {
+            // When there's a change, save the blocks and log them
+            ref.current.save().then(blocks => {
+              console.log(JSON.stringify(blocks, null, 2));
+            });
+          }
+        },
         placeholder: 'Type here to write your post...',
         inlineToolbar: true,
         data: { blocks: [] },
         tools: {
+          alignementTool: AlignmentTuneTool,
+          underline: Underline,
+          paragraph: {
+            class: Paragraph,
+            inlineToolbar: true,
+            tunes:['alignementTool']
+          },
           header: {
             class: Header, 
-            inlineToolbar: ['link'] 
+            inlineToolbar: true,
+            tunes:['alignementTool'] 
           }, 
-          image: ImageTool,
-          list: List,
+          image: {
+            class:ImageTool,
+            config:{
+              uploader: {
+                async uploadByFile(file: any) {
+                  try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+          
+                    // Make a POST request to Cloudinary's upload API
+                    const response = await axios.post('https://api.cloudinary.com/v1_1/dzpghgd8d/image/upload', formData, {
+                      headers: {
+                        'Content-Type': 'multipart/form-data'
+                      },
+                      params: {
+                        upload_preset: 'gxk09fmu'
+                      }
+                    });
+          
+                    // Return the secure URL of the uploaded image from Cloudinary
+                    return {
+                      success: 1,
+                      file: {
+                        url: response.data.secure_url
+                      }
+                    };
+                  } catch (error) {
+                    console.error('Error uploading image to Cloudinary:', error);
+                    // Return an error message
+                    return {
+                      success: 0,
+                      error: {
+                        message: 'Failed to upload image.'
+                      }
+                    };
+                  }
+                }
+              }
+            }    
+          },
+          list: {
+            class: List,
+            inlineToolbar: true,
+            tunes:['alignementTool'],
+          },
           code: Code,
           inlineCode: InlineCode,
           table: Table,
@@ -106,6 +169,7 @@ export const NewEditor: React.FC<EditorProps> = ({ subredditId }) => {
     }
   }, [])
 
+  
   useEffect(() => {
     if (Object.keys(errors).length) {
       for (const [_key, value] of Object.entries(errors)) {
@@ -146,14 +210,7 @@ export const NewEditor: React.FC<EditorProps> = ({ subredditId }) => {
 
   async function onSubmit(data: FormData) {
     const blocks = await ref.current?.save()
-
-    const payload: PostCreationRequest = {
-      title: 'tittle',
-      content:blocks,
-      subredditId,
-    }
-
-    console.log(blocks)
+    console.log('blocks')
   }
 
   if (!isMounted) {
@@ -163,21 +220,16 @@ export const NewEditor: React.FC<EditorProps> = ({ subredditId }) => {
   const { ref: titleRef, ...rest } = register('title')
 
   return (
-    <div className='w-full p-4 bg-zinc-50 rounded-lg border border-zinc-200'>
+    <div className='justify-center content-center w-full p-4 bg-zinc-50 rounded-lg border border-blue-200'>
       <form
         id='subreddit-post-form'
-        className='w-fit'
-        onSubmit={handleSubmit(onSubmit)}>
-        <div className='prose prose-stone dark:prose-invert'>
+        className='flex flex-col items-center'
+        onSubmit={handleSubmit(onSubmit)}
+
+        >
+        <div className='justify-center heading prose prose-stone dark:prose-invert'>
      
-          <div id='editor' className='min-h-[500px]' />
-          <p className='text-sm text-gray-500'>
-            Use{' '}
-            <kbd className='rounded-md border bg-muted px-1 text-xs uppercase'>
-              Tab
-            </kbd>{' '}
-            to open the command menu.
-          </p>
+          <div id='editor' className='justify-center min-h-[500px] min-w-[500px]' />
         </div>
         <button> submit </button>
       </form>

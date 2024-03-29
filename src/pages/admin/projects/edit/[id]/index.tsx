@@ -17,7 +17,8 @@ import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
-
+import { NewEditor } from "../../components/editor";
+import cloudinary from 'next-cloudinary';
 function EditProject() {
   const router = useRouter();
   const { id } = router.query;
@@ -137,12 +138,13 @@ function EditProject() {
       setProjectData({
         ...projectData,
         image: "",
-      });
+      }
+      );
     } catch (error) {
       console.error(error);
     }
   };
-
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -363,40 +365,12 @@ function EditProject() {
                   About
                 </label>
               </div>
+              <div>
 
-              <Editor
-                initialValue={projectData.about}
-                value={editorContent}
-                onEditorChange={handleEditorChange}
-                apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-                init={{
-                  width: "100%",
-                  height: 600,
-                  plugins: [
-                    "advlist",
-                    "link",
-                    "image",
-                    "lists",
-                    "preview",
-                    "pagebreak",
-                    "wordcount",
-                    "fullscreen",
-                    "insertdatetime",
-                    "media",
-                    "table",
-                    "emoticons",
-                    "image code",
-                  ],
-                  toolbar:
-                    "undo redo |fontfamily fontsize | bold italic underline | alignleft aligncenter alignright alignjustify |" +
-                    "bullist numlist outdent indent | link image | preview media fullscreen | " +
-                    "forecolor backcolor emoticons",
 
-                  menubar: "file edit insert view  format table tools",
-                  content_style:
-                    "body{font-family:Helvetica,Arial,sans-serif; font-size:16px}",
-                }}
-              />
+              <NewEditor subredditId={"1"}/>    
+              </div>
+             
 
               <button
                 type="submit"
