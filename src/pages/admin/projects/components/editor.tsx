@@ -18,57 +18,22 @@ import { useMutation } from '@tanstack/react-query'
 type FormData = z.infer<typeof PostValidator>
 
 interface EditorProps {
-  subredditId: string
+  onChanges: (data: any) => void,
+  initialData?: any[]
 }
 
-export const NewEditor: React.FC<EditorProps> = ({ subredditId }) => {
+export const NewEditor: React.FC<EditorProps> = ({onChanges,initialData}) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(PostValidator),
-    defaultValues: {
-      subredditId,
-      title: '',
-      content: null,
-    },
   })
   const ref = useRef<EditorJS>()
   const _titleRef = useRef<HTMLTextAreaElement>(null)
   const router = useRouter()
   const [isMounted, setIsMounted] = useState<boolean>(false)
   const pathname = usePathname()
-
-//   const { mutate: createPost } = useMutation({
-//     mutationFn: async ({
-//       title,
-//       content,
-//       subredditId,
-//     }: PostCreationRequest) => {
-//       const payload: PostCreationRequest = { title, content, subredditId }
-//       const { data } = await axios.post('/api/subreddit/post/create', payload)
-//       return data
-//     },
-//     onError: () => {
-//       return console.log({
-//         title: 'Something went wrong.',
-//         description: 'Your post was not published. Please try again.',
-//         variant: 'destructive',
-//       })
-//     },
-//     onSuccess: () => {
-//       // turn pathname /r/mycommunity/submit into /r/mycommunity
-//       const newPathname = pathname.split('/').slice(0, -1).join('/')
-//       router.push(newPathname)
-
-//       router.refresh()
-
-//       return toast({
-//         description: 'Your post has been published.',
-//       })
-//     },
-//   })
 
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import('@editorjs/editorjs')).default
@@ -83,25 +48,29 @@ export const NewEditor: React.FC<EditorProps> = ({ subredditId }) => {
     const Paragraph = (await import('@editorjs/paragraph')).default
     const Underline = (await import('@editorjs/underline')).default
     const AlignmentTuneTool = (await import('editorjs-text-alignment-blocktune')).default
-
+    console.log('editor initialData')
+    console.log('initia da',initialData)
     if (!ref.current) {
       const editor = new EditorJS({
         holder: 'editor',
         onReady() {
           ref.current = editor
         },
-        onChange: () => {
+        onChange: async () => {
           // Ensure ref.current is defined before accessing its properties
           if (ref.current) {
             // When there's a change, save the blocks and log them
-            ref.current.save().then(blocks => {
-              console.log(JSON.stringify(blocks, null, 2));
-            });
+            // ref.current.save().then(blocks => {
+            //   console.log(JSON.stringify(blocks, null, 2));
+            // });
+            const blocks = await ref.current?.save()
+            console.log(JSON.stringify(blocks, null, 2));
+            onChanges(blocks)
           }
         },
         placeholder: 'Type here to write your post...',
         inlineToolbar: true,
-        data: { blocks: [] },
+        data: { blocks: initialData || []  },
         tools: {
           alignementTool: AlignmentTuneTool,
           underline: Underline,
@@ -165,9 +134,11 @@ export const NewEditor: React.FC<EditorProps> = ({ subredditId }) => {
           table: Table,
           embed: Embed,
         },
+        
       })
     }
-  }, [])
+    
+  }, [initialData])
 
   
   useEffect(() => {
@@ -220,18 +191,15 @@ export const NewEditor: React.FC<EditorProps> = ({ subredditId }) => {
   const { ref: titleRef, ...rest } = register('title')
 
   return (
-    <div className='justify-center content-center w-full p-4 bg-zinc-50 rounded-lg border border-blue-200'>
+    <div className='justify-center content-center min-w-[1000px]  bg-zinc-50 rounded-lg border border-blue-200'>
       <form
         id='subreddit-post-form'
         className='flex flex-col items-center'
         onSubmit={handleSubmit(onSubmit)}
-
         >
         <div className='justify-center heading prose prose-stone dark:prose-invert'>
-     
           <div id='editor' className='justify-center min-h-[500px] min-w-[500px]' />
         </div>
-        <button> submit </button>
       </form>
     </div>
   )

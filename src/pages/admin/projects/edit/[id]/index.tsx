@@ -18,7 +18,7 @@ import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import { NewEditor } from "../../components/editor";
-import cloudinary from 'next-cloudinary';
+import cloudinary from "next-cloudinary";
 function EditProject() {
   const router = useRouter();
   const { id } = router.query;
@@ -26,7 +26,7 @@ function EditProject() {
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
-
+  const [editorBlocks,setEditorBlocks] = useState([]);
   const getProject = api.project.getById.useQuery({ id: id as string });
 
   const deleteImage = api.project.removeImage.useMutation();
@@ -96,6 +96,10 @@ function EditProject() {
         }
       });
       setImageUrl(getProject.data.image);
+      const initialEditorData = JSON.parse(getProject.data.about);
+      
+      setEditorBlocks(initialEditorData.blocks)
+      
     }
   }, [getProject.data]);
 
@@ -138,24 +142,82 @@ function EditProject() {
       setProjectData({
         ...projectData,
         image: "",
-      }
-      );
+      });
     } catch (error) {
       console.error(error);
     }
   };
-  
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     editProject.mutate({
       ...projectData,
       id: id as string,
       image: imageUrl,
-      about: editorContent,
+      about: JSON.stringify(editorData, null, 2),
       published: false,
     });
   };
+
+
+  const [editorData, setEditorData] = useState(null);
+  const handleChanges = (data: any) => {
+    // Update state with the new data from the editor
+    setEditorData(data);
+  };
+
+  // const initialBlocks = [
+  //   {
+  //     id: "UlvBBAFCPz",
+  //     type: "header",
+  //     data: {
+  //       text: "This is the Heading",
+  //       level: 1,
+  //     },
+  //     tunes: {
+  //       alignementTool: {
+  //         alignment: "center",
+  //       },
+  //     },
+  //   },
+  //   {
+  //     id: "wboTZOwv46",
+  //     type: "image",
+  //     data: {
+  //       file: {
+  //         url: "https://res.cloudinary.com/dzpghgd8d/image/upload/v1711782633/zj8nfqeaj2rww4pwv6vw.jpg",
+  //       },
+  //       caption: "",
+  //       withBorder: false,
+  //       stretched: false,
+  //       withBackground: false,
+  //     },
+  //   },
+  //   {
+  //     id: "nEZZ-a4JuR",
+  //     type: "list",
+  //     data: {
+  //       style: "ordered",
+  //       items: ["&nbsp;item 1", "item 2", "item 3"],
+  //     },
+  //     tunes: {
+  //       alignementTool: {
+  //         alignment: "left",
+  //       },
+  //     },
+  //   },
+  //   {
+  //     id: "AN6LeDqbdY",
+  //     type: "table",
+  //     data: {
+  //       withHeadings: false,
+  //       content: [
+  //         ["col1 row 1", "col2 row 1"],
+  //         ["col1 row 2", "col2 row 2"],
+  //       ],
+  //     },
+  //   },
+  // ];
 
   return (
     <>
@@ -365,12 +427,12 @@ function EditProject() {
                   About
                 </label>
               </div>
-              <div>
-
-
-              <NewEditor subredditId={"1"}/>    
+              <div className="min-w-[300px]">
+                <NewEditor
+                  onChanges={handleChanges}
+                  initialData={editorBlocks}
+                />
               </div>
-             
 
               <button
                 type="submit"

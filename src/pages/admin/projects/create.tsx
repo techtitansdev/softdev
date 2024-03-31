@@ -11,13 +11,14 @@ import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
+import { NewEditor } from "./components/editor";
 
 function CreateProjects() {
   const createProject = api.project.create.useMutation();
   const animatedComponents = makeAnimated();
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
   const router = useRouter();
-
+  const [editorData, setEditorData] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
 
@@ -70,7 +71,7 @@ function CreateProjects() {
     try {
       const result = await createProject.mutateAsync({
         ...projectData,
-        about: editorRef.current.getContent(),
+        about: JSON.stringify(editorData, null, 2),
         image: imageUrl,
         published: isPublished,
       });
@@ -85,7 +86,15 @@ function CreateProjects() {
       console.error("Error creating project:", error);
     }
   };
+  
 
+  const handleChanges = (data: any) => {
+    // Update state with the new data from the editor
+    setEditorData(data);
+
+    
+  };
+  console.log(JSON.stringify(editorData, null, 2));
   return (
     <div>
       <Head>
@@ -270,42 +279,10 @@ function CreateProjects() {
                 About
               </label>
             </div>
-
-            <Editor
-              apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-              onInit={(evt, editor) => {
-                if (editorRef.current === null) {
-                  editorRef.current = editor;
-                }
-              }}
-              init={{
-                width: "100%",
-                height: 600,
-                plugins: [
-                  "advlist",
-                  "link",
-                  "image",
-                  "lists",
-                  "preview",
-                  "pagebreak",
-                  "wordcount",
-                  "fullscreen",
-                  "insertdatetime",
-                  "media",
-                  "table",
-                  "emoticons",
-                  "image code",
-                ],
-                toolbar:
-                  "undo redo |fontfamily fontsize | bold italic underline | alignleft aligncenter alignright alignjustify |" +
-                  "bullist numlist outdent indent | link image | preview media fullscreen | " +
-                  "forecolor backcolor emoticons",
-
-                menubar: "file edit insert view  format table tools",
-                content_style:
-                  "body{font-family:Helvetica,Arial,sans-serif; font-size:16px}",
-              }}
-            />
+            <div className="min-w-[300px]">
+                <NewEditor onChanges={handleChanges} />
+              </div>    
+            
 
             <button
               type="button"
