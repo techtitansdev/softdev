@@ -2,6 +2,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { IoLocationSharp } from "react-icons/io5";
 import DeleteModal from "~/components/DeleteModal";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import { api } from "~/utils/api";
 
 interface ProjectCardProps {
   projectData: any;
@@ -13,6 +15,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   handleDelete,
 }) => {
   const [isModalOpen, setModalOpen] = useState(false);
+  const [featured, setFeatured] = useState(projectData.featured || false);
 
   const openModal = () => {
     setModalOpen(true);
@@ -22,13 +25,34 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     setModalOpen(false);
   };
 
+  const editProjectMutation = api.project.edit.useMutation();
+
+  const toggleFeatured = async () => {
+    try {
+      const updatedProjectData = { ...projectData, featured: !featured };
+      setFeatured(!featured);
+
+      await editProjectMutation.mutate({
+        id: projectData.id,
+        ...updatedProjectData,
+      });
+    } catch (error) {
+      console.error("Error updating featured status:", error);
+      setFeatured(featured);
+    }
+  };
+
   return (
-    <div>
+    <div className="relative">
       <ul>
-        <li
-          key={projectData.id}
-          className="transform rounded-lg pb-4 shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105"
-        >
+        <li key={projectData.id} className="relative rounded-lg pb-4 shadow">
+          <button
+            className="absolute right-2 top-2 text-yellow-500 focus:outline-none"
+            onClick={toggleFeatured}
+          >
+            {featured ? <AiFillStar size={22} /> : <AiOutlineStar size={22} />}
+          </button>
+
           <Link href={`/admin/projects/${encodeURIComponent(projectData.id)}`}>
             <img
               className="object-obtain h-56 w-[280px] rounded-sm lg:w-[300px]"

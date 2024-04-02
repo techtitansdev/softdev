@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { db } from "../../db";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const project = createTRPCRouter({
   create: protectedProcedure
@@ -14,13 +14,13 @@ export const project = createTRPCRouter({
         type: z.string(),
         beneficiaries: z.string(),
         about: z.string(),
-        published: z.boolean()
+        published: z.boolean(),
+        featured: z.boolean(),
       }),
     )
     .mutation(async (opts) => {
       const { input } = opts;
 
-      //add project credentials to the database
       const newProject = {
         ...input,
       };
@@ -29,6 +29,7 @@ export const project = createTRPCRouter({
       });
       return project;
     }),
+
   edit: protectedProcedure
     .input(
       z.object({
@@ -42,6 +43,7 @@ export const project = createTRPCRouter({
         beneficiaries: z.string(),
         about: z.string(),
         published: z.boolean(),
+        featured: z.boolean(),
       }),
     )
     .mutation(async (opts) => {
@@ -68,6 +70,7 @@ export const project = createTRPCRouter({
       });
       return updatedProject;
     }),
+
   delete: protectedProcedure
     .input(
       z.object({
@@ -90,41 +93,41 @@ export const project = createTRPCRouter({
         where: { id: input.id },
       });
     }),
+
   getAll: protectedProcedure.query(async () => {
     const allProjects = await db.projects.findMany();
     return allProjects;
   }),
+
   getAllProjectTitles: protectedProcedure.query(async () => {
     const allProjects = await db.projects.findMany({ select: { title: true } });
-    return allProjects.map(project => project.title);
+    return allProjects.map((project) => project.title);
   }),
 
   getByTitle: protectedProcedure
-  .input(
-    z.object({
-      title: z.string(),
-    }),
-  )
-  .query(async (opts) => {
-    const { input } = opts;
+    .input(
+      z.object({
+        title: z.string(),
+      }),
+    )
+    .query(async (opts) => {
+      const { input } = opts;
 
-    try {
-      const foundProject = await db.projects.findFirst({
-        where: { title: input.title },
-      });
+      try {
+        const foundProject = await db.projects.findFirst({
+          where: { title: input.title },
+        });
 
-      if (!foundProject) {
-        throw new Error("Project not found");
+        if (!foundProject) {
+          throw new Error("Project not found");
+        }
+
+        return foundProject;
+      } catch (error) {
+        throw new Error(`Failed to fetch project: ${error}`);
       }
+    }),
 
-      return foundProject;
-    } catch (error) {
-      throw new Error(`Failed to fetch project: ${error}`);
-    }
-  }),
-
-
-  
   getById: protectedProcedure
     .input(
       z.object({
