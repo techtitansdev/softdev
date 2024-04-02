@@ -3,28 +3,30 @@ import { ChangeEvent, MutableRefObject, useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
-import { categoriesOption } from "~/data/categories";
 import Select from "react-select";
-import makeAnimated from "react-select/animated";
 import { ProjectData } from "~/types/projectData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import CreatableSelect from "react-select/creatable";
+
+interface Category {
+  label: string;
+  value: string;
+}
+
 function CreateProjects() {
   const createProject = api.project.create.useMutation();
   const allcategory = api.categories.getAllCategories.useQuery();
   const createCategory = api.categories.create.useMutation();
-  const animatedComponents = makeAnimated();
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
   const router = useRouter();
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
   const [newcategory, setNewCategory] = useState<Category[]>([]);
-  const categoriesOption: Category[] = allcategory.data || [];
-  categoriesOption.sort((a, b) => a.label.localeCompare(b.label));
   const editorRef: MutableRefObject<any> = useRef(null);
+
   const [projectData, setProjectData] = useState<ProjectData>({
     title: "",
     description: "",
@@ -35,36 +37,41 @@ function CreateProjects() {
     beneficiaries: "",
     about: "",
     published: false,
+    featured: false,
   });
-  interface Category {
-    label: string;
-    value: string;
-  }
-  
 
-  
+  const categoriesOption: Category[] = allcategory.data || [];
+  categoriesOption.sort((a, b) => a.label.localeCompare(b.label));
+
   const addNewCategory = (input: string) => {
-    const newCategories = input.split(',').map(category => category.trim());
-  
-    newCategories.forEach(newCategory => {
+    const newCategories = input.split(",").map((category) => category.trim());
+
+    newCategories.forEach((newCategory) => {
       // Check if the input already exists in categoriesOption
       const existsInCategoriesOption = categoriesOption.some(
-        (category) => category.value.toLowerCase() === newCategory.toLowerCase()
+        (category) =>
+          category.value.toLowerCase() === newCategory.toLowerCase(),
       );
-  
+
       // Check if the input already exists in newcategory
       const existsInNewCategory = newcategory.some(
-        (category) => category.value.toLowerCase() === newCategory.toLowerCase()
+        (category) =>
+          category.value.toLowerCase() === newCategory.toLowerCase(),
       );
-  
+
       // If the input is not in categoriesOption and not already in newcategory, add it to newcategory
-      if (!existsInCategoriesOption && !existsInNewCategory && newCategory.trim() !== "") {
-        setNewCategory((prevNewCategory) => [...prevNewCategory, { label: newCategory, value: newCategory }]);
+      if (
+        !existsInCategoriesOption &&
+        !existsInNewCategory &&
+        newCategory.trim() !== ""
+      ) {
+        setNewCategory((prevNewCategory) => [
+          ...prevNewCategory,
+          { label: newCategory, value: newCategory },
+        ]);
       }
     });
   };
-  
-
 
   const type = [
     { label: "Activity", value: "Activity" },
@@ -99,21 +106,23 @@ function CreateProjects() {
 
   const handleSubmit = async (isPublished: boolean) => {
     try {
-
       if (newcategory.length > 0) {
-        await Promise.all(newcategory.map(async (category) => {
-          await createCategory.mutateAsync({
-            label: category.label,
-            value: category.value
-          });
-        }));
-      }
+        await Promise.all(
+          newcategory.map(async (category) => {
+            await createCategory.mutateAsync({
+              label: category.label,
+              value: category.value,
+            });
+          }),
+        );
 
+      }
       const result = await createProject.mutateAsync({
         ...projectData,
         about: editorRef.current.getContent(),
         image: imageUrl,
         published: isPublished,
+        featured: false,
       });
 
       setSuccessModalOpen(true);
@@ -246,10 +255,9 @@ function CreateProjects() {
               <label htmlFor="categories" className="font-medium text-gray-700">
                 Categories
               </label>
-             
+
               <CreatableSelect
                 options={allcategory.data}
-                
                 placeholder="select option"
                 isMulti
                 value={categoriesOption.find(
@@ -263,8 +271,7 @@ function CreateProjects() {
                     ...projectData,
                     category: selectedValues.join(","),
                   });
-                  addNewCategory(selectedValues.join(","))
-                  
+                  addNewCategory(selectedValues.join(","));
                 }}
                 className="z-20"
               />
