@@ -49,6 +49,16 @@ export const project = createTRPCRouter({
     .mutation(async (opts) => {
       const { input } = opts;
 
+      // Check if the project is being featured and if the maximum limit is reached
+      if (input.featured) {
+        const featuredProjects = await db.projects.count({
+          where: { featured: true },
+        });
+        if (featuredProjects >= 4) {
+          throw new Error("Maximum number of featured projects reached.");
+        }
+      }
+
       //check if project exists
       const existingProject = await db.projects.findUnique({
         where: { id: input.id },
