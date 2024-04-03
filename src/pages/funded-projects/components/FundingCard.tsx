@@ -14,7 +14,7 @@ const FundingCard: React.FC<FundingCardProps> = ({ fundingData }) => {
         >
           <Link href={`/funded-projects/${encodeURIComponent(fundingData.id)}`}>
             <img
-              className="object-obtain h-56 w-[380px] rounded-md"
+              className="object-obtain h-56 w-[360px] rounded-md"
               src={fundingData.project.image}
               alt="funding-image"
             />

@@ -9,7 +9,7 @@ import {
 import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
-import { categoriesOption } from "~/data/categories";
+import Output from 'editorjs-react-renderer';
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { ProjectData } from "~/types/projectData";
@@ -19,6 +19,9 @@ import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import { NewEditor } from "../../components/editor";
 import cloudinary from "next-cloudinary";
+import CreatableSelect from "react-select/creatable";
+import EditorOutput from "../../components/editorOutput";
+
 function EditProject() {
   const router = useRouter();
   const { id } = router.query;
@@ -26,9 +29,13 @@ function EditProject() {
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
-  const [editorBlocks,setEditorBlocks] = useState([]);
   const getProject = api.project.getById.useQuery({ id: id as string });
-
+  console.log(getProject.data)
+  const categories = api.categories.getAllCategories.useQuery()
+  const categoriesOption = categories.data || [];
+  categoriesOption.sort((a, b) => a.label.localeCompare(b.label));
+  const [editorBlocks,setEditorBlocks] = useState([]);
+  const [initialEditorData,setinitialEditorData] = useState()
   const deleteImage = api.project.removeImage.useMutation();
 
   const editProject = api.project.edit.useMutation({
@@ -97,7 +104,7 @@ function EditProject() {
       });
       setImageUrl(getProject.data.image);
       const initialEditorData = JSON.parse(getProject.data.about);
-      
+      setinitialEditorData(initialEditorData)
       setEditorBlocks(initialEditorData.blocks)
       
     }
@@ -165,59 +172,7 @@ function EditProject() {
     // Update state with the new data from the editor
     setEditorData(data);
   };
-
-  // const initialBlocks = [
-  //   {
-  //     id: "UlvBBAFCPz",
-  //     type: "header",
-  //     data: {
-  //       text: "This is the Heading",
-  //       level: 1,
-  //     },
-  //     tunes: {
-  //       alignementTool: {
-  //         alignment: "center",
-  //       },
-  //     },
-  //   },
-  //   {
-  //     id: "wboTZOwv46",
-  //     type: "image",
-  //     data: {
-  //       file: {
-  //         url: "https://res.cloudinary.com/dzpghgd8d/image/upload/v1711782633/zj8nfqeaj2rww4pwv6vw.jpg",
-  //       },
-  //       caption: "",
-  //       withBorder: false,
-  //       stretched: false,
-  //       withBackground: false,
-  //     },
-  //   },
-  //   {
-  //     id: "nEZZ-a4JuR",
-  //     type: "list",
-  //     data: {
-  //       style: "ordered",
-  //       items: ["&nbsp;item 1", "item 2", "item 3"],
-  //     },
-  //     tunes: {
-  //       alignementTool: {
-  //         alignment: "left",
-  //       },
-  //     },
-  //   },
-  //   {
-  //     id: "AN6LeDqbdY",
-  //     type: "table",
-  //     data: {
-  //       withHeadings: false,
-  //       content: [
-  //         ["col1 row 1", "col2 row 1"],
-  //         ["col1 row 2", "col2 row 2"],
-  //       ],
-  //     },
-  //   },
-  // ];
+ 
 
   return (
     <>
@@ -352,13 +307,12 @@ function EditProject() {
                   Categories
                 </label>
 
-                <Select
+                <CreatableSelect
                   id="long-value-select"
+                  placeholder="select option"
                   instanceId="long-value-select"
-                  placeholder="categories"
                   options={categoriesOption}
                   closeMenuOnSelect={false}
-                  components={animatedComponents}
                   isMulti
                   value={categoriesOption.filter((option) =>
                     projectData.category.split(",").includes(option.value),
@@ -389,6 +343,7 @@ function EditProject() {
                   instanceId="long-value-select"
                   placeholder="type"
                   options={type}
+                  
                   value={type.find(
                     (option) => option.value === projectData.type,
                   )}
@@ -427,12 +382,17 @@ function EditProject() {
                   About
                 </label>
               </div>
+              <div>
+
+              </div>
               <div className="min-w-[300px]">
                 <NewEditor
                   onChanges={handleChanges}
                   initialData={editorBlocks}
                 />
               </div>
+
+              
 
               <button
                 type="submit"
