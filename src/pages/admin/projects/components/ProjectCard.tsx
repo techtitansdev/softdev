@@ -1,9 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { IoLocationSharp } from "react-icons/io5";
 import DeleteModal from "~/components/DeleteModal";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { api } from "~/utils/api";
+import { Modal } from "~/components/Modal";
 
 interface ProjectCardProps {
   projectData: any;
@@ -16,6 +17,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [featured, setFeatured] = useState(projectData.featured || false);
+  const [maxFeaturedReached, setMaxFeaturedReached] = useState(false);
 
   const openModal = () => {
     setModalOpen(true);
@@ -48,7 +50,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         const featuredProjectsCount = featuredProjectsQueryResult.data;
         if (featuredProjectsCount >= 4) {
           setFeatured(!newFeaturedStatus);
-          alert("Maximum number of featured projects reached.");
+          setMaxFeaturedReached(true);
+          setTimeout(() => {
+            setMaxFeaturedReached(false);
+          }, 3000);
           return;
         }
       } else if (featuredProjectsQueryResult.isError) {
@@ -127,6 +132,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           closeModal={closeModal}
         />
       )}
+
+      <Modal
+        isOpen={maxFeaturedReached}
+        onClose={() => setMaxFeaturedReached(false)}
+        message="Maximum number of featured projects has been reached."
+        bgColor="bg-red-500"
+      />
     </div>
   );
 };
