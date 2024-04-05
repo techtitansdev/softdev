@@ -16,6 +16,20 @@ const AdminBlogPage = () => {
 
   useEffect(() => {
     if (getBlogs.data) {
+      const sortedBlogs = getBlogs.data.sort((a: any, b: any) =>
+      a.featured === b.featured ? 0 : a.featured ? -1 : 1,
+    );
+
+    const featuredBlogs = sortedBlogs.filter(
+      (blog: any) => blog.featured,
+    );
+    const otherBlogs = sortedBlogs.filter(
+      (blog: any) => !blog.featured,
+    );
+    const firstThreeFeatured = featuredBlogs.slice(0, 4);
+
+    setBlogData([...firstThreeFeatured, ...otherBlogs]);
+
       setBlogData(getBlogs.data);
     }
   }, [getBlogs.data]);

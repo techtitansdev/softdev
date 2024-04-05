@@ -1,6 +1,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import DeleteModal from "~/components/DeleteModal";
+import { api } from "~/utils/api";
+import { Modal } from "~/components/Modal";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 
 interface BlogCardProps {
   blogData: any;
@@ -8,7 +11,10 @@ interface BlogCardProps {
 }
 
 const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
+
   const [isModalOpen, setModalOpen] = useState(false);
+  const [featured, setFeatured] = useState(blogData.featured || false);
+  const [maxFeaturedReached, setMaxFeaturedReached] = useState(false);
 
   const openModal = () => {
     setModalOpen(true);
@@ -18,14 +24,72 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
     setModalOpen(false);
   };
 
+  const editBlogMutation = api.blog.edit.useMutation();
+  const featuredBlogsQueryResult = api.blog.getFeaturedCount.useQuery();
+
+  const toggleFeatured = async () => {
+    const newFeaturedStatus = !featured;
+
+    const confirmation = window.confirm(
+      `Are you sure you want to ${
+        newFeaturedStatus ? "feature" : "unfeature"
+      } ${blogData.title}`,
+    );
+
+    if (!confirmation) {
+      return;
+    }
+
+    setFeatured(newFeaturedStatus);
+
+    try {
+      if (newFeaturedStatus && featuredBlogsQueryResult.isSuccess) {
+        const featuredBlogsCount = featuredBlogsQueryResult.data;
+        if (featuredBlogsCount >= 3) {
+          setFeatured(!newFeaturedStatus);
+          setMaxFeaturedReached(true);
+          setTimeout(() => {
+            setMaxFeaturedReached(false);
+          }, 3000);
+          return;
+        }
+      } else if (featuredBlogsQueryResult.isError) {
+        console.error(
+          "Error fetching featured blogs count:",
+          featuredBlogsQueryResult.error,
+        );
+        return;
+      }
+
+      const updatedBlogData = {
+        ...blogData,
+        featured: newFeaturedStatus,
+      };
+
+      await editBlogMutation.mutateAsync({
+        id: blogData.id,
+        ...updatedBlogData,
+      });
+
+      setFeatured(newFeaturedStatus);
+    } catch (error) {
+      console.error("Error updating featured status:", error);
+      setFeatured(!newFeaturedStatus);
+    }
+  };
+
   return (
-    <div>
+    <div className="relative">
       <ul>
-        <li
-          key={blogData.id}
-          className="transform rounded-lg pb-4 shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105"
-        >
-          <Link href={`/admin/projects/${encodeURIComponent(blogData.id)}`}>
+        <li key={blogData.id} className="relative rounded-lg pb-4 shadow">
+          <button
+            className="absolute right-2 top-2 text-yellow-500 focus:outline-none"
+            onClick={toggleFeatured}
+          >
+            {featured ? <AiFillStar size={22} /> : <AiOutlineStar size={22} />}
+          </button>
+
+          <Link href={`/admin/blogs/${encodeURIComponent(blogData.id)}`}>
             <img
               className="object-obtain h-56 w-[280px] rounded-sm lg:w-[300px]"
               src={blogData.image}
@@ -65,6 +129,13 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
           closeModal={closeModal}
         />
       )}
+
+      <Modal
+        isOpen={maxFeaturedReached}
+        onClose={() => setMaxFeaturedReached(false)}
+        message="Maximum number of featured blogs has been reached."
+        bgColor="bg-red-500"
+      />
     </div>
   );
 };

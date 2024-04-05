@@ -4,4 +4,5 @@ export interface BlogData {
   image: string;
   content: string;
   published: boolean;
+  featured: boolean;
 }

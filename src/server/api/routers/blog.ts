@@ -11,6 +11,7 @@ export const blog = createTRPCRouter({
         image: z.string(),
         content: z.string(),
         published: z.boolean(),
+        featured: z.boolean(),
       }),
     )
     .mutation(async (opts) => {
@@ -61,10 +62,20 @@ export const blog = createTRPCRouter({
         image: z.string(),
         content: z.string(),
         published: z.boolean(),
+        featured: z.boolean(),
       }),
     )
     .mutation(async (opts) => {
       const { input } = opts;
+
+      if (input.featured) {
+        const featuredBlogs = await db.blogs.count({
+          where: { featured: true },
+        });
+        if (featuredBlogs >= 3) {
+          throw new Error("Maximum number of featured projects reached.");
+        }
+      }
 
       const existingBlog = await db.blogs.findUnique({
         where: { id: input.id },
@@ -85,6 +96,14 @@ export const blog = createTRPCRouter({
       });
       return updatedBlog;
     }),
+
+    getFeaturedCount: protectedProcedure.query(async () => {
+      const featuredBlogsCount = await db.blogs.count({
+        where: { featured: true },
+      });
+      return featuredBlogsCount;
+    }),
+
   delete: protectedProcedure
     .input(
       z.object({
