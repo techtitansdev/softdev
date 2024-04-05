@@ -31,11 +31,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   const toggleFeatured = async () => {
     const newFeaturedStatus = !featured;
 
-    // Check if the user wants to feature the project
     const confirmation = window.confirm(
       `Are you sure you want to ${
         newFeaturedStatus ? "feature" : "unfeature"
-      } this project?`,
+      } ${projectData.title}`,
     );
 
     if (!confirmation) {
