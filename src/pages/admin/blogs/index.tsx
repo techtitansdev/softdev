@@ -7,6 +7,7 @@ import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { Modal } from "~/components/Modal";
 import BlogCard from "./components/BlogCard";
+import FeaturedBlogCard from "./components/FeaturedBlogCard";
 
 const AdminBlogPage = () => {
   const [blogData, setBlogData] = useState<any>([]);
@@ -17,18 +18,14 @@ const AdminBlogPage = () => {
   useEffect(() => {
     if (getBlogs.data) {
       const sortedBlogs = getBlogs.data.sort((a: any, b: any) =>
-      a.featured === b.featured ? 0 : a.featured ? -1 : 1,
-    );
+        a.featured === b.featured ? 0 : a.featured ? -1 : 1,
+      );
 
-    const featuredBlogs = sortedBlogs.filter(
-      (blog: any) => blog.featured,
-    );
-    const otherBlogs = sortedBlogs.filter(
-      (blog: any) => !blog.featured,
-    );
-    const firstThreeFeatured = featuredBlogs.slice(0, 4);
+      const featuredBlogs = sortedBlogs.filter((blog: any) => blog.featured);
+      const otherBlogs = sortedBlogs.filter((blog: any) => !blog.featured);
+      const firstThreeFeatured = featuredBlogs.slice(0, 4);
 
-    setBlogData([...firstThreeFeatured, ...otherBlogs]);
+      setBlogData([...firstThreeFeatured, ...otherBlogs]);
 
       setBlogData(getBlogs.data);
     }
@@ -68,6 +65,13 @@ const AdminBlogPage = () => {
     return <div>UNAUTHORIZED</div>;
   }
 
+  const featuredBlogs = blogData.filter(
+    (blog: { featured: boolean }) => blog.featured === true,
+  );
+  const unfeaturedBlogs = blogData.filter(
+    (blog: { featured: boolean }) => blog.featured === false,
+  );
+
   return (
     <>
       <Head>
@@ -92,16 +96,29 @@ const AdminBlogPage = () => {
             </Link>
           </div>
 
-          <div className="mb-12 mt-1 flex items-center justify-center">
-            <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {blogData.map((blog: any) => (
-                <div key={blog.id}>
-                  <BlogCard
-                    blogData={blog}
-                    handleDelete={() => handleDelete(blog.id)}
-                  />
-                </div>
-              ))}
+          <div className="mx-auto max-w-[280px] items-center justify-between md:max-w-[570px] lg:max-w-[950px] lg:flex-row xl:max-w-[1275px]">
+            <div className="mb-12 mt-1 items-center justify-center">
+              <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+                {featuredBlogs.map((blog: any) => (
+                  <div key={blog.id}>
+                    <FeaturedBlogCard
+                      blogData={blog}
+                      handleDelete={() => handleDelete(blog.id)}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {unfeaturedBlogs.map((blog: any) => (
+                  <div key={blog.id}>
+                    <BlogCard
+                      blogData={blog}
+                      handleDelete={() => handleDelete(blog.id)}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
