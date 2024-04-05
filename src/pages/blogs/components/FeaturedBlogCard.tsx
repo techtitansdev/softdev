@@ -37,7 +37,7 @@ const FeaturedBlogCard: React.FC<FeaturedBlogCardProps> = ({ blogData }) => {
               {blogData.title}
             </div>
 
-            <div className="my-2 ml-1 flex max-w-[82px] items-center justify-center rounded-sm bg-gray-100 text-xs font-light text-gray-700 lg:text-sm dark:text-gray-500">
+            <div className="my-2 ml-1 flex max-w-[92px] items-center justify-center rounded-sm bg-gray-100 text-xs font-light text-gray-700 lg:text-sm dark:text-gray-500">
               <div className="mr-1">
                 <LuCalendarDays />
               </div>
