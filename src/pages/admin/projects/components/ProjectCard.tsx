@@ -26,19 +26,54 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   };
 
   const editProjectMutation = api.project.edit.useMutation();
+  const featuredProjectsQueryResult = api.project.getFeaturedCount.useQuery();
 
   const toggleFeatured = async () => {
-    try {
-      const updatedProjectData = { ...projectData, featured: !featured };
-      setFeatured(!featured);
+    const newFeaturedStatus = !featured;
 
-      await editProjectMutation.mutate({
+    // Check if the user wants to feature the project
+    const confirmation = window.confirm(
+      `Are you sure you want to ${
+        newFeaturedStatus ? "feature" : "unfeature"
+      } this project?`,
+    );
+
+    if (!confirmation) {
+      return;
+    }
+
+    setFeatured(newFeaturedStatus);
+
+    try {
+      if (newFeaturedStatus && featuredProjectsQueryResult.isSuccess) {
+        const featuredProjectsCount = featuredProjectsQueryResult.data;
+        if (featuredProjectsCount >= 4) {
+          setFeatured(!newFeaturedStatus);
+          alert("Maximum number of featured projects reached.");
+          return;
+        }
+      } else if (featuredProjectsQueryResult.isError) {
+        console.error(
+          "Error fetching featured projects count:",
+          featuredProjectsQueryResult.error,
+        );
+        return;
+      }
+
+      const updatedProjectData = {
+        ...projectData,
+        featured: newFeaturedStatus,
+      };
+
+      await editProjectMutation.mutateAsync({
         id: projectData.id,
         ...updatedProjectData,
       });
+
+      setFeatured(newFeaturedStatus);
     } catch (error) {
       console.error("Error updating featured status:", error);
-      setFeatured(featured);
+      setFeatured(!newFeaturedStatus);
     }
   };
 

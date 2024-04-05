@@ -81,6 +81,13 @@ export const project = createTRPCRouter({
       return updatedProject;
     }),
 
+  getFeaturedCount: protectedProcedure.query(async () => {
+    const featuredProjectsCount = await db.projects.count({
+      where: { featured: true },
+    });
+    return featuredProjectsCount;
+  }),
+
   delete: protectedProcedure
     .input(
       z.object({
