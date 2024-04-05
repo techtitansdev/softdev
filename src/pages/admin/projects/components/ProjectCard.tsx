@@ -1,7 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { IoLocationSharp } from "react-icons/io5";
 import DeleteModal from "~/components/DeleteModal";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import { api } from "~/utils/api";
+import { Modal } from "~/components/Modal";
 
 interface ProjectCardProps {
   projectData: any;
@@ -13,6 +16,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   handleDelete,
 }) => {
   const [isModalOpen, setModalOpen] = useState(false);
+  const [featured, setFeatured] = useState(projectData.featured || false);
+  const [maxFeaturedReached, setMaxFeaturedReached] = useState(false);
 
   const openModal = () => {
     setModalOpen(true);
@@ -22,13 +27,71 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     setModalOpen(false);
   };
 
+  const editProjectMutation = api.project.edit.useMutation();
+  const featuredProjectsQueryResult = api.project.getFeaturedCount.useQuery();
+
+  const toggleFeatured = async () => {
+    const newFeaturedStatus = !featured;
+
+    const confirmation = window.confirm(
+      `Are you sure you want to ${
+        newFeaturedStatus ? "feature" : "unfeature"
+      } ${projectData.title}`,
+    );
+
+    if (!confirmation) {
+      return;
+    }
+
+    setFeatured(newFeaturedStatus);
+
+    try {
+      if (newFeaturedStatus && featuredProjectsQueryResult.isSuccess) {
+        const featuredProjectsCount = featuredProjectsQueryResult.data;
+        if (featuredProjectsCount >= 4) {
+          setFeatured(!newFeaturedStatus);
+          setMaxFeaturedReached(true);
+          setTimeout(() => {
+            setMaxFeaturedReached(false);
+          }, 3000);
+          return;
+        }
+      } else if (featuredProjectsQueryResult.isError) {
+        console.error(
+          "Error fetching featured projects count:",
+          featuredProjectsQueryResult.error,
+        );
+        return;
+      }
+
+      const updatedProjectData = {
+        ...projectData,
+        featured: newFeaturedStatus,
+      };
+
+      await editProjectMutation.mutateAsync({
+        id: projectData.id,
+        ...updatedProjectData,
+      });
+
+      setFeatured(newFeaturedStatus);
+    } catch (error) {
+      console.error("Error updating featured status:", error);
+      setFeatured(!newFeaturedStatus);
+    }
+  };
+
   return (
-    <div>
+    <div className="relative">
       <ul>
-        <li
-          key={projectData.id}
-          className="transform rounded-lg pb-4 shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105"
-        >
+        <li key={projectData.id} className="relative rounded-lg pb-4 shadow">
+          <button
+            className="absolute right-2 top-2 text-yellow-500 focus:outline-none"
+            onClick={toggleFeatured}
+          >
+            {featured ? <AiFillStar size={22} /> : <AiOutlineStar size={22} />}
+          </button>
+
           <Link href={`/admin/projects/${encodeURIComponent(projectData.id)}`}>
             <img
               className="object-obtain h-56 w-[280px] rounded-sm lg:w-[300px]"
@@ -69,6 +132,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           closeModal={closeModal}
         />
       )}
+
+      <Modal
+        isOpen={maxFeaturedReached}
+        onClose={() => setMaxFeaturedReached(false)}
+        message="Maximum number of featured projects has been reached."
+        bgColor="bg-red-500"
+      />
     </div>
   );
 };

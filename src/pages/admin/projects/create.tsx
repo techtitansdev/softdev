@@ -3,28 +3,30 @@ import { ChangeEvent, MutableRefObject, useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
-import { categoriesOption } from "~/data/categories";
 import Select from "react-select";
-import makeAnimated from "react-select/animated";
 import { ProjectData } from "~/types/projectData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import CreatableSelect from "react-select/creatable";
+
+interface Category {
+  label: string;
+  value: string;
+}
+
 function CreateProjects() {
   const createProject = api.project.create.useMutation();
   const allcategory = api.categories.getAllCategories.useQuery();
   const createCategory = api.categories.create.useMutation();
-  const animatedComponents = makeAnimated();
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
   const router = useRouter();
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
   const [newcategory, setNewCategory] = useState<Category[]>([]);
-  const categoriesOption: Category[] = allcategory.data || [];
-  categoriesOption.sort((a, b) => a.label.localeCompare(b.label));
   const editorRef: MutableRefObject<any> = useRef(null);
+
   const [projectData, setProjectData] = useState<ProjectData>({
     title: "",
     description: "",
@@ -35,11 +37,8 @@ function CreateProjects() {
     beneficiaries: "",
     about: "",
     published: false,
+    featured: false,
   });
-  interface Category {
-    label: string;
-    value: string;
-  }
 
   const addNewCategory = (input: string) => {
     const newCategories = input.split(",").map((category) => category.trim());
@@ -113,13 +112,14 @@ function CreateProjects() {
             });
           }),
         );
-      }
 
+      }
       const result = await createProject.mutateAsync({
         ...projectData,
         about: editorRef.current.getContent(),
         image: imageUrl,
         published: isPublished,
+        featured: false,
       });
 
       setSuccessModalOpen(true);
