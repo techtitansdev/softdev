@@ -4,6 +4,7 @@ import DeleteModal from "~/components/DeleteModal";
 import { api } from "~/utils/api";
 import { Modal } from "~/components/Modal";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import { LuCalendarDays } from "react-icons/lu";
 
 interface BlogCardProps {
   blogData: any;
@@ -11,10 +12,10 @@ interface BlogCardProps {
 }
 
 const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
-
   const [isModalOpen, setModalOpen] = useState(false);
   const [featured, setFeatured] = useState(blogData.featured || false);
   const [maxFeaturedReached, setMaxFeaturedReached] = useState(false);
+  const createdDate = new Date(blogData.created).toLocaleDateString();
 
   const openModal = () => {
     setModalOpen(true);
@@ -100,6 +101,13 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
           <div className="mx-2 my-2">
             <div className="truncate text-lg font-medium tracking-tight text-gray-900">
               {blogData.title}
+            </div>
+
+            <div className="my-1 flex max-w-[82px] items-center justify-center rounded-sm bg-gray-100 text-xs font-light text-gray-700 dark:text-gray-500">
+              <div className="mr-1">
+                <LuCalendarDays />
+              </div>
+              {createdDate}
             </div>
 
             <div className="max-w-[330px] items-center truncate text-xs font-light text-gray-700 dark:text-gray-500">
