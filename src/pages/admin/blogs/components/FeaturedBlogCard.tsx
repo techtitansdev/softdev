@@ -11,7 +11,10 @@ interface BlogCardProps {
   handleDelete: () => void;
 }
 
-const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
+const FeaturedBlogCard: React.FC<BlogCardProps> = ({
+  blogData,
+  handleDelete,
+}) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [featured, setFeatured] = useState(blogData.featured || false);
   const [maxFeaturedReached, setMaxFeaturedReached] = useState(false);
@@ -92,21 +95,33 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
 
           <Link href={`/admin/blogs/${encodeURIComponent(blogData.id)}`}>
             <img
-              className="object-obtain h-56 w-[280px] rounded-sm lg:w-[300px]"
+              className="h-56 w-[280px] rounded-t-lg object-cover lg:h-[300px] lg:w-[420px]"
               src={blogData.image}
-              alt={blogData.image}
-              data-testid="blog-image"
+              alt="blog-image"
             />
           </Link>
 
-          <div className="mx-2 my-2">
-            <div
-              className="truncate text-lg font-medium tracking-tight text-gray-900"
-              data-testid="blog-title-input"
-            >
+          <div className="my-2 ml-1">
+            <div className="ml-1 text-lg font-medium tracking-tight text-gray-900 lg:text-xl">
               {blogData.title}
             </div>
 
+            <div className="my-2 ml-1 flex max-w-[92px] items-center justify-center rounded-sm bg-gray-100 text-xs font-light text-gray-700 lg:text-sm dark:text-gray-500">
+              <div className="mr-1">
+                <LuCalendarDays />
+              </div>
+              {createdDate}
+            </div>
+
+            <div
+              className="mx-1 items-center text-xs font-light text-gray-700 lg:text-sm dark:text-gray-500"
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
+            >
               {blogData.excerpt}
             </div>
           </div>
@@ -120,7 +135,6 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
           <button
             className="ml-2 mt-2 rounded-md border bg-red-600 px-8 py-1 text-white shadow-md hover:bg-red-700"
             onClick={openModal}
-            data-testid="modal-subject"
           >
             Delete
           </button>
@@ -145,4 +159,4 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
   );
 };
 
-export default BlogCard;
+export default FeaturedBlogCard;

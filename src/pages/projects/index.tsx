@@ -124,7 +124,7 @@ const Projects = () => {
         </div>
       </div>
 
-      <div className="mb-20 mt-1 flex items-center justify-center">
+      <div className="mb-16 mt-1 flex items-center justify-center">
         <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filterProjects.map((project: any) => (
             <div key={project.id}>

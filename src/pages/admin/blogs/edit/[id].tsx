@@ -23,6 +23,7 @@ function EditBlog() {
     image: "",
     content: "",
     published: false,
+    featured: false,
   });
 
   const getBlog = api.blog.getById.useQuery({ id: id as string });
@@ -59,7 +60,8 @@ function EditBlog() {
           prevData.excerpt !== getBlog.data.excerpt ||
           prevData.image !== getBlog.data.image ||
           prevData.content !== getBlog.data.content ||
-          prevData.published !== getBlog.data.published
+          prevData.published !== getBlog.data.published ||
+          prevData.featured !== getBlog.data.featured 
         ) {
           return {
             title: getBlog.data.title,
@@ -67,6 +69,7 @@ function EditBlog() {
             image: getBlog.data.image,
             content: getBlog.data.content,
             published: getBlog.data.published,
+            featured: getBlog.data.featured,
           };
         } else {
           return prevData;

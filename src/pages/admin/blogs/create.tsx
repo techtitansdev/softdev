@@ -23,6 +23,7 @@ function CreateBlogs() {
     image: "",
     content: "",
     published: false,
+    featured: false,
   });
 
   const editorRef: MutableRefObject<any> = useRef(null);
