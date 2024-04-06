@@ -22,7 +22,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData }) => {
       <ul>
         <li
           key={blogData.id}
-          className="transform rounded-lg pb-4 shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105"
+          className="transform rounded-lg pb-4 shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-102"
         >
           <Link href={`/blogs/${encodeURIComponent(blogData.id)}`}>
             <img
