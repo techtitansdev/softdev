@@ -20,6 +20,46 @@ export const commentData = [
     comment:
       "The project is really nice. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     projectName: "Project A",
+    email: "yoshi@gmail.com",
+  },
+  {
+    name: "Yoshi",
+    date: "Jan 22, 2020",
+    comment:
+      "The project is really nice. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    projectName: "Project A",
+    email: "yoshie@gmail.com",
+  },
+  {
+    name: "Ferjen Dave",
+    date: "Jan 22, 2020",
+    comment:
+      "The project is really nice. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    projectName: "Project A",
+    email: "ferjendave@gmail.com",
+  },
+  {
+    name: "Ferjen Dave",
+    date: "Jan 22, 2020",
+    comment:
+      "The project is really nice. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    projectName: "Project A",
+    email: "ferjendave@gmail.com",
+  },
+  {
+    name: "Ferjen Dave",
+    date: "Jan 22, 2020",
+    comment:
+      "The project is really nice. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    projectName: "Project A",
+    email: "ferjendave@gmail.com",
+  },
+  {
+    name: "Ferjen Dave",
+    date: "Jan 22, 2020",
+    comment:
+      "The project is really nice. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    projectName: "Project A",
     email: "ferjendave@gmail.com",
   },
   {
@@ -28,47 +68,7 @@ export const commentData = [
     comment:
       "The project is really nice. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     projectName: "Project A",
-    email: "ferjendave@gmail.com",
-  },
-  {
-    name: "Ferjen Dave",
-    date: "Jan 22, 2020",
-    comment:
-      "The project is really nice. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    projectName: "Project A",
-    email: "ferjendave@gmail.com",
-  },
-  {
-    name: "Ferjen Dave",
-    date: "Jan 22, 2020",
-    comment:
-      "The project is really nice. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    projectName: "Project A",
-    email: "ferjendave@gmail.com",
-  },
-  {
-    name: "Ferjen Dave",
-    date: "Jan 22, 2020",
-    comment:
-      "The project is really nice. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    projectName: "Project A",
-    email: "ferjendave@gmail.com",
-  },
-  {
-    name: "Ferjen Dave",
-    date: "Jan 22, 2020",
-    comment:
-      "The project is really nice. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    projectName: "Project A",
-    email: "ferjendave@gmail.com",
-  },
-  {
-    name: "Yoshi",
-    date: "Jan 22, 2020",
-    comment:
-      "The project is really nice. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    projectName: "Project A",
-    email: "ferjendave@gmail.com",
+    email: "yoshi@gmail.com",
   },
   {
     name: "Ferjen Dave",
@@ -115,7 +115,7 @@ export const commentData = [
     comment:
       "The project is really nice. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     projectName: "Project D",
-    email: "ferjendave@gmail.com",
+    email: "yoshi@gmail.com",
   },
   {
     name: "Ferjen Dave",

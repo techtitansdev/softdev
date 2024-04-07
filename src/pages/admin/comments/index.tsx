@@ -44,15 +44,15 @@ const Comments = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData
-    .slice(indexOfFirstItem, indexOfLastItem)
-    .sort((a, b) => {
-      if (isNameSortedAscending) {
-        return a.name.localeCompare(b.name);
-      } else {
-        return b.name.localeCompare(a.name);
-      }
-    });
+
+  const sortedData = filteredData.slice().sort((a, b) => {
+    const nameComparison = isNameSortedAscending
+      ? a.name.localeCompare(b.name)
+      : b.name.localeCompare(a.name);
+    return nameComparison;
+  });
+
+  const currentItems = sortedData.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber: React.SetStateAction<number>) =>
     setCurrentPage(pageNumber);
