@@ -95,18 +95,22 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
               className="object-obtain h-56 w-[280px] rounded-sm lg:w-[300px]"
               src={blogData.image}
               alt={blogData.image}
-              data-testid="blog-image"
             />
           </Link>
 
           <div className="mx-2 my-2">
-            <div
-              className="truncate text-lg font-medium tracking-tight text-gray-900"
-              data-testid="blog-title-input"
-            >
+            <div className="truncate text-lg font-medium tracking-tight text-gray-900">
               {blogData.title}
             </div>
 
+            <div className="my-1 flex max-w-[82px] items-center justify-center rounded-sm bg-gray-100 text-xs font-light text-gray-700 dark:text-gray-500">
+              <div className="mr-1">
+                <LuCalendarDays />
+              </div>
+              {createdDate}
+            </div>
+
+            <div className="max-w-[330px] items-center truncate text-xs font-light text-gray-700 dark:text-gray-500">
               {blogData.excerpt}
             </div>
           </div>
@@ -120,7 +124,6 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
           <button
             className="ml-2 mt-2 rounded-md border bg-red-600 px-8 py-1 text-white shadow-md hover:bg-red-700"
             onClick={openModal}
-            data-testid="modal-subject"
           >
             Delete
           </button>
