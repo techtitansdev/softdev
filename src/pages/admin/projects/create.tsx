@@ -40,9 +40,6 @@ function CreateProjects() {
     featured: false,
   });
 
-  const categoriesOption: Category[] = allcategory.data || [];
-  categoriesOption.sort((a, b) => a.label.localeCompare(b.label));
-
   const addNewCategory = (input: string) => {
     const newCategories = input.split(",").map((category) => category.trim());
 
@@ -252,7 +249,11 @@ function CreateProjects() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="categories" className="font-medium text-gray-700">
+              <label
+                htmlFor="categories"
+                className="font-medium text-gray-700"
+                data-testid="category-select"
+              >
                 Categories
               </label>
 
