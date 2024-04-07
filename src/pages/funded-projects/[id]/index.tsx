@@ -13,7 +13,6 @@ const Funding: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
   const [fundingData, setFundingData] = useState<any>(null);
-
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
 
   useEffect(() => {
@@ -64,9 +63,7 @@ const Funding: React.FC = () => {
               </p>
 
               <Link
-                href={{
-                  pathname: "/funding/payment",
-                }}
+                href={`/funded-projects/${encodeURIComponent(fundingData.id)}/payment`}
               >
                 <button className="w-72 rounded-lg bg-blue-800 py-2 text-xl text-white hover:bg-blue-900 md:text-2xl">
                   Donate
