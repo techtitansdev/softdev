@@ -10,6 +10,7 @@ import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import CreatableSelect from "react-select/creatable";
+import { categoriesOption } from "~/data/categories";
 
 interface Category {
   label: string;
