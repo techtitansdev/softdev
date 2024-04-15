@@ -26,19 +26,32 @@ function CustomCodeRenderer({ data }: any) {
   );
 }
 function CustomParagraphRenderer({ data }: any) {
-    console.log(data)
+    console.log("pararaph",data)
+
+    const color = 'black-900'
   return (
-    <pre className="max-w-50 border-4 resize-y">
-      <div className="max-w-10 text-sm text-black">
-        {data.text}
+    <pre className="">
+      <div className={`max-w-100 text-sm text-${color} text-center text-balance`}>
+          {data.text}
         </div>
     </pre>
   );
 }
+function CustomHeaderRenderer({ data }: any) {
+  console.log("header",data)
+return (
+  <pre className="text-center text-4xl font-bold">
+    <h1 >
+        {data.text}
+      </h1>
+  </pre>
+);
+}
 const renderers = {
   //   image: CustomImageRenderer,
   code: CustomCodeRenderer,
-//   paragraph: CustomParagraphRenderer,
+  paragraph: CustomParagraphRenderer,
+  header:CustomHeaderRenderer
 };
 
 const style = {
