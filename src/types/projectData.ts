@@ -8,4 +8,5 @@ export interface ProjectData {
   beneficiaries: string;
   about: string;
   published: boolean;
+  featured: boolean;
 }

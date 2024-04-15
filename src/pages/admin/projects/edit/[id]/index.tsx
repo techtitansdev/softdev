@@ -1,7 +1,5 @@
 import Head from "next/head";
 import {
-  MutableRefObject,
-  useRef,
   useState,
   useEffect,
   ChangeEvent,
@@ -11,7 +9,6 @@ import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import Output from 'editorjs-react-renderer';
 import Select from "react-select";
-import makeAnimated from "react-select/animated";
 import { ProjectData } from "~/types/projectData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
@@ -25,7 +22,6 @@ import EditorOutput from "../../components/editorOutput";
 function EditProject() {
   const router = useRouter();
   const { id } = router.query;
-  const animatedComponents = makeAnimated();
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
@@ -61,6 +57,7 @@ function EditProject() {
     beneficiaries: "",
     about: "",
     published: false,
+    featured: false,
   });
 
   const [editorContent, setEditorContent] = useState("");
@@ -85,7 +82,8 @@ function EditProject() {
           prevData.type !== getProject.data.type ||
           prevData.beneficiaries !== getProject.data.beneficiaries ||
           prevData.about !== getProject.data.about ||
-          prevData.published !== getProject.data.published
+          prevData.published !== getProject.data.published ||
+          prevData.featured !== getProject.data.featured 
         ) {
           return {
             title: getProject.data.title,
@@ -97,6 +95,7 @@ function EditProject() {
             beneficiaries: getProject.data.beneficiaries,
             about: getProject.data.about,
             published: getProject.data.published,
+            featured: getProject.data.featured,
           };
         } else {
           return prevData;
@@ -109,8 +108,6 @@ function EditProject() {
       
     }
   }, [getProject.data]);
-
-  const editorRef: MutableRefObject<any> = useRef(null);
 
   const type = [
     { label: "Activity", value: "Activity" },

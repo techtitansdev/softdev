@@ -29,7 +29,7 @@ const FundraiserSearchInput: React.FC<SearchInputProps> = ({
         onKeyDown={handleKeyDown}
       />
       <button
-        className="absolute bottom-0 right-0 top-0 rounded-r-md border border-gray-600 bg-gray-400 px-3 py-2.5 text-white hover:bg-gray-500"
+        className="absolute bottom-0 right-0 top-0 rounded-r-md border border-blue-800 bg-blue-700 px-3 py-2.5 text-white hover:bg-blue-800"
         onClick={onSearch}
       >
         <RiSearchLine size={20} className="text-white" />
