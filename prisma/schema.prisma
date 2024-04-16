@@ -98,7 +98,8 @@ model Fundraisers {
 
 model Donors {
   id        String     @id @default(cuid())
-  userEmail String     @unique
+  userEmail String     
+  type      String
   user      Users      @relation(fields: [userEmail], references: [email], onDelete: Cascade)
   fundings  Fundings[]
 
