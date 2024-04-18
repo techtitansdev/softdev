@@ -6,7 +6,7 @@ import { donorsCaller } from "../donors";
 
 vi.mock("src/server/__mocks__/db.ts");
 
-describe("Fundraiser procedures testing", () => {
+describe("Donors procedures testing", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
