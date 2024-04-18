@@ -6,7 +6,9 @@ export const donors = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        userEmail: z.string(),
+        fullName: z.string().nullable(),
+        email: z.string().nullable(),
+        phone: z.string().nullable(),
         type: z.string(),
       }),
     )
@@ -21,4 +23,3 @@ export const donors = createTRPCRouter({
 });
 
 export const donorsCaller = donors.createCaller;
-

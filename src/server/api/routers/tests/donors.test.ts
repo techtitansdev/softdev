@@ -47,17 +47,23 @@ describe("Fundraiser procedures testing", () => {
         const user = await callerUser.create(userInput);
 
         const anonDonorInput = {
-          userEmail: user.email,
           type: "Anonymous",
+          email: null,
+          fullName: null,
+          phone: null,
         };
 
         const personalDonorInput = {
-          userEmail: user.email,
+          fullName: "Full Name",
+          email: "email@email.com",
+          phone: "09123456789",
           type: "personal",
         };
 
         const companyDonorInput = {
-          userEmail: user.email,
+          fullName: "Company Name",
+          email: "email@email.com",
+          phone: "09123456789",
           type: "company",
         };
 
@@ -66,15 +72,10 @@ describe("Fundraiser procedures testing", () => {
         const result3 = await callerDonors.create(companyDonorInput);
 
         expect(result1.type).toBe(anonDonorInput.type);
-        expect(result1.userEmail).toBe(user.email);
 
         expect(result2.type).toBe(personalDonorInput.type);
-        expect(result2.userEmail).toBe(user.email);
 
         expect(result3.type).toBe(companyDonorInput.type);
-        expect(result3.userEmail).toBe(user.email);
-
-
       } catch (error) {
         console.error(error);
         throw error;
