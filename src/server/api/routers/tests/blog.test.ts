@@ -37,6 +37,7 @@ describe("Fundraiser procedures testing", () => {
         image: "blog image",
         content: "blog content",
         published: false,
+        featured: false,
       };
       try {
         const result = await caller.create(input);
@@ -57,6 +58,7 @@ describe("Fundraiser procedures testing", () => {
         image: "blog image",
         content: "blog content",
         published: false,
+        featured: false,
       };
       const blog = await caller.create(input);
 
@@ -67,6 +69,7 @@ describe("Fundraiser procedures testing", () => {
         image: "edit blog image",
         content: "edit blog content",
         published: false,
+        featured: false,
       };
       try {
         const result = await caller.edit(editInput);
@@ -87,6 +90,7 @@ describe("Fundraiser procedures testing", () => {
         image: "blog image",
         content: "blog content",
         published: false,
+        featured: false,
       };
       const input2 = {
         title: "blog title",
@@ -94,6 +98,7 @@ describe("Fundraiser procedures testing", () => {
         image: "blog image",
         content: "blog content",
         published: false,
+        featured: false,
       };
       try {
         await ctx.db.blogs.deleteMany({});
@@ -127,6 +132,7 @@ describe("Fundraiser procedures testing", () => {
         image: "blog image",
         content: "blog content",
         published: false,
+        featured: false,
       };
       const input2 = {
         title: "blog title",
@@ -134,6 +140,7 @@ describe("Fundraiser procedures testing", () => {
         image: "blog image",
         content: "blog content",
         published: false,
+        featured: false,
       };
       try {
         const blog1 = await caller.create(input1);
@@ -177,6 +184,7 @@ describe("Fundraiser procedures testing", () => {
         image: "blog image",
         content: "blog content",
         published: false,
+        featured: false,
       };
 
       const blog = await caller.create(input);
@@ -187,6 +195,98 @@ describe("Fundraiser procedures testing", () => {
         console.error("Error during deleting", error);
         throw error;
       }
+    });
+    it("should make a blog featured", async () => {
+      const input = {
+        title: "blog title",
+        excerpt: "blog excerpt",
+        image: "blog image",
+        content: "blog content",
+        published: false,
+        featured: false,
+      };
+      const blog = await caller.create(input);
+
+      const editInput = {
+        id: `${blog.id}`,
+        title: "blog title",
+        excerpt: "blog excerpt",
+        image: "blog image",
+        content: "blog content",
+        published: false,
+        featured: true,
+      };
+      try {
+        const result = await caller.edit(editInput);
+
+        expect(result.featured).toBe(true);
+      } catch (error) {
+        console.error("Error during edit:", error);
+        throw error;
+      }
+    });
+    it("should make a blog not featured", async () => {
+      const input = {
+        title: "blog title",
+        excerpt: "blog excerpt",
+        image: "blog image",
+        content: "blog content",
+        published: false,
+        featured: true,
+      };
+      const blog = await caller.create(input);
+
+      const editInput = {
+        id: `${blog.id}`,
+        title: "blog title",
+        excerpt: "blog excerpt",
+        image: "blog image",
+        content: "blog content",
+        published: false,
+        featured: false,
+      };
+      try {
+        const result = await caller.edit(editInput);
+
+        expect(result.featured).toBe(false);
+      } catch (error) {
+        console.error("Error during edit:", error);
+        throw error;
+      }
+    });
+    it("should count featured projects", async () => {
+      await ctx.db.blogs.deleteMany({});
+      const input = {
+        title: "blog title",
+        excerpt: "blog excerpt",
+        image: "blog image",
+        content: "blog content",
+        published: false,
+        featured: true,
+      };
+      const input1 = {
+        title: "blog title",
+        excerpt: "blog excerpt",
+        image: "blog image",
+        content: "blog content",
+        published: false,
+        featured: true,
+      };
+      const input2 = {
+        title: "blog title",
+        excerpt: "blog excerpt",
+        image: "blog image",
+        content: "blog content",
+        published: false,
+        featured: true,
+      };
+      await caller.create(input);
+      await caller.create(input1);
+      await caller.create(input2);
+
+      const count = await caller.getFeaturedCount();
+
+      expect(count).toBe(3);
     });
   });
 });
