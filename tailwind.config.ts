@@ -10,5 +10,9 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require("@tailwindcss/typography")({
+      className: "heading",
+    }),
+  ],
 } satisfies Config;
