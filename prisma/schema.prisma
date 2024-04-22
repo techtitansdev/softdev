@@ -9,19 +9,20 @@ datasource db {
 }
 
 model Users {
-  id              String    @id @default(cuid())
-  email           String    @unique
-  emailVerified   Boolean   @default(false)
+  id              String     @id @default(cuid())
+  email           String     @unique
+  emailVerified   Boolean    @default(false)
   emailVerifiedAt DateTime?
   firstName       String
   lastName        String
   address         String
   phone           String
   password        String
-  created         DateTime  @default(now())
-  updated         DateTime  @updatedAt()
-  role            String    @default("USER")
+  created         DateTime   @default(now())
+  updated         DateTime   @updatedAt()
+  role            String     @default("USER")
   admins          Admins[]
+  Feedback        Feedback[]
 
   @@unique([email, phone])
 }
@@ -76,6 +77,20 @@ model Projects {
   assignCategoriesProject AssignCategoriesProject[]
   fundraisers             Fundraisers[]
   Milestones              Milestones[]
+  Feedback                Feedback[]
+}
+
+model Feedback {
+  id        String @id @default(cuid())
+  userId    String
+  projectId String
+  feedback  String
+
+  user    Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([projectId])
 }
 
 model Fundraisers {
