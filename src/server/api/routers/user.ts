@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure, publicProcedure, } from "~/server/api/trpc";
-import { db } from "~/server/db";
+import { createTRPCRouter, protectedProcedure, publicProcedure, } from "../../../server/api/trpc";
+import { db } from "../../../server/db";
 import bcrypt from 'bcrypt';
-import { Prisma } from "@prisma/client";
 
 export const userRouter = createTRPCRouter({
     hello: publicProcedure.query(({ctx}) => {
@@ -125,4 +124,7 @@ export const userRouter = createTRPCRouter({
             })
         })
 });
+
+export const userCaller = userRouter.createCaller;
+
 

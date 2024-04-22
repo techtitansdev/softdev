@@ -43,6 +43,7 @@ describe("Fundraiser procedures testing", () => {
         beneficiaries: "Beneficiaries",
         about: "About Project",
         published: false,
+        featured: false,
       };
       try {
         const project = await callerProject.create(projectInput);
@@ -76,6 +77,8 @@ describe("Fundraiser procedures testing", () => {
         beneficiaries: "Beneficiaries",
         about: "About Project",
         published: false,
+        featured: false,
+
       };
       try {
         const project = await callerProject.create(projectInput);
@@ -151,6 +154,8 @@ describe("Fundraiser procedures testing", () => {
         beneficiaries: "Beneficiaries",
         about: "About",
         published: false,
+        featured: false,
+
       };
       try {
         const project = await callerProject.create(projectInput);
@@ -186,6 +191,8 @@ describe("Fundraiser procedures testing", () => {
         beneficiaries: "Beneficiaries",
         about: "About",
         published: false,
+        featured: false,
+
       };
       try {
         const project = await callerProject.create(projectInput);
@@ -218,6 +225,8 @@ describe("Fundraiser procedures testing", () => {
         beneficiaries: "Beneficiaries",
         about: "About Project",
         published: false,
+        featured: false,
+
       };
 
       const project = await callerProject.create(projectInput);
