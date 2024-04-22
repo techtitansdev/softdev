@@ -28,7 +28,6 @@ describe("Donors procedures testing", () => {
     },
   };
   const ctx = createInnerTRPCContext(session);
-  const callerUser = userCaller(ctx);
   const callerDonors = donorsCaller(ctx);
 
   describe("Donors procedure testing", () => {
@@ -42,10 +41,6 @@ describe("Donors procedures testing", () => {
         password: "password",
       };
       try {
-        await ctx.db.users.deleteMany({});
-
-        const user = await callerUser.create(userInput);
-
         const anonDonorInput = {
           type: "Anonymous",
           email: null,

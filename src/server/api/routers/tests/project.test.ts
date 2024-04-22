@@ -41,6 +41,7 @@ describe("project procedures testing", () => {
         beneficiaries: "Beneficiaries",
         about: "About Project",
         published: false,
+        featured: false,
       };
       try {
         const result = await caller.create(input);
@@ -68,7 +69,7 @@ describe("project procedures testing", () => {
         beneficiaries: "Beneficiaries",
         about: "About Project",
         published: false,
-
+        featured: false,
       };
       const project = await caller.create(input);
 
@@ -83,48 +84,44 @@ describe("project procedures testing", () => {
         beneficiaries: "Edited Beneficiaries",
         about: "Edited About Project",
         published: true,
+        featured: false,
       };
 
-            try {
-              const result = await caller.edit(editInput);
+      try {
+        const result = await caller.edit(editInput);
 
-              console.log("Original project:", input);
-              console.log("Edited project:", result);
-              console.log("Original project:", input);
-              console.log("Edited project:", result);
+        expect(result.title).toBe(editInput.title);
+        expect(result.description).toBe(editInput.description);
+        expect(result.image).toBe(editInput.image);
+        expect(result.hub).toBe(editInput.hub);
+        expect(result.category).toBe(editInput.category);
+        expect(result.type).toBe(editInput.type);
+        expect(result.beneficiaries).toBe(editInput.beneficiaries);
+        expect(result.about).toBe(editInput.about);
+        expect(result.published).toBe(editInput.published);
+      } catch (error) {
+        console.error("Error during edit:", error);
+        throw error;
+      }
+    });
+    it("should delete existing projects", async () => {
+      const input = {
+        title: "Project Title",
+        description: "Project Description",
+        image: "/tech4all.png",
+        hub: "project hub",
+        category: "project category",
+        type: "project type",
+        beneficiaries: "Beneficiaries",
+        about: "About Project",
+        published: false,
+        featured: false,
+      };
+      const project = await caller.create(input);
 
-              expect(result.title).toBe(editInput.title);
-              expect(result.description).toBe(editInput.description);
-              expect(result.image).toBe(editInput.image);
-              expect(result.hub).toBe(editInput.hub);
-              expect(result.category).toBe(editInput.category);
-              expect(result.type).toBe(editInput.type);
-              expect(result.beneficiaries).toBe(editInput.beneficiaries);
-              expect(result.about).toBe(editInput.about);
-              expect(result.published).toBe(editInput.published);
-            } catch (error) {
-              console.error("Error during edit:", error);
-              throw error;
-            }
-          });
-          it("should delete existing projects", async () => {
-            const input = {
-              title: "Project Title",
-              description: "Project Description",
-              image: "/tech4all.png",
-              hub: "project hub",
-              category: "project category",
-              type: "project type",
-              beneficiaries: "Beneficiaries",
-              about: "About Project",
-              published: false,
-
-            };
-            const project = await caller.create(input);
-
-            const deleteInput = {
-              id: project.id,
-            };
+      const deleteInput = {
+        id: project.id,
+      };
 
       try {
         await caller.delete(deleteInput);
@@ -144,7 +141,7 @@ describe("project procedures testing", () => {
         beneficiaries: "Beneficiaries",
         about: "About Project",
         published: false,
-
+        featured: false,
       };
       const input2 = {
         title: "Project 222",
@@ -156,7 +153,7 @@ describe("project procedures testing", () => {
         beneficiaries: "Beneficiaries 2",
         about: "About Project 2",
         published: false,
-
+        featured: false,
       };
       try {
         await ctx.db.projects.deleteMany({});
@@ -200,7 +197,7 @@ describe("project procedures testing", () => {
         beneficiaries: "Beneficiaries",
         about: "About Project",
         published: false,
-
+        featured: false,
       };
 
       try {
@@ -225,6 +222,159 @@ describe("project procedures testing", () => {
         console.error("Error:", error);
         throw error;
       }
+    });
+    it("should make a project featured", async () => {
+      const input = {
+        title: "Project 11111",
+        description: "Project Description",
+        image: "/tech4all.png",
+        hub: "Project Hub",
+        category: "Project Category",
+        type: "Project Type",
+        beneficiaries: "Beneficiaries",
+        about: "About Project",
+        published: false,
+        featured: false,
+      };
+      const project = await caller.create(input);
+
+      const editInput = {
+        id: `${project.id}`,
+        title: "Edited Project Title",
+        description: "Edited Project Description",
+        image: "/tech4all.png",
+        hub: "edited hub",
+        category: "edited category",
+        type: "edited type",
+        beneficiaries: "Edited Beneficiaries",
+        about: "Edited About Project",
+        published: true,
+        featured: true,
+      };
+      try {
+        const result = await caller.edit(editInput);
+
+        expect(result.title).toBe(editInput.title);
+        expect(result.description).toBe(editInput.description);
+        expect(result.image).toBe(editInput.image);
+        expect(result.hub).toBe(editInput.hub);
+        expect(result.category).toBe(editInput.category);
+        expect(result.type).toBe(editInput.type);
+        expect(result.beneficiaries).toBe(editInput.beneficiaries);
+        expect(result.about).toBe(editInput.about);
+        expect(result.published).toBe(editInput.published);
+        expect(result.featured).toBe(true);
+      } catch (error) {
+        console.error("Error during edit:", error);
+        throw error;
+      }
+    });
+    it("should make a project not featured", async () => {
+      const input = {
+        title: "Project 11111",
+        description: "Project Description",
+        image: "/tech4all.png",
+        hub: "Project Hub",
+        category: "Project Category",
+        type: "Project Type",
+        beneficiaries: "Beneficiaries",
+        about: "About Project",
+        published: false,
+        featured: true,
+      };
+      const project = await caller.create(input);
+
+      const editInput = {
+        id: `${project.id}`,
+        title: "Edited Project Title",
+        description: "Edited Project Description",
+        image: "/tech4all.png",
+        hub: "edited hub",
+        category: "edited category",
+        type: "edited type",
+        beneficiaries: "Edited Beneficiaries",
+        about: "Edited About Project",
+        published: true,
+        featured: false,
+      };
+
+      try {
+        const result = await caller.edit(editInput);
+
+        expect(result.title).toBe(editInput.title);
+        expect(result.description).toBe(editInput.description);
+        expect(result.image).toBe(editInput.image);
+        expect(result.hub).toBe(editInput.hub);
+        expect(result.category).toBe(editInput.category);
+        expect(result.type).toBe(editInput.type);
+        expect(result.beneficiaries).toBe(editInput.beneficiaries);
+        expect(result.about).toBe(editInput.about);
+        expect(result.published).toBe(editInput.published);
+        expect(result.featured).toBe(false);
+      } catch (error) {
+        console.error("Error during edit:", error);
+        throw error;
+      }
+    });
+    it("should count featured projects", async () => {
+      await ctx.db.projects.deleteMany({});
+
+      const input = {
+        title: "Project 11111",
+        description: "Project Description",
+        image: "/tech4all.png",
+        hub: "Project Hub",
+        category: "Project Category",
+        type: "Project Type",
+        beneficiaries: "Beneficiaries",
+        about: "About Project",
+        published: false,
+        featured: true,
+      };
+      const input2 = {
+        title: "Project 22",
+        description: "Project Description",
+        image: "/tech4all.png",
+        hub: "Project Hub",
+        category: "Project Category",
+        type: "Project Type",
+        beneficiaries: "Beneficiaries",
+        about: "About Project",
+        published: false,
+        featured: true,
+      };
+      const input3 = {
+        title: "Project 333",
+        description: "Project Description",
+        image: "/tech4all.png",
+        hub: "Project Hub",
+        category: "Project Category",
+        type: "Project Type",
+        beneficiaries: "Beneficiaries",
+        about: "About Project",
+        published: false,
+        featured: true,
+      };
+      const input4 = {
+        title: "Project 4444",
+        description: "Project Description",
+        image: "/tech4all.png",
+        hub: "Project Hub",
+        category: "Project Category",
+        type: "Project Type",
+        beneficiaries: "Beneficiaries",
+        about: "About Project",
+        published: false,
+        featured: true,
+      };
+      await caller.create(input);
+      await caller.create(input2);
+      await caller.create(input3);
+      await caller.create(input4);
+
+      const count = await caller.getFeaturedCount();
+
+      expect(count).toBe(4);
     });
   });
 });
