@@ -72,31 +72,33 @@ const Payment = () => {
 
       <form
         onSubmit={handleSubmit}
-        className="mx-auto mb-16 mt-32 flex max-w-[1300px] justify-between"
+        className="mx-auto mb-16 mt-24 flex max-w-[1300px] flex-col justify-between md:mt-32  lg:flex-row"
       >
-        <div className="flex w-1/2 flex-col items-center justify-center">
+        <div className="flex w-full flex-col items-center justify-center lg:w-1/2">
           {fundingData && (
-            <div className="flex w-11/12 flex-col">
-              <div className="text-normal mx-1 text-lg font-normal text-gray-700">
+            <div className="flex w-11/12 flex-col md:w-10/12 lg:w-11/12">
+              <div className="mx-1 text-base font-normal text-gray-700 md:text-lg">
                 YOU ARE DONATING TO:
               </div>
-              <div className="mx-1 mb-4 text-4xl font-semibold text-gray-700">
+              <div className="mx-1 mb-4 text-3xl font-semibold text-gray-700 md:text-4xl">
                 {fundingData.title}
               </div>
               <img
                 src={fundingData.image}
-                className="mb-2 h-96 w-full rounded-lg shadow-md"
+                className="mb-2 h-[350px] w-full rounded-lg shadow-md md:h-96"
                 alt={fundingData.title}
               />
-              <div className="text-normal text-medium mx-1 line-clamp-3 font-light">
+              <div className="md:text-normal text-medium mx-1 line-clamp-3 text-sm font-light">
                 {fundingData.description}
               </div>
             </div>
           )}
         </div>
 
-        <div className="flex w-1/2 flex-col items-center justify-center">
-          <p className="text-2xl font-medium">Contribute As:</p>
+        <div className="flex w-full flex-col items-center justify-center lg:w-1/2">
+          <p className="mt-12 text-xl font-medium md:text-2xl lg:mt-0">
+            Contribute As:
+          </p>
           <div className="mt-2 flex flex-row items-center">
             <div className="mt-2 inline-flex items-center">
               <input
@@ -107,7 +109,9 @@ const Payment = () => {
                 checked={contributionType === "Individual"}
                 onChange={() => setContributionType("Individual")}
               />
-              <span className="ml-2 mr-4 text-lg font-light">Individual</span>
+              <span className="ml-2 mr-4 text-sm font-light md:text-lg">
+                Individual
+              </span>
             </div>
             <div className="mt-2 inline-flex items-center">
               <input
@@ -118,7 +122,9 @@ const Payment = () => {
                 checked={contributionType === "Company"}
                 onChange={() => setContributionType("Company")}
               />
-              <span className="ml-2 mr-4 text-lg font-light">Company</span>
+              <span className="ml-2 mr-4 text-sm font-light md:text-lg">
+                Company
+              </span>
             </div>
             <div className="mr-4 mt-2 inline-flex items-center">
               <input
@@ -129,7 +135,9 @@ const Payment = () => {
                 checked={contributionType === "Anonymous"}
                 onChange={() => setContributionType("Anonymous")}
               />
-              <span className="ml-2 text-lg font-light">Anonymous</span>
+              <span className="ml-2 text-sm font-light md:text-lg">
+                Anonymous
+              </span>
             </div>
           </div>
           {contributionType !== "Anonymous" && (
@@ -137,40 +145,46 @@ const Payment = () => {
               <input
                 type="text"
                 placeholder="Full Name"
-                className="my-2 w-9/12 border-b border-gray-800 py-2 pl-2 pr-3 text-black outline-none focus:outline-none"
+                className="my-2 w-11/12 border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none md:w-10/12 md:text-base lg:w-9/12"
                 value={fullName}
+                required
                 onChange={(e) => setFullName(e.target.value)}
               />
               <input
-                type="text"
+                type="tel"
                 placeholder="Phone Number"
-                className="my-2 w-9/12 border-b border-gray-800 py-2 pl-2 pr-3 text-black outline-none focus:outline-none"
+                className="my-2 w-11/12 border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none md:w-10/12 md:text-base lg:w-9/12"
                 value={phoneNumber}
+                required
                 onChange={(e) => setPhoneNumber(e.target.value)}
               />
               <input
                 type="text"
                 placeholder="Email Address"
-                className="my-2 w-9/12 border-b border-gray-800 py-2 pl-2 pr-3 text-black outline-none focus:outline-none"
+                className="my-2 w-11/12 border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none md:w-10/12 md:text-base lg:w-9/12"
                 value={email}
+                required
                 onChange={(e) => setEmail(e.target.value)}
               />
             </>
           )}
 
           <input
-            type="text"
+            type="number"
+            min="0"
             placeholder="Amount"
-            className="mt-6 w-9/12 rounded-md border border-gray-400 py-4 pl-4 pr-4 shadow-lg"
+            className="mt-6 w-11/12 rounded-md border border-gray-400 py-4 pl-4 pr-4 text-sm shadow-lg md:w-10/12 md:text-base lg:w-9/12"
             value={amount}
+            required
             onChange={(e) => setAmount(e.target.value)}
           />
 
           <input
             type="text"
             placeholder="Payment Method"
-            className="mt-6 w-9/12 rounded-md border border-gray-400 py-6 pl-4 pr-4 shadow-lg"
+            className="mt-6 w-11/12 rounded-md border border-gray-400 py-4 pl-4 pr-4 text-sm shadow-lg md:w-10/12 md:text-base lg:w-9/12"
             value={paymentMethod}
+            required
             onChange={(e) => setPaymentMethod(e.target.value)}
           />
 
@@ -178,7 +192,7 @@ const Payment = () => {
 
           <button
             type="submit"
-            className="mt-6 w-9/12 rounded-lg border border-gray-400 bg-blue-800 py-2 text-white hover:bg-blue-900 "
+            className="mt-6 w-11/12 rounded-lg border border-gray-400 bg-blue-800 py-2 text-white hover:bg-blue-900 sm:w-10/12 lg:w-9/12 "
           >
             Pay Now
           </button>
