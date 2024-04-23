@@ -108,6 +108,7 @@ const Payment = () => {
                 className="h-6 w-6 text-gray-600"
                 checked={contributionType === "Individual"}
                 onChange={() => setContributionType("Individual")}
+                data-testid="Individual"
               />
               <span className="ml-2 mr-4 text-sm font-light md:text-lg">
                 Individual
@@ -121,6 +122,7 @@ const Payment = () => {
                 className="h-6 w-6 text-gray-600"
                 checked={contributionType === "Company"}
                 onChange={() => setContributionType("Company")}
+                data-testid="Company"
               />
               <span className="ml-2 mr-4 text-sm font-light md:text-lg">
                 Company
@@ -134,6 +136,7 @@ const Payment = () => {
                 className="h-6 w-6 text-gray-600"
                 checked={contributionType === "Anonymous"}
                 onChange={() => setContributionType("Anonymous")}
+                data-testid="Anonymous"
               />
               <span className="ml-2 text-sm font-light md:text-lg">
                 Anonymous
