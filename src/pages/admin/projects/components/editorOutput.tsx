@@ -88,15 +88,19 @@ const classes = {
 
 const EditorOutput: React.FC<EditorOutputProps> = ({ content }) => (
   <section>
-    <Output data={content} renderers={renderers} style={style} className={classes} config={config} />
+    {/* <Output data={content} renderers={renderers} style={style} className={classes} config={config} /> */}
 
     {/* option 2 */}
     <div>
         option 2
     </div>
+    <div className="md:fit">
+
+    
     <Blocks
       data={content}
       config={{
+
         code: {
           className: "language-js"
         },
@@ -110,7 +114,7 @@ const EditorOutput: React.FC<EditorOutputProps> = ({ content }) => (
           className: "text-center font-bold text-4xl"
         },
         image: {
-          className: "item-center m-20",
+          className: "item-center m-20 border border-sky-500  ",
          
         },
         list: {
@@ -130,6 +134,7 @@ const EditorOutput: React.FC<EditorOutputProps> = ({ content }) => (
         }
       }} 
     />
+    </div>
   </section>
 );
 

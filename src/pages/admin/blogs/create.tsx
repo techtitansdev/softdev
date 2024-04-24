@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { BlogData } from "~/types/blogData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import { ChangeEvent, MutableRefObject, useRef, useState } from "react";
+import { NewEditor } from "../projects/components/editor";
 
 function CreateBlogs() {
   const createBlog = api.blog.create.useMutation();
@@ -16,7 +17,7 @@ function CreateBlogs() {
 
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
-
+  const [editorData, setEditorData] = useState(null);
   const [blogData, setBlogData] = useState<BlogData>({
     title: "",
     excerpt: "",
@@ -27,7 +28,12 @@ function CreateBlogs() {
   });
 
   const editorRef: MutableRefObject<any> = useRef(null);
+  const handleEditorChange = (data: any) => {
+    // Update state with the new data from the editor
+    setEditorData(data);
 
+    
+  };
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -58,7 +64,7 @@ function CreateBlogs() {
     try {
       const result = await createBlog.mutateAsync({
         ...blogData,
-        content: editorRef.current.getContent(),
+        content: JSON.stringify(editorData, null, 2),
         image: imageUrl,
         published: isPublished,
       });
@@ -179,41 +185,9 @@ function CreateBlogs() {
               </label>
             </div>
 
-            <Editor
-              apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-              onInit={(evt, editor) => {
-                if (editorRef.current === null) {
-                  editorRef.current = editor;
-                }
-              }}
-              init={{
-                width: "100%",
-                height: 600,
-                plugins: [
-                  "advlist",
-                  "link",
-                  "image",
-                  "lists",
-                  "preview",
-                  "pagebreak",
-                  "wordcount",
-                  "fullscreen",
-                  "insertdatetime",
-                  "media",
-                  "table",
-                  "emoticons",
-                ],
-                toolbar:
-                  "undo redo |fontfamily fontsize | bold italic underline | alignleft aligncenter alignright alignjustify |" +
-                  "bullist numlist outdent indent | link image | preview media fullscreen | " +
-                  "forecolor backcolor emoticons",
+            <NewEditor onChanges={handleEditorChange }/>
 
-                menubar: "file edit insert view  format table tools",
-                content_style:
-                  "body{font-family:Helvetica,Arial,sans-serif; font-size:16px}",
-              }}
-            />
-
+            
             <button
               type="button"
               onClick={() => handleSubmit(false)} // Save as Draft
