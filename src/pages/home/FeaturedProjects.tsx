@@ -14,9 +14,9 @@ const FeaturedProjects = () => {
   }, [getProjects.data]);
 
   const featuredProjects = projectData.filter(
-    (project: { featured: boolean }) => project.featured === true,
+    (project: { featured: boolean, published: boolean }) => project.featured === true && project.published === true
   );
-
+  
   return (
     <div className="bg-gray-50 bg-cover bg-center shadow">
       <div className="mx-auto max-w-screen-xl py-6 pb-10 lg:p-6 lg:py-6 xl:pb-12">
