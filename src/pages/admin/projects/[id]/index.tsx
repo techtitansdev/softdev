@@ -33,7 +33,7 @@ const ProjectDetailsPage = () => {
       <Sidebar />
 
       {projectData && (
-        <div className="mx-auto mb-12 mt-8 max-w-[1350px]">
+        <div className="mx-auto mb-12 mt-8 max-w-[1200px]">
           <EditorOutput content={initialEditorData} />
         </div>
       )}
