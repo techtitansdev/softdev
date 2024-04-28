@@ -3,12 +3,12 @@ import { useState, useEffect, ChangeEvent } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
-import makeAnimated from "react-select/animated";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import { BlogData } from "~/types/blogData";
+import { NewEditor } from "~/components/editor/Editor";
 
 function EditBlog() {
   const router = useRouter();
@@ -16,6 +16,11 @@ function EditBlog() {
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
+  const getBlog = api.blog.getById.useQuery({ id: id as string });
+  const deleteImage = api.blog.removeImage.useMutation();
+
+  const [editorBlocks,setEditorBlocks] = useState([]);
+  const [initialEditorData,setinitialEditorData] = useState()
 
   const [blogData, setBlogData] = useState<BlogData>({
     title: "",
@@ -26,10 +31,7 @@ function EditBlog() {
     featured: false,
   });
 
-  const getBlog = api.blog.getById.useQuery({ id: id as string });
-  const deleteImage = api.blog.removeImage.useMutation();
-
-  const editProject = api.blog.edit.useMutation({
+  const editBlog = api.blog.edit.useMutation({
     onSuccess: () => {
       setSuccessModalOpen(true);
       setTimeout(() => {
@@ -61,7 +63,7 @@ function EditBlog() {
           prevData.image !== getBlog.data.image ||
           prevData.content !== getBlog.data.content ||
           prevData.published !== getBlog.data.published ||
-          prevData.featured !== getBlog.data.featured 
+          prevData.featured !== getBlog.data.featured
         ) {
           return {
             title: getBlog.data.title,
@@ -76,6 +78,9 @@ function EditBlog() {
         }
       });
       setImageUrl(getBlog.data.image);
+      const initialEditorData = JSON.parse(getBlog.data.content);
+      setinitialEditorData(initialEditorData)
+      setEditorBlocks(initialEditorData.blocks)
     }
   }, [getBlog.data]);
 
@@ -120,13 +125,19 @@ function EditBlog() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    editProject.mutate({
+    editBlog.mutate({
       ...blogData,
       id: id as string,
       image: imageUrl,
-      content: editorContent,
+      content: JSON.stringify(editorData, null, 2),
       published: false,
     });
+  };
+
+  const [editorData, setEditorData] = useState(null);
+  const handleChanges = (data: any) => {
+    // Update state with the new data from the editor
+    setEditorData(data);
   };
 
   return (
@@ -240,38 +251,12 @@ function EditBlog() {
                 </label>
               </div>
 
-              <Editor
-                initialValue={blogData.content}
-                value={editorContent}
-                onEditorChange={handleEditorChange}
-                apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-                init={{
-                  width: "100%",
-                  height: 600,
-                  plugins: [
-                    "advlist",
-                    "link",
-                    "image",
-                    "lists",
-                    "preview",
-                    "pagebreak",
-                    "wordcount",
-                    "fullscreen",
-                    "insertdatetime",
-                    "media",
-                    "table",
-                    "emoticons",
-                  ],
-                  toolbar:
-                    "undo redo |fontfamily fontsize | bold italic underline | alignleft aligncenter alignright alignjustify |" +
-                    "bullist numlist outdent indent | link image | preview media fullscreen | " +
-                    "forecolor backcolor emoticons",
-
-                  menubar: "file edit insert view  format table tools",
-                  content_style:
-                    "body{font-family:Helvetica,Arial,sans-serif; font-size:16px}",
-                }}
-              />
+              <div className="min-w-[300px]">
+                <NewEditor
+                  onChanges={handleChanges}
+                  initialData={editorBlocks}
+                />
+              </div>
 
               <button
                 type="submit"
@@ -289,6 +274,7 @@ function EditBlog() {
             </form>
           </div>
         </div>
+
         <Modal
           isOpen={isSuccessModalOpen}
           onClose={() => setSuccessModalOpen(false)}
