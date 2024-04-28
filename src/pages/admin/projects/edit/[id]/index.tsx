@@ -4,20 +4,16 @@ import {
   useEffect,
   ChangeEvent,
 } from "react";
-import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
-import Output from 'editorjs-react-renderer';
 import Select from "react-select";
 import { ProjectData } from "~/types/projectData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
-import { NewEditor } from "../../components/editor";
-import cloudinary from "next-cloudinary";
 import CreatableSelect from "react-select/creatable";
-import EditorOutput from "../../components/editorOutput";
+import { NewEditor } from "~/components/editor/Editor";
 
 function EditProject() {
   const router = useRouter();
