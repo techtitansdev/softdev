@@ -6,7 +6,7 @@ import FundingCard from "./components/FundingCard";
 import { RiSearchLine } from "react-icons/ri";
 import FilterByCategory from "~/components/filter/FilterByCategory";
 import { Footer } from "~/components/Footer";
-import FundraiserSearchInput from "~/components/FundraiserSearch";
+import FundraiserSearchInput from "~/components/search/SearchByFundraiser";
 
 const FundedProjects = () => {
   const [fundingData, setFundingData] = useState<any>([]);
@@ -21,7 +21,6 @@ const FundedProjects = () => {
 
   const [selectedCategory, setSelectedCategory] = useState("Categories");
   const [isCategoryListOpen, setIsCategoryListOpen] = useState(false);
-
   const [searchQuery, setSearchQuery] = useState("");
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [filteredFunding, setFilteredFunding] = useState<any[]>([]);
@@ -50,19 +49,34 @@ const FundedProjects = () => {
       );
     } else {
       setSearchSuggestions([]);
+      setFilteredFunding(fundingData);
+    }
+  };
+
+  const handleEnterPress = () => {
+    if (searchQuery !== "") {
+      const filtered = fundingData.filter((funding: any) =>
+        funding.project.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+      setFilteredFunding(filtered);
+    } else {
+      setFilteredFunding(fundingData);
     }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
     setSearchQuery(suggestion);
     setSearchSuggestions([]);
-  };
 
-  const handleSearchButtonClick = () => {
     const filtered = fundingData.filter((funding: any) =>
-      funding.project.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      funding.project.title.toLowerCase().includes(suggestion.toLowerCase()),
     );
     setFilteredFunding(filtered);
+
+    const updatedSuggestions = searchSuggestions.filter(
+      (item) => item.toLowerCase() !== suggestion.toLowerCase(),
+    );
+    setSearchSuggestions(updatedSuggestions);
   };
 
   const filterFunding = (
@@ -70,12 +84,13 @@ const FundedProjects = () => {
   ).filter((funding: any) => {
     const matchesCategory =
       selectedCategory === "Categories" ||
-      funding.project.category
-        .split(",")
-        .map((category: string) => category.trim())
-        .includes(selectedCategory);
+      (funding.project.category &&
+        funding.project.category
+          .split(",")
+          .map((category: string) => category.trim())
+          .includes(selectedCategory));
 
-    return matchesCategory && funding.published;
+    return matchesCategory && funding.project.published;
   });
 
   return (
@@ -103,7 +118,7 @@ const FundedProjects = () => {
             <FundraiserSearchInput
               value={searchQuery}
               onChange={handleSearchChange}
-              onSearch={handleSearchButtonClick}
+              onEnter={handleEnterPress}
             />
           </div>
 

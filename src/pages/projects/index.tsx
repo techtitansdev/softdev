@@ -74,8 +74,9 @@ const Projects = () => {
     setFilteredProjects(filtered);
 
     const updatedSuggestions = searchSuggestions.filter(
-      (item) => item !== suggestion,
+      (item) => item.toLowerCase() !== suggestion.toLowerCase(),
     );
+    
     setSearchSuggestions(updatedSuggestions);
   };
 
