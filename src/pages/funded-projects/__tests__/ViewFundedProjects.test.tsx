@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import FundedProjects from "../index";
-import FilterByCategory from "~/components/FilterByCategory";
-import SearchInput from "~/components/SearchInput";
+import FilterByCategory from "~/components/filter/FilterByCategory";
+import SearchInput from "~/components/search/SearchByProject";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
 

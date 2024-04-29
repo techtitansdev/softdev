@@ -4,7 +4,7 @@ import { Navbar } from "~/components/Navbar";
 import { api } from "~/utils/api";
 import FundingCard from "./components/FundingCard";
 import { RiSearchLine } from "react-icons/ri";
-import FilterByCategory from "~/components/FilterByCategory";
+import FilterByCategory from "~/components/filter/FilterByCategory";
 import { Footer } from "~/components/Footer";
 import FundraiserSearchInput from "~/components/FundraiserSearch";
 
