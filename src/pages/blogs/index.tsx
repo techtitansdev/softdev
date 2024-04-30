@@ -17,8 +17,8 @@ const Blogs = () => {
     }
   }, [getBlogs.data]);
 
-  const featuredBlogs = blogData.filter((blog: { featured: boolean; }) => blog.featured === true);
-  const unfeaturedBlogs = blogData.filter((blog: { featured: boolean; }) => blog.featured === false);
+  const featuredBlogs = blogData.filter((blog: { featured: boolean, published: boolean }) => blog.featured === true  && blog.published === true);
+  const unfeaturedBlogs = blogData.filter((blog: { featured: boolean, published: boolean }) => blog.featured === false && blog.published === true);
 
   return (
     <>

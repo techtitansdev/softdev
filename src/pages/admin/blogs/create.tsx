@@ -1,5 +1,4 @@
 import Head from "next/head";
-import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import Image from "next/image";
@@ -7,8 +6,8 @@ import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import { BlogData } from "~/types/blogData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
-import { ChangeEvent, MutableRefObject, useRef, useState } from "react";
-import { NewEditor } from "../projects/components/editor";
+import { ChangeEvent, useState } from "react";
+import { NewEditor } from "~/components/editor/Editor";
 
 function CreateBlogs() {
   const createBlog = api.blog.create.useMutation();
@@ -27,13 +26,11 @@ function CreateBlogs() {
     featured: false,
   });
 
-  const editorRef: MutableRefObject<any> = useRef(null);
   const handleEditorChange = (data: any) => {
     // Update state with the new data from the editor
-    setEditorData(data);
-
-    
+    setEditorData(data); 
   };
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {

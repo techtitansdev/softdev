@@ -1,23 +1,15 @@
 import Head from "next/head";
-import {
-  useState,
-  useEffect,
-  ChangeEvent,
-} from "react";
-import { Editor } from "@tinymce/tinymce-react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
-import Output from 'editorjs-react-renderer';
 import Select from "react-select";
 import { ProjectData } from "~/types/projectData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
-import { NewEditor } from "../../components/editor";
-import cloudinary from "next-cloudinary";
 import CreatableSelect from "react-select/creatable";
-import EditorOutput from "../../components/editorOutput";
+import { NewEditor } from "~/components/editor/Editor";
 
 function EditProject() {
   const router = useRouter();
@@ -26,12 +18,12 @@ function EditProject() {
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
   const getProject = api.project.getById.useQuery({ id: id as string });
-  console.log(getProject.data)
-  const categories = api.categories.getAllCategories.useQuery()
+  console.log(getProject.data);
+  const categories = api.categories.getAllCategories.useQuery();
   const categoriesOption = categories.data || [];
   categoriesOption.sort((a, b) => a.label.localeCompare(b.label));
-  const [editorBlocks,setEditorBlocks] = useState([]);
-  const [initialEditorData,setinitialEditorData] = useState()
+  const [editorBlocks, setEditorBlocks] = useState([]);
+  const [initialEditorData, setinitialEditorData] = useState();
   const deleteImage = api.project.removeImage.useMutation();
 
   const editProject = api.project.edit.useMutation({
@@ -83,7 +75,7 @@ function EditProject() {
           prevData.beneficiaries !== getProject.data.beneficiaries ||
           prevData.about !== getProject.data.about ||
           prevData.published !== getProject.data.published ||
-          prevData.featured !== getProject.data.featured 
+          prevData.featured !== getProject.data.featured
         ) {
           return {
             title: getProject.data.title,
@@ -103,9 +95,8 @@ function EditProject() {
       });
       setImageUrl(getProject.data.image);
       const initialEditorData = JSON.parse(getProject.data.about);
-      setinitialEditorData(initialEditorData)
-      setEditorBlocks(initialEditorData.blocks)
-      
+      setinitialEditorData(initialEditorData);
+      setEditorBlocks(initialEditorData.blocks);
     }
   }, [getProject.data]);
 
@@ -160,16 +151,15 @@ function EditProject() {
       image: imageUrl,
       about: JSON.stringify(editorData, null, 2),
       published: false,
+      featured: false,
     });
   };
-
 
   const [editorData, setEditorData] = useState(null);
   const handleChanges = (data: any) => {
     // Update state with the new data from the editor
     setEditorData(data);
   };
- 
 
   return (
     <>
@@ -340,7 +330,6 @@ function EditProject() {
                   instanceId="long-value-select"
                   placeholder="type"
                   options={type}
-                  
                   value={type.find(
                     (option) => option.value === projectData.type,
                   )}
@@ -379,17 +368,13 @@ function EditProject() {
                   About
                 </label>
               </div>
-              <div>
-
-              </div>
+              <div></div>
               <div className="min-w-[300px]">
                 <NewEditor
                   onChanges={handleChanges}
                   initialData={editorBlocks}
                 />
               </div>
-
-              
 
               <button
                 type="submit"
