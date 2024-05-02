@@ -22,7 +22,9 @@ const FilterByCategory = ({
   };
 
   const sortedCategories = categoriesOption
-    ? [...categoriesOption].sort((a, b) => a.label.localeCompare(b.label))
+    ? [{ label: "All", value: "All" }, ...categoriesOption].sort((a, b) =>
+        a.label.localeCompare(b.label),
+      )
     : [];
 
   return (
@@ -44,7 +46,7 @@ const FilterByCategory = ({
         <BiChevronDown size={20} />
       </div>
       {isCategoryListOpen && (
-        <div className="absolute right-0 mt-7 max-h-56 w-[280px] overflow-y-auto border border-gray-500 bg-white md:right-[-8px] lg:left-0 lg:mt-2 lg:w-[300px] rounded-lg">
+        <div className="absolute right-0 mt-7 max-h-56 w-[280px] overflow-y-auto rounded-lg border border-gray-500 bg-white md:right-[-8px] lg:left-0 lg:mt-2 lg:w-[300px]">
           {sortedCategories.map((option, index) => (
             <div
               key={index}

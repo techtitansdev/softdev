@@ -83,6 +83,7 @@ const FundedProjects = () => {
     searchQuery !== "" ? filteredFunding : fundingData
   ).filter((funding: any) => {
     const matchesCategory =
+      selectedCategory === "All" ||
       selectedCategory === "Categories" ||
       (funding.project.category &&
         funding.project.category

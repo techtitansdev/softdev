@@ -76,7 +76,7 @@ const Projects = () => {
     const updatedSuggestions = searchSuggestions.filter(
       (item) => item.toLowerCase() !== suggestion.toLowerCase(),
     );
-    
+
     setSearchSuggestions(updatedSuggestions);
   };
 
@@ -84,6 +84,7 @@ const Projects = () => {
     searchQuery !== "" ? filteredProjects : projectData
   ).filter((project: any) => {
     const matchesCategory =
+      selectedCategory === "All" ||
       selectedCategory === "Categories" ||
       project.category
         .split(",")
