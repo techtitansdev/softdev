@@ -136,7 +136,7 @@ const AdminBlogPage = () => {
       <div className="flex">
         <Sidebar />
 
-        <div className="mx-auto mt-14 p-10">
+        <div className="mx-auto mt-14 max-w-[1350px] p-10">
           <div className="flex items-center justify-between">
             <div className="font-medium md:text-3xl">BLOGS</div>
 
