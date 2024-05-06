@@ -39,11 +39,13 @@ const FundedProjects = () => {
     setSearchQuery(value);
 
     if (value !== "") {
-      const suggestions = fundingData
-        .filter((funding: any) =>
-          funding.project.title.toLowerCase().includes(value.toLowerCase()),
-        )
-        .map((funding: any) => funding.project.title);
+      const filteredByCategory = filterFunding.filter((funding: any) =>
+        funding.project.title.toLowerCase().includes(value.toLowerCase()),
+      );
+
+      const suggestions = filteredByCategory.map(
+        (funding: any) => funding.project.title,
+      );
       setSearchSuggestions(
         suggestions.length > 0 ? suggestions : ["No results found"],
       );
@@ -66,17 +68,13 @@ const FundedProjects = () => {
 
   const handleSuggestionClick = (suggestion: string) => {
     setSearchQuery(suggestion);
-    setSearchSuggestions([]);
 
     const filtered = fundingData.filter((funding: any) =>
       funding.project.title.toLowerCase().includes(suggestion.toLowerCase()),
     );
-    setFilteredFunding(filtered);
 
-    const updatedSuggestions = searchSuggestions.filter(
-      (item) => item.toLowerCase() !== suggestion.toLowerCase(),
-    );
-    setSearchSuggestions(updatedSuggestions);
+    setFilteredFunding(filtered);
+    setSearchSuggestions([]);
   };
 
   const filterFunding = (
