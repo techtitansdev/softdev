@@ -51,6 +51,7 @@ const Projects = () => {
       );
     } else {
       setSearchSuggestions([]);
+      setFilteredProjects(projectData); 
     }
   };
 
