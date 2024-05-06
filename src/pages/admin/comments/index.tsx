@@ -3,14 +3,14 @@ import { useRouter } from "next/router";
 import { Sidebar } from "~/components/Sidebar";
 import { GrFormNextLink, GrFormPreviousLink } from "react-icons/gr";
 import { commentData } from "~/data/commentData";
-import FilterByProjectName from "~/components/FilterByProjectName";
-import SearchByName from "~/components/SearchByName";
+import FilterByProjectName from "~/components/filter/FilterByProjectName";
 import { useUser } from "@clerk/nextjs";
 import Head from "next/head";
 import {
   AiOutlineSortAscending,
   AiOutlineSortDescending,
 } from "react-icons/ai";
+import SearchByName from "~/components/search/SearchByName";
 
 const Comments = () => {
   const [currentPage, setCurrentPage] = useState(1);
