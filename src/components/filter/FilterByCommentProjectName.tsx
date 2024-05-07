@@ -1,6 +1,7 @@
 import React, { SetStateAction, useEffect, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 import { IoFilterOutline } from "react-icons/io5";
+import { commentData } from "~/data/commentData";
 import { donorsData } from "~/data/donorsData";
 
 export type FilteredProjectProps = {
@@ -17,7 +18,7 @@ const FilterByProjectName = ({
   handleProjectSelect,
 }: FilteredProjectProps) => {
   const uniqueProjects = Array.from(
-    new Set(donorsData.map((item) => item.projectName)),
+    new Set(commentData.map((item) => item.projectName)),
   ).sort((a, b) => a.localeCompare(b));
 
   const projectOptions = ["All", ...uniqueProjects];
