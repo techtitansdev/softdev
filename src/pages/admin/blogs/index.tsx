@@ -22,6 +22,7 @@ const AdminBlogPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [filteredBlogs, setFilteredBlogs] = useState<any[]>([]);
+  const [searchPerformed, setSearchPerformed] = useState(false);
 
   useEffect(() => {
     if (getBlogs.data) {
@@ -39,17 +40,16 @@ const AdminBlogPage = () => {
   }, [selectedPublishedOption, searchQuery]);
 
   const filterBlogs = () => {
-    let filtered = blogData;
-
     // Filter by published status only if "Published" is selected
+    let filtered = blogData;
     if (selectedPublishedOption === "Published") {
       filtered = filtered.filter((blog: any) => blog.published === true);
     } else if (selectedPublishedOption === "Draft") {
       filtered = filtered.filter((blog: any) => blog.published === false);
     }
 
-    // Filter by search query
-    if (searchQuery.trim() !== "") {
+    // Filter by search query if search is confirmed
+    if (searchPerformed && searchQuery.trim() !== "") {
       filtered = filtered.filter((blog: any) =>
         blog.title.toLowerCase().includes(searchQuery.toLowerCase()),
       );
@@ -59,6 +59,7 @@ const AdminBlogPage = () => {
   };
 
   const handleSearchChange = (value: string) => {
+    setSearchPerformed(false);
     setSearchQuery(value);
 
     if (value !== "") {
@@ -76,12 +77,21 @@ const AdminBlogPage = () => {
   };
 
   const handleEnterPress = () => {
+    if (
+      searchSuggestions.length === 1 &&
+      searchSuggestions[0] === "No results found"
+    ) {
+      return;
+    }
+
     filterBlogs();
+    setSearchPerformed(true);
   };
 
   const handleSuggestionClick = (suggestion: string) => {
     setSearchQuery(suggestion);
     setSearchSuggestions([]);
+    setSearchPerformed(true);
 
     filterBlogs();
   };
