@@ -4,9 +4,9 @@ import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
 import { api } from "~/utils/api";
 import ProjectCard from "./ProjectCard";
-import FilterByCategory from "~/components/FilterByCategory";
+import FilterByCategory from "~/components/filter/FilterByCategory";
 import { RiSearchLine } from "react-icons/ri";
-import SearchInput from "~/components/SearchInput";
+import SearchInput from "~/components/search/SearchByProject";
 
 const Projects = () => {
   const [projectData, setProjectData] = useState<any>([]);
@@ -18,6 +18,7 @@ const Projects = () => {
       setFilteredProjects(getProjects.data);
     }
   }, [getProjects.data]);
+
   const [selectedCategory, setSelectedCategory] = useState("Categories");
   const [isCategoryListOpen, setIsCategoryListOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -48,25 +49,42 @@ const Projects = () => {
       );
     } else {
       setSearchSuggestions([]);
+      setFilteredProjects(projectData);
+    }
+  };
+
+  const handleEnterPress = () => {
+    if (searchQuery !== "") {
+      const filtered = projectData.filter((project: any) =>
+        project.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+      setFilteredProjects(filtered);
+    } else {
+      setFilteredProjects(projectData);
     }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
     setSearchQuery(suggestion);
     setSearchSuggestions([]);
-  };
 
-  const handleSearchButtonClick = () => {
     const filtered = projectData.filter((project: any) =>
-      project.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      project.title.toLowerCase().includes(suggestion.toLowerCase()),
     );
     setFilteredProjects(filtered);
+
+    const updatedSuggestions = searchSuggestions.filter(
+      (item) => item.toLowerCase() !== suggestion.toLowerCase(),
+    );
+
+    setSearchSuggestions(updatedSuggestions);
   };
 
   const filterProjects = (
     searchQuery !== "" ? filteredProjects : projectData
   ).filter((project: any) => {
     const matchesCategory =
+      selectedCategory === "All" ||
       selectedCategory === "Categories" ||
       project.category
         .split(",")
@@ -101,12 +119,12 @@ const Projects = () => {
             <SearchInput
               value={searchQuery}
               onChange={handleSearchChange}
-              onSearch={handleSearchButtonClick}
+              onEnter={handleEnterPress}
             />
           </div>
 
           {searchSuggestions.length > 0 && (
-            <ul className="absolute z-10 mt-1 max-h-[325px] w-[242px] overflow-scroll rounded border border-gray-300 bg-white md:w-[536px] lg:w-[316px]">
+            <ul className="absolute z-10 mt-1 max-h-[325px] w-[240px] overflow-scroll rounded border border-gray-300 bg-white md:w-[540px] lg:w-[300px]">
               {searchSuggestions.map((suggestion, index) => (
                 <li
                   key={index}

@@ -2,7 +2,7 @@ import { render } from "@testing-library/react";
 import Comments from "../../index";
 import { Sidebar } from "~/components/Sidebar";
 import FilterByProjectName from "~/components/FilterByProjectName";
-import SearchInput from "~/components/SearchInput";
+import SearchInput from "~/components/search/SearchByProject";
 
 jest.mock("next/router", () => ({
   useRouter: () => ({

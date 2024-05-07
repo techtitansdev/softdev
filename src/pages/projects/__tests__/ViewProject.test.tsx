@@ -1,9 +1,9 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import Projects from "../index";
 import { Navbar } from "~/components/Navbar";
-import FilterByCategory from "~/components/FilterByCategory";
+import FilterByCategory from "~/components/filter/FilterByCategory";
 import { Footer } from "~/components/Footer";
-import SearchInput from "~/components/SearchInput";
+import SearchInput from "~/components/search/SearchByProject";
 
 jest.mock("~/components/Navbar", () => ({
   __esModule: true,
