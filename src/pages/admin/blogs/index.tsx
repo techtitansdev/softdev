@@ -41,12 +41,11 @@ const AdminBlogPage = () => {
   const filterBlogs = () => {
     let filtered = blogData;
 
-    // Filter by published status
-    if (selectedPublishedOption !== "All") {
-      filtered = filtered.filter(
-        (blog: any) =>
-          blog.published === (selectedPublishedOption === "Published"),
-      );
+    // Filter by published status only if "Published" is selected
+    if (selectedPublishedOption === "Published") {
+      filtered = filtered.filter((blog: any) => blog.published === true);
+    } else if (selectedPublishedOption === "Draft") {
+      filtered = filtered.filter((blog: any) => blog.published === false);
     }
 
     // Filter by search query
@@ -63,7 +62,7 @@ const AdminBlogPage = () => {
     setSearchQuery(value);
 
     if (value !== "") {
-      const suggestions = blogData
+      const suggestions = filteredBlogs
         .filter((blog: any) =>
           blog.title.toLowerCase().includes(value.toLowerCase()),
         )
@@ -169,11 +168,11 @@ const AdminBlogPage = () => {
               </div>
 
               {searchSuggestions.length > 0 && (
-                <ul className="absolute z-10 mt-1 max-h-[325px] w-[240px] overflow-scroll rounded border border-gray-300 bg-white md:w-[540px] lg:w-[300px]">
+                <ul className="absolute z-10 mt-2 max-h-[210px] w-[240px] overflow-scroll rounded border border-gray-300 bg-white md:w-[540px] lg:w-[300px]">
                   {searchSuggestions.map((suggestion, index) => (
                     <li
                       key={index}
-                      className="cursor-pointer px-2 py-1 hover:bg-gray-400"
+                      className="cursor-pointer px-2 py-2 hover:bg-gray-200"
                       onClick={() => handleSuggestionClick(suggestion)}
                     >
                       <div className="flex items-center">

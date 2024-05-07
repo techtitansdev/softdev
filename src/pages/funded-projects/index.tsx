@@ -122,11 +122,11 @@ const FundedProjects = () => {
           </div>
 
           {searchSuggestions.length > 0 && (
-            <ul className="absolute z-10 mt-1 max-h-[325px] w-[325px] overflow-scroll rounded border border-gray-300 bg-white lg:w-[360px]">
+            <ul className="absolute z-10 mt-1 max-h-[210px] w-[325px] overflow-scroll rounded border border-gray-300 bg-white lg:w-[360px]">
               {searchSuggestions.map((suggestion, index) => (
                 <li
                   key={index}
-                  className="cursor-pointer px-2 py-1 hover:bg-gray-400"
+                  className="cursor-pointer px-2 py-2 hover:bg-gray-200"
                   onClick={() => handleSuggestionClick(suggestion)}
                 >
                   <div className="flex items-center">
