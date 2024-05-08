@@ -48,11 +48,13 @@ const AdminProjectPage = () => {
     setSearchQuery(value);
 
     if (value !== "") {
-      const suggestions = projectData
-        .filter((project: any) =>
-          project.title.toLowerCase().includes(value.toLowerCase()),
-        )
-        .map((project: any) => project.title);
+      const filteredByCategory = filterProjects.filter((project: any) =>
+        project.title.toLowerCase().includes(value.toLowerCase()),
+      );
+
+      const suggestions = filteredByCategory.map(
+        (project: any) => project.title,
+      );
       setSearchSuggestions(
         suggestions.length > 0 ? suggestions : ["No results found"],
       );
@@ -92,18 +94,12 @@ const AdminProjectPage = () => {
 
   const handleSuggestionClick = (suggestion: string) => {
     setSearchQuery(suggestion);
-    setSearchSuggestions([]);
 
     const filtered = projectData.filter((project: any) =>
       project.title.toLowerCase().includes(suggestion.toLowerCase()),
     );
     setFilteredProjects(filtered);
-
-    const updatedSuggestions = searchSuggestions.filter(
-      (item) => item.toLowerCase() !== suggestion.toLowerCase(),
-    );
-
-    setSearchSuggestions(updatedSuggestions);
+    setSearchSuggestions([]);
   };
 
   const { user, isLoaded } = useUser();
@@ -136,9 +132,9 @@ const AdminProjectPage = () => {
 
     const matchesPublished =
       selectedPublishedOption === "All" ||
+      selectedPublishedOption === "Status" ||
       (selectedPublishedOption === "Published" && project.published) ||
-      (selectedPublishedOption === "Draft" && !project.published) ||
-      selectedPublishedOption === "Status";
+      (selectedPublishedOption === "Draft" && !project.published);
 
     return matchesCategory && matchesPublished;
   });
@@ -193,11 +189,11 @@ const AdminProjectPage = () => {
               </div>
 
               {searchSuggestions.length > 0 && (
-                <ul className="absolute z-10 mt-1 max-h-[325px] w-[240px] overflow-scroll rounded border border-gray-300 bg-white md:w-[540px] lg:w-[300px]">
+                <ul className="absolute z-10 mt-1 max-h-[210px] w-[240px] overflow-scroll rounded border border-gray-300 bg-white md:w-[540px] lg:w-[300px]">
                   {searchSuggestions.map((suggestion, index) => (
                     <li
                       key={index}
-                      className="cursor-pointer px-2 py-1 hover:bg-gray-400"
+                      className="cursor-pointer px-2 py-2 hover:bg-gray-200"
                       onClick={() => handleSuggestionClick(suggestion)}
                     >
                       <div className="flex items-center">
