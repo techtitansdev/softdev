@@ -64,6 +64,21 @@ function EditProject() {
 
   useEffect(() => {
     if (getProject.data) {
+      setProjectData((prevData) => ({
+        ...prevData,
+        about: getProject.data.about || "",
+      }));
+
+      const initialEditorData = JSON.parse(
+        getProject.data.about || '{"blocks":[]}',
+      );
+      setinitialEditorData(initialEditorData);
+      setEditorBlocks(initialEditorData.blocks);
+    }
+  }, [getProject.data]);
+
+  useEffect(() => {
+    if (getProject.data) {
       setProjectData((prevData) => {
         if (
           prevData.title !== getProject.data.title ||
@@ -143,22 +158,36 @@ function EditProject() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    editProject.mutate({
+  const handleSubmit = async (isPublished: boolean) => {
+    const data = {
       ...projectData,
       id: id as string,
       image: imageUrl,
       about: JSON.stringify(editorData, null, 2),
-      published: false,
+      published: isPublished,
       featured: false,
-    });
+    };
+
+    try {
+      await editProject.mutateAsync(data);
+      setSuccessModalOpen(true);
+      setTimeout(() => {
+        router.push("/admin/projects");
+      }, 2000);
+    } catch (error) {
+      console.error("Edit Project Failed", error);
+    }
   };
 
   const [editorData, setEditorData] = useState(null);
+
   const handleChanges = (data: any) => {
-    // Update state with the new data from the editor
     setEditorData(data);
+
+    setProjectData({
+      ...projectData,
+      about: JSON.stringify(data, null, 2),
+    });
   };
 
   return (
@@ -178,7 +207,7 @@ function EditProject() {
               EDIT PROJECT
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={() => handleSubmit(false)}>
               <div className="mb-4">
                 <label htmlFor="title" className="font-medium text-gray-700">
                   Project Title
@@ -377,15 +406,21 @@ function EditProject() {
               </div>
 
               <button
-                type="submit"
+                type="button"
                 className="mr-2 mt-4 rounded-lg bg-gray-600 px-2 py-2 font-medium text-white hover:bg-gray-800 md:mr-4 md:px-6"
+                onClick={() => {
+                  handleSubmit(false); // Pass false for "Save as Draft"
+                }}
               >
                 Save as Draft
               </button>
 
               <button
-                type="submit"
+                type="button"
                 className="mt-4 rounded-lg bg-blue-800 px-4 py-2 font-medium text-white hover:bg-blue-900 md:px-12"
+                onClick={() => {
+                  handleSubmit(true); // Pass true for "Publish"
+                }}
               >
                 Publish
               </button>
