@@ -3,12 +3,21 @@ import { api } from "~/utils/api";
 import CreateProjects from "~/pages/admin/projects/create";
 
 jest.mock("~/utils/api", () => ({
+  __esModule: true,
   api: {
     project: {
       create: {
         useMutation: jest
           .fn()
           .mockReturnValue([jest.fn().mockResolvedValue({}), {}]),
+      },
+    },
+    categories: {
+      create: {
+        useMutation: jest.fn(),
+      },
+      getAllCategories: {
+        useQuery: jest.fn().mockReturnValue({ data: [] }),
       },
     },
   },
@@ -30,7 +39,7 @@ describe("CreateProjects", () => {
   });
 
   it("submits the form", async () => {
-    const { getByText, getByTestId } = render(<CreateProjects />);
+    const { getByText } = render(<CreateProjects />);
 
     const projectDescriptionInput = document.querySelector(
       'textarea[aria-label="Project Description"]',
