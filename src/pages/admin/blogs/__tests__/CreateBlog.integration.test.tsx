@@ -12,6 +12,12 @@ jest.mock("~/utils/api", () => ({
   },
 }));
 
+window.matchMedia = jest.fn().mockReturnValue({
+  matches: false,
+  addListener: jest.fn(),
+  removeListener: jest.fn(),
+});
+
 describe("CreateBlogs component", () => {
   it("Creates a blog successfully when all data is provided", async () => {
     const useRouterMock = jest.spyOn(require("next/router"), "useRouter");
@@ -38,10 +44,6 @@ describe("CreateBlogs component", () => {
   });
 
   it("Will not create blog if value is wrong or empty", async () => {
-    const useRouterMock = jest.spyOn(require("next/router"), "useRouter");
-    const pushMock = jest.fn();
-    useRouterMock.mockReturnValue({ push: pushMock });
-
     const { getByText, getByTestId } = render(<CreateBlogs />);
 
     fireEvent.change(getByTestId("blog-title-input"), {

@@ -184,6 +184,7 @@ export const Navbar = () => {
                   <button
                     className="mx-16 w-full min-w-[400px] rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800"
                     onClick={() => signOut(() => router.push("/"))}
+                    //data-testid="sign-out"
                   >
                     Sign out
                   </button>
