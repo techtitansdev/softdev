@@ -4,9 +4,9 @@ import { Navbar } from "~/components/Navbar";
 import { api } from "~/utils/api";
 import FundingCard from "./components/FundingCard";
 import { RiSearchLine } from "react-icons/ri";
-import FilterByCategory from "~/components/FilterByCategory";
+import FilterByCategory from "~/components/filter/FilterByCategory";
 import { Footer } from "~/components/Footer";
-import FundraiserSearchInput from "~/components/FundraiserSearch";
+import FundraiserSearchInput from "~/components/search/SearchByFundraiser";
 
 const FundedProjects = () => {
   const [fundingData, setFundingData] = useState<any>([]);
@@ -21,7 +21,6 @@ const FundedProjects = () => {
 
   const [selectedCategory, setSelectedCategory] = useState("Categories");
   const [isCategoryListOpen, setIsCategoryListOpen] = useState(false);
-
   const [searchQuery, setSearchQuery] = useState("");
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [filteredFunding, setFilteredFunding] = useState<any[]>([]);
@@ -40,42 +39,57 @@ const FundedProjects = () => {
     setSearchQuery(value);
 
     if (value !== "") {
-      const suggestions = fundingData
-        .filter((funding: any) =>
-          funding.project.title.toLowerCase().includes(value.toLowerCase()),
-        )
-        .map((funding: any) => funding.project.title);
+      const filteredByCategory = filterFunding.filter((funding: any) =>
+        funding.project.title.toLowerCase().includes(value.toLowerCase()),
+      );
+
+      const suggestions = filteredByCategory.map(
+        (funding: any) => funding.project.title,
+      );
       setSearchSuggestions(
         suggestions.length > 0 ? suggestions : ["No results found"],
       );
     } else {
       setSearchSuggestions([]);
+      setFilteredFunding(fundingData);
+    }
+  };
+
+  const handleEnterPress = () => {
+    if (searchQuery !== "") {
+      const filtered = fundingData.filter((funding: any) =>
+        funding.project.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+      setFilteredFunding(filtered);
+    } else {
+      setFilteredFunding(fundingData);
     }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
     setSearchQuery(suggestion);
-    setSearchSuggestions([]);
-  };
 
-  const handleSearchButtonClick = () => {
     const filtered = fundingData.filter((funding: any) =>
-      funding.project.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      funding.project.title.toLowerCase().includes(suggestion.toLowerCase()),
     );
+
     setFilteredFunding(filtered);
+    setSearchSuggestions([]);
   };
 
   const filterFunding = (
     searchQuery !== "" ? filteredFunding : fundingData
   ).filter((funding: any) => {
     const matchesCategory =
+      selectedCategory === "All" ||
       selectedCategory === "Categories" ||
-      funding.project.category
-        .split(",")
-        .map((category: string) => category.trim())
-        .includes(selectedCategory);
+      (funding.project.category &&
+        funding.project.category
+          .split(",")
+          .map((category: string) => category.trim())
+          .includes(selectedCategory));
 
-    return matchesCategory && funding.published;
+    return matchesCategory && funding.project.published;
   });
 
   return (
@@ -103,16 +117,16 @@ const FundedProjects = () => {
             <FundraiserSearchInput
               value={searchQuery}
               onChange={handleSearchChange}
-              onSearch={handleSearchButtonClick}
+              onEnter={handleEnterPress}
             />
           </div>
 
           {searchSuggestions.length > 0 && (
-            <ul className="absolute z-10 mt-1 max-h-[325px] w-[325px] overflow-scroll rounded border border-gray-300 bg-white lg:w-[360px]">
+            <ul className="absolute z-10 mt-1 max-h-[210px] w-[325px] overflow-scroll rounded border border-gray-300 bg-white lg:w-[360px]">
               {searchSuggestions.map((suggestion, index) => (
                 <li
                   key={index}
-                  className="cursor-pointer px-2 py-1 hover:bg-gray-400"
+                  className="cursor-pointer px-2 py-2 hover:bg-gray-200"
                   onClick={() => handleSuggestionClick(suggestion)}
                 >
                   <div className="flex items-center">

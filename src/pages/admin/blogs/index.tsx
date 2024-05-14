@@ -8,12 +8,21 @@ import { useRouter } from "next/router";
 import { Modal } from "~/components/Modal";
 import BlogCard from "./components/BlogCard";
 import FeaturedBlogCard from "./components/FeaturedBlogCard";
+import FilterByStatus from "~/components/filter/FilterByStatus";
+import SearchByBlogs from "~/components/search/SearchByBlogs";
+import { RiSearchLine } from "react-icons/ri";
 
 const AdminBlogPage = () => {
   const [blogData, setBlogData] = useState<any>([]);
   const getBlogs = api.blog.getAll.useQuery();
   const deleteBlog = api.blog.delete.useMutation();
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
+  const [selectedPublishedOption, setSelectedPublishedOption] =
+    useState("Status");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
+  const [filteredBlogs, setFilteredBlogs] = useState<any[]>([]);
+  const [searchPerformed, setSearchPerformed] = useState(false);
 
   useEffect(() => {
     if (getBlogs.data) {
@@ -21,15 +30,71 @@ const AdminBlogPage = () => {
         a.featured === b.featured ? 0 : a.featured ? -1 : 1,
       );
 
-      const featuredBlogs = sortedBlogs.filter((blog: any) => blog.featured);
-      const otherBlogs = sortedBlogs.filter((blog: any) => !blog.featured);
-      const firstThreeFeatured = featuredBlogs.slice(0, 4);
-
-      setBlogData([...firstThreeFeatured, ...otherBlogs]);
-
-      setBlogData(getBlogs.data);
+      setBlogData(sortedBlogs);
+      setFilteredBlogs(sortedBlogs);
     }
   }, [getBlogs.data]);
+
+  useEffect(() => {
+    filterBlogs();
+  }, [selectedPublishedOption, searchQuery]);
+
+  const filterBlogs = () => {
+    // Filter by published status only if "Published" is selected
+    let filtered = blogData;
+    if (selectedPublishedOption === "Published") {
+      filtered = filtered.filter((blog: any) => blog.published === true);
+    } else if (selectedPublishedOption === "Draft") {
+      filtered = filtered.filter((blog: any) => blog.published === false);
+    }
+
+    // Filter by search query if search is confirmed
+    if (searchPerformed && searchQuery.trim() !== "") {
+      filtered = filtered.filter((blog: any) =>
+        blog.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+    }
+
+    setFilteredBlogs(filtered);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchPerformed(false);
+    setSearchQuery(value);
+
+    if (value !== "") {
+      const suggestions = filteredBlogs
+        .filter((blog: any) =>
+          blog.title.toLowerCase().includes(value.toLowerCase()),
+        )
+        .map((blog: any) => blog.title);
+      setSearchSuggestions(
+        suggestions.length > 0 ? suggestions : ["No results found"],
+      );
+    } else {
+      setSearchSuggestions([]);
+    }
+  };
+
+  const handleEnterPress = () => {
+    if (
+      searchSuggestions.length === 1 &&
+      searchSuggestions[0] === "No results found"
+    ) {
+      return;
+    }
+
+    filterBlogs();
+    setSearchPerformed(true);
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchQuery(suggestion);
+    setSearchSuggestions([]);
+    setSearchPerformed(true);
+
+    filterBlogs();
+  };
 
   const handleDelete = async (id: string) => {
     try {
@@ -37,7 +102,7 @@ const AdminBlogPage = () => {
       console.log("Blog deleted successfully.");
 
       setSuccessModalOpen(true);
-      setBlogData((prevBlogs: any[]) =>
+      setFilteredBlogs((prevBlogs: any[]) =>
         prevBlogs.filter((blog: { id: string }) => blog.id !== id),
       );
       setTimeout(() => {
@@ -65,12 +130,9 @@ const AdminBlogPage = () => {
     return <div>UNAUTHORIZED</div>;
   }
 
-  const featuredBlogs = blogData.filter(
-    (blog: { featured: boolean }) => blog.featured === true,
-  );
-  const unfeaturedBlogs = blogData.filter(
-    (blog: { featured: boolean }) => blog.featured === false,
-  );
+  // Split filteredBlogs into featured and unfeatured arrays
+  const featuredBlogs = filteredBlogs.filter((blog) => blog.featured);
+  const unfeaturedBlogs = filteredBlogs.filter((blog) => !blog.featured);
 
   return (
     <>
@@ -83,45 +145,83 @@ const AdminBlogPage = () => {
       <div className="flex">
         <Sidebar />
 
-        <div className="mx-auto p-10">
-          <div className="mt-16 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
-            BLOGS
-          </div>
+        <div className="mx-auto mt-14 max-w-[1350px] p-10">
+          <div className="flex items-center justify-between">
+            <div className="font-medium md:text-3xl">BLOGS</div>
 
-          <div className="mt-10 py-2 md:flex">
             <Link href={`/admin/blogs/create`}>
-              <button className="w-72 rounded-lg bg-blue-800 py-2 text-lg font-light text-white hover:bg-blue-900">
+              <button className="w-[278px] rounded-lg bg-blue-800 py-2 text-lg font-light text-white hover:bg-blue-900">
                 Create Blog
               </button>
             </Link>
           </div>
 
-          <div className="mx-auto max-w-[280px] items-center justify-between md:max-w-[570px] lg:max-w-[950px] lg:flex-row xl:max-w-[1275px]">
-            <div className="mb-12 mt-1 items-center justify-center">
-              <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-                {featuredBlogs.map((blog: any) => (
-                  <div key={blog.id}>
-                    <FeaturedBlogCard
-                      blogData={blog}
-                      handleDelete={() => handleDelete(blog.id)}
-                    />
-                  </div>
-                ))}
+          <div className="mb-14 border-b-2 border-black pb-4 text-2xl text-gray-800"></div>
+
+          <div className="mx-auto flex max-w-[280px] flex-row-reverse items-center justify-between md:max-w-[570px] lg:max-w-[950px] lg:flex-row xl:max-w-[1310px]">
+            <div className="relative flex items-center">
+              <div className="relative flex items-center">
+                <FilterByStatus
+                  selectedOption={selectedPublishedOption}
+                  handleOptionSelect={setSelectedPublishedOption}
+                />
+              </div>
+            </div>
+
+            <div className="relative ml-auto">
+              <div className="flex items-center">
+                <SearchByBlogs
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  onEnter={handleEnterPress}
+                />
               </div>
 
-              <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {unfeaturedBlogs.map((blog: any) => (
-                  <div key={blog.id}>
-                    <BlogCard
-                      blogData={blog}
-                      handleDelete={() => handleDelete(blog.id)}
-                    />
-                  </div>
-                ))}
-              </div>
+              {searchSuggestions.length > 0 && (
+                <ul className="absolute z-10 mt-2 max-h-[210px] w-[240px] overflow-scroll rounded border border-gray-300 bg-white md:w-[540px] lg:w-[300px]">
+                  {searchSuggestions.map((suggestion, index) => (
+                    <li
+                      key={index}
+                      className="cursor-pointer px-2 py-2 hover:bg-gray-200"
+                      onClick={() => handleSuggestionClick(suggestion)}
+                    >
+                      <div className="flex items-center">
+                        <RiSearchLine size={15} className="ml-2 mr-2" />
+                        {suggestion}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+
+          <div className="mb-12 mt-1 items-center justify-center">
+            <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+              {/* Render Featured Blogs */}
+              {featuredBlogs.map((blog) => (
+                <div key={blog.id}>
+                  <FeaturedBlogCard
+                    blogData={blog}
+                    handleDelete={() => handleDelete(blog.id)}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {/* Render Unfeatured Blogs */}
+              {unfeaturedBlogs.map((blog) => (
+                <div key={blog.id}>
+                  <BlogCard
+                    blogData={blog}
+                    handleDelete={() => handleDelete(blog.id)}
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </div>
+
         <Modal
           isOpen={isSuccessModalOpen}
           onClose={() => setSuccessModalOpen(false)}

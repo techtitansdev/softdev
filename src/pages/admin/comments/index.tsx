@@ -3,42 +3,46 @@ import { useRouter } from "next/router";
 import { Sidebar } from "~/components/Sidebar";
 import { GrFormNextLink, GrFormPreviousLink } from "react-icons/gr";
 import { commentData } from "~/data/commentData";
-import FilterByProjectName from "~/components/FilterByProjectName";
-import SearchByName from "~/components/SearchByName";
 import { useUser } from "@clerk/nextjs";
 import Head from "next/head";
 import {
   AiOutlineSortAscending,
   AiOutlineSortDescending,
 } from "react-icons/ai";
+import SearchByName from "~/components/search/SearchByName";
+import FilterByCommentProjectName from "~/components/filter/FilterByCommentProjectName";
 
 const Comments = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
   const [tableData, setTableData] = useState(commentData);
   const [selectedProject, setSelectedProject] = useState("All");
-  const [filteredData, setFilteredData] = useState(commentData);
-  const [searchQuery, setSearchQuery] = useState("");
   const [isNameSortedAscending, setIsNameSortedAscending] = useState(true);
-
-  useEffect(() => {
-    setFilteredData(
-      selectedProject === "All"
-        ? tableData
-        : tableData.filter((item) => item.projectName === selectedProject),
-    );
-  }, [selectedProject, tableData]);
-
-  useEffect(() => {
-    const filteredResults = tableData.filter((item) =>
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-    setFilteredData(filteredResults);
-  }, [searchQuery, tableData]);
+  const [isProjectListOpen, setIsProjectListOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
+  const [filteredData, setFilteredData] = useState(tableData);
+  const [searchInteraction, setSearchInteraction] = useState(false);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [filteredData]);
+    if (searchInteraction || selectedProject !== "All") {
+      filterData();
+      setSearchInteraction(false);
+    }
+  }, [tableData, selectedProject, searchQuery, searchInteraction]);
+
+  const filterData = () => {
+    const filtered = tableData.filter((item) => {
+      const matchesProject =
+        selectedProject === "All" || item.projectName.includes(selectedProject);
+      const matchesSearchQuery =
+        searchQuery === "" ||
+        item.name.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesProject && matchesSearchQuery;
+    });
+    setFilteredData(filtered);
+  };
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
@@ -54,8 +58,53 @@ const Comments = () => {
 
   const currentItems = sortedData.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber: React.SetStateAction<number>) =>
-    setCurrentPage(pageNumber);
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  const toggleNameSortOrder = () =>
+    setIsNameSortedAscending(!isNameSortedAscending);
+
+  const [projectFilterChanged, setProjectFilterChanged] = useState(false);
+
+  const handleProjectSelect = (project: string) => {
+    setSelectedProject(project);
+    setIsProjectListOpen(false);
+    setProjectFilterChanged(true);
+    if (project === "All") {
+      setFilteredData(tableData);
+    }
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    if (projectFilterChanged) {
+      setProjectFilterChanged(false);
+    } else {
+      const suggestions = filteredData
+        .filter((item) => item.name.toLowerCase().includes(value.toLowerCase()))
+        .map((item) => item.name)
+        .filter((value, index, self) => self.indexOf(value) === index);
+
+      if (suggestions.length === 0 && value !== "") {
+        setSearchSuggestions(["No results found"]);
+      } else {
+        setSearchSuggestions(suggestions);
+      }
+
+      if (value === "") {
+        setFilteredData(tableData);
+      }
+    }
+  };
+
+  const handleEnterPress = () => {
+    setSearchInteraction(true);
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchQuery(suggestion);
+    setSearchSuggestions([]);
+    setSearchInteraction(true);
+  };
 
   const renderPageNumbers = () => {
     let startPage = 1;
@@ -89,9 +138,6 @@ const Comments = () => {
     return pages;
   };
 
-  const toggleNameSortOrder = () =>
-    setIsNameSortedAscending(!isNameSortedAscending);
-
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin;
   const router = useRouter();
@@ -123,17 +169,39 @@ const Comments = () => {
           <div className="mt-16 border-b border-black pb-4 text-2xl font-normal text-gray-800 md:text-3xl">
             COMMENTS
           </div>
-          <div className="mb-3 mt-10 flex text-sm">
-            <FilterByProjectName
-              selectedProject={selectedProject}
-              handleProjectSelect={setSelectedProject}
-              tableData={tableData}
-            />
-            <SearchByName
-              data={tableData}
-              onSearch={setFilteredData}
-              selectedProject={selectedProject}
-            />
+          <div className="relative mb-3 mt-10 flex items-center">
+            <div className="mr-5 text-sm">
+              <FilterByCommentProjectName
+                selectedProject={selectedProject}
+                isProjectListOpen={isProjectListOpen}
+                toggleProjectList={() =>
+                  setIsProjectListOpen(!isProjectListOpen)
+                }
+                handleProjectSelect={handleProjectSelect}
+              />
+            </div>
+            <div className="relative ml-auto">
+              <div className="flex items-center">
+                <SearchByName
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  onEnter={handleEnterPress}
+                />
+                {searchQuery && searchSuggestions.length > 0 && (
+                  <ul className="absolute top-full z-10 mt-1 max-h-[188px] w-[250px] overflow-y-auto rounded-md border border-gray-300 bg-white text-sm shadow-lg">
+                    {searchSuggestions.map((suggestion, index) => (
+                      <li
+                        key={index}
+                        className="cursor-pointer px-4 py-2 hover:bg-gray-200"
+                        onClick={() => handleSuggestionClick(suggestion)}
+                      >
+                        {suggestion}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
           </div>
           <div className="flex justify-center">
             <table className="w-full rounded-t-lg border-2">
