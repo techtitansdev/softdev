@@ -21,8 +21,16 @@ jest.mock("~/utils/api", () => ({
       getAll: {
         useQuery: jest.fn().mockReturnValue({
           data: [
-            { id: 1, title: "First Blog", featured: true },
-            { id: 2, title: "Second Blog", featured: false },
+            {
+              id: 1,
+              title: "First Blog",
+              content: "First Blog Content",
+            },
+            {
+              id: 2,
+              title: "Second Blog",
+              content: "Second Blog Content",
+            },
           ],
         }),
       },
@@ -34,8 +42,8 @@ describe("Blogs component", () => {
   test("renders Blogs component correctly", async () => {
     const { getByText } = render(<Blogs />);
 
-    expect(getByText("First Blog")).toBeTruthy();
-    expect(getByText("Second Blog")).toBeTruthy();
+    expect(getByText("First Blog")).toBeInTheDocument();
+    expect(getByText("Second Blog")).toBeInTheDocument();
   });
 });
 
