@@ -10,7 +10,8 @@ import { NextResponse } from "next/server";
  
 export default authMiddleware({
   
-  publicRoutes: ['/','/register', "/api/auth/session",'/login','/home',"/api/user/getRole","/api/trpc/user.create"],
+  publicRoutes: ['/','/register', "/api/auth/session",'/login','/home',"/api/user/getRole",
+  "/api/trpc/user.create"],
   afterAuth(user, req, evt) {
     // Handle users who aren't authenticated
     if (!user.userId && !user.isPublicRoute) {
