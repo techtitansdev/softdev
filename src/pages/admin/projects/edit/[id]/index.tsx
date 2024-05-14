@@ -163,13 +163,15 @@ function EditProject() {
       ...projectData,
       id: id as string,
       image: imageUrl,
-      about: JSON.stringify(editorData, null, 2),
+      about: JSON.stringify(editorData || initialEditorData || [], null, 2),
       published: isPublished,
       featured: false,
     };
 
     try {
-      await editProject.mutateAsync(data);
+      const editedProject = await editProject.mutateAsync(data);
+
+      setProjectData(editedProject);
       setSuccessModalOpen(true);
       setTimeout(() => {
         router.push("/admin/projects");
