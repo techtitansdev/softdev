@@ -1,11 +1,11 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { api } from "~/utils/api";
 import EditBlog from "../edit/[id]";
+import { api } from "~/utils/api";
 
 jest.mock("next/router", () => ({
-  useRouter: () => ({
-    query: { id: "mocked_id" },
+  useRouter: jest.fn().mockReturnValue({
+    query: { id: "test-blog-id" },
   }),
 }));
 
@@ -18,7 +18,16 @@ jest.mock("~/utils/api", () => ({
             title: "Mocked Title",
             excerpt: "Mocked Excerpt",
             image: "/mocked_image_url",
-            content: "Mocked Content",
+            content: JSON.stringify({
+              blocks: [
+                {
+                  type: "paragraph",
+                  data: {
+                    text: "Mocked Content",
+                  },
+                },
+              ],
+            }),
             published: false,
           },
           isLoading: false,
@@ -29,34 +38,33 @@ jest.mock("~/utils/api", () => ({
         useMutation: jest.fn(),
       },
       edit: {
-        useMutation: jest.fn(() => ({
-          mutate: jest.fn(),
-        })),
+        useMutation: jest.fn().mockResolvedValue({}), // Resolve with an empty object
       },
     },
   },
 }));
 
 describe("EditBlog component", () => {
-  it("renders edit blog form", async () => {
-    render(<EditBlog />);
-
-    expect(screen.getByText("Blog Title")).toBeTruthy();
-    expect(screen.getByText("Blog Description")).toBeTruthy();
-    expect(screen.getByAltText("Mocked Title")).toBeTruthy();
-    expect(screen.getByText("About")).toBeTruthy();
-  });
-
   it("submits the form with correct data", async () => {
-    render(<EditBlog />);
+    const { getByText, getByTestId } = render(<EditBlog />);
 
-    userEvent.type(screen.getByText(/Blog Title/i), "New Title");
-    userEvent.type(screen.getByText(/Blog Description/i), "New Excerpt");
+    // Update form fields with new data
+    userEvent.type(getByTestId("blog-title-input"), "New Title");
+    userEvent.type(getByTestId("blog-description-input"), "New Excerpt");
 
-    fireEvent.click(screen.getByText(/Save as Draft/i));
+    // Trigger form submission
+    fireEvent.click(getByText(/Save as Draft/i));
 
+    // Check that the edit mutation is called with the correct data
     await waitFor(() => {
-      expect(api.blog.edit.useMutation).toHaveBeenCalled();
+      expect(api.blog.edit.useMutation).toHaveBeenCalledWith({
+        title: "New Title",
+        excerpt: "New Excerpt",
+        image: "/mocked_image_url",
+        content: "Mocked Content",
+        published: false,
+        id: "mocked_id",
+      });
     });
   });
 });

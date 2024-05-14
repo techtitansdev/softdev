@@ -2,6 +2,25 @@ import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import BlogCard from "../components/BlogCard";
 
+jest.mock("~/utils/api", () => ({
+  api: {
+    blog: {
+      getAll: {
+        useQuery: jest.fn(),
+      },
+      edit: {
+        useMutation: jest.fn(),
+      },
+      delete: {
+        useMutation: jest.fn(),
+      },
+      getFeaturedCount: {
+        useQuery: jest.fn(),
+      },
+    },
+  },
+}));
+
 describe("BlogCard Integration Test", () => {
   const blogData = {
     id: "1",

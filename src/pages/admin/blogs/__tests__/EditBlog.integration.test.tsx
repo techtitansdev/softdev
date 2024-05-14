@@ -1,4 +1,4 @@
-import { render, fireEvent, screen, getByTestId } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import EditBlog from "../edit/[id]";
 import { api } from "~/utils/api";
 
@@ -17,7 +17,16 @@ jest.mock("~/utils/api", () => ({
             title: "Mocked Title",
             excerpt: "Mocked Excerpt",
             image: "/mocked_image_url",
-            content: "Mocked Content",
+            content: JSON.stringify({
+              blocks: [
+                {
+                  type: "paragraph",
+                  data: {
+                    text: "Mocked Content",
+                  },
+                },
+              ],
+            }),
             published: false,
           },
           isLoading: false,
@@ -38,9 +47,7 @@ jest.mock("~/utils/api", () => ({
 
 describe("EditBlog component", () => {
   it("successfully edits a blog when all data is provided", async () => {
-    const { getByPlaceholderText, getByText, getByTestId } = render(
-      <EditBlog />,
-    );
+    const { getByText, getByTestId } = render(<EditBlog />);
 
     expect(getByTestId("blog-title-input")).toBeTruthy();
     expect(getByTestId("blog-description-input")).toBeTruthy();
