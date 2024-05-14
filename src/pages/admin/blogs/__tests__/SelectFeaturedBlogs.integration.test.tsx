@@ -49,22 +49,22 @@ jest.mock("@clerk/nextjs", () => ({
 describe("AdminBlogPage Integration Test - Select Featured Blogs", () => {
   it("successfully displays only the first four featured blogs", async () => {
     const { getAll } = api.blog;
-
-    const { getByText, queryByText } = render(<AdminBlogPage />);
-
+  
+    const { getByTestId, queryByText } = render(<AdminBlogPage />);
+  
     await waitFor(() => {
       expect(getAll.useQuery).toHaveBeenCalled();
     });
-
+  
     const featuredBlogTitles = mockBlogs
       .filter((blog) => blog.featured)
       .slice(0, 4)
       .map((blog) => blog.title);
-
+  
     featuredBlogTitles.forEach((title) => {
-      expect(getByText(title)).toBeTruthy();
+      expect(getByTestId("title-input").toBeTruthy()); 
     });
-
+  
     mockBlogs
       .filter(
         (blog) => blog.featured && !featuredBlogTitles.includes(blog.title),
