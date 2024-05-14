@@ -17,10 +17,12 @@ function EditBlog() {
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
   const getBlog = api.blog.getById.useQuery({ id: id as string });
+  const categories = api.categories.getAllCategories.useQuery();
+  const categoriesOption = categories.data || [];
+  categoriesOption.sort((a, b) => a.label.localeCompare(b.label));
+  const [editorBlocks, setEditorBlocks] = useState([]);
+  const [initialEditorData, setinitialEditorData] = useState();
   const deleteImage = api.blog.removeImage.useMutation();
-
-  const [editorBlocks,setEditorBlocks] = useState([]);
-  const [initialEditorData,setinitialEditorData] = useState()
 
   const [blogData, setBlogData] = useState<BlogData>({
     title: "",
@@ -53,6 +55,22 @@ function EditBlog() {
   useEffect(() => {
     setEditorContent(blogData.content);
   }, [blogData.content]);
+
+  useEffect(() => {
+    if (getBlog.data) {
+      setBlogData((prevData) => ({
+        ...prevData,
+        about: getBlog.data.content || "",
+      }));
+
+      const initialEditorData = JSON.parse(
+        getBlog.data.content || '{"blocks":[]}',
+      );
+      setinitialEditorData(initialEditorData);
+      setEditorBlocks(initialEditorData.blocks);
+    }
+  }, [getBlog.data]);
+
 
   useEffect(() => {
     if (getBlog.data) {
@@ -122,22 +140,38 @@ function EditBlog() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    editBlog.mutate({
+  const handleSubmit = async (isPublished: boolean) => {
+    const data = {
       ...blogData,
       id: id as string,
       image: imageUrl,
-      content: JSON.stringify(editorData, null, 2),
-      published: false,
-    });
+      cotent: JSON.stringify(editorData || initialEditorData || [], null, 2),
+      published: isPublished,
+      featured: false,
+    };
+
+    try {
+      const editedBlog = await editBlog.mutateAsync(data);
+
+      setBlogData(editedBlog);
+      setSuccessModalOpen(true);
+      setTimeout(() => {
+        router.push("/admin/blogs");
+      }, 2000);
+    } catch (error) {
+      console.error("Edit Project Failed", error);
+    }
   };
 
   const [editorData, setEditorData] = useState(null);
+
   const handleChanges = (data: any) => {
-    // Update state with the new data from the editor
     setEditorData(data);
+
+    setBlogData({
+      ...blogData,
+      content: JSON.stringify(data, null, 2),
+    });
   };
 
   return (
@@ -157,7 +191,7 @@ function EditBlog() {
               EDIT BLOG
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={() => handleSubmit(false)}>
               <div className="mb-4">
                 <label htmlFor="title" className="font-medium text-gray-700">
                   Blog Title
@@ -259,18 +293,25 @@ function EditBlog() {
               </div>
 
               <button
-                type="submit"
+                type="button"
                 className="mr-2 mt-4 rounded-lg bg-gray-600 px-2 py-2 font-medium text-white hover:bg-gray-800 md:mr-4 md:px-6"
+                onClick={() => {
+                  handleSubmit(false); // Pass false for "Save as Draft"
+                }}
               >
                 Save as Draft
               </button>
 
               <button
-                type="submit"
+                type="button"
                 className="mt-4 rounded-lg bg-blue-800 px-4 py-2 font-medium text-white hover:bg-blue-900 md:px-12"
+                onClick={() => {
+                  handleSubmit(true); // Pass true for "Publish"
+                }}
               >
                 Publish
               </button>
+
             </form>
           </div>
         </div>
