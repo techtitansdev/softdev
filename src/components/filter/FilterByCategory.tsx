@@ -1,19 +1,31 @@
 import React, { useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
-import { CiFilter } from "react-icons/ci";
-import { IoFilterCircleOutline, IoFilterOutline } from "react-icons/io5";
-import { categoriesOption } from "~/data/categories";
+import { IoFilterOutline } from "react-icons/io5";
 import { FilteredCategoriesProps } from "~/types/filter";
+import { api } from "~/utils/api";
+
+interface Category {
+  label: string;
+  value: string;
+}
 
 const FilterByCategory = ({
   selectedCategory,
   handleCategorySelect,
 }: FilteredCategoriesProps) => {
   const [isCategoryListOpen, setIsCategoryListOpen] = useState(false);
+  const { data: categoriesOption } =
+    api.categories.getAllCategories.useQuery<Category[]>();
 
   const toggleCategoryList = () => {
     setIsCategoryListOpen(!isCategoryListOpen);
   };
+
+  const sortedCategories = categoriesOption
+    ? [{ label: "All", value: "All" }, ...categoriesOption].sort((a, b) =>
+        a.label.localeCompare(b.label),
+      )
+    : [];
 
   return (
     <div className="relative z-10">
@@ -34,8 +46,8 @@ const FilterByCategory = ({
         <BiChevronDown size={20} />
       </div>
       {isCategoryListOpen && (
-        <div className="absolute right-0 mt-7 max-h-52 w-[280px] overflow-y-auto border border-gray-500 bg-white md:right-[-8px] lg:left-0 lg:mt-2 lg:w-[300px]">
-          {categoriesOption.map((option, index) => (
+        <div className="absolute right-0 mt-7 max-h-56 w-[280px] overflow-y-auto rounded-lg border border-gray-500 bg-white md:right-[-8px] lg:left-0 lg:mt-2 lg:w-[300px]">
+          {sortedCategories.map((option, index) => (
             <div
               key={index}
               className="cursor-pointer p-2 hover:bg-gray-200"
@@ -45,7 +57,7 @@ const FilterByCategory = ({
               }}
             >
               {option.label}
-              <hr className="border-t-1 mt-2 border-dashed border-gray-500"></hr>
+              <hr className="border-t-1 my-2 border-dashed border-gray-500"></hr>
             </div>
           ))}
         </div>
