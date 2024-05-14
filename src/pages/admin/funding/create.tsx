@@ -11,6 +11,7 @@ import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import MileStoneTable, { TableRow } from "./components/MilestoneTable";
+import { NewEditor } from "~/components/editor/Editor";
 
 interface FundingData {
   title: string;
@@ -68,7 +69,7 @@ function CreateFunding() {
     date: "",
     about: "",
   });
-
+  const [initialEditorData, setinitialEditorData] = useState();
   useEffect(() => {
     if (getSpecificProjects.data) {
       const specificProject = getSpecificProjects.data;
@@ -85,6 +86,11 @@ function CreateFunding() {
         about: specificProject.about ?? "",
       });
       setImageUrl(specificProject.image ?? "");
+      console.log("aboutdata", fundingData.about);
+      console.log("aboutdata2", fundingData.category);
+      const initialEditorData = JSON.parse(getSpecificProjects?.data.about);
+      setinitialEditorData(initialEditorData);
+      setEditorBlocks(initialEditorData.blocks);
     }
   }, [getSpecificProjects.data]);
 
@@ -126,7 +132,7 @@ function CreateFunding() {
   };
   const createFundRaiser = api.fundraiser.create.useMutation();
   const createMilestone = api.milestone.create.useMutation();
-
+  const [editorBlocks, setEditorBlocks] = useState([]); 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -168,7 +174,7 @@ function CreateFunding() {
       console.error("Error creating project:", error);
     }
   };
-
+  console.log(fundingData.category)
   return (
     <div>
       <Head>
@@ -192,11 +198,10 @@ function CreateFunding() {
               </label>
 
               <Select
-                options={transformedProjects}
+                options={transformedProjects} // Pass the constantOptions array here
                 value={transformedProjects.find(
-                  (option: { value: string }) =>
-                    option.value === fundingData.project,
-                )}
+                  (option) => option.value === fundingData.category,
+                )} // Set the value prop based on the selectedConstantValue
                 onChange={(selectedOption) => {
                   setImageUrl(getSpecificProjects.data?.image ?? "");
                   setFundingData({
@@ -313,7 +318,7 @@ function CreateFunding() {
                 value={fundingData.hub}
                 onChange={handleChange}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                required
+                readOnly
               />
             </div>
 
@@ -342,6 +347,7 @@ function CreateFunding() {
                   });
                 }}
                 className="z-20"
+                isDisabled={true}
               />
             </div>
 
@@ -360,6 +366,7 @@ function CreateFunding() {
                   });
                 }}
                 className="z-10"
+                isDisabled={true}
               />
             </div>
 
@@ -428,39 +435,7 @@ function CreateFunding() {
               </label>
             </div>
 
-            <Editor
-              initialValue={fundingData.about}
-              value={editorContent}
-              onEditorChange={handleEditorChange}
-              apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-              init={{
-                width: "100%",
-                height: 600,
-                plugins: [
-                  "advlist",
-                  "link",
-                  "image",
-                  "lists",
-                  "preview",
-                  "pagebreak",
-                  "wordcount",
-                  "fullscreen",
-                  "insertdatetime",
-                  "media",
-                  "table",
-                  "emoticons",
-                  "image code",
-                ],
-                toolbar:
-                  "undo redo |fontfamily fontsize | bold italic underline | alignleft aligncenter alignright alignjustify |" +
-                  "bullist numlist outdent indent | link image | preview media fullscreen | " +
-                  "forecolor backcolor emoticons",
-
-                menubar: "file edit insert view  format table tools",
-                content_style:
-                  "body{font-family:Helvetica,Arial,sans-serif; font-size:16px}",
-              }}
-            />
+            <NewEditor onChanges={()=>{}} initialData={editorBlocks}/>
 
             <button
               type="submit"
