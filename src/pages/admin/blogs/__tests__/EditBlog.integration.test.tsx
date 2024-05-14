@@ -42,6 +42,20 @@ jest.mock("~/utils/api", () => ({
         })),
       },
     },
+    categories: {
+      getAllCategories: {
+        useQuery: jest.fn(() => ({
+          data: [
+            {
+              id: "mocked_category_id",
+              name: "Mocked Category",
+            },
+          ],
+          isLoading: false,
+          isError: false,
+        })),
+      },
+    },
   },
 }));
 
