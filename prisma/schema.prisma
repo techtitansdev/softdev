@@ -81,10 +81,11 @@ model Projects {
 }
 
 model Feedback {
-  id        String @id @default(cuid())
+  id        String   @id @default(cuid())
   userId    String
   projectId String
   feedback  String
+  created   DateTime @default(now())
 
   user    Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
   project Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
