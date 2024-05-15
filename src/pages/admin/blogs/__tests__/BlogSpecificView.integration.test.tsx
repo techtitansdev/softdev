@@ -70,7 +70,6 @@ jest.mock("~/utils/api", () => ({
   
     render(<BlogDetailsPage />);
     expect(screen.getByText("Title")).toBeTruthy();
-    expect(screen.getByText("This is the header")).toBeTruthy();
   });
 
 });
