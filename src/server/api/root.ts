@@ -7,6 +7,7 @@ import { fundraiser } from "./routers/fundraiser";
 import { blog } from "./routers/blog";
 import { milestone } from "./routers/milestone";
 import { categories } from "./routers/categories";
+import { feedback } from "./routers/feedback";
 
 /**
  * This is the primary router for your server.
@@ -22,6 +23,7 @@ export const appRouter = createTRPCRouter({
   blog: blog,
   milestone: milestone,
   categories: categories,
+  feedback: feedback,
 });
 
 // export type definition of API

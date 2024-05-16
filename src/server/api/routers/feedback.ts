@@ -22,11 +22,26 @@ export const feedback = createTRPCRouter({
   getAll: protectedProcedure.query(async () => {
     const allFeedbacks = await db.feedback.findMany();
 
-    const feedbacks = allFeedbacks.map((feedback) => ({
-      userId: feedback.userId,
-      projectId: feedback.projectId,
-      feedback: feedback.feedback,
-    }));
+    const feedbacks = await Promise.all(
+      allFeedbacks.map(async (feedback) => {
+        const user = await db.users.findUnique({
+          where: { id: feedback.userId },
+        });
+
+        const project = await db.projects.findUnique({
+          where: { id: feedback.projectId },
+        });
+
+        return {
+          name: `${user?.firstName} ${user?.lastName}`,
+          date: feedback.created,
+          email: user?.email,
+          comment: feedback.feedback,
+          projectName: project?.title,
+        };
+      }),
+    );
+
     return feedbacks;
   }),
   getByProject: protectedProcedure
