@@ -8,6 +8,7 @@ const CommentComponent: React.FC = () => {
           </label>
 
           <textarea
+            data-testid="Leave a Comment"
             id="message"
             className="mb-4 h-[300px] rounded-lg border border-gray-600 bg-gray-50 p-2 text-lg md:h-[420px]"
             placeholder="What’s on your mind?"

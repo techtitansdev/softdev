@@ -91,7 +91,7 @@ const Funding: React.FC = () => {
                     alt="Beneficiaries Icon"
                   />
                   <p className="text-sm font-medium sm:text-base lg:text-lg">
-                    {fundingData.project.beneficiaries}
+                    {fundingData.project?.beneficiaries}
                   </p>
                   <p className="text-xs font-light sm:text-sm lg:text-base">
                     Beneficiaries

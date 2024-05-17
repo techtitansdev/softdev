@@ -1,8 +1,8 @@
-import React, { SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 import { IoFilterOutline } from "react-icons/io5";
-import { commentData } from "~/data/commentData";
-import { donorsData } from "~/data/donorsData";
+import { api } from "~/utils/api";
+import { Feedback } from "~/types/Feedback";
 
 export type FilteredProjectProps = {
   selectedProject: string;
@@ -17,8 +17,25 @@ const FilterByProjectName = ({
   toggleProjectList,
   handleProjectSelect,
 }: FilteredProjectProps) => {
+  const [data, setData] = useState<Feedback[]>([]);
+
+  const feedback = api.feedback.getAll.useQuery();
+
+  useEffect(() => {
+    if (feedback.data) {
+      const transformedData = feedback.data.map((item) => ({
+        name: item.name,
+        date: new Date(item.date).toISOString(),
+        email: item.email || "",
+        comment: item.comment,
+        projectName: item.projectName || "",
+      }));
+      setData(transformedData);
+    }
+  }, [feedback.data]);
+
   const uniqueProjects = Array.from(
-    new Set(commentData.map((item) => item.projectName)),
+    new Set(data.map((item) => item.projectName)),
   ).sort((a, b) => a.localeCompare(b));
 
   const projectOptions = ["All", ...uniqueProjects];
