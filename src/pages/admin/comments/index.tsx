@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Sidebar } from "~/components/Sidebar";
 import { GrFormNextLink, GrFormPreviousLink } from "react-icons/gr";
-import { commentData } from "~/data/commentData";
 import { useUser } from "@clerk/nextjs";
 import Head from "next/head";
 import {
@@ -11,26 +10,49 @@ import {
 } from "react-icons/ai";
 import SearchByName from "~/components/search/SearchByName";
 import FilterByCommentProjectName from "~/components/filter/FilterByCommentProjectName";
+import { api } from "~/utils/api";
+import { Feedback } from "~/types/Feedback";
 
 const Comments = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
-  const [tableData, setTableData] = useState(commentData);
+  const [tableData, setTableData] = useState<Feedback[]>([]);
   const [selectedProject, setSelectedProject] = useState("All");
   const [isNameSortedAscending, setIsNameSortedAscending] = useState(true);
   const [isProjectListOpen, setIsProjectListOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
-  const [filteredData, setFilteredData] = useState(tableData);
+  const [filteredData, setFilteredData] = useState<Feedback[]>([]);
   const [searchInteraction, setSearchInteraction] = useState(false);
 
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
+  const router = useRouter();
+
+  const feedback = api.feedback.getAll.useQuery();
+
   useEffect(() => {
-    setCurrentPage(1);
-    if (searchInteraction || selectedProject !== "All") {
-      filterData();
-      setSearchInteraction(false);
+    if (feedback.data) {
+      const transformedData = feedback.data.map((item) => ({
+        name: item.name,
+        date: new Date(item.date).toISOString(),
+        email: item.email || "",
+        comment: item.comment,
+        projectName: item.projectName || "",
+      }));
+      setTableData(transformedData);
     }
-  }, [tableData, selectedProject, searchQuery, searchInteraction]);
+  }, [feedback.data]);
+
+  useEffect(() => {
+    // Update filteredData whenever tableData changes
+    setFilteredData(tableData);
+  }, [tableData]);
+
+  useEffect(() => {
+    // Update filteredData based on selectedProject and searchQuery
+    filterData();
+  }, [selectedProject, searchQuery]);
 
   const filterData = () => {
     const filtered = tableData.filter((item) => {
@@ -58,42 +80,20 @@ const Comments = () => {
 
   const currentItems = sortedData.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
-  const toggleNameSortOrder = () =>
+  const toggleNameSortOrder = () => {
     setIsNameSortedAscending(!isNameSortedAscending);
-
-  const [projectFilterChanged, setProjectFilterChanged] = useState(false);
+  };
 
   const handleProjectSelect = (project: string) => {
     setSelectedProject(project);
-    setIsProjectListOpen(false);
-    setProjectFilterChanged(true);
-    if (project === "All") {
-      setFilteredData(tableData);
-    }
   };
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
-    if (projectFilterChanged) {
-      setProjectFilterChanged(false);
-    } else {
-      const suggestions = filteredData
-        .filter((item) => item.name.toLowerCase().includes(value.toLowerCase()))
-        .map((item) => item.name)
-        .filter((value, index, self) => self.indexOf(value) === index);
-
-      if (suggestions.length === 0 && value !== "") {
-        setSearchSuggestions(["No results found"]);
-      } else {
-        setSearchSuggestions(suggestions);
-      }
-
-      if (value === "") {
-        setFilteredData(tableData);
-      }
-    }
   };
 
   const handleEnterPress = () => {
@@ -138,10 +138,6 @@ const Comments = () => {
     return pages;
   };
 
-  const { user, isLoaded } = useUser();
-  const user_role = user?.publicMetadata.admin;
-  const router = useRouter();
-
   useEffect(() => {
     if (isLoaded && user_role !== "admin") {
       router.push("/home");
@@ -154,7 +150,6 @@ const Comments = () => {
   if (isLoaded && user_role !== "admin") {
     return <div>UNAUTHORIZED</div>;
   }
-
   return (
     <>
       <Head>
