@@ -170,7 +170,7 @@ const Funding: React.FC = () => {
             <AboutComponent about={fundingData.project.about} />
           )}
           {content === "milestone" && <MilestoneComponent />}
-          {content === "comment" && <CommentComponent />}
+          {content === "comment" && <CommentComponent projectId={`${id}`} />}
         </div>
       </div>
 
