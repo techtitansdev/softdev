@@ -2,6 +2,20 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import ProjectCard from "~/pages/admin/projects/components/ProjectCard";
 import "@testing-library/jest-dom";
 
+jest.mock("~/utils/api", () => ({
+  __esModule: true,
+  api: {
+    project: {
+      edit: {
+        useMutation: jest.fn(),
+      },
+      getFeaturedCount: {
+        useQuery: jest.fn(),
+      },
+    },
+  },
+}));
+
 describe("ProjectCard component", () => {
   test("renders delete modal when delete button is clicked", () => {
     const projectData = {
