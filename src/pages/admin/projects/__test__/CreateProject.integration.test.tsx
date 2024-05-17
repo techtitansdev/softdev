@@ -34,10 +34,6 @@ beforeAll(() => {
 });
 
 describe("CreateProjects", () => {
-  it("renders without crashing", () => {
-    render(<CreateProjects />);
-  });
-
   it("submits the form", async () => {
     const { getByText } = render(<CreateProjects />);
 
@@ -74,6 +70,13 @@ describe("CreateProjects", () => {
     if (projectBeneficiariesInput) {
       fireEvent.change(projectBeneficiariesInput, {
         target: { value: "Test Beneficiaries" },
+      });
+    }
+
+    const editorInput = document.querySelector('div[aria-label="Editor"]');
+    if (editorInput) {
+      fireEvent.change(editorInput, {
+        target: { value: "Test Content" },
       });
     }
 

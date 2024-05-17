@@ -33,7 +33,7 @@ function CreateProjects() {
 
   const [projectData, setProjectData] = useState<ProjectData>({
     title: "",
-    description: "",
+    description: "",                                  
     image: "",
     hub: "",
     category: "",

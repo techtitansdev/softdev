@@ -1,11 +1,7 @@
 import {
   render,
-  fireEvent,
-  waitFor,
-  getByTestId,
 } from "@testing-library/react";
 import CreateProjects from "../create";
-import { api } from "~/utils/api";
 
 jest.mock("next/router", () => ({
   useRouter: () => ({
