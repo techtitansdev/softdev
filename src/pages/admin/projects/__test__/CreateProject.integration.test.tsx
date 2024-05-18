@@ -3,12 +3,21 @@ import { api } from "~/utils/api";
 import CreateProjects from "~/pages/admin/projects/create";
 
 jest.mock("~/utils/api", () => ({
+  __esModule: true,
   api: {
     project: {
       create: {
         useMutation: jest
           .fn()
           .mockReturnValue([jest.fn().mockResolvedValue({}), {}]),
+      },
+    },
+    categories: {
+      create: {
+        useMutation: jest.fn(),
+      },
+      getAllCategories: {
+        useQuery: jest.fn().mockReturnValue({ data: [] }),
       },
     },
   },
@@ -25,12 +34,8 @@ beforeAll(() => {
 });
 
 describe("CreateProjects", () => {
-  it("renders without crashing", () => {
-    render(<CreateProjects />);
-  });
-
   it("submits the form", async () => {
-    const { getByText, getByTestId } = render(<CreateProjects />);
+    const { getByText } = render(<CreateProjects />);
 
     const projectDescriptionInput = document.querySelector(
       'textarea[aria-label="Project Description"]',
@@ -65,6 +70,13 @@ describe("CreateProjects", () => {
     if (projectBeneficiariesInput) {
       fireEvent.change(projectBeneficiariesInput, {
         target: { value: "Test Beneficiaries" },
+      });
+    }
+
+    const editorInput = document.querySelector('div[aria-label="Editor"]');
+    if (editorInput) {
+      fireEvent.change(editorInput, {
+        target: { value: "Test Content" },
       });
     }
 
