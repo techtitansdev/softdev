@@ -18,6 +18,7 @@
     "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm.mjs prisma/seed.ts"
   },
   "dependencies": {
+    "@apollo/client": "^3.10.4",
     "@clerk/nextjs": "^4.29.7",
     "@editorjs/code": "^2.9.0",
     "@editorjs/editorjs": "^2.29.1",
