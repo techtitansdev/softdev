@@ -101,7 +101,7 @@ const Projects = () => {
       <div className="flex min-h-screen flex-col">
         <Navbar />
 
-        <div className="mx-auto mt-24 flex max-w-[280px] flex-grow flex-row-reverse items-center justify-between md:mt-32 md:max-w-[570px] lg:mt-36 lg:min-w-[1275px] lg:max-w-[950px] lg:flex-row xl:max-w-[1275px]">
+        <div className="mx-auto mt-24 flex max-w-[280px] flex-grow flex-row-reverse items-center justify-between md:mt-32 md:max-w-[570px] lg:mt-36 lg:min-w-[950px] lg:max-w-[950px] lg:flex-row xl:min-w-[1275px] xl:max-w-[1275px]">
           <div className="relative flex items-center">
             <FilterByCategory
               selectedCategory={selectedCategory}
