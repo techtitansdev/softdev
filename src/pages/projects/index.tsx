@@ -51,7 +51,7 @@ const Projects = () => {
       );
     } else {
       setSearchSuggestions([]);
-      setFilteredProjects(projectData); 
+      setFilteredProjects(projectData);
     }
   };
 
@@ -98,57 +98,59 @@ const Projects = () => {
         <link rel="icon" href="/gsi-logo.png" />
       </Head>
 
-      <Navbar />
+      <div className="flex min-h-screen flex-col">
+        <Navbar />
 
-      <div className="mx-auto mt-24 flex max-w-[280px] flex-row-reverse items-center justify-between md:mt-32 md:max-w-[570px] lg:mt-36 lg:max-w-[950px] lg:flex-row xl:max-w-[1275px]">
-        <div className="relative flex items-center">
-          <FilterByCategory
-            selectedCategory={selectedCategory}
-            isCategoryListOpen={isCategoryListOpen}
-            toggleCategoryList={toggleCategoryList}
-            handleCategorySelect={handleCategorySelect}
-          />
-        </div>
-
-        <div className="relative ml-auto">
-          <div className="flex items-center">
-            <SearchInput
-              value={searchQuery}
-              onChange={handleSearchChange}
-              onEnter={handleEnterPress}
+        <div className="mx-auto mt-24 flex max-w-[280px] flex-grow flex-row-reverse items-center justify-between md:mt-32 md:max-w-[570px] lg:mt-36 lg:min-w-[1275px] lg:max-w-[950px] lg:flex-row xl:max-w-[1275px]">
+          <div className="relative flex items-center">
+            <FilterByCategory
+              selectedCategory={selectedCategory}
+              isCategoryListOpen={isCategoryListOpen}
+              toggleCategoryList={toggleCategoryList}
+              handleCategorySelect={handleCategorySelect}
             />
           </div>
 
-          {searchSuggestions.length > 0 && (
-            <ul className="absolute z-10 mt-2 max-h-[210px] w-[240px] overflow-scroll rounded-lg border border-gray-300 bg-white md:w-[540px] lg:w-[300px]">
-              {searchSuggestions.map((suggestion, index) => (
-                <li
-                  key={index}
-                  className="cursor-pointer px-2 py-2 hover:bg-gray-200"
-                  onClick={() => handleSuggestionClick(suggestion)}
-                >
-                  <div className="flex items-center">
-                    <RiSearchLine size={15} className="mr-2" />
-                    {suggestion}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
-
-      <div className="mb-16 mt-1 flex items-center justify-center">
-        <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filterProjects.map((project: any) => (
-            <div key={project.id}>
-              <ProjectCard projectData={project} />
+          <div className="relative ml-auto">
+            <div className="flex items-center">
+              <SearchInput
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onEnter={handleEnterPress}
+              />
             </div>
-          ))}
-        </div>
-      </div>
 
-      <Footer />
+            {searchSuggestions.length > 0 && (
+              <ul className="absolute z-10 mt-2 max-h-[210px] w-[240px] overflow-scroll rounded-lg border border-gray-300 bg-white md:w-[540px] lg:w-[300px]">
+                {searchSuggestions.map((suggestion, index) => (
+                  <li
+                    key={index}
+                    className="cursor-pointer px-2 py-2 hover:bg-gray-200"
+                    onClick={() => handleSuggestionClick(suggestion)}
+                  >
+                    <div className="flex items-center">
+                      <RiSearchLine size={15} className="mr-2" />
+                      {suggestion}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+
+        <div className="mb-16 mt-1 flex flex-grow items-center justify-center">
+          <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {filterProjects.map((project: any) => (
+              <div key={project.id}>
+                <ProjectCard projectData={project} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <Footer />
+      </div>
     </>
   );
 };
