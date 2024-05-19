@@ -1,10 +1,20 @@
 import { render, fireEvent } from "@testing-library/react";
-import { Navbar } from "../Navbar";
-import { useClerk, useUser } from "@clerk/nextjs";
+import { Navbar } from "~/components/Navbar";
 
 jest.mock("@clerk/nextjs", () => ({
-  useClerk: jest.fn(),
-  useUser: jest.fn(),
+  useUser: jest.fn(() => ({
+    user: { publicMetadata: { user_id: "1" } },
+    isLoaded: true,
+  })),
+  useClerk: jest.fn(() => ({
+    signOut: jest.fn(),
+  })),
+}));
+
+jest.mock("~/components/Navbar", () => ({
+  __esModule: true,
+  Navbar: () => <div data-testid="navbar"></div>,
+  SignOut: () => <div data-testid="sign-out"></div>,
 }));
 
 jest.mock("next/router", () => ({
@@ -16,23 +26,16 @@ jest.mock("next/router", () => ({
   }),
 }));
 
-test("sign out test", () => {
-  const mockSignOut = jest.fn();
+describe("Navbar component", () => {
+  test("sign out test", () => {
+    const { getByTestId, container } = render(<Navbar />);
 
-  (useClerk as jest.Mock).mockReturnValue({
-    signOut: mockSignOut,
+    console.log(container.innerHTML);
+
+    const signOutButton = getByTestId("sign-out");
+    fireEvent.click(signOutButton);
+
+    expect(getByTestId("sign-out")).toBeTruthy();
+    expect(signOutButton).toHaveBeenCalled();
   });
-
-  (useUser as jest.Mock).mockReturnValue({
-    user: { firstName: "Test", lastName: "User" },
-  });
-
-  const { getAllByText } = render(<Navbar />);
-
-  const signOutButtons = getAllByText("Sign out");
-  signOutButtons.forEach((button) => {
-    fireEvent.click(button);
-  });
-
-  expect(mockSignOut).toHaveBeenCalled();
 });

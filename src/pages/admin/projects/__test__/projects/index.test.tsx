@@ -2,6 +2,25 @@ import React from "react";
 import { render } from "@testing-library/react";
 import ProjectCard from "../../components/ProjectCard";
 
+jest.mock("~/utils/api", () => ({
+  api: {
+    project: {
+      getAll: {
+        useQuery: jest.fn(),
+      },
+      edit: {
+        useMutation: jest.fn(),
+      },
+      delete: {
+        useMutation: jest.fn(),
+      },
+      getFeaturedCount: {
+        useQuery: jest.fn(),
+      },
+    },
+  },
+}));
+
 describe("Collection of Projects", () => {
   const projectData = [
     {
