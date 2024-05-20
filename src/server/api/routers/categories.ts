@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { db } from "../../db";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const categories = createTRPCRouter({
   create: protectedProcedure
@@ -20,7 +20,7 @@ export const categories = createTRPCRouter({
       });
       return newCategory;
     }),
-    getAllCategories: protectedProcedure.query(async () => {
+    getAllCategories: publicProcedure.query(async () => {
       const allFundraisers = await db.categories.findMany();
       const categories = allFundraisers.map(category => ({
         label: category.label,
