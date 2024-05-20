@@ -225,7 +225,7 @@ const AdminBlogPage = () => {
         <Modal
           isOpen={isSuccessModalOpen}
           onClose={() => setSuccessModalOpen(false)}
-          message="Project Deleted Successfully."
+          message="Blog Deleted Successfully."
           bgColor="bg-red-500"
         />
       </div>

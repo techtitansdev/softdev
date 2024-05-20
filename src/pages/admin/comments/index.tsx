@@ -249,9 +249,14 @@ const Comments = () => {
                     <td className="border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
                       {item.email}
                     </td>
-                    <td className="max-w-[300px]  border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
-                      {item.comment}
+                    <td className="max-w-[300px] border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
+                      <div className="overflow-hidden">
+                        <div className="whitespace-normal break-words">
+                          {item.comment}
+                        </div>
+                      </div>
                     </td>
+
                     <td className="border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
                       {item.date}
                     </td>
