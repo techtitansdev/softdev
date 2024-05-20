@@ -15,7 +15,7 @@ import { Feedback } from "~/types/Feedback";
 
 const Comments = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage] = useState(10);
   const [tableData, setTableData] = useState<Feedback[]>([]);
   const [selectedProject, setSelectedProject] = useState("All");
   const [isNameSortedAscending, setIsNameSortedAscending] = useState(true);
@@ -32,27 +32,34 @@ const Comments = () => {
   const feedback = api.feedback.getAll.useQuery();
 
   useEffect(() => {
+    filterData();
+    setCurrentPage(1);
+  }, [selectedProject, searchQuery]);
+
+  useEffect(() => {
     if (feedback.data) {
       const transformedData = feedback.data.map((item) => ({
         name: item.name,
-        date: new Date(item.date).toISOString(),
+        date: new Date(item.date).toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        }),
         email: item.email || "",
         comment: item.comment,
         projectName: item.projectName || "",
       }));
       setTableData(transformedData);
+      setCurrentPage(1);
     }
   }, [feedback.data]);
 
   useEffect(() => {
-    // Update filteredData whenever tableData changes
     setFilteredData(tableData);
   }, [tableData]);
-
-  useEffect(() => {
-    // Update filteredData based on selectedProject and searchQuery
-    filterData();
-  }, [selectedProject, searchQuery]);
 
   const filterData = () => {
     const filtered = tableData.filter((item) => {
