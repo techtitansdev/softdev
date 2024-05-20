@@ -1,7 +1,5 @@
 import { useUser } from "@clerk/nextjs";
-import router from "next/router";
-import { comment } from "postcss";
-import result from "postcss/lib/result";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { Modal } from "~/components/Modal";
 import { api } from "~/utils/api";
@@ -15,6 +13,8 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ projectId }) => {
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
   const { user } = useUser();
 
+  const email = user?.primaryEmailAddress?.emailAddress;
+  const dbUser = api.user.getByEmail.useQuery({ email: email! });
   const createComment = api.feedback.create.useMutation({
     onSuccess: () => {
       setComment("");
@@ -23,18 +23,21 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ projectId }) => {
         setSuccessModalOpen(false);
       }, 2000);
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Error creating comment:", error);
+      alert(`Error creating comment: ${error.message}`);
     },
   });
 
   const handleSubmit = () => {
+    console.log("projectId:", projectId);
     if (user) {
       const commentInput = {
-        userId: user?.id,
+        userId: dbUser.data!.id,
         projectId: projectId,
         feedback: comment,
       };
+      console.log("commentInput:", commentInput);
       createComment.mutate(commentInput);
     }
   };
