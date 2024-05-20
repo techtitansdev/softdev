@@ -4,6 +4,7 @@ import { comment } from "postcss";
 import result from "postcss/lib/result";
 import { useState } from "react";
 import { Modal } from "~/components/Modal";
+import { project } from "~/server/api/routers/project";
 import { api } from "~/utils/api";
 
 interface CommentComponentProps {
@@ -15,6 +16,11 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ projectId }) => {
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
   const { user } = useUser();
 
+  const email = user?.primaryEmailAddress?.emailAddress;
+  const dbUser = api.user.getByEmail.useQuery({ email: email! });
+  const dbProject = api.project.getById.useQuery({
+    id: "clweba2750005ius6zute329x",
+  });
   const createComment = api.feedback.create.useMutation({
     onSuccess: () => {
       setComment("");
@@ -23,15 +29,16 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ projectId }) => {
         setSuccessModalOpen(false);
       }, 2000);
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Error creating comment:", error);
     },
   });
 
   const handleSubmit = () => {
+    console.log(dbProject.data?.id);
     if (user) {
       const commentInput = {
-        userId: user?.id,
+        userId: dbUser.data!.id,
         projectId: projectId,
         feedback: comment,
       };
