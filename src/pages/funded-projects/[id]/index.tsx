@@ -14,6 +14,8 @@ const Funding: React.FC = () => {
   const { id } = router.query;
   const [fundingData, setFundingData] = useState<any>(null);
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
+  const projectId = getFunding.data?.project.id
+  console.log(getFunding.data?.project.id)
 
   useEffect(() => {
     if (getFunding.data && !fundingData && getFunding.data !== fundingData) {
@@ -170,7 +172,7 @@ const Funding: React.FC = () => {
             <AboutComponent about={fundingData.project.about} />
           )}
           {content === "milestone" && <MilestoneComponent />}
-          {content === "comment" && <CommentComponent projectId={`${id}`} />}
+          {content === "comment" && <CommentComponent projectId={projectId as string} />}
         </div>
       </div>
 
