@@ -1,3 +1,5 @@
+import { useUser } from "@clerk/nextjs";
+import { useQueryClient } from "@tanstack/react-query";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -22,20 +24,91 @@ const Payment = () => {
   const [amount, setAmount] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [paymentError, setPaymentError] = useState<string | null>(null);
-  const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
 
+  const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
+  const payment = api.paymentRouter.createPaymentIntent.useMutation();
+  const createPaymentMethod =
+    api.paymentRouter.createPaymentMethod.useMutation();
+  const createGcashPaymentMethod =
+    api.paymentRouter.createGCashPaymentMethod.useMutation();
+  const attachPaymentIntent =
+    api.paymentRouter.attachPaymentIntent.useMutation();
+  const updateFunds = api.fundraiser.updateFunds.useMutation();
+  const user = useUser();
+  const updateDonor = api.donors.createDonor.useMutation();
+  const createFunding = api.donors.createFunding.useMutation();
+  const userEmail = user.user?.emailAddresses[0]?.emailAddress || "";
+  const checkEmail = api.donors.checkEmailExists.useQuery({
+    email: userEmail,
+  });
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setPaymentError(null);
+    const convertedAmount = parseInt(amount, 10) * 100;
+
     try {
-      console.log({
-        contributionType,
-        fullName,
-        phoneNumber,
-        email,
-        amount,
-        paymentMethod,
+      const paymentIntentResponse = await payment.mutateAsync({
+        amount: convertedAmount,
       });
+
+      if (paymentIntentResponse?.data.id) {
+        // const paymentMethodResponse = await createGcashPaymentMethod.mutateAsync({
+        //   email: email,
+        //   name: fullName,
+        //   phone: phoneNumber
+        // });
+        const paymentMethodResponse = await createPaymentMethod.mutateAsync({
+          details: {
+            card_number: "4343434343434345",
+            exp_month: 12,
+            exp_year: 25,
+            cvc: "123",
+          },
+          billing: {
+            name: fullName,
+            address: {
+              line1: "123 Test St",
+              city: "Test City",
+              state: "Test State",
+              postal_code: "12345",
+              country: "PH",
+              line2: "Apt 1",
+            },
+            phone: phoneNumber,
+            email: email,
+          },
+        });
+        const idString = id?.toString() || "";
+        attachPaymentIntent.mutate({
+          payment_method: paymentMethodResponse.data.id,
+          paymentIntentId: paymentIntentResponse?.data.id,
+          client_key: paymentIntentResponse?.data.attributes.client_key,
+          fundingId: idString,
+        });
+        updateFunds.mutate({
+          id: idString,
+          funds: parseInt(amount, 10),
+        });
+
+        if (checkEmail.data == false) {
+          updateDonor.mutate({
+            userEmail: userEmail,
+          });
+        }
+
+        createFunding.mutate({
+          fundraiserId: idString,
+          amount: parseInt(amount, 10),
+          donorEmail: userEmail,
+          paymentMethod: "card"
+        })
+        router.push(`http://localhost:3000/funded-projects/${id}`);
+        // Further processing with paymentMethodResponse if needed
+      } else {
+        setPaymentError("Failed to create payment intent.");
+      }
     } catch (error) {
+      console.error("Payment error:", error);
       setPaymentError(
         "An error occurred during payment. Please try again later.",
       );
@@ -72,7 +145,7 @@ const Payment = () => {
 
       <form
         onSubmit={handleSubmit}
-        className="mx-auto mb-16 mt-24 flex max-w-[1300px] flex-col justify-between md:mt-32  lg:flex-row"
+        className="mx-auto mb-16 mt-24 flex max-w-[1300px] flex-col justify-between md:mt-32 lg:flex-row"
       >
         <div className="flex w-full flex-col items-center justify-center lg:w-1/2">
           {fundingData && (
