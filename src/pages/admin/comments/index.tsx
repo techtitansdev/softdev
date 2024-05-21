@@ -12,6 +12,8 @@ import SearchByName from "~/components/search/SearchByName";
 import FilterByCommentProjectName from "~/components/filter/FilterByCommentProjectName";
 import { api } from "~/utils/api";
 import { Feedback } from "~/types/Feedback";
+import Loading from "~/components/Loading";
+import Unauthorized from "~/components/Unauthorized";
 
 const Comments = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -52,10 +54,6 @@ const Comments = () => {
   useEffect(() => {
     filterData();
   }, [selectedProject, confirmedSearchQuery, tableData]);
-
-  const { user, isLoaded } = useUser();
-  const user_role = user?.publicMetadata.admin;
-  const router = useRouter();
 
   const feedback = api.feedback.getAll.useQuery();
 
@@ -182,18 +180,17 @@ const Comments = () => {
     return pages;
   };
 
-  useEffect(() => {
-    if (isLoaded && user_role !== "admin") {
-      router.push("/home");
-    }
-  }, [isLoaded, user_role]);
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
 
+  useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
-  if (isLoaded && user_role !== "admin") {
-    return <div>UNAUTHORIZED</div>;
+  if (user_role !== "admin") {
+    return <Unauthorized />;
   }
+
   return (
     <>
       <Head>
