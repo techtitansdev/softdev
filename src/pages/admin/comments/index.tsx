@@ -24,6 +24,34 @@ const Comments = () => {
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [filteredData, setFilteredData] = useState<Feedback[]>([]);
   const [searchInteraction, setSearchInteraction] = useState(false);
+  const [confirmedSearchQuery, setConfirmedSearchQuery] = useState("");
+
+  useEffect(() => {
+    filterData();
+    setCurrentPage(1);
+  }, [selectedProject, confirmedSearchQuery]);
+
+  const filterData = () => {
+    const filtered = tableData.filter((item) => {
+      const matchesProject =
+        selectedProject === "All" || item.projectName.includes(selectedProject);
+      const matchesSearchQuery =
+        confirmedSearchQuery === "" ||
+        item.name.toLowerCase().includes(confirmedSearchQuery.toLowerCase());
+      return matchesProject && matchesSearchQuery;
+    });
+    setFilteredData(filtered);
+  };
+
+  useEffect(() => {
+    if (searchQuery === "") {
+      setConfirmedSearchQuery("");
+    }
+  }, [searchQuery]);
+
+  useEffect(() => {
+    filterData();
+  }, [selectedProject, confirmedSearchQuery, tableData]);
 
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin;
@@ -61,18 +89,6 @@ const Comments = () => {
     setFilteredData(tableData);
   }, [tableData]);
 
-  const filterData = () => {
-    const filtered = tableData.filter((item) => {
-      const matchesProject =
-        selectedProject === "All" || item.projectName.includes(selectedProject);
-      const matchesSearchQuery =
-        searchQuery === "" ||
-        item.name.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesProject && matchesSearchQuery;
-    });
-    setFilteredData(filtered);
-  };
-
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -101,13 +117,34 @@ const Comments = () => {
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
+
+    const suggestions = tableData
+      .filter((item) => {
+        const matchesProject =
+          selectedProject === "All" ||
+          item.projectName.includes(selectedProject);
+        const matchesName = item.name
+          .toLowerCase()
+          .includes(value.toLowerCase());
+        return matchesProject && matchesName;
+      })
+      .map((item) => item.name);
+
+    const uniqueSuggestions = Array.from(new Set(suggestions));
+
+    setSearchSuggestions(uniqueSuggestions);
   };
 
   const handleEnterPress = () => {
-    setSearchInteraction(true);
+    if (searchQuery) {
+      setConfirmedSearchQuery(searchQuery);
+      setSearchSuggestions([]);
+      setSearchInteraction(true);
+    }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
+    setConfirmedSearchQuery(suggestion);
     setSearchQuery(suggestion);
     setSearchSuggestions([]);
     setSearchInteraction(true);
@@ -201,6 +238,12 @@ const Comments = () => {
                       </li>
                     ))}
                   </ul>
+                )}
+
+                {searchQuery && searchSuggestions.length === 0 && (
+                  <div className="absolute top-full z-10 mt-1 max-h-[188px] w-[250px] overflow-y-auto rounded-md border border-gray-300 bg-white p-2 text-sm shadow-lg">
+                    No results found
+                  </div>
                 )}
               </div>
             </div>

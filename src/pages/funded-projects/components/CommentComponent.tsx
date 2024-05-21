@@ -42,7 +42,7 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ projectId }) => {
     if (!user) {
       setModalContent({
         message: "You must be logged in to post a comment.",
-        bgColor: "bg-gray-600",
+        bgColor: "bg-gray-700",
       });
       return;
     }
