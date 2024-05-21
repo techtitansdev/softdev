@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { useState, useEffect, ChangeEvent } from "react";
-import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
@@ -9,6 +8,9 @@ import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import { BlogData } from "~/types/blogData";
 import { NewEditor } from "~/components/editor/Editor";
+import { useUser } from "@clerk/nextjs";
+import Loading from "~/components/Loading";
+import Unauthorized from "~/components/Unauthorized";
 
 function EditBlog() {
   const router = useRouter();
@@ -173,6 +175,17 @@ function EditBlog() {
       content: JSON.stringify(data, null, 2),
     });
   };
+
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
+
+  useEffect(() => {}, [isLoaded, user_role]);
+  if (!isLoaded) {
+    return <Loading />;
+  }
+  if (user_role !== "admin") {
+    return <Unauthorized />;
+  }
 
   return (
     <>
