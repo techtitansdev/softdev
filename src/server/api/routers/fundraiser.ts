@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { db } from "../../db";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const fundraiser = createTRPCRouter({
   create: protectedProcedure
@@ -132,7 +132,7 @@ export const fundraiser = createTRPCRouter({
       });
     }),
 
-  getAll: protectedProcedure.query(async () => {
+  getAll: publicProcedure.query(async () => {
     const allFundraisers = await db.fundraisers.findMany({
       include: {
         project: true,
@@ -140,7 +140,7 @@ export const fundraiser = createTRPCRouter({
     });
     return allFundraisers;
   }),
-  getById: protectedProcedure
+  getById: publicProcedure
     .input(
       z.object({
         id: z.string(),

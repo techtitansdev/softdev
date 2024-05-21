@@ -25,6 +25,10 @@ beforeAll(() => {
 });
 
 describe("CreateBlogs", () => {
+  const editorDiv = document.createElement("div");
+  editorDiv.id = "editor";
+  document.body.appendChild(editorDiv);
+
   it("renders without crashing", () => {
     render(<CreateBlogs />);
   });

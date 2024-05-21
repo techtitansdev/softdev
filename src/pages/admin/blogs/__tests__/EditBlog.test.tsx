@@ -18,7 +18,16 @@ jest.mock("~/utils/api", () => ({
             title: "Mocked Title",
             excerpt: "Mocked Excerpt",
             image: "/mocked_image_url",
-            content: "Mocked Content",
+            content: JSON.stringify({
+              blocks: [
+                {
+                  type: "paragraph",
+                  data: {
+                    text: "Mocked Content",
+                  },
+                },
+              ],
+            }),
             published: false,
           },
           isLoading: false,
@@ -31,6 +40,20 @@ jest.mock("~/utils/api", () => ({
       edit: {
         useMutation: jest.fn(() => ({
           mutate: jest.fn(),
+        })),
+      },
+    },
+    categories: {
+      getAllCategories: {
+        useQuery: jest.fn(() => ({
+          data: [
+            {
+              id: "mocked_category_id",
+              name: "Mocked Category",
+            },
+          ],
+          isLoading: false,
+          isError: false,
         })),
       },
     },
