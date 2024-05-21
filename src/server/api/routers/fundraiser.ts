@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { db } from "../../db";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const fundraiser = createTRPCRouter({
   create: protectedProcedure
@@ -71,6 +71,43 @@ export const fundraiser = createTRPCRouter({
       });
       return updatedFundraiser;
     }),
+    updateFunds: protectedProcedure
+    .input(
+        z.object({
+            id: z.string(),
+            funds: z.number(),
+        }),
+    )
+    .mutation(async (opts) => {
+        const { input } = opts;
+
+        // Check if fundraiser exists
+        const existingFundraiser = await db.fundraisers.findUnique({
+            where: { id: input.id },
+        });
+
+        if (!existingFundraiser) {
+            throw new Error("Fundraiser does not exist");
+        }
+
+        // Query existing funds
+        const existingFunds = existingFundraiser.funds || 0;
+
+        // Add input amount to existing funds
+        const updatedFunds = existingFunds + input.funds;
+
+        // Update fundraiser details in the database
+        const updatedFundraiser = await db.fundraisers.update({
+            where: {
+                id: input.id,
+            },
+            data: {
+                funds: updatedFunds,
+            },
+        });
+
+        return updatedFundraiser;
+    }),
 
   delete: protectedProcedure
     .input(
@@ -95,7 +132,7 @@ export const fundraiser = createTRPCRouter({
       });
     }),
 
-  getAll: protectedProcedure.query(async () => {
+  getAll: publicProcedure.query(async () => {
     const allFundraisers = await db.fundraisers.findMany({
       include: {
         project: true,
@@ -103,7 +140,7 @@ export const fundraiser = createTRPCRouter({
     });
     return allFundraisers;
   }),
-  getById: protectedProcedure
+  getById: publicProcedure
     .input(
       z.object({
         id: z.string(),

@@ -9,22 +9,20 @@ datasource db {
 }
 
 model Users {
-  id              String     @id @default(cuid())
-  email           String     @unique
-  emailVerified   Boolean    @default(false)
+  id              String    @id @default(cuid())
+  email           String    @unique
+  emailVerified   Boolean   @default(false)
   emailVerifiedAt DateTime?
   firstName       String
   lastName        String
   address         String
   phone           String
   password        String
-  created         DateTime   @default(now())
-  updated         DateTime   @updatedAt()
-  role            String     @default("USER")
+  created         DateTime  @default(now())
+  updated         DateTime  @updatedAt()
+  role            String    @default("USER")
   admins          Admins[]
-  Feedback        Feedback[]
-
-  @@unique([email, phone])
+  donors          Donors[]
 }
 
 model Admins {
@@ -40,9 +38,15 @@ model Admins {
 model Categories {
   id                      String                    @id @default(cuid())
   label                   String
-  value                   String
+  value                   String                    @unique
   assignCategoriesBlog    AssignCategoriesBlog[]
   assignCategoriesProject AssignCategoriesProject[]
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  label String
+  value String @unique
 }
 
 model Blogs {
@@ -77,21 +81,6 @@ model Projects {
   assignCategoriesProject AssignCategoriesProject[]
   fundraisers             Fundraisers[]
   Milestones              Milestones[]
-  Feedback                Feedback[]
-}
-
-model Feedback {
-  id        String   @id @default(cuid())
-  userId    String
-  projectId String
-  feedback  String
-  created   DateTime @default(now())
-
-  user    Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  project Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([projectId])
 }
 
 model Fundraisers {
@@ -114,25 +103,25 @@ model Fundraisers {
 }
 
 model Donors {
-  id       String     @id @default(cuid())
-  fullName String?
-  email    String?
-  phone    String?
-  type     String
-  fundings Fundings[]
+  id        String     @id @default(cuid())
+  userEmail String     @unique
+  user      Users      @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  fundings  Fundings[]
+
+  @@index([userEmail])
 }
 
 model Fundings {
   id            String      @id @default(cuid())
-  donorId       String
+  donorEmail    String
   fundraiserId  String
   amount        Int
   paymentMethod String
   date          DateTime    @default(now())
-  donor         Donors      @relation(fields: [donorId], references: [id], onDelete: Cascade)
+  donor         Donors      @relation(fields: [donorEmail], references: [userEmail], onDelete: Cascade)
   fundraiser    Fundraisers @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
 
-  @@index([donorId])
+  @@index([donorEmail])
   @@index([fundraiserId])
 }
 

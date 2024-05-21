@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { db } from "../../db";
 
 export const blog = createTRPCRouter({
@@ -26,7 +26,7 @@ export const blog = createTRPCRouter({
       });
       return blog;
     }),
-  getAll: protectedProcedure.query(async () => {
+  getAll: publicProcedure.query(async () => {
     const allBlogs = await db.blogs.findMany();
     return allBlogs;
   }),
@@ -97,12 +97,12 @@ export const blog = createTRPCRouter({
       return updatedBlog;
     }),
 
-    getFeaturedCount: protectedProcedure.query(async () => {
-      const featuredBlogsCount = await db.blogs.count({
-        where: { featured: true },
-      });
-      return featuredBlogsCount;
-    }),
+  getFeaturedCount: protectedProcedure.query(async () => {
+    const featuredBlogsCount = await db.blogs.count({
+      where: { featured: true },
+    });
+    return featuredBlogsCount;
+  }),
 
   delete: protectedProcedure
     .input(
@@ -126,7 +126,7 @@ export const blog = createTRPCRouter({
       });
     }),
 
-  getById: protectedProcedure
+  getById: publicProcedure
     .input(
       z.object({
         id: z.string(),
