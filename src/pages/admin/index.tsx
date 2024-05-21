@@ -9,9 +9,8 @@ import Unauthorized from "~/components/Unauthorized";
 export const Admin = () => {
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin;
-  const router = useRouter();
 
-  useEffect(() => {}, [isLoaded, user_role, router]);
+  useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
     return <Loading/>
   }

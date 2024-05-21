@@ -152,9 +152,9 @@ function CreateProjects() {
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin;
 
-  useEffect(() => {}, [isLoaded, user_role, router]);
+  useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <Loading />;
+    return <Loading/>
   }
   if (user_role !== "admin") {
     return <Unauthorized />;
