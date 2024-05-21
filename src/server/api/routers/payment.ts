@@ -11,7 +11,7 @@ export const paymentRouter = createTRPCRouter({
     .input(
       z.object({
         amount: z.number().min(1),
-        currency: z.string().default('PHP'),
+        currency: z.string(),
       })
     )
     .mutation(async ({ input }) => {
