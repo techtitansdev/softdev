@@ -39,6 +39,14 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ projectId }) => {
   });
 
   const handleSubmit = () => {
+    if (!user) {
+      setModalContent({
+        message: "You must be logged in to post a comment.",
+        bgColor: "bg-gray-600",
+      });
+      return;
+    }
+
     if (!comment.trim()) {
       setModalContent({
         message: "Please leave a feedback before submitting.",
