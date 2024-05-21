@@ -10,7 +10,10 @@ interface CommentComponentProps {
 
 const CommentComponent: React.FC<CommentComponentProps> = ({ projectId }) => {
   const [comment, setComment] = useState("");
-  const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState<{
+    message: string;
+    bgColor: string;
+  } | null>(null);
   const { user } = useUser();
 
   const email = user?.primaryEmailAddress?.emailAddress;
@@ -18,18 +21,40 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ projectId }) => {
   const createComment = api.feedback.create.useMutation({
     onSuccess: () => {
       setComment("");
-      setSuccessModalOpen(true);
+      setModalContent({
+        message: "Your feedback has been successfully submitted.",
+        bgColor: "bg-green-700",
+      });
       setTimeout(() => {
-        setSuccessModalOpen(false);
+        setModalContent(null);
       }, 2000);
     },
     onError: (error: any) => {
       console.error("Error creating comment:", error);
-      alert(`Error creating comment: ${error.message}`);
+      setModalContent({
+        message: `Error creating comment: ${error.message}`,
+        bgColor: "bg-red-700",
+      });
     },
   });
 
   const handleSubmit = () => {
+    if (!user) {
+      setModalContent({
+        message: "You must be logged in to post a comment.",
+        bgColor: "bg-gray-700",
+      });
+      return;
+    }
+
+    if (!comment.trim()) {
+      setModalContent({
+        message: "Please leave a feedback before submitting.",
+        bgColor: "bg-red-500",
+      });
+      return;
+    }
+
     console.log("projectId:", projectId);
     if (user) {
       const commentInput = {
@@ -53,8 +78,8 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ projectId }) => {
           <textarea
             data-testid="Leave a Comment"
             id="message"
-            className="mb-4 h-[300px] rounded-lg border border-gray-600 bg-gray-50 p-2 text-lg md:h-[420px]"
-            placeholder="What’s on your mind?"
+            className="mb-4 h-[300px] rounded-lg border border-gray-600 bg-gray-50 p-2 text-lg outline-gray-500 md:h-[420px]"
+            placeholder=" What’s on your mind?"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
@@ -66,12 +91,14 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ projectId }) => {
             Post
           </button>
         </div>
-        <Modal
-          isOpen={isSuccessModalOpen}
-          onClose={() => setSuccessModalOpen(false)}
-          message="Comment Left Successfully."
-          bgColor="bg-green-700"
-        />
+        {modalContent && (
+          <Modal
+            isOpen={true}
+            onClose={() => setModalContent(null)}
+            message={modalContent.message}
+            bgColor={modalContent.bgColor}
+          />
+        )}
       </div>
     </div>
   );
