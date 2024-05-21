@@ -12,6 +12,9 @@ import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import MileStoneTable, { TableRow } from "./components/MilestoneTable";
 import { NewEditor } from "~/components/editor/Editor";
+import { useUser } from "@clerk/nextjs";
+import Loading from "~/components/Loading";
+import Unauthorized from "~/components/Unauthorized";
 
 interface FundingData {
   title: string;
@@ -132,7 +135,7 @@ function CreateFunding() {
   };
   const createFundRaiser = api.fundraiser.create.useMutation();
   const createMilestone = api.milestone.create.useMutation();
-  const [editorBlocks, setEditorBlocks] = useState([]); 
+  const [editorBlocks, setEditorBlocks] = useState([]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -174,7 +177,17 @@ function CreateFunding() {
       console.error("Error creating project:", error);
     }
   };
-  console.log(fundingData.category)
+
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
+
+  useEffect(() => {}, [isLoaded, user_role]);
+  if (!isLoaded) {
+    return <Loading />;
+  }
+  if (user_role !== "admin") {
+    return <Unauthorized />;
+  }
   return (
     <div>
       <Head>
@@ -435,7 +448,7 @@ function CreateFunding() {
               </label>
             </div>
 
-            <NewEditor onChanges={()=>{}} initialData={editorBlocks}/>
+            <NewEditor onChanges={() => {}} initialData={editorBlocks} />
 
             <button
               type="submit"

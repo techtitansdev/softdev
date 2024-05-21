@@ -11,6 +11,8 @@ import SearchByDonor from "~/components/search/SearchByDonor";
 import { donorsData } from "~/data/donorsData";
 import FilterByProjectName from "~/components/filter/FilterByProjectName";
 import { useRouter } from "next/router";
+import Loading from "~/components/Loading";
+import Unauthorized from "~/components/Unauthorized";
 
 const Donors = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -142,19 +144,13 @@ const Donors = () => {
 
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin;
-  const router = useRouter();
 
-  useEffect(() => {
-    if (isLoaded && user_role !== "admin") {
-      router.push("/home");
-    }
-  }, [isLoaded, user_role]);
-
+  useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
-  if (isLoaded && user_role !== "admin") {
-    return <div>UNAUTHORIZED</div>;
+  if (user_role !== "admin") {
+    return <Unauthorized />;
   }
 
   return (
