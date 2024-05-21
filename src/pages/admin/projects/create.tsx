@@ -1,6 +1,11 @@
 import Head from "next/head";
-import { ChangeEvent, MutableRefObject, useRef, useState } from "react";
-import { Editor } from "@tinymce/tinymce-react";
+import {
+  ChangeEvent,
+  MutableRefObject,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import Select from "react-select";
@@ -13,6 +18,9 @@ import CreatableSelect from "react-select/creatable";
 
 import { categoriesOption } from "~/data/categories";
 import { NewEditor } from "~/components/editor/Editor";
+import { useUser } from "@clerk/nextjs";
+import Loading from "~/components/Loading";
+import Unauthorized from "~/components/Unauthorized";
 
 interface Category {
   label: string;
@@ -24,16 +32,16 @@ function CreateProjects() {
   const allcategory = api.categories.getAllCategories.useQuery();
   const createCategory = api.categories.create.useMutation();
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
-  const router = useRouter();
   const [editorData, setEditorData] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
   const [newcategory, setNewCategory] = useState<Category[]>([]);
   const editorRef: MutableRefObject<any> = useRef(null);
+  const router = useRouter();
 
   const [projectData, setProjectData] = useState<ProjectData>({
     title: "",
-    description: "",                                  
+    description: "",
     image: "",
     hub: "",
     category: "",
@@ -116,7 +124,6 @@ function CreateProjects() {
             });
           }),
         );
-
       }
       const result = await createProject.mutateAsync({
         ...projectData,
@@ -136,15 +143,23 @@ function CreateProjects() {
       console.error("Error creating project:", error);
     }
   };
-  
 
   const handleChanges = (data: any) => {
     // Update state with the new data from the editor
     setEditorData(data);
-
-    
   };
-  console.log(JSON.stringify(editorData, null, 2));
+
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
+
+  useEffect(() => {}, [isLoaded, user_role, router]);
+  if (!isLoaded) {
+    return <Loading />;
+  }
+  if (user_role !== "admin") {
+    return <Unauthorized />;
+  }
+
   return (
     <div>
       <Head>
@@ -334,9 +349,8 @@ function CreateProjects() {
               </label>
             </div>
             <div className="min-w-[300px]">
-                <NewEditor onChanges={handleChanges} />
-              </div>    
-            
+              <NewEditor onChanges={handleChanges} />
+            </div>
 
             <button
               type="button"

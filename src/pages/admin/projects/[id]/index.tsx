@@ -4,6 +4,9 @@ import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import Head from "next/head";
 import EditorOutput from "~/components/editor/EditorOutput";
+import { useUser } from "@clerk/nextjs";
+import Loading from "~/components/Loading";
+import Unauthorized from "~/components/Unauthorized";
 
 const ProjectDetailsPage = () => {
   const router = useRouter();
@@ -21,6 +24,17 @@ const ProjectDetailsPage = () => {
       setEditorBlocks(initialEditorData.blocks);
     }
   }, [getProject.data, projectData]);
+
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
+
+  useEffect(() => {}, [isLoaded, user_role, router]);
+  if (!isLoaded) {
+    return <Loading />;
+  }
+  if (user_role !== "admin") {
+    return <Unauthorized />;
+  }
 
   return (
     <div className="flex">

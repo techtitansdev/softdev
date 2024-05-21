@@ -10,6 +10,9 @@ import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import CreatableSelect from "react-select/creatable";
 import { NewEditor } from "~/components/editor/Editor";
+import { useUser } from "@clerk/nextjs";
+import Loading from "~/components/Loading";
+import Unauthorized from "~/components/Unauthorized";
 
 function EditProject() {
   const router = useRouter();
@@ -191,6 +194,17 @@ function EditProject() {
       about: JSON.stringify(data, null, 2),
     });
   };
+
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
+
+  useEffect(() => {}, [isLoaded, user_role, router]);
+  if (!isLoaded) {
+    return <Loading />;
+  }
+  if (user_role !== "admin") {
+    return <Unauthorized />;
+  }
 
   return (
     <>
