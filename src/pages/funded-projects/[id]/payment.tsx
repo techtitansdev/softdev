@@ -36,6 +36,7 @@ const Payment = () => {
   const updateFunds = api.fundraiser.updateFunds.useMutation();
   const user = useUser();
   const updateDonor = api.donors.createDonor.useMutation();
+  const createFunding = api.donors.createFunding.useMutation();
   const userEmail = user.user?.emailAddresses[0]?.emailAddress || "";
   const checkEmail = api.donors.checkEmailExists.useQuery({
     email: userEmail,
@@ -95,6 +96,12 @@ const Payment = () => {
           });
         }
 
+        createFunding.mutate({
+          fundraiserId: idString,
+          amount: parseInt(amount, 10),
+          donorEmail: userEmail,
+          paymentMethod: "card"
+        })
         router.push(`http://localhost:3000/funded-projects/${id}`);
         // Further processing with paymentMethodResponse if needed
       } else {

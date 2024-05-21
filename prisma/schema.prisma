@@ -113,15 +113,15 @@ model Donors {
 
 model Fundings {
   id            String      @id @default(cuid())
-  donorId       String
+  donorEmail    String
   fundraiserId  String
   amount        Int
   paymentMethod String
   date          DateTime    @default(now())
-  donor         Donors      @relation(fields: [donorId], references: [id], onDelete: Cascade)
+  donor         Donors      @relation(fields: [donorEmail], references: [userEmail], onDelete: Cascade)
   fundraiser    Fundraisers @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
 
-  @@index([donorId])
+  @@index([donorEmail])
   @@index([fundraiserId])
 }
 

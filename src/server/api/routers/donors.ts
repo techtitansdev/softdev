@@ -52,6 +52,47 @@ export const donors = createTRPCRouter({
             });
 
             return  !!user ;
+        }),
+        
+        createFunding: protectedProcedure
+        .input(z.object({
+            donorEmail: z.string().toLowerCase(),
+            fundraiserId: z.string(),
+            amount: z.number().min(1),
+            paymentMethod: z.string(),
+        }))
+        .mutation(async (opts) => {
+            const { input } = opts;
+
+            // Check if the donor exists
+            const donor = await db.donors.findUnique({
+                where: { userEmail: input.donorEmail }
+            });
+
+            if (!donor) {
+                throw new Error('Donor not found');
+            }
+
+            // Check if the fundraiser exists
+            const fundraiser = await db.fundraisers.findUnique({
+                where: { id: input.fundraiserId }
+            });
+
+            if (!fundraiser) {
+                throw new Error('Fundraiser not found');
+            }
+
+            // Create the funding
+            const funding = await db.fundings.create({
+                data: {
+                    donorEmail: input.donorEmail,
+                    fundraiserId: input.fundraiserId,
+                    amount: input.amount,
+                    paymentMethod: input.paymentMethod,
+                }
+            });
+
+            return funding;
         })
 });
 
