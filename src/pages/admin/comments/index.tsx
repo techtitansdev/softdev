@@ -15,7 +15,7 @@ import { Feedback } from "~/types/Feedback";
 
 const Comments = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage] = useState(10);
   const [tableData, setTableData] = useState<Feedback[]>([]);
   const [selectedProject, setSelectedProject] = useState("All");
   const [isNameSortedAscending, setIsNameSortedAscending] = useState(true);
@@ -24,6 +24,34 @@ const Comments = () => {
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [filteredData, setFilteredData] = useState<Feedback[]>([]);
   const [searchInteraction, setSearchInteraction] = useState(false);
+  const [confirmedSearchQuery, setConfirmedSearchQuery] = useState("");
+
+  useEffect(() => {
+    filterData();
+    setCurrentPage(1);
+  }, [selectedProject, confirmedSearchQuery]);
+
+  const filterData = () => {
+    const filtered = tableData.filter((item) => {
+      const matchesProject =
+        selectedProject === "All" || item.projectName.includes(selectedProject);
+      const matchesSearchQuery =
+        confirmedSearchQuery === "" ||
+        item.name.toLowerCase().includes(confirmedSearchQuery.toLowerCase());
+      return matchesProject && matchesSearchQuery;
+    });
+    setFilteredData(filtered);
+  };
+
+  useEffect(() => {
+    if (searchQuery === "") {
+      setConfirmedSearchQuery("");
+    }
+  }, [searchQuery]);
+
+  useEffect(() => {
+    filterData();
+  }, [selectedProject, confirmedSearchQuery, tableData]);
 
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin;
@@ -32,39 +60,34 @@ const Comments = () => {
   const feedback = api.feedback.getAll.useQuery();
 
   useEffect(() => {
+    filterData();
+    setCurrentPage(1);
+  }, [selectedProject, searchQuery]);
+
+  useEffect(() => {
     if (feedback.data) {
       const transformedData = feedback.data.map((item) => ({
         name: item.name,
-        date: new Date(item.date).toISOString(),
+        date: new Date(item.date).toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        }),
         email: item.email || "",
         comment: item.comment,
         projectName: item.projectName || "",
       }));
       setTableData(transformedData);
+      setCurrentPage(1);
     }
   }, [feedback.data]);
 
   useEffect(() => {
-    // Update filteredData whenever tableData changes
     setFilteredData(tableData);
   }, [tableData]);
-
-  useEffect(() => {
-    // Update filteredData based on selectedProject and searchQuery
-    filterData();
-  }, [selectedProject, searchQuery]);
-
-  const filterData = () => {
-    const filtered = tableData.filter((item) => {
-      const matchesProject =
-        selectedProject === "All" || item.projectName.includes(selectedProject);
-      const matchesSearchQuery =
-        searchQuery === "" ||
-        item.name.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesProject && matchesSearchQuery;
-    });
-    setFilteredData(filtered);
-  };
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
@@ -94,13 +117,34 @@ const Comments = () => {
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
+
+    const suggestions = tableData
+      .filter((item) => {
+        const matchesProject =
+          selectedProject === "All" ||
+          item.projectName.includes(selectedProject);
+        const matchesName = item.name
+          .toLowerCase()
+          .includes(value.toLowerCase());
+        return matchesProject && matchesName;
+      })
+      .map((item) => item.name);
+
+    const uniqueSuggestions = Array.from(new Set(suggestions));
+
+    setSearchSuggestions(uniqueSuggestions);
   };
 
   const handleEnterPress = () => {
-    setSearchInteraction(true);
+    if (searchQuery) {
+      setConfirmedSearchQuery(searchQuery);
+      setSearchSuggestions([]);
+      setSearchInteraction(true);
+    }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
+    setConfirmedSearchQuery(suggestion);
     setSearchQuery(suggestion);
     setSearchSuggestions([]);
     setSearchInteraction(true);
@@ -195,6 +239,12 @@ const Comments = () => {
                     ))}
                   </ul>
                 )}
+
+                {searchQuery && searchSuggestions.length === 0 && (
+                  <div className="absolute top-full z-10 mt-1 max-h-[188px] w-[250px] overflow-y-auto rounded-md border border-gray-300 bg-white p-2 text-sm shadow-lg">
+                    No results found
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -242,9 +292,14 @@ const Comments = () => {
                     <td className="border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
                       {item.email}
                     </td>
-                    <td className="max-w-[300px]  border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
-                      {item.comment}
+                    <td className="max-w-[300px] border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
+                      <div className="overflow-hidden">
+                        <div className="whitespace-normal break-words">
+                          {item.comment}
+                        </div>
+                      </div>
                     </td>
+
                     <td className="border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
                       {item.date}
                     </td>

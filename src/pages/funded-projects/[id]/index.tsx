@@ -18,15 +18,8 @@ const Funding: React.FC = () => {
   const { user } = useUser();
   const [showModal, setShowModal] = useState(false);
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
-  const projectId =
-    getFunding.data && getFunding.data.project
-      ? getFunding.data.project.id
-      : null;
-  console.log(
-    getFunding.data && getFunding.data.project
-      ? getFunding.data.project.id
-      : null,
-  );
+  const projectId = getFunding.data?.project.id;
+  console.log(getFunding.data?.project.id);
 
   useEffect(() => {
     if (getFunding.data && !fundingData && getFunding.data !== fundingData) {
@@ -41,14 +34,11 @@ const Funding: React.FC = () => {
   };
 
   const calculateDaysLeft = (targetDate: string): number => {
-    // Convert target date string to Date object
     const target = new Date(targetDate);
     const currentDate = new Date();
 
-    // Calculate the difference in milliseconds between the target date and the current date
     const differenceMs = target.getTime() - currentDate.getTime();
 
-    // Calculate the difference in days by dividing the difference in milliseconds by the number of milliseconds in a day
     const differenceDays = Math.ceil(differenceMs / (1000 * 60 * 60 * 24));
     return differenceDays;
   };
@@ -207,7 +197,7 @@ const Funding: React.FC = () => {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         message="Please log in to donate."
-        bgColor="bg-blue-700 text-white"
+        bgColor="bg-gray-700 text-white"
       />
 
       <Footer />
