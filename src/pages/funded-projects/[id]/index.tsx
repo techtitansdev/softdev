@@ -8,11 +8,15 @@ import MilestoneComponent from "../components/MilestoneComponent";
 import CommentComponent from "../components/CommentComponent";
 import { Navbar } from "~/components/Navbar";
 import { Footer } from "~/components/Footer";
+import { useUser } from "@clerk/nextjs";
+import { Modal } from "~/components/Modal";
 
 const Funding: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
   const [fundingData, setFundingData] = useState<any>(null);
+  const { user } = useUser();
+  const [showModal, setShowModal] = useState(false);
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
   const projectId = getFunding.data?.project.id
   console.log(getFunding.data?.project.id)
@@ -42,6 +46,17 @@ const Funding: React.FC = () => {
     return differenceDays;
   };
 
+  const handleDonateClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!user) {
+      event.preventDefault();
+      setShowModal(true);
+    } else {
+      router.push(
+        `/funded-projects/${encodeURIComponent(fundingData.id)}/payment`,
+      );
+    }
+  };
+
   return (
     <div>
       <Head>
@@ -67,7 +82,10 @@ const Funding: React.FC = () => {
               <Link
                 href={`/funded-projects/${encodeURIComponent(fundingData.id)}/payment`}
               >
-                <button className="w-72 rounded-lg bg-blue-800 py-2 text-xl text-white hover:bg-blue-900 md:text-2xl">
+                <button
+                  onClick={handleDonateClick}
+                  className="w-72 rounded-lg bg-blue-800 py-2 text-xl text-white hover:bg-blue-900 md:text-2xl"
+                >
                   Donate
                 </button>
               </Link>
@@ -175,6 +193,13 @@ const Funding: React.FC = () => {
           {content === "comment" && <CommentComponent projectId={projectId as string} />}
         </div>
       </div>
+
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        message="Please log in to donate."
+        bgColor="bg-blue-700 text-white"
+      />
 
       <Footer />
     </div>
