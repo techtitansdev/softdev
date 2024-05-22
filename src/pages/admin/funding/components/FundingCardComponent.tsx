@@ -71,7 +71,7 @@ const FundingCard: React.FC<FundingCardProps> = ({
             </div>
           </div>
 
-          <Link href={`/admin/funding/edit`}>
+          <Link href={`/admin/funding/edit/${fundingData.id}`}>
             <button className="ml-2 mt-3 border border-gray-500 px-8 py-1 text-gray-800 shadow-md hover:bg-gray-200 rounded-md">
               Edit
             </button>
