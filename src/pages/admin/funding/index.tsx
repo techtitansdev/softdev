@@ -7,6 +7,8 @@ import { api } from "~/utils/api";
 import Link from "next/link";
 import FundingCard from "./components/FundingCardComponent";
 import { Modal } from "~/components/Modal";
+import Loading from "~/components/Loading";
+import Unauthorized from "~/components/Unauthorized";
 
 const AdminFunding = () => {
   const [projectData, setProjectData] = useState<any>([]);
@@ -41,18 +43,13 @@ const AdminFunding = () => {
 
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin;
-  const router = useRouter();
-  useEffect(() => {
-    if (isLoaded && user_role !== "admin") {
-      router.push("/home");
-    }
-  }, [isLoaded, user_role]);
 
+  useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
-  if (isLoaded && user_role !== "admin") {
-    return <div>UNAUTHORIZED</div>;
+  if (user_role !== "admin") {
+    return <Unauthorized />;
   }
 
   return (

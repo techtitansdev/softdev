@@ -7,6 +7,9 @@ import MilestoneComponent from "../components/MilestoneComponent";
 import CommentComponent from "../components/CommentComponent";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
+import { useUser } from "@clerk/nextjs";
+import Loading from "~/components/Loading";
+import Unauthorized from "~/components/Unauthorized";
 
 const FundingPage: React.FC = () => {
   const router = useRouter();
@@ -88,6 +91,17 @@ const FundingPage: React.FC = () => {
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     },
   ];
+
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
+
+  useEffect(() => {}, [isLoaded, user_role]);
+  if (!isLoaded) {
+    return <Loading />;
+  }
+  if (user_role !== "admin") {
+    return <Unauthorized />;
+  }
 
   return (
     <div>

@@ -11,6 +11,8 @@ import FeaturedBlogCard from "./components/FeaturedBlogCard";
 import FilterByStatus from "~/components/filter/FilterByStatus";
 import SearchByBlogs from "~/components/search/SearchByBlogs";
 import { RiSearchLine } from "react-icons/ri";
+import Loading from "~/components/Loading";
+import Unauthorized from "~/components/Unauthorized";
 
 const AdminBlogPage = () => {
   const [blogData, setBlogData] = useState<any>([]);
@@ -113,26 +115,20 @@ const AdminBlogPage = () => {
     }
   };
 
-  const { user, isLoaded } = useUser();
-  const user_role = user?.publicMetadata.admin;
-  const router = useRouter();
-
-  useEffect(() => {
-    if (isLoaded && user_role !== "admin") {
-      router.push("/home");
-    }
-  }, [isLoaded, user_role]);
-
-  if (!isLoaded) {
-    return <div>Loading...</div>;
-  }
-  if (isLoaded && user_role !== "admin") {
-    return <div>UNAUTHORIZED</div>;
-  }
-
   // Split filteredBlogs into featured and unfeatured arrays
   const featuredBlogs = filteredBlogs.filter((blog) => blog.featured);
   const unfeaturedBlogs = filteredBlogs.filter((blog) => !blog.featured);
+
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
+
+  useEffect(() => {}, [isLoaded, user_role]);
+  if (!isLoaded) {
+    return <Loading />;
+  }
+  if (user_role !== "admin") {
+    return <Unauthorized />;
+  }
 
   return (
     <>
@@ -225,7 +221,7 @@ const AdminBlogPage = () => {
         <Modal
           isOpen={isSuccessModalOpen}
           onClose={() => setSuccessModalOpen(false)}
-          message="Project Deleted Successfully."
+          message="Blog Deleted Successfully."
           bgColor="bg-red-500"
         />
       </div>

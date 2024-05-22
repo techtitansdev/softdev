@@ -1,7 +1,10 @@
+import { useUser } from "@clerk/nextjs";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Loading from "~/components/Loading";
 import { Sidebar } from "~/components/Sidebar";
+import Unauthorized from "~/components/Unauthorized";
 import EditorOutput from "~/components/editor/EditorOutput";
 import { api } from "~/utils/api";
 
@@ -21,6 +24,17 @@ const BlogDetailsPage = () => {
       setEditorBlocks(initialEditorData.blocks);
     }
   }, [getBlog.data, blogData]);
+
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
+
+  useEffect(() => {}, [isLoaded, user_role]);
+  if (!isLoaded) {
+    return <Loading />;
+  }
+  if (user_role !== "admin") {
+    return <Unauthorized />;
+  }
 
   return (
     <div className="flex">
