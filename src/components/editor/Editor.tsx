@@ -232,6 +232,7 @@ export const NewEditor: React.FC<EditorProps> = ({
           <div
             id="editor"
             className="min-h-[650px] min-w-[650px] justify-center"
+            data-testid="editor"
           />
         </div>
       </form>

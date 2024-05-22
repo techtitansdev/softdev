@@ -34,10 +34,13 @@ describe("FilterByProjectName component", () => {
     render(
       <FilterByProjectName
         selectedProject={""}
-        handleProjectSelect={function (project: string): void {
+        isProjectListOpen={false}
+        toggleProjectList={function (): void {
           throw new Error("Function not implemented.");
         }}
-        tableData={[]}
+        handleProjectSelect={function (status: string): void {
+          throw new Error("Function not implemented.");
+        }}
       />,
     );
   });
@@ -51,7 +54,7 @@ describe("SearchInput component", () => {
         onChange={function (value: string): void {
           throw new Error("Function not implemented.");
         }}
-        onSearch={function (): void {
+        onEnter={function (): void {
           throw new Error("Function not implemented.");
         }}
       />,

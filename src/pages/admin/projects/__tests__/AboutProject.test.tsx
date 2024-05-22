@@ -8,9 +8,9 @@ describe("NewEditor", () => {
     render(<NewEditor onChanges={onChanges} />);
 
     await waitFor(() => {
-      const editorElement = document.getElementById("editor");
-      
-      expect(editorElement).toBeTruthy();
+      document.getElementById("editor");
     });
+
+    expect(document.getElementById("editor")).toBeTruthy();
   });
 });

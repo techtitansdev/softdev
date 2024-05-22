@@ -1,6 +1,6 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import { api } from "~/utils/api";
-import CreateProjects from "~/pages/admin/projects/create";
+import CreateProjects from "../create";
 
 jest.mock("~/utils/api", () => ({
   __esModule: true,
