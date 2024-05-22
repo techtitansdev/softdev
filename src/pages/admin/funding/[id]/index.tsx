@@ -15,26 +15,14 @@ const FundingPage: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
   const [fundingData, setFundingData] = useState<any>(null);
-  // const [milestones, setMilestones] = useState<any[]>([]);
 
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
-
-  // const getMilestones = api.milestone.getByProject.useQuery({
-  //   projectId: id as string,
-  // });
 
   useEffect(() => {
     if (getFunding.data && !fundingData && getFunding.data !== fundingData) {
       setFundingData(getFunding.data);
     }
   }, [getFunding.data, fundingData]);
-
-  // useEffect(() => {
-  //   if (getMilestones.data) {
-  //     console.log("Milestones data:", getMilestones.data);
-  //     setMilestones(getMilestones.data);
-  //   }
-  // }, [getMilestones.data]);
 
   const [content, setContent] = useState("about");
 
@@ -45,13 +33,12 @@ const FundingPage: React.FC = () => {
   const calculateDaysLeft = (targetDate: string): number => {
     // Convert target date string to Date object
     const target = new Date(targetDate);
-
     const currentDate = new Date();
 
     // Calculate the difference in milliseconds between the target date and the current date
     const differenceMs = target.getTime() - currentDate.getTime();
 
-    // Calculate the difference in days by dividing the difference in milliseconds by the number of milliseconds in a day
+    // Calculate the difference in days
     const differenceDays = Math.ceil(differenceMs / (1000 * 60 * 60 * 24));
 
     return differenceDays;
@@ -230,7 +217,7 @@ const FundingPage: React.FC = () => {
               <AboutComponent about={fundingData.project.about} />
             )}
             {content === "milestone" && (
-              <MilestoneComponent milestones={milestones} />
+              <MilestoneComponent milestones={fundingData.milestones} />
             )}
             {content === "comment" && <CommentComponent />}
           </div>

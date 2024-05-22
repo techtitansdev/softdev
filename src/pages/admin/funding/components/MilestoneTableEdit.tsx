@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 export interface TableRow {
-  id: string | undefined;
   milestone: string;
-  value: number;
+  value: number; // Assuming value is a number based on the previous schema
   unit: string;
   description: string;
 }
@@ -13,16 +12,15 @@ interface MileStoneTableProps {
   existingMilestone: TableRow[];
 }
 
-const MileStoneTable: React.FC<MileStoneTableProps> = ({
-  onRowDataChange,
-  existingMilestone,
-}) => {
+const MileStoneTableEdit: React.FC<MileStoneTableProps> = ({ onRowDataChange, existingMilestone }) => {
   const [rows, setRows] = useState<TableRow[]>([]);
 
   useEffect(() => {
     if (existingMilestone.length > 0) {
       setRows(existingMilestone);
-    } 
+    } else {
+      setRows([{ milestone: "1", value: 0, unit: "", description: "" }]);
+    }
   }, [existingMilestone]);
 
   const addRow = () => {
@@ -39,8 +37,8 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
 
   const handleChange = (
     index: number,
-    field: keyof TableRow,  
-    value: string
+    field: keyof TableRow,
+    value: string,
   ) => {
     const newRows = rows.map((row, rowIndex) => {
       if (rowIndex === index) {
@@ -84,16 +82,13 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
                   type="text"
                   value={row.milestone}
                   readOnly
-                  onChange={(e) =>
-                    handleChange(index, "milestone", e.target.value)
-                  }
                   className="block w-full rounded-sm border border-gray-300 py-2 text-center sm:text-sm"
                   data-testid="milestone-title-input"
                 />
               </td>
               <td>
                 <input
-                  type="number"
+                  type="text"
                   value={row.value}
                   placeholder=" Ex: 100"
                   required
@@ -142,4 +137,4 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
   );
 };
 
-export default MileStoneTable;
+export default MileStoneTableEdit;
