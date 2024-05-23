@@ -5,7 +5,9 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
+import ReceiptModal from "~/components/receiptModal";
 import { api } from "~/utils/api";
+// Import the new ReceiptModal component
 
 interface Funding {
   title: string;
@@ -25,7 +27,6 @@ const Payment = () => {
   const [currency, setCurrency] = useState("PHP"); // New state for currency
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [paymentError, setPaymentError] = useState<string | null>(null);
-
   const [cardDetails, setCardDetails] = useState({
     card_number: "",
     exp_month: "",
@@ -56,9 +57,20 @@ const Payment = () => {
   const updateDonor = api.donors.createDonor.useMutation();
   const createFunding = api.donors.createFunding.useMutation();
   const userEmail = user.user?.emailAddresses[0]?.emailAddress || "";
+  
   const checkEmail = api.donors.checkEmailExists.useQuery({
     email: userEmail,
   });
+
+  const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
+  const [paymentDetails, setPaymentDetails] = useState<{
+    paymentID:string;
+    amount: number;
+    currency: string;
+    paymentMethod: string;
+    fullName: string;
+    email: string;
+  } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -105,30 +117,45 @@ const Payment = () => {
         }
 
         const idString = id?.toString() || "";
-        attachPaymentIntent.mutate({
+        await attachPaymentIntent.mutateAsync({
           payment_method: paymentMethodResponse.data.id,
           paymentIntentId: paymentIntentResponse?.data.id,
           client_key: paymentIntentResponse?.data.attributes.client_key,
           fundingId: idString,
         });
-        updateFunds.mutate({
+
+  console.log(paymentIntentResponse?.data.id)
+
+        await updateFunds.mutateAsync({
           id: idString,
           funds: parseInt(amount, 10),
         });
 
         if (checkEmail.data == false) {
-          updateDonor.mutate({
+          await updateDonor.mutateAsync({
             userEmail: userEmail,
           });
+        }else{
+
         }
 
-        createFunding.mutate({
+        await createFunding.mutateAsync({
           fundraiserId: idString,
           amount: parseInt(amount, 10),
           donorEmail: userEmail,
           paymentMethod,
         });
-        router.push(`http://localhost:3000/funded-projects/${id}`);
+
+        setPaymentDetails({
+          paymentID: paymentIntentResponse?.data.id,
+          amount: convertedAmount,
+          currency,
+          paymentMethod,
+          fullName,
+          email,
+        });
+        setIsReceiptModalOpen(true);
+        
       } else {
         setPaymentError("Failed to create payment intent.");
       }
@@ -423,6 +450,14 @@ const Payment = () => {
       </form>
 
       <Footer />
+
+      {paymentDetails && (
+        
+        <ReceiptModal
+          isOpen={isReceiptModalOpen}
+          onClose={() => setIsReceiptModalOpen(false)}
+          paymentDetails={paymentDetails} id={id?.toString() || ""}        />
+      )}
     </>
   );
 };
