@@ -10,22 +10,32 @@ import { api } from "~/utils/api";
 import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
+import { NewEditor } from "~/components/editor/Editor";
+import EditorOutput from "~/components/editor/EditorOutput";
 
 const FundingPage: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
   const [fundingData, setFundingData] = useState<any>(null);
-
+  const [initialEditorData,setinitialEditorData] = useState()
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
-
+  const [editorBlocks, setEditorBlocks] = useState();
   useEffect(() => {
     if (getFunding.data && !fundingData && getFunding.data !== fundingData) {
+
+   
+      const initialEditorData = JSON.parse(getFunding.data.project.about);
       setFundingData(getFunding.data);
+      setinitialEditorData(initialEditorData)
+    setEditorBlocks(initialEditorData.blocks);
+      console.log(getFunding.data.project.about)
     }
   }, [getFunding.data, fundingData]);
 
   const [content, setContent] = useState("about");
 
+  
+  
   const changeContent = (newContent: string) => {
     setContent(newContent);
   };
@@ -214,7 +224,7 @@ const FundingPage: React.FC = () => {
 
           <div className="mx-6 mb-12 mt-6 sm:mx-10 lg:mx-20 lg:mt-12">
             {content === "about" && fundingData?.project && (
-              <AboutComponent about={fundingData.project.about} />
+              <EditorOutput content={initialEditorData}/>
             )}
             {content === "milestone" && (
               <MilestoneComponent milestones={fundingData.milestones} />

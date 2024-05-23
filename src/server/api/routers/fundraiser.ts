@@ -220,7 +220,7 @@ export const fundraiser = createTRPCRouter({
         id: z.string(),
       }),
     )
-    .query(async (opts) => {
+    .query(async (opts: { input: any; }) => {
       const { input } = opts;
 
       try {

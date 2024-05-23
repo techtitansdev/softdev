@@ -10,6 +10,7 @@ import { Navbar } from "~/components/Navbar";
 import { Footer } from "~/components/Footer";
 import { useUser } from "@clerk/nextjs";
 import { Modal } from "~/components/Modal";
+import EditorOutput from "~/components/editor/EditorOutput";
 
 const Funding: React.FC = () => {
   const router = useRouter();
@@ -20,10 +21,16 @@ const Funding: React.FC = () => {
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
   const projectId = getFunding.data?.project.id;
   console.log(getFunding.data?.project.id);
+  const [editorBlocks, setEditorBlocks] = useState([]);
+  const [initialEditorData, setinitialEditorData] = useState();
 
   useEffect(() => {
     if (getFunding.data && !fundingData && getFunding.data !== fundingData) {
       setFundingData(getFunding.data);
+      const initialEditorData = JSON.parse(getFunding.data.project.about);
+      setinitialEditorData(initialEditorData);
+      setEditorBlocks(initialEditorData.blocks);
+      
     }
   }, [getFunding.data, fundingData]);
 
@@ -184,7 +191,7 @@ const Funding: React.FC = () => {
 
         <div className="mx-6 mb-12 mt-6 sm:mx-10 lg:mx-20 lg:mt-12">
           {content === "about" && fundingData?.project && (
-            <AboutComponent about={fundingData.project.about} />
+            <EditorOutput content={initialEditorData}/>
           )}
           {content === "milestone" && <MilestoneComponent />}
           {content === "comment" && (

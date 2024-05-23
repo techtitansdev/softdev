@@ -9,20 +9,21 @@ datasource db {
 }
 
 model Users {
-  id              String    @id @default(cuid())
-  email           String    @unique
-  emailVerified   Boolean   @default(false)
+  id              String     @id @default(cuid())
+  email           String     @unique
+  emailVerified   Boolean    @default(false)
   emailVerifiedAt DateTime?
   firstName       String
   lastName        String
   address         String
   phone           String
   password        String
-  created         DateTime  @default(now())
-  updated         DateTime  @updatedAt()
-  role            String    @default("USER")
+  created         DateTime   @default(now())
+  updated         DateTime   @updatedAt()
+  role            String     @default("USER")
   admins          Admins[]
   donors          Donors[]
+  Feedback        Feedback[]
 }
 
 model Admins {
@@ -80,23 +81,23 @@ model Projects {
   assignAdminsProjects    AssignAdminsProjects[]
   assignCategoriesProject AssignCategoriesProject[]
   fundraisers             Fundraisers[]
-
+  Feedback                Feedback[]
 }
 
 model Fundraisers {
-  id         String     @id @default(cuid())
-  projectId  String     @unique()
+  id         String       @id @default(cuid())
+  projectId  String       @unique()
   funds      Int
   goal       Int
   donors     Int
   targetDate DateTime
-  created    DateTime   @default(now())
-  updated    DateTime   @updatedAt()
-  complete   Boolean    @default(false)
-  published  Boolean    @default(false)
-  ongoing    Boolean    @default(false)
-  featured   Boolean    @default(false)
-  project    Projects   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  created    DateTime     @default(now())
+  updated    DateTime     @updatedAt()
+  complete   Boolean      @default(false)
+  published  Boolean      @default(false)
+  ongoing    Boolean      @default(false)
+  featured   Boolean      @default(false)
+  project    Projects     @relation(fields: [projectId], references: [id], onDelete: Cascade)
   fundings   Fundings[]
   milestones Milestones[]
 
@@ -126,19 +127,34 @@ model Fundings {
   @@index([fundraiserId])
 }
 
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String
+  projectId String
+  feedback  String
+  created   DateTime @default(now())
+
+  user    Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([projectId])
+}
+
 model Milestones {
-  id           String   @id @default(cuid())
+  id           String      @id @default(cuid())
   milestone    String
   value        Int
   unit         String
   description  String
-  created      DateTime @default(now())
-  updated      DateTime @updatedAt()
+  created      DateTime    @default(now())
+  updated      DateTime    @updatedAt()
   fundraiserId String
   fundraiser   Fundraisers @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
-  
+
   @@index([fundraiserId])
 }
+
 model AssignAdminBlogs {
   id      String @id @default(cuid())
   adminId String

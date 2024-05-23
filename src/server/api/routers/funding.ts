@@ -6,7 +6,7 @@ export const funding = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        donorId: z.string(),
+        donorEmail: z.string(),
         fundraiserId: z.string(),
         amount: z.number(),
         paymentMethod: z.string(),
@@ -36,7 +36,7 @@ export const funding = createTRPCRouter({
       });
 
       return fundings.map((funding) => ({
-        donorId: funding.donorId,
+        donorEmail: funding.donorEmail,
         fundraiserId: funding.fundraiserId,
         amount: funding.amount,
         paymentMethod: funding.paymentMethod,
