@@ -65,12 +65,17 @@ export const donors = createTRPCRouter({
             const { input } = opts;
 
             // Check if the donor exists
-            const donor = await db.donors.findUnique({
+            let donor = await db.donors.findUnique({
                 where: { userEmail: input.donorEmail }
             });
 
+            // If donor doesn't exist, create a new donor
             if (!donor) {
-                throw new Error('Donor not found');
+                donor = await db.donors.create({
+                    data: {
+                        userEmail: input.donorEmail,
+                    }
+                });
             }
 
             // Check if the fundraiser exists

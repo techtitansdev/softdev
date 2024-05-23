@@ -1,122 +1,122 @@
 import Head from "next/head";
-import { useState, useEffect, ChangeEvent } from "react";
+import {
+  MutableRefObject,
+  useRef,
+  useState,
+  useEffect,
+  ChangeEvent,
+} from "react";
+import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
+import { categoriesOption } from "~/data/categories";
 import Select from "react-select";
+import makeAnimated from "react-select/animated";
 import { ProjectData } from "~/types/projectData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
-import CreatableSelect from "react-select/creatable";
+import { FundingData } from "~/types/fundingData";
+import MileStoneTable, { TableRow } from "../../components/MilestoneTable";
 import { NewEditor } from "~/components/editor/Editor";
-import { useUser } from "@clerk/nextjs";
-import Loading from "~/components/Loading";
-import Unauthorized from "~/components/Unauthorized";
 
 function EditProject() {
   const router = useRouter();
   const { id } = router.query;
+  const animatedComponents = makeAnimated();
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
-  const getProject = api.project.getById.useQuery({ id: id as string });
-  console.log(getProject.data);
-  const categories = api.categories.getAllCategories.useQuery();
-  const categoriesOption = categories.data || [];
-  categoriesOption.sort((a, b) => a.label.localeCompare(b.label));
-  const [editorBlocks, setEditorBlocks] = useState([]);
-  const [initialEditorData, setinitialEditorData] = useState();
+
+  const getProject = api.fundraiser.getById.useQuery({ id: id as string });
+
   const deleteImage = api.project.removeImage.useMutation();
 
-  const editProject = api.project.edit.useMutation({
+  const editProject = api.fundraiser.edit.useMutation({
     onSuccess: () => {
       setSuccessModalOpen(true);
       setTimeout(() => {
-        router.push("/admin/projects");
+        router.push("/admin/funding");
       }, 2000);
-      console.log(projectData);
+
     },
     onError: (error: any) => {
       console.error("Edit Project Failed", error);
     },
   });
 
-  const [projectData, setProjectData] = useState<ProjectData>({
+  const [projectData, setProjectData] = useState<FundingData>({
     title: "",
+    project: "",
     description: "",
     image: "",
     hub: "",
     category: "",
     type: "",
     beneficiaries: "",
+    goal: "",
+    date: "",
     about: "",
-    published: false,
-    featured: false,
+    milestones: [],
   });
+
 
   const [editorContent, setEditorContent] = useState("");
 
   const handleEditorChange = (content: any) => {
     setEditorContent(content);
   };
-
+  const [editorBlocks, setEditorBlocks] = useState([]);
+  const [initialEditorData, setinitialEditorData] = useState();
   useEffect(() => {
     setEditorContent(projectData.about);
   }, [projectData.about]);
 
   useEffect(() => {
     if (getProject.data) {
-      setProjectData((prevData) => ({
-        ...prevData,
-        about: getProject.data.about || "",
-      }));
-
-      const initialEditorData = JSON.parse(
-        getProject.data.about || '{"blocks":[]}',
-      );
-      setinitialEditorData(initialEditorData);
-      setEditorBlocks(initialEditorData.blocks);
-    }
-  }, [getProject.data]);
-
-  useEffect(() => {
-    if (getProject.data) {
       setProjectData((prevData) => {
         if (
-          prevData.title !== getProject.data.title ||
-          prevData.description !== getProject.data.description ||
-          prevData.image !== getProject.data.image ||
-          prevData.hub !== getProject.data.hub ||
-          prevData.category !== getProject.data.category ||
-          prevData.type !== getProject.data.type ||
-          prevData.beneficiaries !== getProject.data.beneficiaries ||
-          prevData.about !== getProject.data.about ||
-          prevData.published !== getProject.data.published ||
-          prevData.featured !== getProject.data.featured
+          prevData.title !== getProject.data.project.title ||
+          prevData.project !== getProject.data.project.title ||
+          prevData.description !== getProject.data.project.description ||
+          prevData.image !== getProject.data.project.image ||
+          prevData.hub !== getProject.data.project.hub ||
+          prevData.category !== getProject.data.project.category ||
+          prevData.type !== getProject.data.project.type ||
+          prevData.beneficiaries !== getProject.data.project.beneficiaries ||
+          prevData.about !== getProject.data.project.about ||
+          prevData.date !== getProject.data.targetDate.toString() ||
+          prevData.milestones !== getProject.data.milestones ||
+          prevData.goal !== getProject.data.goal.toString()
         ) {
           return {
-            title: getProject.data.title,
-            description: getProject.data.description,
-            image: getProject.data.image,
-            hub: getProject.data.hub,
-            category: getProject.data.category,
-            type: getProject.data.type,
-            beneficiaries: getProject.data.beneficiaries,
-            about: getProject.data.about,
-            published: getProject.data.published,
-            featured: getProject.data.featured,
+            title: getProject.data.project.title,
+            project: getProject.data.project.title,
+            description: getProject.data.project.description,
+            image: getProject.data.project.image,
+            hub: getProject.data.project.hub,
+            category: getProject.data.project.category,
+            type: getProject.data.project.type,
+            beneficiaries: getProject.data.project.beneficiaries,
+            about: getProject.data.project.about,
+            goal: getProject.data.goal.toString(),
+            date: getProject.data.targetDate.toString(),
+            milestones: getProject.data.milestones,
           };
         } else {
           return prevData;
         }
       });
-      setImageUrl(getProject.data.image);
-      const initialEditorData = JSON.parse(getProject.data.about);
+      const initialEditorData = JSON.parse(getProject.data.project.about);
       setinitialEditorData(initialEditorData);
       setEditorBlocks(initialEditorData.blocks);
+      setMilestoneData(getProject.data.milestones);
+      setImageUrl(getProject.data.project.image);
     }
-  }, []);
+  }, [getProject.data]);
+
+  const editorRef: MutableRefObject<any> = useRef(null);
 
   const type = [
     { label: "Activity", value: "Activity" },
@@ -127,8 +127,60 @@ function EditProject() {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
-    setProjectData({ ...projectData, [name]: value });
+    if (name === "goal") {
+      // Parse the value to a number before setting it in the state
+      setProjectData({
+        ...projectData,
+        [name]: parseInt(value, 10).toString(),
+      });
+    } else {
+      setProjectData({ ...projectData, [name]: value });
+    }
   };
+
+  const [milestoneData, setMilestoneData] = useState<TableRow[]>([
+    {
+      milestone: "1",
+      value: 100,
+      unit: "2",
+      description: "this is description",
+      id: undefined
+    },
+  ]);
+
+  // Ensure getProject.data?.milestones is not undefined before setting milestoneData
+  const getObjectsWithoutIdAndConvertValue = (data: any[]) => {
+    return data
+        .map(item => {
+            const { id, ...rest } = item; // Destructure 'id' and spread other properties
+            return { ...rest, value: Number(item.value) };
+        });
+};
+  
+  // Usage example
+  const dataWithoutIdAndConvertedValue = getObjectsWithoutIdAndConvertValue(milestoneData);
+  console.log(dataWithoutIdAndConvertedValue);
+  // Usage example
+  const dataWithoutId = getObjectsWithoutIdAndConvertValue(milestoneData);
+  console.log(dataWithoutId);
+  const handleMilestoneDataChange = (data: TableRow[]) => {
+    setMilestoneData(data);
+    console.log("milestone data:",milestoneData)
+  };
+
+  // Create a new Date object from the original date string
+  const dateObject = new Date(projectData.date);
+
+  // Extract year, month, and day from the date object
+  const year = dateObject.getFullYear();
+  // getMonth() returns zero-based month, so we add 1 to it
+  const month = (dateObject.getMonth() + 1).toString().padStart(2, "0");
+  const day = dateObject.getDate().toString().padStart(2, "0");
+
+  // Construct the desired format
+  const convertedDate = `${year}-${month}-${day}`;
+
+  console.log(convertedDate);
 
   const handleImageUpload = (result: CldUploadWidgetResults) => {
     console.log("result: ", result);
@@ -161,56 +213,25 @@ function EditProject() {
     }
   };
 
-  const handleSubmit = async (isPublished: boolean) => {
-    const data = {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    editProject.mutate({
       ...projectData,
       id: id as string,
-      image: imageUrl,
-      about: JSON.stringify(editorData || initialEditorData || [], null, 2),
-      published: isPublished,
-      featured: false,
-    };
-
-    try {
-      const editedProject = await editProject.mutateAsync(data);
-
-      setProjectData(editedProject);
-      setSuccessModalOpen(true);
-      setTimeout(() => {
-        router.push("/admin/projects");
-      }, 2000);
-    } catch (error) {
-      console.error("Edit Project Failed", error);
-    }
-  };
-
-  const [editorData, setEditorData] = useState(null);
-
-  const handleChanges = (data: any) => {
-    setEditorData(data);
-    console.log(data)
-    setProjectData({
-      ...projectData,
-      about: JSON.stringify(data, null, 2),
+      goal: parseInt(projectData.goal, 10),
+      donors: 0,
+      targetDate: new Date(projectData.date),
+      funds: 0, 
+      // milestones: dataWithoutId,
     });
   };
-
-  const { user, isLoaded } = useUser();
-  const user_role = user?.publicMetadata.admin;
-
-  useEffect(() => {}, [isLoaded, user_role]);
-  if (!isLoaded) {
-    return <Loading/>
-  }
-  if (user_role !== "admin") {
-    return <Unauthorized />;
-  }
 
   return (
     <>
       <div>
         <Head>
-          <title>Edit Project | Global shapers</title>
+          <title>Edit Fundraiser | Global shapers</title>
           <meta name="description" content="Generated by create-next-app" />
           <link rel="icon" href="/gsi-logo.png" />
         </Head>
@@ -220,10 +241,10 @@ function EditProject() {
 
           <div className="mx-auto p-10">
             <div className="mb-10 mt-16 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
-              EDIT PROJECT
+              EDIT Fundraiser
             </div>
 
-            <form onSubmit={() => handleSubmit(false)}>
+            <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label htmlFor="title" className="font-medium text-gray-700">
                   Project Title
@@ -339,12 +360,13 @@ function EditProject() {
                   Categories
                 </label>
 
-                <CreatableSelect
+                <Select
                   id="long-value-select"
-                  placeholder="select option"
                   instanceId="long-value-select"
+                  placeholder="categories"
                   options={categoriesOption}
                   closeMenuOnSelect={false}
+                  components={animatedComponents}
                   isMulti
                   value={categoriesOption.filter((option) =>
                     projectData.category.split(",").includes(option.value),
@@ -387,7 +409,6 @@ function EditProject() {
                   className="z-10"
                 />
               </div>
-
               <div className="mb-4">
                 <label
                   htmlFor="beneficiaries"
@@ -400,8 +421,53 @@ function EditProject() {
                   type="text"
                   id="beneficiaries"
                   name="beneficiaries"
-                  placeholder="beneficiaries"
                   value={projectData.beneficiaries}
+                  onChange={handleChange}
+                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="milestones"
+                  className="font-medium text-gray-700"
+                >
+                  Milestones
+                </label>
+
+                <MileStoneTable
+                  onRowDataChange={handleMilestoneDataChange}
+                  existingMilestone={milestoneData}
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="funding" className="font-medium text-gray-700">
+                  Funding Goal
+                </label>
+
+                <input
+                  type="number"
+                  id="goal"
+                  name="goal"
+                  value={projectData.goal}
+                  onChange={handleChange}
+                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="date" className="font-medium text-gray-700">
+                  Target Date
+                </label>
+
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  value={convertedDate}
                   onChange={handleChange}
                   className="mt-1 w-full rounded-md border p-2 shadow-sm"
                   required
@@ -413,30 +479,18 @@ function EditProject() {
                   About
                 </label>
               </div>
-              <div></div>
-              <div className="min-w-[300px]">
-                <NewEditor
-                  onChanges={handleChanges}
-                  // initialData={editorBlocks}
-                />
-              </div>
 
+             <NewEditor onChanges={() => {}} initialData={editorBlocks} />
               <button
-                type="button"
+                type="submit"
                 className="mr-2 mt-4 rounded-lg bg-gray-600 px-2 py-2 font-medium text-white hover:bg-gray-800 md:mr-4 md:px-6"
-                onClick={() => {
-                  handleSubmit(false); // Pass false for "Save as Draft"
-                }}
               >
                 Save as Draft
               </button>
 
               <button
-                type="button"
+                type="submit"
                 className="mt-4 rounded-lg bg-blue-800 px-4 py-2 font-medium text-white hover:bg-blue-900 md:px-12"
-                onClick={() => {
-                  handleSubmit(true); // Pass true for "Publish"
-                }}
               >
                 Publish
               </button>

@@ -39,7 +39,7 @@ export default authMiddleware({
   afterAuth(user, req, evt) {
     // Handle users who aren't authenticated
     if (!user.userId && !user.isPublicRoute) {
-      return redirectToSignIn({ returnBackUrl: req.url });
+      new NextResponse("Page Not Found", { status: 404 })
     }
     // Redirect logged in users to home page if they are logged in
     if (user.userId && req.nextUrl.pathname === "/login") {
