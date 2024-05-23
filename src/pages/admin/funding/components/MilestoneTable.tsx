@@ -33,6 +33,7 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
         value: 0,
         unit: "",
         description: "",
+        id: undefined
       },
     ]);
   };
