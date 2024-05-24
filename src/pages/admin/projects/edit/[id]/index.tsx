@@ -116,7 +116,7 @@ function EditProject() {
       setinitialEditorData(initialEditorData);
       setEditorBlocks(initialEditorData.blocks);
     }
-  }, []);
+  }, [getProject.data]);
 
   const type = [
     { label: "Activity", value: "Activity" },
@@ -188,7 +188,7 @@ function EditProject() {
 
   const handleChanges = (data: any) => {
     setEditorData(data);
-    console.log(data)
+
     setProjectData({
       ...projectData,
       about: JSON.stringify(data, null, 2),
@@ -417,7 +417,7 @@ function EditProject() {
               <div className="min-w-[300px]">
                 <NewEditor
                   onChanges={handleChanges}
-                  // initialData={editorBlocks}
+                  initialData={editorBlocks}
                 />
               </div>
 
