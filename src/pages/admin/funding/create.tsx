@@ -108,29 +108,6 @@ function CreateFunding() {
     }
   };
 
-  const removeImage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const response = await fetch("/api/deleteImage", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ publicId }),
-      });
-
-      if (response.ok) {
-        setImageUrl("");
-        setPublicId("");
-      } else {
-        const errorData = await response.json();
-        console.error("Error removing image:", errorData.error);
-      }
-    } catch (error) {
-      console.error("Error removing image:", error);
-    }
-  };
-
   const [milestoneData, setMilestoneData] = useState<TableRow[]>([
     {
       milestone: "1",
@@ -325,15 +302,6 @@ function CreateFunding() {
                   />
                 )}
               </CldUploadButton>
-
-              {publicId && (
-                <button
-                  onClick={removeImage}
-                  className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700"
-                >
-                  Remove Image
-                </button>
-              )}
             </div>
 
             <div className="mb-4">
