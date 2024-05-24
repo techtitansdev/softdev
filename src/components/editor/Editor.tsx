@@ -60,7 +60,7 @@ export const NewEditor: React.FC<EditorProps> = ({
             onChanges(blocks);
           }
         },
-        placeholder: "Create your content here...",
+        placeholder: "",
         inlineToolbar: true,
         data: {
           blocks: initialData || [
