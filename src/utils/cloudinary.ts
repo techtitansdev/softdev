@@ -9,8 +9,8 @@ cloudinary.config({
 export async function deleteImageFromCloudinary(publicId: string): Promise<void> {
     try {
         await cloudinary.uploader.destroy(publicId);
-    } catch (error) {
-        throw new Error('Failed to delete image from Cloudinary');
+    } catch (error: any) {
+        throw new Error(`Failed to delete image from Cloudinary: ${error.message}`);
     }
 }
 

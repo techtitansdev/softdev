@@ -21,7 +21,7 @@ import { NewEditor } from "~/components/editor/Editor";
 import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
-import { deleteImageFromCloudinary } from "~/pages/api/cloudinary";
+import { deleteImageFromCloudinary } from "~/utils/cloudinary";
 
 interface Category {
   label: string;
