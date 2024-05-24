@@ -1,4 +1,3 @@
-import { AnyAaaaRecord } from 'dns';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { deleteImageFromCloudinary } from '~/utils/cloudinary';
 

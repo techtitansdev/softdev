@@ -110,29 +110,52 @@ function CreateFunding() {
 
   const removeImage = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      const response = await fetch("/api/deleteImage", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ publicId }),
+      });
 
-    // logic for removing the image
+      if (response.ok) {
+        setImageUrl("");
+        setPublicId("");
+      } else {
+        const errorData = await response.json();
+        console.error("Error removing image:", errorData.error);
+      }
+    } catch (error) {
+      console.error("Error removing image:", error);
+    }
   };
 
-  
   const [milestoneData, setMilestoneData] = useState<TableRow[]>([
-    { milestone: "1", value: 0, unit: "", description: "" },
+    {
+      milestone: "1",
+      value: 0,
+      unit: "",
+      description: "",
+      id: undefined,
+    },
   ]);
-  
+
   const handleMilestoneDataChange = (data: TableRow[]) => {
     // No need to parse the value field if it's already a number
     const updatedData = data.map((item) => ({
       ...item,
-      value: typeof item.value === 'string' ? parseFloat(item.value) : item.value,
+      value:
+        typeof item.value === "string" ? parseFloat(item.value) : item.value,
     }));
     setMilestoneData(updatedData);
-    console.log('updated data',updatedData)
+    console.log("updated data", updatedData);
   };
-  
 
   const createFundRaiser = api.fundraiser.create.useMutation();
   const createMilestone = api.milestone.create.useMutation();
-  const [editorBlocks, setEditorBlocks] = useState([]);console.log(milestoneData)
+  const [editorBlocks, setEditorBlocks] = useState([]);
+  console.log(milestoneData);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -171,7 +194,7 @@ function CreateFunding() {
       console.error("Error creating project:", error);
     }
   };
-  console.log({ milestone: "1", value: 0, unit: "", description: "" })
+  console.log({ milestone: "1", value: 0, unit: "", description: "" });
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin;
 
@@ -401,7 +424,10 @@ function CreateFunding() {
                 Milestones
               </label>
 
-              <MileStoneTable onRowDataChange={handleMilestoneDataChange} existingMilestone={milestoneData} />
+              <MileStoneTable
+                onRowDataChange={handleMilestoneDataChange}
+                existingMilestone={milestoneData}
+              />
             </div>
 
             <div className="mb-4">
