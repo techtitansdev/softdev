@@ -21,7 +21,6 @@ import { NewEditor } from "~/components/editor/Editor";
 import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
-import { deleteImageFromCloudinary } from "~/utils/cloudinary";
 
 interface Category {
   label: string;
@@ -109,12 +108,26 @@ function CreateProjects() {
     }
   };
 
-  const removeImage = async () => {
+  const removeImage = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
-      await deleteImageFromCloudinary(publicId);
-      console.log("Image deleted successfully.");
+      const response = await fetch('/api/deleteImage', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ publicId }),
+      });
+  
+      if (response.ok) {
+        setImageUrl('');
+        setPublicId('');
+      } else {
+        const errorData = await response.json();
+        console.error('Error removing image:', errorData.error);
+      }
     } catch (error) {
-      console.error("Failed to delete image:", error);
+      console.error('Error removing image:', error);
     }
   };
 
