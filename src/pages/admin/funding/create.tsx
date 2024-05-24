@@ -120,7 +120,6 @@ function CreateFunding() {
       milestone: "1", value: 0, unit: "", description: "",
       id: undefined
     },
-
   ]);
   
   const handleMilestoneDataChange = (data: TableRow[]) => {
@@ -136,7 +135,7 @@ function CreateFunding() {
 
   const createFundRaiser = api.fundraiser.create.useMutation();
   const createMilestone = api.milestone.create.useMutation();
-  const [editorBlocks, setEditorBlocks] = useState([]);console.log(milestoneData)
+  const [editorBlocks, setEditorBlocks] = useState([]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

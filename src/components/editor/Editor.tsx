@@ -132,7 +132,7 @@ export const NewEditor: React.FC<EditorProps> = ({
             class: ImageTool,
             config: {
               uploader: {
-                async uploadByFile(file: any) {
+                async uploadByFile(file: string | Blob) {
                   try {
                     const formData = new FormData();
                     formData.append("file", file);
