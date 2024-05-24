@@ -60,7 +60,7 @@ export const NewEditor: React.FC<EditorProps> = ({
             onChanges(blocks);
           }
         },
-        placeholder: "Create your content here...",
+        placeholder: "",
         inlineToolbar: true,
         data: {
           blocks: initialData || [
@@ -132,7 +132,7 @@ export const NewEditor: React.FC<EditorProps> = ({
             class: ImageTool,
             config: {
               uploader: {
-                async uploadByFile(file) {
+                async uploadByFile(file: any) {
                   try {
                     const formData = new FormData();
                     formData.append("file", file);
