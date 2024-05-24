@@ -116,7 +116,11 @@ function CreateFunding() {
 
   
   const [milestoneData, setMilestoneData] = useState<TableRow[]>([
-    { milestone: "1", value: 0, unit: "", description: "" },
+    {
+      milestone: "1", value: 0, unit: "", description: "",
+      id: undefined
+    },
+
   ]);
   
   const handleMilestoneDataChange = (data: TableRow[]) => {
