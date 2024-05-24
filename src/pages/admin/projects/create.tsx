@@ -21,6 +21,7 @@ import { NewEditor } from "~/components/editor/Editor";
 import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
+import { deleteImageFromCloudinary } from "~/pages/api/cloudinary";
 
 interface Category {
   label: string;
@@ -108,9 +109,13 @@ function CreateProjects() {
     }
   };
 
-  const removeImage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // Logic for removing the image
+  const removeImage = async () => {
+    try {
+      await deleteImageFromCloudinary(publicId);
+      console.log("Image deleted successfully.");
+    } catch (error) {
+      console.error("Failed to delete image:", error);
+    }
   };
 
   const handleSubmit = async (isPublished: boolean) => {
@@ -154,7 +159,7 @@ function CreateProjects() {
 
   useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <Loading/>
+    return <Loading />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;
