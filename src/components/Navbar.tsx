@@ -182,7 +182,7 @@ export const Navbar = () => {
               <div className="flex items-center justify-center">
                 {user && (
                   <button
-                    className="mx-16 w-full min-w-[400px] rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800"
+                    className="mx-6 w-full min-w-[300px] rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800 md:mx-16"
                     onClick={() => signOut(() => router.push("/"))}
                     //data-testid="sign-out"
                   >
@@ -194,7 +194,7 @@ export const Navbar = () => {
                 <Link href="/login">
                   <li
                     onClick={closeMenu}
-                    className="mx-16 min-w-[400px] rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800"
+                    className="mx-6 min-w-[300px] rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800 md:mx-16"
                     style={{ zIndex: 1 }}
                   >
                     LOGIN
