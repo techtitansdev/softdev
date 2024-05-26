@@ -142,7 +142,7 @@ const FundedProjects = () => {
         </div>
 
         <div className="mx-auto">
-          <div className="mb-12 mt-1 flex items-center justify-center">
+          <div className="mb-12 mt-1 flex items-center justify-center mx-4">
             <div className="mt-4 grid grid-cols-1 gap-12 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
               {filterFunding.map((project: any) => (
                 <div key={project.id}>
