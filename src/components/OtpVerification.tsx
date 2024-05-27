@@ -34,7 +34,7 @@ export const OtpVerification = () => {
         await setActive({ session: completeSignUp.createdSessionId });
 
         setModalContent("Success");
-        setModalColor("bg-gray-800");
+        setModalColor("bg-green-700");
         setModalOpen(true);
 
         setTimeout(() => {

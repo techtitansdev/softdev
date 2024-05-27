@@ -10,7 +10,6 @@ import {
   AiOutlineMail,
 } from "react-icons/ai";
 import { Modal } from "~/components/Modal";
-import { api } from "~/utils/api";
 import { validateLogin } from "~/utils/validateLogin";
 
 export const LoginForm = () => {
@@ -65,7 +64,7 @@ export const LoginForm = () => {
             if (result.status === "complete") {
               setModalOpen(true);
               setModalContent("Success");
-              setModalBgColor("bg-gray-800");
+              setModalBgColor("bg-green-700");
 
               await new Promise((resolve) => setTimeout(resolve, 3000));
 
