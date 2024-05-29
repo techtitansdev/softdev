@@ -8,16 +8,25 @@ import {
   AiOutlineSortDescending,
 } from "react-icons/ai";
 import SearchByDonor from "~/components/search/SearchByDonor";
-import { donorsData } from "~/data/donorsData";
 import FilterByProjectName from "~/components/filter/FilterByProjectName";
-import { useRouter } from "next/router";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
+import { api } from "~/utils/api";
+
+type Donor = {
+  fullName: string;
+  date: string;
+  email: string;
+  contact: string;
+  donatedAs: string;
+  projectName: string;
+  amount: number;
+};
 
 const Donors = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
-  const [tableData, setTableData] = useState(donorsData);
+  const [tableData, setTableData] = useState<Donor[]>([]);
   const [selectedProject, setSelectedProject] = useState("All");
   const [isNameSortedAscending, setIsNameSortedAscending] = useState(true);
   const [isProjectListOpen, setIsProjectListOpen] = useState(false);
@@ -33,6 +42,31 @@ const Donors = () => {
       setSearchInteraction(false);
     }
   }, [tableData, selectedProject, searchQuery, searchInteraction]);
+
+  const donors = api.funding.getAll.useQuery();
+
+  useEffect(() => {
+    if (donors.data) {
+      const transformedData = donors.data.map((item) => ({
+        fullName: item.name,
+        date: new Date(item.date).toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        }),
+        email: item.email || "",
+        contact: item.contact,
+        donatedAs: item.donationType || "",
+        projectName: item.projectName || "",
+        amount: item.amount,
+      }));
+      setTableData(transformedData);
+      setCurrentPage(1);
+    }
+  }, [donors.data]);
 
   const filterData = () => {
     const filtered = tableData.filter((item) => {
