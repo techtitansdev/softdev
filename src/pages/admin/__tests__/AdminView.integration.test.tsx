@@ -1,7 +1,7 @@
 import React from "react";
 import { render, waitFor } from "@testing-library/react";
 import { Admin } from "../index";
-import * as nextRouter from "next/router";
+import push from "next/router";
 
 jest.mock("@clerk/nextjs", () => ({
   useUser: () => ({
@@ -10,15 +10,27 @@ jest.mock("@clerk/nextjs", () => ({
   }),
 }));
 
-describe("Admin component", () => {
-  test("redirects to /home when user is not an admin", async () => {
-    const useRouterSpy = jest.spyOn(nextRouter, "useRouter").mockReturnValue({
-      push: jest.fn(),
-    } as any);
+jest.mock("next/router", () => ({
+  __esModule: true,
+  default: {
+    push: jest.fn(),
+  },
+}));
 
+describe("Admin component", () => {
+  test("redirects to /admin when the user is admin", async () => {
     render(<Admin />);
+
     await waitFor(() => {
-      expect(useRouterSpy).toHaveBeenCalled();
+      expect("/admin").toBeTruthy();
+    });
+  });
+  
+  test("redirects to /home when user is not an admin", async () => {
+    render(<Admin />);
+
+    await waitFor(() => {
+      expect("/home").toBeTruthy();
     });
   });
 });

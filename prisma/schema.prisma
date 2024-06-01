@@ -19,7 +19,7 @@ model Users {
   phone           String
   password        String
   created         DateTime   @default(now())
-  updated         DateTime   @updatedAt()
+  updated         DateTime   @updatedAt
   role            String     @default("USER")
   admins          Admins[]
   donors          Donors[]
@@ -57,7 +57,7 @@ model Blogs {
   image                String
   content              String
   created              DateTime               @default(now())
-  updated              DateTime               @updatedAt()
+  updated              DateTime               @updatedAt
   published            Boolean                @default(false)
   featured             Boolean                @default(false)
   assignAdminBlogs     AssignAdminBlogs[]
@@ -74,7 +74,7 @@ model Projects {
   type                    String
   beneficiaries           String
   created                 DateTime                  @default(now())
-  updated                 DateTime                  @updatedAt()
+  updated                 DateTime                  @updatedAt
   about                   String
   published               Boolean                   @default(false)
   featured                Boolean                   @default(false)
@@ -86,13 +86,13 @@ model Projects {
 
 model Fundraisers {
   id         String       @id @default(cuid())
-  projectId  String       @unique()
+  projectId  String       @unique
   funds      Int
   goal       Int
   donors     Int
   targetDate DateTime
   created    DateTime     @default(now())
-  updated    DateTime     @updatedAt()
+  updated    DateTime     @updatedAt
   complete   Boolean      @default(false)
   published  Boolean      @default(false)
   ongoing    Boolean      @default(false)
@@ -133,9 +133,8 @@ model Feedback {
   projectId String
   feedback  String
   created   DateTime @default(now())
-
-  user    Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  project Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([projectId])
@@ -148,7 +147,7 @@ model Milestones {
   unit         String
   description  String
   created      DateTime    @default(now())
-  updated      DateTime    @updatedAt()
+  updated      DateTime    @updatedAt
   fundraiserId String
   fundraiser   Fundraisers @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
 
