@@ -82,10 +82,18 @@ const FeaturedBlogCard: React.FC<BlogCardProps> = ({
     }
   };
 
+  // Determine card background color based on published status
+  const cardBackgroundColor = blogData.published
+    ? "bg-gray-100"
+    : "bg-white";
+
   return (
     <div className="relative">
       <ul>
-        <li key={blogData.id} className="relative rounded-lg pb-4 shadow">
+        <li
+          key={blogData.id}
+          className={`relative rounded-lg pb-4 shadow ${cardBackgroundColor}`}
+        >
           <button
             className="absolute right-2 top-2 text-yellow-500 focus:outline-none"
             onClick={toggleFeatured}

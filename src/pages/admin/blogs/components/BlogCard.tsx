@@ -79,10 +79,18 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
     }
   };
 
+  // Determine card background color based on published status
+  const cardBackgroundColor = blogData.published
+    ? "bg-gray-100"
+    : "bg-white";
+
   return (
     <div className="relative">
       <ul>
-        <li key={blogData.id} className="relative rounded-lg pb-4 shadow">
+        <li
+          key={blogData.id}
+          className={`relative rounded-lg pb-4 shadow ${cardBackgroundColor}`}
+        >
           <button
             className="absolute right-2 top-2 text-yellow-500 focus:outline-none"
             onClick={toggleFeatured}
@@ -92,7 +100,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
 
           <Link href={`/admin/blogs/${encodeURIComponent(blogData.id)}`}>
             <img
-              className="object-obtain h-56 w-[280px] rounded-sm lg:w-[300px]"
+              className="h-56 w-[280px] rounded-sm object-cover lg:w-[300px]"
               src={blogData.image}
               alt={blogData.image}
               data-testId="blog-image"
