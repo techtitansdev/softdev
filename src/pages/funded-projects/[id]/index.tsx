@@ -24,21 +24,20 @@ const Funding: React.FC = () => {
   console.log(getFunding.data?.project.id);
   const [editorBlocks, setEditorBlocks] = useState([]);
   const [initialEditorData, setinitialEditorData] = useState();
-  const [numberOfDonor,setNumberOfDonor] = useState(0);
+  const [numberOfDonor, setNumberOfDonor] = useState(0);
 
   useEffect(() => {
     if (getFunding.data && !fundingData && getFunding.data !== fundingData) {
-      setNumberOfDonor(getFunding.data.fundings.length)
+      setNumberOfDonor(getFunding.data.fundings.length);
       setFundingData(getFunding.data);
       const initialEditorData = JSON.parse(getFunding.data.project.about);
       setinitialEditorData(initialEditorData);
       setEditorBlocks(initialEditorData.blocks);
-      
     }
   }, [getFunding.data, fundingData]);
 
   const [content, setContent] = useState("about");
- 
+
   const changeContent = (newContent: string) => {
     setContent(newContent);
   };
@@ -49,6 +48,12 @@ const Funding: React.FC = () => {
 
     const differenceMs = target.getTime() - currentDate.getTime();
 
+    // Check if the target date has passed
+    if (differenceMs < 0) {
+      return 0; // Return 0 if target date has passed
+    }
+
+    // Calculate the difference in days
     const differenceDays = Math.ceil(differenceMs / (1000 * 60 * 60 * 24));
     return differenceDays;
   };
@@ -135,14 +140,19 @@ const Funding: React.FC = () => {
                 alt="Project Image"
                 className="w-full rounded-3xl md:h-96"
               />
-              <div className="mt-4 h-2.5 w-full rounded-full bg-gray-200 lg:mt-8 dark:bg-gray-400">
+              <div className="h-2.5 w-full rounded-full bg-gray-200 lg:mt-8 dark:bg-gray-400">
                 <div
                   className="h-2.5 rounded-full bg-blue-800"
                   style={{
-                    width: `${(fundingData.funds / fundingData.goal) * 100}%`,
+                    width: `${
+                      fundingData.funds >= fundingData.goal
+                        ? "100%"
+                        : `${(fundingData.funds / fundingData.goal) * 100}%`
+                    }`,
                   }}
                 ></div>
               </div>
+
               <div className="mb-4 mt-1 flex justify-between md:mt-4">
                 <p className="text-xs font-medium md:text-sm">
                   Days Left: {calculateDaysLeft(fundingData.targetDate)}
@@ -194,9 +204,11 @@ const Funding: React.FC = () => {
 
         <div className="mx-6 mb-12 mt-6 sm:mx-10 lg:mx-20 lg:mt-12">
           {content === "about" && fundingData?.project && (
-            <EditorOutput content={initialEditorData}/>
+            <EditorOutput content={initialEditorData} />
           )}
-          {content === "milestone" && <MilestoneComponent milestones={fundingData.milestones} />}
+          {content === "milestone" && (
+            <MilestoneComponent milestones={fundingData.milestones} />
+          )}
           {content === "comment" && (
             <CommentComponent projectId={projectId as string} />
           )}
