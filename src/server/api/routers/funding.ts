@@ -42,6 +42,47 @@ export const funding = createTRPCRouter({
         paymentMethod: funding.paymentMethod,
       }));
     }),
+  getAll: protectedProcedure.query(async () => {
+    const allFundings = await db.fundings.findMany({
+      include: {
+        donor: {
+          select: {
+            user: {
+              select: {
+                firstName: true,
+                lastName: true,
+                email: true,
+                phone: true,
+              },
+            },
+          },
+        },
+        fundraiser: {
+          select: {
+            project: {
+              select: {
+                title: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    allFundings.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    );
+
+    return allFundings.map(funding => ({
+      name: `${funding.donor.user.firstName} ${funding.donor.user.lastName}`,
+      email: funding.donor.user.email,
+      contact: funding.donor.user.phone,
+      donationType: funding.paymentMethod,
+      date: funding.date,
+      projectName: funding.fundraiser.project.title,
+      amount: funding.amount,
+    }));
+  }),
 });
 
 export const fundingCaller = funding.createCaller;
