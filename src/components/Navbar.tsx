@@ -113,7 +113,7 @@ export const Navbar = () => {
 
         <div className="hidden justify-end lg:flex">
           <div className="mr-4">
-            {user && <UserButton afterSignOutUrl="/home" />}
+            {user && <UserButton afterSignOutUrl="/home" data-testid="UserButton"/> }
           </div>
 
           {!user && (
@@ -184,7 +184,6 @@ export const Navbar = () => {
                   <button
                     className="mx-6 w-full min-w-[300px] rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800 md:mx-16"
                     onClick={() => signOut(() => router.push("/"))}
-                    //data-testid="sign-out"
                   >
                     Sign out
                   </button>

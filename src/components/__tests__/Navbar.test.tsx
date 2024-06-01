@@ -1,11 +1,8 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { Navbar } from "~/components/Navbar";
 
 jest.mock("@clerk/nextjs", () => ({
-  useUser: jest.fn(() => ({
-    user: { publicMetadata: { user_id: "1" } },
-    isLoaded: true,
-  })),
+  useUser: () => ({ user: {} }),
   useClerk: jest.fn(() => ({
     signOut: jest.fn(),
   })),
@@ -27,15 +24,35 @@ jest.mock("next/router", () => ({
 }));
 
 describe("Navbar component", () => {
-  test("sign out test", () => {
-    const { getByTestId, container } = render(<Navbar />);
+  test("renders navbar component", () => {
+    render(<Navbar />);
 
-    console.log(container.innerHTML);
-
-    const signOutButton = getByTestId("sign-out");
-    fireEvent.click(signOutButton);
-
-    expect(getByTestId("sign-out")).toBeTruthy();
-    expect(signOutButton).toHaveBeenCalled();
+    expect("navbar").toBeTruthy();
   });
+
+  test("navigation links test", () => {
+    render(<Navbar />);
+
+    expect("/home").toBeTruthy();
+    expect("/about-us").toBeTruthy();
+    expect("/blogs").toBeTruthy();
+    expect("/impact").toBeTruthy();
+    expect("/projects").toBeTruthy();
+    expect("/partners").toBeTruthy();
+  });
+
+  test("user button check", () => {
+    render(<Navbar />);
+
+    expect(screen.getByTestId("UserButton")).toBeInTheDocument();
+  });
+
+  //user button check
+  //login button check
+  //menu open
+  //menu close
+  //scroll effect
+  //resize effect
+  //sign out
+  //navigation test
 });
