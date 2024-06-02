@@ -1,7 +1,6 @@
 import React from "react";
 import { render, waitFor } from "@testing-library/react";
 import { Admin } from "../index";
-import push from "next/router";
 
 jest.mock("@clerk/nextjs", () => ({
   useUser: () => ({

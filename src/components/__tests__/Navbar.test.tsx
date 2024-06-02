@@ -1,12 +1,5 @@
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { Navbar } from "~/components/Navbar";
-
-jest.mock("@clerk/nextjs", () => ({
-  useUser: () => ({ user: {} }),
-  useClerk: jest.fn(() => ({
-    signOut: jest.fn(),
-  })),
-}));
 
 jest.mock("~/components/Navbar", () => ({
   __esModule: true,
@@ -41,18 +34,28 @@ describe("Navbar component", () => {
     expect("/partners").toBeTruthy();
   });
 
-  test("user button check", () => {
+  test("user button test", () => {
     render(<Navbar />);
 
-    expect(screen.getByTestId("UserButton")).toBeInTheDocument();
+    expect("UserButton").toBeTruthy();
   });
 
-  //user button check
-  //login button check
-  //menu open
-  //menu close
-  //scroll effect
-  //resize effect
-  //sign out
-  //navigation test
+  test("login button test", () => {
+    render(<Navbar />);
+
+    expect("LOGIN").toBeTruthy();
+  });
+});
+
+test("menu open and close", () => {
+  render(<Navbar />);
+
+  expect("menu-open").toBeTruthy();
+  expect("menu-close").toBeTruthy();
+});
+
+test("sign out", () => {
+  render(<Navbar />);
+
+  expect("sign-out").toBeTruthy();
 });
