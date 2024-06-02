@@ -22,7 +22,7 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
   useEffect(() => {
     if (existingMilestone.length > 0) {
       setRows(existingMilestone);
-    } 
+    }
   }, [existingMilestone]);
 
   const addRow = () => {
@@ -33,15 +33,15 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
         value: 0,
         unit: "",
         description: "",
-        id: undefined
+        id: undefined,
       },
     ]);
   };
 
   const handleChange = (
     index: number,
-    field: keyof TableRow,  
-    value: string
+    field: keyof TableRow,
+    value: string,
   ) => {
     const newRows = rows.map((row, rowIndex) => {
       if (rowIndex === index) {
@@ -96,11 +96,12 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
                 <input
                   type="number"
                   value={row.value}
-                  placeholder=" Ex: 100"
+                  placeholder="Ex: 100"
                   required
                   onChange={(e) => handleChange(index, "value", e.target.value)}
-                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm"
+                  className="block w-full rounded-sm border border-gray-300 py-2 pl-2 sm:text-sm"
                   data-testid="funding-goal-input"
+                  min={1}
                 />
               </td>
               <td>
@@ -110,7 +111,7 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
                   required
                   placeholder=" Ex: books"
                   onChange={(e) => handleChange(index, "unit", e.target.value)}
-                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm"
+                  className="block w-full rounded-sm border border-gray-300 py-2 pl-2 sm:text-sm"
                   data-testid="milestone-unit-input"
                 />
               </td>
@@ -123,7 +124,7 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
                   onChange={(e) =>
                     handleChange(index, "description", e.target.value)
                   }
-                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm"
+                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm pl-2"
                   data-testid="milestone-description-input"
                 />
               </td>
