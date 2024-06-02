@@ -8,24 +8,24 @@ import {
   AiOutlineSortDescending,
 } from "react-icons/ai";
 import SearchByDonor from "~/components/search/SearchByDonor";
-import FilterByProjectName from "~/components/filter/FilterByProjectName";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import { api } from "~/utils/api";
+import FilterByProjectName from "~/components/filter/FilterByProjectName";
 
 type Donor = {
   fullName: string;
   date: string;
   email: string;
   contact: string;
-  donatedAs: string;
   projectName: string;
+  paymentMethod: string;
   amount: number;
 };
 
 const Donors = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage] = useState(10);
   const [tableData, setTableData] = useState<Donor[]>([]);
   const [selectedProject, setSelectedProject] = useState("All");
   const [isNameSortedAscending, setIsNameSortedAscending] = useState(true);
@@ -34,14 +34,12 @@ const Donors = () => {
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [filteredData, setFilteredData] = useState(tableData);
   const [searchInteraction, setSearchInteraction] = useState(false);
+  const [confirmedSearchQuery, setConfirmedSearchQuery] = useState("");
 
   useEffect(() => {
+    filterData();
     setCurrentPage(1);
-    if (searchInteraction || selectedProject !== "All") {
-      filterData();
-      setSearchInteraction(false);
-    }
-  }, [tableData, selectedProject, searchQuery, searchInteraction]);
+  }, [selectedProject, confirmedSearchQuery]);
 
   const donors = api.funding.getAll.useQuery();
 
@@ -59,8 +57,8 @@ const Donors = () => {
         }),
         email: item.email || "",
         contact: item.contact,
-        donatedAs: item.donationType || "",
         projectName: item.projectName || "",
+        paymentMethod: item.paymentMethod || "",
         amount: item.amount,
       }));
       setTableData(transformedData);
@@ -73,12 +71,29 @@ const Donors = () => {
       const matchesProject =
         selectedProject === "All" || item.projectName.includes(selectedProject);
       const matchesSearchQuery =
-        searchQuery === "" ||
-        item.fullName.toLowerCase().includes(searchQuery.toLowerCase());
+        confirmedSearchQuery === "" ||
+        item.fullName
+          .toLowerCase()
+          .includes(confirmedSearchQuery.toLowerCase());
       return matchesProject && matchesSearchQuery;
     });
     setFilteredData(filtered);
   };
+
+  useEffect(() => {
+    if (searchQuery === "") {
+      setConfirmedSearchQuery("");
+    }
+  }, [searchQuery]);
+
+  useEffect(() => {
+    filterData();
+  }, [selectedProject, confirmedSearchQuery, tableData]);
+
+  useEffect(() => {
+    filterData();
+    setCurrentPage(1);
+  }, [selectedProject, searchQuery]);
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
@@ -94,51 +109,48 @@ const Donors = () => {
 
   const currentItems = sortedData.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
-  const toggleNameSortOrder = () =>
+  const toggleNameSortOrder = () => {
     setIsNameSortedAscending(!isNameSortedAscending);
-
-  const [projectFilterChanged, setProjectFilterChanged] = useState(false);
+  };
 
   const handleProjectSelect = (project: string) => {
     setSelectedProject(project);
-    setIsProjectListOpen(false);
-    setProjectFilterChanged(true);
-    if (project === "All") {
-      setFilteredData(tableData);
-    }
   };
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
-    if (projectFilterChanged) {
-      setProjectFilterChanged(false);
-    } else {
-      const suggestions = filteredData
-        .filter((item) =>
-          item.fullName.toLowerCase().includes(value.toLowerCase()),
-        )
-        .map((item) => item.fullName)
-        .filter((value, index, self) => self.indexOf(value) === index);
 
-      if (suggestions.length === 0 && value !== "") {
-        setSearchSuggestions(["No results found"]);
-      } else {
-        setSearchSuggestions(suggestions);
-      }
+    const suggestions = tableData
+      .filter((item) => {
+        const matchesProject =
+          selectedProject === "All" ||
+          item.projectName.includes(selectedProject);
+        const matchesName = item.fullName
+          .toLowerCase()
+          .includes(value.toLowerCase());
+        return matchesProject && matchesName;
+      })
+      .map((item) => item.fullName);
 
-      if (value === "") {
-        setFilteredData(tableData);
-      }
-    }
+    const uniqueSuggestions = Array.from(new Set(suggestions));
+
+    setSearchSuggestions(uniqueSuggestions);
   };
 
   const handleEnterPress = () => {
-    setSearchInteraction(true);
+    if (searchQuery) {
+      setConfirmedSearchQuery(searchQuery);
+      setSearchSuggestions([]);
+      setSearchInteraction(true);
+    }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
+    setConfirmedSearchQuery(suggestion);
     setSearchQuery(suggestion);
     setSearchSuggestions([]);
     setSearchInteraction(true);
@@ -264,13 +276,13 @@ const Donors = () => {
                     Contact
                   </th>
                   <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
-                    Donated As
-                  </th>
-                  <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
                     Date
                   </th>
                   <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
                     Project Name
+                  </th>
+                  <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
+                    Payment Method
                   </th>
                   <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
                     Amount
@@ -290,13 +302,13 @@ const Donors = () => {
                       {item.contact}
                     </td>
                     <td className="border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
-                      {item.donatedAs}
-                    </td>
-                    <td className="border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
                       {item.date}
                     </td>
                     <td className="border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
                       {item.projectName}
+                    </td>
+                    <td className="border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
+                      {item.paymentMethod}
                     </td>
                     <td className="border-2 py-4 pl-8 text-left text-sm font-light text-gray-700">
                       {item.amount}

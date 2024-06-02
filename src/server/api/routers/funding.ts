@@ -77,9 +77,9 @@ export const funding = createTRPCRouter({
       name: `${funding.donor.user.firstName} ${funding.donor.user.lastName}`,
       email: funding.donor.user.email,
       contact: funding.donor.user.phone,
-      donationType: funding.paymentMethod,
       date: funding.date,
       projectName: funding.fundraiser.project.title,
+      paymentMethod: funding.paymentMethod,
       amount: funding.amount,
     }));
   }),
