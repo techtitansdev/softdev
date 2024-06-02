@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import { categoriesOption } from "~/data/categories";
@@ -16,7 +15,6 @@ import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import { FundingData } from "~/types/fundingData";
-import { milestone } from "~/server/api/routers/milestone";
 
 function CreateFunding() {
   const [project, setProject] = useState("");
@@ -53,6 +51,7 @@ function CreateFunding() {
     milestones: [],
   });
   const [initialEditorData, setinitialEditorData] = useState();
+
   const type = [
     { label: "Activity", value: "Activity" },
     { label: "Project", value: "Project" },
@@ -82,10 +81,6 @@ function CreateFunding() {
     }
   }, [getSpecificProjects.data]);
 
-  const handleEditorChange = (content: any) => {
-    setEditorContent(content);
-  };
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -114,46 +109,33 @@ function CreateFunding() {
     // logic for removing the image
   };
 
-  
   const [milestoneData, setMilestoneData] = useState<TableRow[]>([
     {
-      milestone: "1", value: 0, unit: "", description: "",
-      id: undefined
+      milestone: "1",
+      value: 0,
+      unit: "",
+      description: "",
+      id: undefined,
     },
   ]);
-  
+
   const handleMilestoneDataChange = (data: TableRow[]) => {
-    // No need to parse the value field if it's already a number
     const updatedData = data.map((item) => ({
       ...item,
-      value: typeof item.value === 'string' ? parseFloat(item.value) : item.value,
+      value:
+        typeof item.value === "string" ? parseFloat(item.value) : item.value,
     }));
     setMilestoneData(updatedData);
-    console.log('updated data',updatedData)
+    console.log("updated data", updatedData);
   };
-  
 
   const createFundRaiser = api.fundraiser.create.useMutation();
-  const createMilestone = api.milestone.create.useMutation();
   const [editorBlocks, setEditorBlocks] = useState([]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      // Create milestones
-      // const createdMilestones = await Promise.all(
-      //   milestoneData.map(async (milestone) => {
-      //     return await createMilestone.mutateAsync({
-      //       milestone: milestone.milestone,
-      //       value: parseFloat(milestone.value.toString()),
-      //       unit: milestone.unit,
-      //       description: milestone.description,
-      //       fundraiserId: "",
-      //     });
-      //   }),
-      // );
-
-      // Create fundraiser
       const fundraiserResult = await createFundRaiser.mutateAsync({
         goal: parseFloat(fundingData.goal),
         targetDate: new Date(fundingData.date),
@@ -174,7 +156,7 @@ function CreateFunding() {
       console.error("Error creating project:", error);
     }
   };
-  console.log({ milestone: "1", value: 0, unit: "", description: "" })
+  console.log({ milestone: "1", value: 0, unit: "", description: "" });
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin;
 
@@ -185,6 +167,7 @@ function CreateFunding() {
   if (user_role !== "admin") {
     return <Unauthorized />;
   }
+
   return (
     <div>
       <Head>
@@ -208,10 +191,10 @@ function CreateFunding() {
               </label>
 
               <Select
-                options={transformedProjects} // Pass the constantOptions array here
+                options={transformedProjects}
                 value={transformedProjects.find(
                   (option) => option.value === fundingData.category,
-                )} // Set the value prop based on the selectedConstantValue
+                )}
                 onChange={(selectedOption) => {
                   setImageUrl(getSpecificProjects.data?.image ?? "");
                   setFundingData({
@@ -243,9 +226,9 @@ function CreateFunding() {
                 name="title"
                 value={fundingData.title}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                required
+                className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
                 data-testid="project-select"
+                readOnly
               />
             </div>
 
@@ -261,8 +244,8 @@ function CreateFunding() {
                 name="description"
                 value={fundingData.description}
                 onChange={handleChange}
-                className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm"
-                required
+                className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm outline-none"
+                readOnly
               />
             </div>
 
@@ -305,15 +288,6 @@ function CreateFunding() {
                   />
                 )}
               </CldUploadButton>
-
-              {publicId && (
-                <button
-                  onClick={removeImage}
-                  className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700"
-                >
-                  Remove Image
-                </button>
-              )}
             </div>
 
             <div className="mb-4">
@@ -327,7 +301,7 @@ function CreateFunding() {
                 name="hub"
                 value={fundingData.hub}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
                 readOnly
               />
             </div>
@@ -394,8 +368,8 @@ function CreateFunding() {
                 name="beneficiaries"
                 value={fundingData.beneficiaries}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                required
+                className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
+                readOnly
               />
             </div>
 
@@ -404,7 +378,10 @@ function CreateFunding() {
                 Milestones
               </label>
 
-              <MileStoneTable onRowDataChange={handleMilestoneDataChange} existingMilestone={milestoneData} />
+              <MileStoneTable
+                onRowDataChange={handleMilestoneDataChange}
+                existingMilestone={milestoneData}
+              />
             </div>
 
             <div className="mb-4">
@@ -413,11 +390,19 @@ function CreateFunding() {
               </label>
 
               <input
-                type="number"
+                type="text"
                 id="goal"
                 name="goal"
                 value={fundingData.goal}
-                onChange={handleChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (
+                    /^\d*$/.test(value) &&
+                    (value === "" || parseInt(value) >= 1)
+                  ) {
+                    setFundingData({ ...fundingData, goal: value });
+                  }
+                }}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm"
                 required
               />
