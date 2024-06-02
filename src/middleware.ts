@@ -1,4 +1,4 @@
-import { authMiddleware, redirectToSignIn } from "@clerk/nextjs";
+import { authMiddleware, clerkClient, redirectToSignIn } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
 export default authMiddleware({
@@ -36,19 +36,28 @@ export default authMiddleware({
     "/api/trpc/user.create",
   ],
 
-  afterAuth(user, req, evt) {
+  async afterAuth(auth, req, evt) {
+
     // Handle users who aren't authenticated
-    if (!user.userId && !user.isPublicRoute) {
+    if (!auth.userId && !auth.isPublicRoute) {
       new NextResponse("Page Not Found", { status: 404 })
     }
     // Redirect logged in users to home page if they are logged in
-    if (user.userId && req.nextUrl.pathname === "/login") {
+    if (auth.userId && req.nextUrl.pathname === "/login") {
+      const userRole = await clerkClient.users.getUser(auth.userId);
+        const role = userRole.publicMetadata.admin;
       const home = new URL("/home", req.url);
+      const admin = new URL("/admin", req.url);
+      if (role === "admin"){
+        return NextResponse.redirect(admin);
+      }else{
 
-      return NextResponse.redirect(home);
+        return NextResponse.redirect(home);
+      }
+
     }
     // If the user is logged in and trying to access a protected route, allow them to access route
-    if (user.userId && !user.isPublicRoute) {
+    if (auth.userId && !auth.isPublicRoute) {
       return NextResponse.next();
     }
     // Allow users visiting public routes to access them
