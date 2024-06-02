@@ -1,7 +1,8 @@
-import React, { SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 import { IoFilterOutline } from "react-icons/io5";
-import { donorsData } from "~/data/donorsData";
+import { Donors } from "~/types/donors";
+import { api } from "~/utils/api";
 
 export type FilteredProjectProps = {
   selectedProject: string;
@@ -16,8 +17,27 @@ const FilterByProjectName = ({
   toggleProjectList,
   handleProjectSelect,
 }: FilteredProjectProps) => {
+  const [data, setData] = useState<Donors[]>([]);
+
+  const donors = api.funding.getAll.useQuery();
+
+  useEffect(() => {
+    if (donors.data) {
+      const transformedData = donors.data.map((item) => ({
+        name: item.name,
+        email: item.email || "",
+        contact: item.contact || "",
+        date: new Date(item.date).toISOString(),
+        projectName: item.projectName || "",
+        paymentMethod: item.paymentMethod || "",
+        amount: item.amount,
+      }));
+      setData(transformedData);
+    }
+  }, [donors.data]);
+
   const uniqueProjects = Array.from(
-    new Set(donorsData.map((item) => item.projectName)),
+    new Set(data.map((item) => item.projectName)),
   ).sort((a, b) => a.localeCompare(b));
 
   const projectOptions = ["All", ...uniqueProjects];
