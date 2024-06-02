@@ -6,7 +6,9 @@ export const funding = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        donorEmail: z.string(),
+        fullName: z.string(),
+        email: z.string(),
+        contact: z.string(),
         fundraiserId: z.string(),
         amount: z.number(),
         paymentMethod: z.string(),
@@ -16,10 +18,18 @@ export const funding = createTRPCRouter({
       const { input } = opts;
 
       const donor = await db.fundings.create({
-        data: input,
+        data: {
+          fullName: input.fullName,
+          email: input.email,
+          contact: input.contact,
+          fundraiserId: input.fundraiserId,
+          amount: input.amount,
+          paymentMethod: input.paymentMethod,
+        },
       });
       return donor;
     }),
+
   getByFundraiser: protectedProcedure
     .input(
       z.object({
@@ -36,52 +46,43 @@ export const funding = createTRPCRouter({
       });
 
       return fundings.map((funding) => ({
-        donorEmail: funding.donorEmail,
+        donorEmail: funding.email,
         fundraiserId: funding.fundraiserId,
         amount: funding.amount,
         paymentMethod: funding.paymentMethod,
       }));
     }),
+
   getAll: protectedProcedure.query(async () => {
     const allFundings = await db.fundings.findMany({
-      include: {
-        donor: {
-          select: {
-            user: {
-              select: {
-                firstName: true,
-                lastName: true,
-                email: true,
-                phone: true,
-              },
-            },
-          },
-        },
-        fundraiser: {
-          select: {
-            project: {
-              select: {
-                title: true,
-              },
-            },
-          },
-        },
+      orderBy: {
+        date: "desc",
       },
     });
 
-    allFundings.sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    const fundingDetails = await Promise.all(
+      allFundings.map(async (funding) => {
+        const fundraiser = await db.fundraisers.findUnique({
+          where: { id: funding.fundraiserId },
+        });
+
+        const project = await db.projects.findUnique({
+          where: { id: fundraiser?.projectId },
+        });
+
+        return {
+          fullName: funding.fullName, // Change here
+          email: funding.email,
+          contact: funding.contact,
+          date: funding.date,
+          projectName: project?.title,
+          paymentMethod: funding.paymentMethod,
+          amount: funding.amount,
+        };
+      }),
     );
 
-    return allFundings.map(funding => ({
-      name: `${funding.donor.user.firstName} ${funding.donor.user.lastName}`,
-      email: funding.donor.user.email,
-      contact: funding.donor.user.phone,
-      date: funding.date,
-      projectName: funding.fundraiser.project.title,
-      paymentMethod: funding.paymentMethod,
-      amount: funding.amount,
-    }));
+    return fundingDetails;
   }),
 });
 

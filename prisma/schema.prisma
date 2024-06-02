@@ -22,7 +22,6 @@ model Users {
   updated         DateTime   @updatedAt()
   role            String     @default("USER")
   admins          Admins[]
-  donors          Donors[]
   Feedback        Feedback[]
 }
 
@@ -104,26 +103,17 @@ model Fundraisers {
   @@index([projectId])
 }
 
-model Donors {
-  id        String     @id @default(cuid())
-  userEmail String     @unique
-  user      Users      @relation(fields: [userEmail], references: [email], onDelete: Cascade)
-  fundings  Fundings[]
-
-  @@index([userEmail])
-}
-
 model Fundings {
   id            String      @id @default(cuid())
-  donorEmail    String
+  fullName      String
+  email         String
+  contact       String
+  date          DateTime    @default(now())
   fundraiserId  String
   amount        Int
   paymentMethod String
-  date          DateTime    @default(now())
-  donor         Donors      @relation(fields: [donorEmail], references: [userEmail], onDelete: Cascade)
   fundraiser    Fundraisers @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
 
-  @@index([donorEmail])
   @@index([fundraiserId])
 }
 

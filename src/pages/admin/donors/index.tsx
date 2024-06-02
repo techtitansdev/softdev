@@ -46,7 +46,7 @@ const Donors = () => {
   useEffect(() => {
     if (donors.data) {
       const transformedData = donors.data.map((item) => ({
-        fullName: item.name,
+        fullName: item.fullName,
         date: new Date(item.date).toLocaleDateString(undefined, {
           year: "numeric",
           month: "short",
