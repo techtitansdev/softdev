@@ -110,7 +110,25 @@ function CreateProjects() {
 
   const removeImage = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Logic for removing the image
+    try {
+      const response = await fetch('/api/deleteImage', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ publicId }),
+      });
+  
+      if (response.ok) {
+        setImageUrl('');
+        setPublicId('');
+      } else {
+        const errorData = await response.json();
+        console.error('Error removing image:', errorData.error);
+      }
+    } catch (error) {
+      console.error('Error removing image:', error);
+    }
   };
 
   const handleSubmit = async (isPublished: boolean) => {
@@ -154,7 +172,7 @@ function CreateProjects() {
 
   useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <Loading/>
+    return <Loading />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;

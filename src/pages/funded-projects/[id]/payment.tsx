@@ -170,7 +170,7 @@ const Payment = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (getFunding.data) {
+        if (getFunding.data && getFunding.data.project) {
           const fundingData: Funding = {
             title: getFunding.data.project.title,
             description: getFunding.data.project.description,
