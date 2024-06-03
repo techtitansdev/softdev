@@ -187,7 +187,7 @@ function EditProject() {
 
             <form onSubmit={(e) => handleSubmit(e, false)}>
               <div className="mb-4">
-                <label htmlFor="title" className="font-medium text-gray-700">
+                <label htmlFor="title" className="font-medium text-gray-800">
                   Project Title
                 </label>
 
@@ -206,7 +206,7 @@ function EditProject() {
               <div className="mb-4">
                 <label
                   htmlFor="description"
-                  className="font-medium text-gray-700"
+                  className="font-medium text-gray-800"
                 >
                   Project Description
                 </label>
@@ -222,7 +222,7 @@ function EditProject() {
               </div>
 
               <div className="mb-4">
-                <label htmlFor="image" className="font-medium text-gray-700">
+                <label htmlFor="image" className="font-medium text-gray-800">
                   Featured Image
                 </label>
 
@@ -265,7 +265,7 @@ function EditProject() {
               <div className="mb-4">
                 <label
                   htmlFor="hub"
-                  className="block font-medium text-gray-700"
+                  className="block font-medium text-gray-800"
                 >
                   Hub
                 </label>
@@ -285,7 +285,7 @@ function EditProject() {
               <div className="mb-4">
                 <label
                   htmlFor="categories"
-                  className="font-medium text-gray-700"
+                  className="font-medium text-gray-800"
                 >
                   Categories
                 </label>
@@ -316,7 +316,7 @@ function EditProject() {
               </div>
 
               <div className="mb-4">
-                <label htmlFor="type" className="font-medium text-gray-700">
+                <label htmlFor="type" className="font-medium text-gray-800">
                   Type
                 </label>
 
@@ -342,7 +342,7 @@ function EditProject() {
               <div className="mb-4">
                 <label
                   htmlFor="beneficiaries"
-                  className="font-medium text-gray-700"
+                  className="font-medium text-gray-800"
                 >
                   Beneficiaries
                 </label>
@@ -361,7 +361,7 @@ function EditProject() {
               <div className="mb-4">
                 <label
                   htmlFor="milestones"
-                  className="font-medium text-gray-700"
+                  className="font-medium text-gray-800"
                 >
                   Milestones
                 </label>
@@ -373,7 +373,7 @@ function EditProject() {
               </div>
 
               <div className="mb-4">
-                <label htmlFor="funding" className="font-medium text-gray-700">
+                <label htmlFor="funding" className="font-medium text-gray-800">
                   Funding Goal
                 </label>
 
@@ -383,13 +383,16 @@ function EditProject() {
                   name="goal"
                   value={projectData.goal}
                   onChange={handleChange}
-                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                  className="mt-1 w-full rounded-md border p-2 shadow-sm outline-blue-800"
                   required
                 />
               </div>
 
               <div className="mb-4">
-                <label htmlFor="date" className="font-medium text-gray-700">
+                <label
+                  htmlFor="date"
+                  className="font-medium text-gray-800 outline-blue-800"
+                >
                   Target Date
                 </label>
 
@@ -405,7 +408,7 @@ function EditProject() {
               </div>
 
               <div className="mb-4">
-                <label htmlFor="about" className="font-medium text-gray-700">
+                <label htmlFor="about" className="font-medium text-gray-800">
                   About
                 </label>
               </div>
