@@ -98,13 +98,22 @@ export const Sidebar = () => {
           ))}
         </ul>
 
-        <button
-          className="mt-auto flex items-center rounded-md border border-gray-200 p-2 text-gray-700 hover:bg-gray-200"
-          onClick={handleSignOut}
-        >
-          <PiSignOutLight size={23} className="mr-5" />
-          Log out
-        </button>
+        {open ? (
+          <button
+            className="mt-auto flex items-center rounded-md border border-gray-200 p-2 text-gray-700 hover:bg-gray-200"
+            onClick={handleSignOut}
+          >
+            <PiSignOutLight size={23} className="mr-5" />
+            Log out
+          </button>
+        ) : (
+          <button
+            className="mt-auto flex items-center rounded-md border border-gray-200 p-2 text-gray-700 hover:bg-gray-200"
+            onClick={handleSignOut}
+          >
+            <PiSignOutLight size={23} />
+          </button>
+        )}
       </div>
     </div>
   );
