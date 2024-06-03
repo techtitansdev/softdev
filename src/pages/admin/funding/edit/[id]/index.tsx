@@ -56,7 +56,6 @@ function EditProject() {
     published: false,
   });
 
-  const [editorContent, setEditorContent] = useState("");
   const [editorBlocks, setEditorBlocks] = useState([]);
   const [initialEditorData, setInitialEditorData] = useState();
 
@@ -155,22 +154,6 @@ function EditProject() {
     }
   };
 
-  const removeImage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      deleteImage.mutate({
-        id: id as string,
-      });
-      setImageUrl("");
-      setProjectData({
-        ...projectData,
-        image: "",
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent, isPublished: boolean) => {
     e.preventDefault();
     editProject.mutate({
@@ -214,8 +197,8 @@ function EditProject() {
                   name="title"
                   placeholder="title"
                   value={projectData.title}
-                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                  required
+                  className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
+                  readOnly
                   onChange={handleChange}
                 />
               </div>
@@ -233,8 +216,8 @@ function EditProject() {
                   name="description"
                   value={projectData.description}
                   onChange={handleChange}
-                  className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm"
-                  required
+                  className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm outline-none"
+                  readOnly
                 />
               </div>
 
@@ -277,15 +260,6 @@ function EditProject() {
                     />
                   )}
                 </CldUploadButton>
-
-                {imageUrl && (
-                  <button
-                    onClick={removeImage}
-                    className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700"
-                  >
-                    Remove Image
-                  </button>
-                )}
               </div>
 
               <div className="mb-4">
@@ -303,8 +277,8 @@ function EditProject() {
                   placeholder="hub"
                   value={projectData.hub}
                   onChange={handleChange}
-                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                  required
+                  className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
+                  readOnly
                 />
               </div>
 
@@ -337,14 +311,12 @@ function EditProject() {
                     });
                   }}
                   className="z-20"
+                  isDisabled={true}
                 />
               </div>
 
               <div className="mb-4">
-                <label
-                  htmlFor="categories"
-                  className="font-medium text-gray-700"
-                >
+                <label htmlFor="type" className="font-medium text-gray-700">
                   Type
                 </label>
 
@@ -363,6 +335,7 @@ function EditProject() {
                     });
                   }}
                   className="z-10"
+                  isDisabled={true}
                 />
               </div>
 
@@ -380,8 +353,8 @@ function EditProject() {
                   name="beneficiaries"
                   value={projectData.beneficiaries}
                   onChange={handleChange}
-                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                  required
+                  className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
+                  readOnly
                 />
               </div>
 
