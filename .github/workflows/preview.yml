@@ -5,12 +5,11 @@ env:
 on:
   push:
     branches-ignore:
-        - dev
-        - main
+      - dev
+      - main
 
 jobs:
-  Deploy-Preview: 
-
+  Deploy-Preview:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,7 +22,7 @@ jobs:
           node-version: "20"
       - name: Install dependencies
         run: npm install
-      
+
       - name: Install Vercel CLI
         run: npm install --global vercel
 
@@ -34,4 +33,4 @@ jobs:
         run: vercel build --token=${{secrets.VERCEL_TOKEN}}
 
       - name: Deploy Project  Artifacts
-        run: vercel deploy --prebuilt --token=${{secrets.VERCEL_TOKEN}}
+        run: vercel --token=${{secrets.VERCEL_TOKEN}}

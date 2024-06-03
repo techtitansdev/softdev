@@ -21,7 +21,7 @@ jobs:
           node-version: "20"
       - name: Install dependencies
         run: npm install
-      
+
       - name: Install Vercel CLI
         run: npm install --global vercel
 
@@ -32,4 +32,4 @@ jobs:
         run: vercel build --prod --token=${{secrets.VERCEL_TOKEN}}
 
       - name: Deploy Project  Artifacts
-        run: vercel deploy --prebuilt --prod --token=${{secrets.VERCEL_TOKEN}}
+        run: vercel --prod --token=${{secrets.VERCEL_TOKEN}}
