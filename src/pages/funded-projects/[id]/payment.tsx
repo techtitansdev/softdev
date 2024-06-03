@@ -144,6 +144,9 @@ const Payment = () => {
           amount: parseInt(amount, 10),
           donorEmail: userEmail,
           paymentMethod,
+          fullName: "",
+          email: "",
+          contact: ""
         });
 
         setPaymentDetails({
