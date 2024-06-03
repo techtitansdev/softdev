@@ -50,7 +50,7 @@ export const blog = createTRPCRouter({
 
         return blog;
       } catch (error) {
-        throw new Error(`Failed to fetch project: ${error}`);
+        throw new Error(`Failed to fetch project: ${error as string}`);
       }
     }),
   edit: protectedProcedure
@@ -146,7 +146,7 @@ export const blog = createTRPCRouter({
 
         return foundBlog;
       } catch (error) {
-        throw new Error(`Failed to fetch blog: ${error}`);
+        throw new Error(`Failed to fetch blog: ${error as string}`);
       }
     }),
 
@@ -170,7 +170,7 @@ export const blog = createTRPCRouter({
           foundBlog.image = "";
         }
       } catch (error) {
-        throw new Error(`Failed to fetch blog: ${error}`);
+        throw new Error(`Failed to fetch blog: ${error as string}`);
       }
     }),
 });
