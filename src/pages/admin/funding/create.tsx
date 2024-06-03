@@ -132,7 +132,10 @@ function CreateFunding() {
   const createFundRaiser = api.fundraiser.create.useMutation();
   const [editorBlocks, setEditorBlocks] = useState([]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+    publish: boolean,
+  ) => {
     e.preventDefault();
 
     try {
@@ -143,6 +146,7 @@ function CreateFunding() {
         funds: 0,
         donors: 0,
         milestones: milestoneData,
+        published: publish,
       });
 
       setSuccessModalOpen(true);
@@ -156,6 +160,7 @@ function CreateFunding() {
       console.error("Error creating project:", error);
     }
   };
+
   console.log({ milestone: "1", value: 0, unit: "", description: "" });
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin;
@@ -184,7 +189,7 @@ function CreateFunding() {
             CREATE FUNDING
           </div>
 
-          <form onSubmit={handleSubmit}>
+          <form>
             <div className="mb-4">
               <label htmlFor="categories" className="font-medium text-gray-700">
                 Select a Project
@@ -433,15 +438,17 @@ function CreateFunding() {
             <NewEditor onChanges={() => {}} initialData={editorBlocks} />
 
             <button
-              type="submit"
+              type="button"
               className="mr-2 mt-4 rounded-lg bg-gray-600 px-2 py-2 font-medium text-white hover:bg-gray-800 md:mr-4 md:px-6"
+              onClick={(e) => handleSubmit(e as any, false)} // Save as Draft
             >
               Save as Draft
             </button>
 
             <button
-              type="submit"
+              type="button"
               className="mt-4 rounded-lg bg-blue-800 px-4 py-2 font-medium text-white hover:bg-blue-900 md:px-12"
+              onClick={(e) => handleSubmit(e as any, true)} // Publish
             >
               Publish
             </button>

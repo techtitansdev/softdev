@@ -11,6 +11,7 @@ export const fundraiser = createTRPCRouter({
       goal: z.number(),
       targetDate: z.date(),
       donors: z.number(),
+      published: z.boolean(),
       milestones: z.array(z.object({
         milestone: z.string(),
         value: z.number(),
@@ -39,6 +40,7 @@ export const fundraiser = createTRPCRouter({
         goal: input.goal,
         targetDate: input.targetDate,
         donors: input.donors,
+        published: input.published,
       },
     });
 
