@@ -48,6 +48,7 @@ function CreateFunding() {
     goal: "",
     date: "",
     about: "",
+    published: false,
     milestones: [],
   });
   const [initialEditorData, setinitialEditorData] = useState();
