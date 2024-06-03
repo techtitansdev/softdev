@@ -21,5 +21,6 @@ export interface FundingData {
   about: string;
   goal: string;
   date: string;
-  milestones: Milestone[]; // Define the milestone type here
+  published: boolean;
+  milestones: Milestone[]; 
 }

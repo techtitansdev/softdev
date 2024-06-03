@@ -11,6 +11,7 @@ export const fundraiser = createTRPCRouter({
       goal: z.number(),
       targetDate: z.date(),
       donors: z.number(),
+      published: z.boolean(),
       milestones: z.array(z.object({
         milestone: z.string(),
         value: z.number(),
@@ -39,6 +40,7 @@ export const fundraiser = createTRPCRouter({
         goal: input.goal,
         targetDate: input.targetDate,
         donors: input.donors,
+        published: input.published,
       },
     });
 
@@ -63,6 +65,7 @@ export const fundraiser = createTRPCRouter({
       goal: z.number(),
       targetDate: z.date(),
       donors: z.number(),
+      published: z.boolean(),
       milestones: z.array(z.object({
         id: z.string().optional(),
         milestone: z.string(),
@@ -92,6 +95,7 @@ export const fundraiser = createTRPCRouter({
         goal: input.goal,
         targetDate: input.targetDate,
         donors: input.donors,
+        published: input.published,
       },
     });
 
@@ -119,7 +123,7 @@ export const fundraiser = createTRPCRouter({
                 description: milestone.description,
               },
             });
-            existingMilestoneMap.delete(milestone.id); // Remove from map once updated
+            existingMilestoneMap.delete(milestone.id); 
           }
         } else {
           // Create new milestone

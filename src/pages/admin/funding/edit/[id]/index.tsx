@@ -1,18 +1,10 @@
 import Head from "next/head";
-import {
-  MutableRefObject,
-  useRef,
-  useState,
-  useEffect,
-  ChangeEvent,
-} from "react";
-import { Editor } from "@tinymce/tinymce-react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import { categoriesOption } from "~/data/categories";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import { ProjectData } from "~/types/projectData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
@@ -29,7 +21,10 @@ function EditProject() {
   const [imageUrl, setImageUrl] = useState("");
   const [publicId, setPublicId] = useState("");
 
-  const getProject = api.fundraiser.getById.useQuery({ id: id as string });
+  const getProject = api.fundraiser.getById.useQuery(
+    { id: id as string },
+    { enabled: !!id },
+  );
 
   const deleteImage = api.project.removeImage.useMutation();
 
@@ -39,7 +34,6 @@ function EditProject() {
       setTimeout(() => {
         router.push("/admin/funding");
       }, 2000);
-
     },
     onError: (error: any) => {
       console.error("Edit Project Failed", error);
@@ -59,64 +53,41 @@ function EditProject() {
     date: "",
     about: "",
     milestones: [],
+    published: false,
   });
 
-
-  const [editorContent, setEditorContent] = useState("");
-
-  const handleEditorChange = (content: any) => {
-    setEditorContent(content);
-  };
   const [editorBlocks, setEditorBlocks] = useState([]);
-  const [initialEditorData, setinitialEditorData] = useState();
-  useEffect(() => {
-    setEditorContent(projectData.about);
-  }, [projectData.about]);
+  const [initialEditorData, setInitialEditorData] = useState();
 
   useEffect(() => {
     if (getProject.data) {
-      setProjectData((prevData) => {
-        if (
-          prevData.title !== getProject.data.project.title ||
-          prevData.project !== getProject.data.project.title ||
-          prevData.description !== getProject.data.project.description ||
-          prevData.image !== getProject.data.project.image ||
-          prevData.hub !== getProject.data.project.hub ||
-          prevData.category !== getProject.data.project.category ||
-          prevData.type !== getProject.data.project.type ||
-          prevData.beneficiaries !== getProject.data.project.beneficiaries ||
-          prevData.about !== getProject.data.project.about ||
-          prevData.date !== getProject.data.targetDate.toString() ||
-          prevData.milestones !== getProject.data.milestones ||
-          prevData.goal !== getProject.data.goal.toString()
-        ) {
-          return {
-            title: getProject.data.project.title,
-            project: getProject.data.project.title,
-            description: getProject.data.project.description,
-            image: getProject.data.project.image,
-            hub: getProject.data.project.hub,
-            category: getProject.data.project.category,
-            type: getProject.data.project.type,
-            beneficiaries: getProject.data.project.beneficiaries,
-            about: getProject.data.project.about,
-            goal: getProject.data.goal.toString(),
-            date: getProject.data.targetDate.toString(),
-            milestones: getProject.data.milestones,
-          };
-        } else {
-          return prevData;
-        }
-      });
-      const initialEditorData = JSON.parse(getProject.data.project.about);
-      setinitialEditorData(initialEditorData);
+      setProjectData((prevData) => ({
+        title: getProject.data.project.title || prevData.title,
+        project: getProject.data.project.title || prevData.project,
+        description:
+          getProject.data.project.description || prevData.description,
+        image: getProject.data.project.image || prevData.image,
+        hub: getProject.data.project.hub || prevData.hub,
+        category: getProject.data.project.category || prevData.category,
+        type: getProject.data.project.type || prevData.type,
+        beneficiaries:
+          getProject.data.project.beneficiaries || prevData.beneficiaries,
+        about: getProject.data.project.about || prevData.about,
+        goal: getProject.data.goal?.toString() || prevData.goal,
+        date: getProject.data.targetDate?.toString() || prevData.date,
+        milestones: getProject.data.milestones || prevData.milestones,
+        published: getProject.data.project.published || prevData.published,
+      }));
+
+      const initialEditorData = JSON.parse(
+        getProject.data.project.about || "{}",
+      );
+      setInitialEditorData(initialEditorData);
       setEditorBlocks(initialEditorData.blocks);
       setMilestoneData(getProject.data.milestones);
-      setImageUrl(getProject.data.project.image);
+      setImageUrl(getProject.data.project.image || "");
     }
   }, [getProject.data]);
-
-  const editorRef: MutableRefObject<any> = useRef(null);
 
   const type = [
     { label: "Activity", value: "Activity" },
@@ -128,7 +99,6 @@ function EditProject() {
   ) => {
     const { name, value } = e.target;
     if (name === "goal") {
-      // Parse the value to a number before setting it in the state
       setProjectData({
         ...projectData,
         [name]: parseInt(value, 10).toString(),
@@ -144,86 +114,57 @@ function EditProject() {
       value: 100,
       unit: "2",
       description: "this is description",
-      id: undefined
+      id: undefined,
     },
   ]);
 
-  // Ensure getProject.data?.milestones is not undefined before setting milestoneData
   const getObjectsWithoutIdAndConvertValue = (data: any[]) => {
-    return data
-        .map(item => {
-            const { id, ...rest } = item; // Destructure 'id' and spread other properties
-            return { ...rest, value: Number(item.value) };
-        });
-};
-  
-  // Usage example
-  const dataWithoutIdAndConvertedValue = getObjectsWithoutIdAndConvertValue(milestoneData);
-  console.log(dataWithoutIdAndConvertedValue);
-  // Usage example
-  const dataWithoutId = getObjectsWithoutIdAndConvertValue(milestoneData);
-  console.log(dataWithoutId);
-  const handleMilestoneDataChange = (data: TableRow[]) => {
-    setMilestoneData(data);
-    console.log("milestone data:",milestoneData)
+    return data.map((item) => {
+      const { id, ...rest } = item;
+      return { ...rest, value: Number(item.value) };
+    });
   };
 
-  // Create a new Date object from the original date string
+  const dataWithoutIdAndConvertedValue =
+    getObjectsWithoutIdAndConvertValue(milestoneData);
+
+  const handleMilestoneDataChange = (data: TableRow[]) => {
+    setMilestoneData(data);
+  };
+
   const dateObject = new Date(projectData.date);
 
-  // Extract year, month, and day from the date object
   const year = dateObject.getFullYear();
-  // getMonth() returns zero-based month, so we add 1 to it
   const month = (dateObject.getMonth() + 1).toString().padStart(2, "0");
   const day = dateObject.getDate().toString().padStart(2, "0");
 
-  // Construct the desired format
   const convertedDate = `${year}-${month}-${day}`;
 
-  console.log(convertedDate);
-
   const handleImageUpload = (result: CldUploadWidgetResults) => {
-    console.log("result: ", result);
     const info = result.info as object;
-
     if ("secure_url" in info && "public_id" in info) {
       const url = info.secure_url as string;
       const public_id = info.public_id as string;
       setImageUrl(url);
       setPublicId(public_id);
-      projectData.image = url;
-      console.log("url: ", url);
-      console.log("public_id: ", public_id);
-    }
-  };
-
-  const removeImage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      deleteImage.mutate({
-        id: id as string,
-      });
-      setImageUrl("");
       setProjectData({
         ...projectData,
-        image: "",
+        image: url,
       });
-    } catch (error) {
-      console.error(error);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent, isPublished: boolean) => {
     e.preventDefault();
-
     editProject.mutate({
       ...projectData,
       id: id as string,
       goal: parseInt(projectData.goal, 10),
       donors: 0,
       targetDate: new Date(projectData.date),
-      funds: 0, 
-      // milestones: dataWithoutId,
+      funds: 0,
+      published: isPublished,
+      milestones: dataWithoutIdAndConvertedValue,
     });
   };
 
@@ -241,12 +182,12 @@ function EditProject() {
 
           <div className="mx-auto p-10">
             <div className="mb-10 mt-16 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
-              EDIT Fundraiser
+              EDIT FUNDING
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={(e) => handleSubmit(e, false)}>
               <div className="mb-4">
-                <label htmlFor="title" className="font-medium text-gray-700">
+                <label htmlFor="title" className="font-medium text-gray-800">
                   Project Title
                 </label>
 
@@ -256,8 +197,8 @@ function EditProject() {
                   name="title"
                   placeholder="title"
                   value={projectData.title}
-                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                  required
+                  className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
+                  readOnly
                   onChange={handleChange}
                 />
               </div>
@@ -265,7 +206,7 @@ function EditProject() {
               <div className="mb-4">
                 <label
                   htmlFor="description"
-                  className="font-medium text-gray-700"
+                  className="font-medium text-gray-800"
                 >
                   Project Description
                 </label>
@@ -275,13 +216,13 @@ function EditProject() {
                   name="description"
                   value={projectData.description}
                   onChange={handleChange}
-                  className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm"
-                  required
+                  className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm outline-none"
+                  readOnly
                 />
               </div>
 
               <div className="mb-4">
-                <label htmlFor="image" className="font-medium text-gray-700">
+                <label htmlFor="image" className="font-medium text-gray-800">
                   Featured Image
                 </label>
 
@@ -289,9 +230,7 @@ function EditProject() {
                   uploadPreset={
                     process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
                   }
-                  className={`relative mt-4 grid h-72 w-72 place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
-                    imageUrl && "pointer-events-none"
-                  }`}
+                  className={`relative mt-4 grid h-72 w-72 place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${imageUrl && "pointer-events-none"}`}
                   onUpload={handleImageUpload}
                 >
                   <div>
@@ -321,21 +260,12 @@ function EditProject() {
                     />
                   )}
                 </CldUploadButton>
-
-                {imageUrl && (
-                  <button
-                    onClick={removeImage}
-                    className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700"
-                  >
-                    Remove Image
-                  </button>
-                )}
               </div>
 
               <div className="mb-4">
                 <label
                   htmlFor="hub"
-                  className="block font-medium text-gray-700"
+                  className="block font-medium text-gray-800"
                 >
                   Hub
                 </label>
@@ -347,15 +277,15 @@ function EditProject() {
                   placeholder="hub"
                   value={projectData.hub}
                   onChange={handleChange}
-                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                  required
+                  className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
+                  readOnly
                 />
               </div>
 
               <div className="mb-4">
                 <label
                   htmlFor="categories"
-                  className="font-medium text-gray-700"
+                  className="font-medium text-gray-800"
                 >
                   Categories
                 </label>
@@ -381,14 +311,12 @@ function EditProject() {
                     });
                   }}
                   className="z-20"
+                  isDisabled={true}
                 />
               </div>
 
               <div className="mb-4">
-                <label
-                  htmlFor="categories"
-                  className="font-medium text-gray-700"
-                >
+                <label htmlFor="type" className="font-medium text-gray-800">
                   Type
                 </label>
 
@@ -407,12 +335,14 @@ function EditProject() {
                     });
                   }}
                   className="z-10"
+                  isDisabled={true}
                 />
               </div>
+
               <div className="mb-4">
                 <label
                   htmlFor="beneficiaries"
-                  className="font-medium text-gray-700"
+                  className="font-medium text-gray-800"
                 >
                   Beneficiaries
                 </label>
@@ -423,15 +353,15 @@ function EditProject() {
                   name="beneficiaries"
                   value={projectData.beneficiaries}
                   onChange={handleChange}
-                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                  required
+                  className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
+                  readOnly
                 />
               </div>
 
               <div className="mb-4">
                 <label
                   htmlFor="milestones"
-                  className="font-medium text-gray-700"
+                  className="font-medium text-gray-800"
                 >
                   Milestones
                 </label>
@@ -443,7 +373,7 @@ function EditProject() {
               </div>
 
               <div className="mb-4">
-                <label htmlFor="funding" className="font-medium text-gray-700">
+                <label htmlFor="funding" className="font-medium text-gray-800">
                   Funding Goal
                 </label>
 
@@ -453,13 +383,16 @@ function EditProject() {
                   name="goal"
                   value={projectData.goal}
                   onChange={handleChange}
-                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                  className="mt-1 w-full rounded-md border p-2 shadow-sm outline-blue-800"
                   required
                 />
               </div>
 
               <div className="mb-4">
-                <label htmlFor="date" className="font-medium text-gray-700">
+                <label
+                  htmlFor="date"
+                  className="font-medium text-gray-800 outline-blue-800"
+                >
                   Target Date
                 </label>
 
@@ -475,15 +408,16 @@ function EditProject() {
               </div>
 
               <div className="mb-4">
-                <label htmlFor="about" className="font-medium text-gray-700">
+                <label htmlFor="about" className="font-medium text-gray-800">
                   About
                 </label>
               </div>
 
-             <NewEditor onChanges={() => {}} initialData={editorBlocks} />
+              <NewEditor onChanges={() => {}} initialData={editorBlocks} />
               <button
                 type="submit"
                 className="mr-2 mt-4 rounded-lg bg-gray-600 px-2 py-2 font-medium text-white hover:bg-gray-800 md:mr-4 md:px-6"
+                onClick={(e) => handleSubmit(e, false)}
               >
                 Save as Draft
               </button>
@@ -491,6 +425,7 @@ function EditProject() {
               <button
                 type="submit"
                 className="mt-4 rounded-lg bg-blue-800 px-4 py-2 font-medium text-white hover:bg-blue-900 md:px-12"
+                onClick={(e) => handleSubmit(e, true)}
               >
                 Publish
               </button>
@@ -500,7 +435,7 @@ function EditProject() {
         <Modal
           isOpen={isSuccessModalOpen}
           onClose={() => setSuccessModalOpen(false)}
-          message="Project Edited Successfully."
+          message="Funding Edited Successfully."
           bgColor="bg-green-700"
         />
       </div>
