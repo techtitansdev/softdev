@@ -14,9 +14,7 @@ export const funding = createTRPCRouter({
         paymentMethod: z.string(),
       }),
     )
-    .mutation(async (opts) => {
-      const { input } = opts;
-
+    .mutation(async ({ input }) => {
       const donor = await db.fundings.create({
         data: {
           fullName: input.fullName,
@@ -36,9 +34,7 @@ export const funding = createTRPCRouter({
         fundraiserId: z.string(),
       }),
     )
-    .query(async (opts) => {
-      const { input } = opts;
-
+    .query(async ({ input }) => {
       const fundings = await db.fundings.findMany({
         where: {
           fundraiserId: input.fundraiserId,
@@ -71,7 +67,7 @@ export const funding = createTRPCRouter({
         });
 
         return {
-          fullName: funding.fullName, // Change here
+          fullName: funding.fullName,
           email: funding.email,
           contact: funding.contact,
           date: funding.date,

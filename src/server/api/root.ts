@@ -9,7 +9,6 @@ import { milestone } from "./routers/milestone";
 import { categories } from "./routers/categories";
 import { feedback } from "./routers/feedback";
 import { paymentRouter } from "./routers/payment";
-import { donors } from "./routers/donors";
 import { funding } from "./routers/funding";
 
 /**
@@ -28,7 +27,6 @@ export const appRouter = createTRPCRouter({
   categories: categories,
   feedback: feedback,
   paymentRouter:paymentRouter,
-  donors:donors,
   funding: funding,
 });
 
