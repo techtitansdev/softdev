@@ -1,6 +1,6 @@
 import React from "react";
 import { render, waitFor } from "@testing-library/react";
-import { Admin } from "../index";
+import { Admin } from "../../pages/admin/index";
 
 jest.mock("@clerk/nextjs", () => ({
   useUser: () => ({
@@ -24,7 +24,7 @@ describe("Admin component", () => {
       expect("/admin").toBeTruthy();
     });
   });
-  
+
   test("redirects to /home when user is not an admin", async () => {
     render(<Admin />);
 

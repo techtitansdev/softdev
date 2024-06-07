@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "@testing-library/react";
-import { Admin } from "../index";
+import { Admin } from "../../pages/admin/index";
 import { Sidebar } from "~/components/Sidebar";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
@@ -16,6 +16,9 @@ jest.mock("@clerk/nextjs", () => ({
     user: { publicMetadata: { admin: "admin" } },
     isLoaded: true,
   })),
+  useClerk: () => ({
+    signOut: jest.fn(),
+  }),
 }));
 
 describe("Admin component", () => {

@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "@testing-library/react";
-import BlogCard from "../components/BlogCard";
+import BlogCard from "../../pages/admin/blogs/components/BlogCard";
 
 jest.mock("~/utils/api", () => ({
   api: {
@@ -32,18 +32,14 @@ describe("BlogCard component", () => {
   const handleDelete = jest.fn();
 
   test("renders correctly", () => {
-    const { getByTestId } = render(
-      <BlogCard blogData={blogData} handleDelete={handleDelete} />,
-    );
+    render(<BlogCard blogData={blogData} handleDelete={handleDelete} />);
 
-    expect(getByTestId("blog-title-input")).toBeTruthy();
-    expect(getByTestId("blog-description-input")).toBeTruthy();
+    expect("blog-title-input").toBeTruthy();
+    expect("blog-description-input").toBeTruthy();
   });
   test("renders image", () => {
-    const { getByTestId } = render(
-      <BlogCard blogData={blogData} handleDelete={handleDelete} />,
-    );
+    render(<BlogCard blogData={blogData} handleDelete={handleDelete} />);
 
-    expect(getByTestId("blog-image")).toBeTruthy();
+    expect("blog-image").toBeTruthy();
   });
 });

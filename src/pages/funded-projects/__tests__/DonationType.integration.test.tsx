@@ -13,9 +13,34 @@ jest.mock("~/utils/api", () => ({
       getById: {
         useQuery: jest.fn().mockReturnValue({ data: {} }),
       },
+      updateFunds: {
+        useMutation: jest.fn().mockResolvedValue({}),
+      },
     },
     payment: {
       create: {
+        useMutation: jest.fn().mockResolvedValue({}),
+      },
+    },
+    paymentRouter: {
+      createPaymentIntent: {
+        useMutation: jest.fn().mockResolvedValue({}),
+      },
+      createPaymentMethod: {
+        useMutation: jest.fn().mockResolvedValue({}),
+      },
+      createGCashPaymentMethod: {
+        useMutation: jest.fn().mockResolvedValue({}),
+      },
+      attachPaymentIntent: {
+        useMutation: jest.fn().mockResolvedValue({}),
+      },
+    },
+    donors: {
+      createDonor: {
+        useMutation: jest.fn().mockResolvedValue({}),
+      },
+      createFunding: {
         useMutation: jest.fn().mockResolvedValue({}),
       },
     },
@@ -39,24 +64,24 @@ jest.mock("@clerk/nextjs", () => ({
 }));
 
 describe("Payment component", () => {
-  test("allows user to choose to donate as individual", async () => {
+  test("allows user to choose to donate as individual", () => {
     render(<Payment />);
 
     fireEvent.click(screen.getByTestId("Individual"));
-    expect(screen.getByTestId("Individual")).toBeTruthy();
+    expect(screen.getByTestId("Individual")).toBeInTheDocument();
   });
 
-  test("allows user to choose to donate as company", async () => {
+  test("allows user to choose to donate as company", () => {
     render(<Payment />);
 
     fireEvent.click(screen.getByTestId("Company"));
-    expect(screen.getByTestId("Company")).toBeTruthy();
+    expect(screen.getByTestId("Company")).toBeInTheDocument();
   });
 
-  test("allows user to choose to donate as anonymous", async () => {
+  test("allows user to choose to donate as anonymous", () => {
     render(<Payment />);
 
     fireEvent.click(screen.getByTestId("Anonymous"));
-    expect(screen.getByTestId("Anonymous")).toBeTruthy();
+    expect(screen.getByTestId("Anonymous")).toBeInTheDocument();
   });
 });
