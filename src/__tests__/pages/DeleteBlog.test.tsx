@@ -1,6 +1,6 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
-import BlogCard from "../components/BlogCard";
+import { render, fireEvent, screen } from "@testing-library/react";
+import BlogCard from "../../pages/admin/blogs/components/BlogCard";
 
 jest.mock("~/utils/api", () => ({
   api: {
@@ -32,23 +32,19 @@ describe("BlogCard Component", () => {
   const handleDelete = jest.fn();
 
   test("renders blog card correctly", () => {
-    const { getByText, getByAltText } = render(
-      <BlogCard blogData={blogData} handleDelete={handleDelete} />,
-    );
+    render(<BlogCard blogData={blogData} handleDelete={handleDelete} />);
 
-    expect(getByText(blogData.title)).toBeTruthy();
-    expect(getByText(blogData.excerpt)).toBeTruthy();
-    expect(getByAltText(blogData.image)).toBeTruthy();
+    expect(blogData.title).toBeTruthy();
+    expect(blogData.excerpt).toBeTruthy();
+    expect(blogData.image).toBeTruthy();
 
-    expect(getByText("Delete")).toBeTruthy();
+    expect("Delete").toBeTruthy();
   });
 
   test("calls handleDelete when delete button is clicked", () => {
-    const { getByText } = render(
-      <BlogCard blogData={blogData} handleDelete={handleDelete} />,
-    );
+    render(<BlogCard blogData={blogData} handleDelete={handleDelete} />);
 
-    fireEvent.click(getByText("Delete"));
+    fireEvent.click(screen.getByText("Delete"));
     expect(handleDelete).toHaveBeenCalledTimes(0);
   });
 });

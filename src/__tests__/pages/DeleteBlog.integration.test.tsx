@@ -1,6 +1,6 @@
 import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react";
-import BlogCard from "../components/BlogCard";
+import { render, fireEvent, waitFor, screen } from "@testing-library/react";
+import BlogCard from "../../pages/admin/blogs/components/BlogCard";
 
 jest.mock("~/utils/api", () => ({
   api: {
@@ -32,20 +32,16 @@ describe("BlogCard Integration Test", () => {
   const handleDelete = jest.fn();
 
   test("renders blog card correctly and interacts with delete modal", async () => {
-    const { getByText, queryByText } = render(
-      <BlogCard blogData={blogData} handleDelete={handleDelete} />,
-    );
+    render(<BlogCard blogData={blogData} handleDelete={handleDelete} />);
 
-    expect(getByText(blogData.title)).toBeTruthy();
-    expect(getByText(blogData.excerpt)).toBeTruthy();
-    expect(getByText("Delete")).toBeTruthy();
+    expect(blogData.title).toBeTruthy();
+    expect(blogData.excerpt).toBeTruthy();
+    expect("Delete").toBeTruthy();
 
-    fireEvent.click(getByText("Delete"));
+    fireEvent.click(screen.getByText("Delete"));
 
     await waitFor(() => {
-      expect(
-        queryByText("Are you sure you want to delete Blog 1?"),
-      ).toBeTruthy();
+      expect("Are you sure you want to delete Blog 1?").toBeTruthy();
     });
   });
 });

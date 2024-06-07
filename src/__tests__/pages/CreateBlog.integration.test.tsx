@@ -1,6 +1,6 @@
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 import { api } from "~/utils/api";
-import CreateBlogs from "../create";
+import CreateBlogs from "../../pages/admin/blogs/create";
 
 jest.mock("~/utils/api", () => ({
   api: {
@@ -12,6 +12,22 @@ jest.mock("~/utils/api", () => ({
   },
 }));
 
+jest.mock("@clerk/nextjs", () => ({
+  useUser: jest.fn(() => ({
+    user: { publicMetadata: { admin: "admin" } },
+    isLoaded: true,
+  })),
+  useClerk: () => ({
+    signOut: jest.fn(),
+  }),
+}));
+
+jest.mock("next/router", () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+  }),
+}));
+
 window.matchMedia = jest.fn().mockReturnValue({
   matches: false,
   addListener: jest.fn(),
@@ -20,23 +36,19 @@ window.matchMedia = jest.fn().mockReturnValue({
 
 describe("CreateBlogs component", () => {
   it("Creates a blog successfully when all data is provided", async () => {
-    const useRouterMock = jest.spyOn(require("next/router"), "useRouter");
-    const pushMock = jest.fn();
-    useRouterMock.mockReturnValue({ push: pushMock });
+    render(<CreateBlogs />);
 
-    const { getByLabelText, getByText, getByTestId } = render(<CreateBlogs />);
-
-    fireEvent.change(getByTestId("blog-title-input"), {
+    fireEvent.change(screen.getByTestId("blog-title-input"), {
       target: { value: "Test Blog Title" },
     });
-    fireEvent.change(getByTestId("blog-description-input"), {
+    fireEvent.change(screen.getByTestId("blog-description-input"), {
       target: { value: "Test Blog Description" },
     });
-    fireEvent.change(getByTestId("blog-image-input"), {
+    fireEvent.change(screen.getByTestId("blog-image-input"), {
       target: { value: "Test Blog Image" },
     });
 
-    fireEvent.click(getByText("Publish"));
+    fireEvent.click(screen.getByText("Publish"));
 
     await waitFor(() => {
       expect(api.blog.create.useMutation).toHaveBeenCalled();
@@ -44,19 +56,19 @@ describe("CreateBlogs component", () => {
   });
 
   it("Will not create blog if value is wrong or empty", async () => {
-    const { getByText, getByTestId } = render(<CreateBlogs />);
+    render(<CreateBlogs />);
 
-    fireEvent.change(getByTestId("blog-title-input"), {
+    fireEvent.change(screen.getByTestId("blog-title-input"), {
       target: { value: "" },
     });
-    fireEvent.change(getByTestId("blog-description-input"), {
+    fireEvent.change(screen.getByTestId("blog-description-input"), {
       target: { value: "" },
     });
-    fireEvent.change(getByTestId("blog-image-input"), {
+    fireEvent.change(screen.getByTestId("blog-image-input"), {
       target: { value: "" },
     });
 
-    fireEvent.click(getByText("Publish"));
+    fireEvent.click(screen.getByText("Publish"));
 
     await waitFor(() => {
       expect(api.blog.create.useMutation).toHaveBeenCalled();

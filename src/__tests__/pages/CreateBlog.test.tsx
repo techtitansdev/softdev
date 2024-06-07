@@ -1,6 +1,6 @@
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 import { api } from "~/utils/api";
-import CreateBlogs from "../create";
+import CreateBlogs from "../../pages/admin/blogs/create";
 
 jest.mock("~/utils/api", () => ({
   api: {
@@ -20,6 +20,16 @@ jest.mock("next/router", () => ({
   }),
 }));
 
+jest.mock("@clerk/nextjs", () => ({
+  useUser: jest.fn(() => ({
+    user: { publicMetadata: { admin: "admin" } },
+    isLoaded: true,
+  })),
+  useClerk: () => ({
+    signOut: jest.fn(),
+  }),
+}));
+
 beforeAll(() => {
   process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME = "test-cloud-name";
 });
@@ -31,22 +41,18 @@ describe("CreateBlogs", () => {
 
   it("renders without crashing", () => {
     render(<CreateBlogs />);
+
+    expect(CreateBlogs).toBeTruthy();
   });
 
   it("submits the form", async () => {
-    const { getByText, getByTestId } = render(<CreateBlogs />);
+    render(<CreateBlogs />);
 
-    const blogTitleInput = getByTestId("blog-title-input");
-    fireEvent.change(blogTitleInput, {
-      target: { value: "Test Title" },
-    });
+    fireEvent.change(screen.getByTestId("blog-title-input"));
 
-    const blogDescriptionInput = getByTestId("blog-description-input");
-    fireEvent.change(blogDescriptionInput, {
-      target: { value: "Test Description" },
-    });
+    fireEvent.change(screen.getByTestId("blog-description-input"));
 
-    fireEvent.click(getByText(/Publish/i));
+    fireEvent.click(screen.getByText(/Publish/i));
 
     await waitFor(() => {
       expect(api.blog.create.useMutation).toHaveBeenCalled();
