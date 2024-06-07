@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { AiFillProject, AiOutlineComment } from "react-icons/ai";
 import { BiLogoBlogger, BiMoney, BiSolidDashboard } from "react-icons/bi";
 import { FaDonate } from "react-icons/fa";
+import { useClerk } from "@clerk/nextjs";
+import { PiSignOutLight } from "react-icons/pi";
 
 export const Sidebar = () => {
   const Menus = [
@@ -32,13 +34,23 @@ export const Sidebar = () => {
   ];
   const [open, setOpen] = useState(true);
   const router = useRouter();
+  const { signOut } = useClerk();
+
+  const handleSignOut = async () => {
+    try {
+      router.push("/");
+      await signOut();
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   return (
     <div className={`flex ${open ? "mr-52" : "mr-20"}`}>
       <div
         className={` ${
           open ? "w-52" : "w-20"
-        } fixed z-50 h-full bg-white p-5 pt-8 text-gray-700 shadow duration-300`}
+        } fixed z-50 flex h-full flex-col bg-white p-5 pt-8 text-gray-700 shadow duration-300`}
       >
         <img
           src="https://static.thenounproject.com/png/1535376-200.png"
@@ -63,7 +75,7 @@ export const Sidebar = () => {
           </h1>
         </div>
 
-        <ul className="pt-6">
+        <ul className="flex-grow pt-6">
           {Menus.map((Menu, index) => (
             <Link key={index} href={Menu.link}>
               <li
@@ -85,6 +97,23 @@ export const Sidebar = () => {
             </Link>
           ))}
         </ul>
+
+        {open ? (
+          <button
+            className="mt-auto flex items-center rounded-md border border-gray-200 p-2 text-gray-700 hover:bg-gray-200"
+            onClick={handleSignOut}
+          >
+            <PiSignOutLight size={23} className="mr-5" />
+            Log out
+          </button>
+        ) : (
+          <button
+            className="mt-auto flex items-center rounded-md border border-gray-200 p-2 text-gray-700 hover:bg-gray-200"
+            onClick={handleSignOut}
+          >
+            <PiSignOutLight size={23} />
+          </button>
+        )}
       </div>
     </div>
   );
