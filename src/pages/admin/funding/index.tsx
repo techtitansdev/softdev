@@ -34,6 +34,7 @@ const AdminFunding = () => {
         a.featured === b.featured ? 0 : a.featured ? -1 : 1,
       );
       setFundingData(sortedFunding);
+      setFilteredProjects(sortedFunding);
     }
   }, [getFunding.data]);
 
