@@ -33,6 +33,7 @@ const AdminProjectPage = () => {
         a.featured === b.featured ? 0 : a.featured ? -1 : 1,
       );
       setProjectData(sortedProjects);
+      setFilteredProjects(sortedProjects);
     }
   }, [getProjects.data]);
 
