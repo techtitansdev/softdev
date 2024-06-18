@@ -12,6 +12,7 @@ export const funding = createTRPCRouter({
         fundraiserId: z.string(),
         amount: z.number(),
         paymentMethod: z.string(),
+        donatedAs: z.string(),
       }),
     )
     .mutation(async (opts) => {
@@ -25,6 +26,7 @@ export const funding = createTRPCRouter({
           fundraiserId: input.fundraiserId,
           amount: input.amount,
           paymentMethod: input.paymentMethod,
+          donatedAs: input.donatedAs,
         },
       });
       return donor;
@@ -71,7 +73,7 @@ export const funding = createTRPCRouter({
         });
 
         return {
-          fullName: funding.fullName, // Change here
+          fullName: funding.fullName, 
           email: funding.email,
           contact: funding.contact,
           date: funding.date,
