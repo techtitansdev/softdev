@@ -24,7 +24,7 @@ const FilterByProjectName = ({
   useEffect(() => {
     if (donors.data) {
       const transformedData = donors.data.map((item) => ({
-        name: item.name,
+        name: item.fullName,
         email: item.email || "",
         contact: item.contact || "",
         date: new Date(item.date).toISOString(),

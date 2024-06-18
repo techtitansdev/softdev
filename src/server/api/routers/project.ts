@@ -141,7 +141,7 @@ export const project = createTRPCRouter({
 
         return foundProject;
       } catch (error) {
-        throw new Error(`Failed to fetch project: ${error}`);
+        throw new Error(`Failed to fetch project: ${error as string}`);
       }
     }),
 
@@ -165,7 +165,7 @@ export const project = createTRPCRouter({
 
         return foundProject;
       } catch (error) {
-        throw new Error(`Failed to fetch project: ${error}`);
+        throw new Error(`Failed to fetch project: ${error as string}`);
       }
     }),
 
@@ -189,7 +189,7 @@ export const project = createTRPCRouter({
           foundProject.image = "";
         }
       } catch (error) {
-        throw new Error(`Failed to fetch project: ${error}`);
+        throw new Error(`Failed to fetch project: ${error as string}`);
       }
     }),
 });

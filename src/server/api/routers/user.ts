@@ -69,7 +69,7 @@ export const userRouter = createTRPCRouter({
 
         return foundUser;
       } catch (error) {
-        throw new Error(`Failed to fetch user: ${error}`);
+        throw new Error(`Failed to fetch user: ${error as string}`);
       }
     }),
   verify: publicProcedure
