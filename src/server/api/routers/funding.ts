@@ -80,6 +80,7 @@ export const funding = createTRPCRouter({
           projectName: project?.title,
           paymentMethod: funding.paymentMethod,
           amount: funding.amount,
+          donatedAs: funding.donatedAs,
         };
       }),
     );
