@@ -22,7 +22,7 @@ export const paymentRouter = createTRPCRouter({
             attributes: {
               amount: input.amount,
               currency: input.currency,
-              payment_method_allowed: ['card','gcash'],
+              payment_method_allowed: ['card', 'gcash'],
               capture_type: 'automatic',
             },
           },
@@ -38,7 +38,7 @@ export const paymentRouter = createTRPCRouter({
       return response.data;
     }),
 
-    attachPaymentIntent: publicProcedure
+  attachPaymentIntent: publicProcedure
     .input(
       z.object({
         payment_method: z.string(),
@@ -53,9 +53,9 @@ export const paymentRouter = createTRPCRouter({
         {
           data: {
             attributes: {
-                payment_method: input.payment_method,
-                client_key: input.client_key,
-                return_url:`http://localhost:3000/funded-projects/${input.fundingId}`
+              payment_method: input.payment_method,
+              client_key: input.client_key,
+              return_url: `http://localhost:3000/funded-projects/${input.fundingId}`
             },
           },
         },
@@ -70,7 +70,7 @@ export const paymentRouter = createTRPCRouter({
       return response.data;
     }),
 
-    retrievePaymentIntent: publicProcedure
+  retrievePaymentIntent: publicProcedure
     .input(
       z.object({
         id: z.string(),
@@ -89,7 +89,7 @@ export const paymentRouter = createTRPCRouter({
 
       return response.data;
     }),
-    createPaymentMethod: publicProcedure
+  createPaymentMethod: publicProcedure
     .input(
       z.object({
         type: z.string().default('card'),
@@ -137,7 +137,7 @@ export const paymentRouter = createTRPCRouter({
           }
         );
 
-      
+
         console.log("Payment method created successfully:", response.data);
         return response.data;
       } catch (error) {
@@ -152,12 +152,12 @@ export const paymentRouter = createTRPCRouter({
         }
       }
     }),
-    createGCashPaymentMethod: publicProcedure
+  createGCashPaymentMethod: publicProcedure
     .input(
       z.object({
         phone: z.string(),
-        email:z.string(),
-        name:z.string(),
+        email: z.string(),
+        name: z.string(),
       })
     )
     .mutation(async ({ input }) => {
@@ -172,8 +172,8 @@ export const paymentRouter = createTRPCRouter({
                 type: 'gcash',
                 billing: {
                   phone: input.phone,
-                  email:input.email,
-                  name:input.name
+                  email: input.email,
+                  name: input.name
                 },
               },
             },
