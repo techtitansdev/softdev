@@ -2,8 +2,10 @@ import { useUser } from "@clerk/nextjs";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import CurrencyDropdown from "~/components/CurrencyDropdown";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
+import PaymentMethodDropdown from "~/components/PaymentMethodDropdown";
 import ReceiptModal from "~/components/receiptModal";
 import { api } from "~/utils/api";
 
@@ -23,7 +25,7 @@ const Payment = () => {
   const [email, setEmail] = useState("");
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState("PHP");
-  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [cardDetails, setCardDetails] = useState({
     card_number: "",
@@ -38,7 +40,7 @@ const Payment = () => {
     country: "PH",
   });
 
-  const paymentMethods = ["card", "gcash"];
+  const paymentMethods = ["Card", "Gcash"];
   const currencies = ["PHP", "USD", "EUR"];
 
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
@@ -67,6 +69,10 @@ const Payment = () => {
     email: userEmail,
   });
 
+  const handlePaymentMethodChange = (selectedMethod: string) => {
+    setPaymentMethod(selectedMethod);
+  };
+
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState<{
     paymentID: string;
@@ -92,7 +98,7 @@ const Payment = () => {
       if (paymentIntentResponse?.data.id) {
         let paymentMethodResponse;
 
-        if (paymentMethod === "gcash") {
+        if (paymentMethod === "Gcash") {
           paymentMethodResponse = await createGcashPaymentMethod.mutateAsync({
             email: email,
             name: fullName,
@@ -307,42 +313,38 @@ const Payment = () => {
 
           <div className="mt-6 flex w-11/12 rounded-md border border-gray-400 py-4 pl-4 pr-4 shadow-lg md:w-10/12 lg:w-9/12">
             <input
-              type="number"
-              min="0"
+              type="text"
               placeholder="Amount"
-              className="w-2/3 text-sm md:text-base"
+              className="w-2/3 text-sm outline-none md:text-base"
               value={amount}
               required
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) {
+                  const intValue = parseInt(value, 10);
+                  if (value === "" || intValue >= 1) {
+                    setAmount(value);
+                  }
+                }
+              }}
             />
-            <select
-              className="ml-2 w-1/3 text-sm md:text-base"
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value)}
-              required
-            >
-              {currencies.map((curr) => (
-                <option key={curr} value={curr}>
-                  {curr}
-                </option>
-              ))}
-            </select>
+
+            <CurrencyDropdown
+              options={currencies}
+              selectedOption={currency}
+              onSelect={setCurrency}
+            />
           </div>
 
-          <select
-            className="mt-6 w-11/12 rounded-md border border-gray-400 py-4 pl-4 pr-4 text-sm shadow-lg md:w-10/12 md:text-base lg:w-9/12"
+          <PaymentMethodDropdown
+            className="mt-6 w-11/12 rounded-md border border-gray-400 shadow-lg outline-none md:w-10/12 md:text-base lg:w-9/12"
+            options={paymentMethods}
             value={paymentMethod}
-            onChange={(e) => setPaymentMethod(e.target.value)}
-            required
-          >
-            {paymentMethods.map((method) => (
-              <option key={method} value={method}>
-                {method.charAt(0).toUpperCase() + method.slice(1)}
-              </option>
-            ))}
-          </select>
+            onChange={handlePaymentMethodChange}
+            placeholder="Select Payment Method"
+          />
 
-          {paymentMethod === "card" && (
+          {paymentMethod === "Card" && (
             <div className="mt-6 w-11/12 rounded-md border border-gray-400 p-4 shadow-lg md:w-10/12 lg:w-9/12">
               <input
                 type="text"
