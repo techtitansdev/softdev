@@ -62,6 +62,7 @@ export const donors = createTRPCRouter({
         fullName: z.string(),
         email: z.string().toLowerCase(),
         contact: z.string(),
+        donatedAs: z.string(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -98,6 +99,7 @@ export const donors = createTRPCRouter({
           fullName: input.fullName,
           email: input.email,
           contact: input.contact,
+          donatedAs: input.donatedAs,
         },
       });
 

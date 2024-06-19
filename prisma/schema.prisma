@@ -122,6 +122,7 @@ model Fundings {
   fundraiserId  String
   amount        Int
   paymentMethod String
+  donatedAs     String
   fundraiser    Fundraisers @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
   Donors        Donors?     @relation(fields: [donorsId], references: [id])
   donorsId      String?
