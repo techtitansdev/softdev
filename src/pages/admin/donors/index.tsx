@@ -21,6 +21,7 @@ type Donor = {
   projectName: string;
   paymentMethod: string;
   amount: number;
+  donatedAs: string;
 };
 
 const Donors = () => {
@@ -60,6 +61,7 @@ const Donors = () => {
         projectName: item.projectName || "",
         paymentMethod: item.paymentMethod || "",
         amount: item.amount,
+        donatedAs: item.donatedAs
       }));
       setTableData(transformedData);
       setCurrentPage(1);
@@ -287,6 +289,9 @@ const Donors = () => {
                   <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
                     Amount
                   </th>
+                  <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
+                    Payment Type
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -312,6 +317,9 @@ const Donors = () => {
                     </td>
                     <td className="border-2 py-4 pl-8 text-left text-sm font-light text-gray-700">
                       {item.amount}
+                    </td>
+                    <td className="border-2 py-4 pl-8 text-left text-sm font-light text-gray-700">
+                      {item.donatedAs}
                     </td>
                   </tr>
                 ))}
