@@ -1,5 +1,4 @@
 import { useUser } from "@clerk/nextjs";
-import { useQueryClient } from "@tanstack/react-query";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -7,7 +6,6 @@ import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
 import ReceiptModal from "~/components/receiptModal";
 import { api } from "~/utils/api";
-// Import the new ReceiptModal component
 
 interface Funding {
   title: string;
@@ -24,7 +22,7 @@ const Payment = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [amount, setAmount] = useState("");
-  const [currency, setCurrency] = useState("PHP"); // New state for currency
+  const [currency, setCurrency] = useState("PHP");
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [cardDetails, setCardDetails] = useState({
@@ -33,38 +31,45 @@ const Payment = () => {
     exp_year: "",
     cvc: "",
     line1: "",
+    line2: "",
     city: "",
     state: "",
     postal_code: "",
     country: "PH",
-    line2: "",
   });
 
-  const paymentMethods = ["card", "gcash"]; // Add more payment methods as needed
-
-  const currencies = ["PHP", "USD", "EUR"]; // List of supported currencies
+  const paymentMethods = ["card", "gcash"];
+  const currencies = ["PHP", "USD", "EUR"];
 
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
+
   const payment = api.paymentRouter.createPaymentIntent.useMutation();
+
   const createPaymentMethod =
     api.paymentRouter.createPaymentMethod.useMutation();
+
   const createGcashPaymentMethod =
     api.paymentRouter.createGCashPaymentMethod.useMutation();
+
   const attachPaymentIntent =
     api.paymentRouter.attachPaymentIntent.useMutation();
+
   const updateFunds = api.fundraiser.updateFunds.useMutation();
+
   const user = useUser();
   const updateDonor = api.donors.createDonor.useMutation();
+
   const createFunding = api.donors.createFunding.useMutation();
+
   const userEmail = user.user?.emailAddresses[0]?.emailAddress || "";
-  
+
   const checkEmail = api.donors.checkEmailExists.useQuery({
     email: userEmail,
   });
 
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState<{
-    paymentID:string;
+    paymentID: string;
     amount: number;
     currency: string;
     paymentMethod: string;
@@ -75,12 +80,13 @@ const Payment = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPaymentError(null);
+
     const convertedAmount = parseInt(amount, 10) * 100;
 
     try {
       const paymentIntentResponse = await payment.mutateAsync({
         amount: convertedAmount,
-        currency: currency, // Use the selected currency
+        currency: currency,
       });
 
       if (paymentIntentResponse?.data.id) {
@@ -101,15 +107,15 @@ const Payment = () => {
               cvc: cardDetails.cvc,
             },
             billing: {
-              name: fullName,
               address: {
                 line1: cardDetails.line1,
+                line2: cardDetails.line2,
                 city: cardDetails.city,
                 state: cardDetails.state,
                 postal_code: cardDetails.postal_code,
                 country: cardDetails.country,
-                line2: cardDetails.line2,
               },
+              name: fullName,
               phone: phoneNumber,
               email: email,
             },
@@ -124,7 +130,7 @@ const Payment = () => {
           fundingId: idString,
         });
 
-  console.log(paymentIntentResponse?.data.id)
+        console.log(paymentIntentResponse?.data.id);
 
         await updateFunds.mutateAsync({
           id: idString,
@@ -135,8 +141,7 @@ const Payment = () => {
           await updateDonor.mutateAsync({
             userEmail: userEmail,
           });
-        }else{
-
+        } else {
         }
 
         await createFunding.mutateAsync({
@@ -144,9 +149,10 @@ const Payment = () => {
           amount: parseInt(amount, 10),
           donorEmail: userEmail,
           paymentMethod,
-          fullName: "",
-          email: "",
-          contact: ""
+          fullName: fullName,
+          email: email,
+          contact: phoneNumber,
+          donatedAs: contributionType,
         });
 
         setPaymentDetails({
@@ -158,7 +164,6 @@ const Payment = () => {
           email,
         });
         setIsReceiptModalOpen(true);
-        
       } else {
         setPaymentError("Failed to create payment intent.");
       }
@@ -300,7 +305,7 @@ const Payment = () => {
             </>
           )}
 
-          <div className="mt-6 w-11/12 flex rounded-md border border-gray-400 py-4 pl-4 pr-4 shadow-lg md:w-10/12 lg:w-9/12">
+          <div className="mt-6 flex w-11/12 rounded-md border border-gray-400 py-4 pl-4 pr-4 shadow-lg md:w-10/12 lg:w-9/12">
             <input
               type="number"
               min="0"
@@ -346,7 +351,10 @@ const Payment = () => {
                 value={cardDetails.card_number}
                 required
                 onChange={(e) =>
-                  setCardDetails({ ...cardDetails, card_number: e.target.value })
+                  setCardDetails({
+                    ...cardDetails,
+                    card_number: e.target.value,
+                  })
                 }
               />
               <input
@@ -425,7 +433,10 @@ const Payment = () => {
                 value={cardDetails.postal_code}
                 required
                 onChange={(e) =>
-                  setCardDetails({ ...cardDetails, postal_code: e.target.value })
+                  setCardDetails({
+                    ...cardDetails,
+                    postal_code: e.target.value,
+                  })
                 }
               />
               <input
@@ -455,11 +466,12 @@ const Payment = () => {
       <Footer />
 
       {paymentDetails && (
-        
         <ReceiptModal
           isOpen={isReceiptModalOpen}
           onClose={() => setIsReceiptModalOpen(false)}
-          paymentDetails={paymentDetails} id={id?.toString() || ""}        />
+          paymentDetails={paymentDetails}
+          id={id?.toString() || ""}
+        />
       )}
     </>
   );
