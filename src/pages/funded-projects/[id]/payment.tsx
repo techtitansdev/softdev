@@ -6,7 +6,7 @@ import CurrencyDropdown from "~/components/CurrencyDropdown";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
 import PaymentMethodDropdown from "~/components/PaymentMethodDropdown";
-import ReceiptModal from "~/components/receiptModal";
+import ReceiptModal from "~/components/ReceiptModal";
 import { api } from "~/utils/api";
 
 interface Funding {
