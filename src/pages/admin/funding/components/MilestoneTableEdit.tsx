@@ -1,0 +1,140 @@
+import React, { useEffect, useState } from "react";
+
+export interface TableRow {
+  milestone: string;
+  value: number; // Assuming value is a number based on the previous schema
+  unit: string;
+  description: string;
+}
+
+interface MileStoneTableProps {
+  onRowDataChange: (rows: TableRow[]) => void;
+  existingMilestone: TableRow[];
+}
+
+const MileStoneTableEdit: React.FC<MileStoneTableProps> = ({ onRowDataChange, existingMilestone }) => {
+  const [rows, setRows] = useState<TableRow[]>([]);
+
+  useEffect(() => {
+    if (existingMilestone.length > 0) {
+      setRows(existingMilestone);
+    } else {
+      setRows([{ milestone: "1", value: 0, unit: "", description: "" }]);
+    }
+  }, [existingMilestone]);
+
+  const addRow = () => {
+    setRows([
+      ...rows,
+      {
+        milestone: `${rows.length + 1}`,
+        value: 0,
+        unit: "",
+        description: "",
+      },
+    ]);
+  };
+
+  const handleChange = (
+    index: number,
+    field: keyof TableRow,
+    value: string,
+  ) => {
+    const newRows = rows.map((row, rowIndex) => {
+      if (rowIndex === index) {
+        return {
+          ...row,
+          [field]: value,
+        };
+      }
+      return row;
+    });
+
+    setRows(newRows);
+    onRowDataChange(newRows);
+  };
+
+  return (
+    <div className="flex flex-col">
+      <table className="min-w-full">
+        <thead className="rounded-md border bg-gray-50 shadow-sm">
+          <tr>
+            <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-600">
+              Milestone
+            </th>
+            <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-600">
+              Goal/Value
+            </th>
+            <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-600">
+              Unit
+            </th>
+            <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-600">
+              Description
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {rows.map((row, index) => (
+            <tr key={row.milestone}>
+              <td>
+                <input
+                  type="text"
+                  value={row.milestone}
+                  readOnly
+                  className="block w-full rounded-sm border border-gray-300 py-2 text-center sm:text-sm"
+                  data-testid="milestone-title-input"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  value={row.value}
+                  placeholder=" Ex: 100"
+                  required
+                  onChange={(e) => handleChange(index, "value", e.target.value)}
+                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm"
+                  data-testid="funding-goal-input"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  value={row.unit}
+                  required
+                  placeholder=" Ex: books"
+                  onChange={(e) => handleChange(index, "unit", e.target.value)}
+                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm"
+                  data-testid="milestone-unit-input"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  value={row.description}
+                  required
+                  placeholder=" sample description"
+                  onChange={(e) =>
+                    handleChange(index, "description", e.target.value)
+                  }
+                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm"
+                  data-testid="milestone-description-input"
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="flex justify-end">
+        <button
+          onClick={addRow}
+          className="mt-2 rounded bg-gray-500 px-10 py-1 font-medium text-white hover:bg-gray-600"
+        >
+          Add Row
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default MileStoneTableEdit;

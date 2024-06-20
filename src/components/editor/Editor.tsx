@@ -60,9 +60,23 @@ export const NewEditor: React.FC<EditorProps> = ({
             onChanges(blocks);
           }
         },
-        placeholder: "Create your content here...",
+        placeholder: "",
         inlineToolbar: true,
-        data: { blocks: initialData || [] },
+        data: {
+          blocks: initialData || [
+            // Example initial data with image block
+            {
+              type: "image",
+              data: {
+                url: "https://example.com/image.jpg",
+                caption: "Example Image Caption",
+                withBorder: false,
+                withBackground: false,
+                stretched: false
+              }
+            }
+          ]
+        },
         tools: {
           alignementTool: AlignmentTuneTool,
           underline: Underline,
@@ -118,7 +132,7 @@ export const NewEditor: React.FC<EditorProps> = ({
             class: ImageTool,
             config: {
               uploader: {
-                async uploadByFile(file: any) {
+                async uploadByFile(file: string | Blob) {
                   try {
                     const formData = new FormData();
                     formData.append("file", file);
@@ -134,7 +148,7 @@ export const NewEditor: React.FC<EditorProps> = ({
                         params: {
                           upload_preset: "gxk09fmu",
                         },
-                      },
+                      }
                     );
 
                     return {
@@ -146,7 +160,7 @@ export const NewEditor: React.FC<EditorProps> = ({
                   } catch (error) {
                     console.error(
                       "Error uploading image to Cloudinary:",
-                      error,
+                      error
                     );
 
                     // Return an error message
@@ -232,6 +246,7 @@ export const NewEditor: React.FC<EditorProps> = ({
           <div
             id="editor"
             className="min-h-[650px] min-w-[650px] justify-center"
+            data-testid="editor"
           />
         </div>
       </form>

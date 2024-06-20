@@ -30,6 +30,19 @@ jest.mock("~/utils/api", () => ({
         useMutation: jest.fn().mockResolvedValue({}),
       },
     },
+    user: {
+      getByEmail: {
+        useQuery: jest.fn().mockReturnValue({ data: { id: "1" } }),
+      },
+    },
+    feedback: {
+      create: {
+        useMutation: jest.fn().mockResolvedValue({}),
+      },
+      getAll: {
+        useQuery: jest.fn().mockResolvedValue({}),
+      },
+    },
   },
 }));
 
@@ -60,7 +73,7 @@ describe("Funding page", () => {
 
 describe("CommentComponent", () => {
   test("renders comment component correctly", () => {
-    const { getByText } = render(<CommentComponent />);
+    const { getByText } = render(<CommentComponent projectId={""} />);
 
     expect(getByText("Leave a Comment")).toBeTruthy();
     expect(getByText("Post")).toBeTruthy();

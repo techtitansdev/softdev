@@ -4,20 +4,35 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import AboutComponent from "../components/AboutComponent";
-import MilestoneComponent from "../components/MilestoneComponent";
+
 import CommentComponent from "../components/CommentComponent";
 import { Navbar } from "~/components/Navbar";
 import { Footer } from "~/components/Footer";
+import { useUser } from "@clerk/nextjs";
+import { Modal } from "~/components/Modal";
+import EditorOutput from "~/components/editor/EditorOutput";
+import MilestoneComponent from "~/pages/admin/funding/components/MilestoneComponent";
 
 const Funding: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
   const [fundingData, setFundingData] = useState<any>(null);
+  const { user } = useUser();
+  const [showModal, setShowModal] = useState(false);
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
+  const projectId = getFunding.data?.project.id;
+  console.log(getFunding.data?.project.id);
+  const [editorBlocks, setEditorBlocks] = useState([]);
+  const [initialEditorData, setinitialEditorData] = useState();
+  const [numberOfDonor, setNumberOfDonor] = useState(0);
 
   useEffect(() => {
     if (getFunding.data && !fundingData && getFunding.data !== fundingData) {
+      setNumberOfDonor(getFunding.data.fundings.length);
       setFundingData(getFunding.data);
+      const initialEditorData = JSON.parse(getFunding.data.project.about);
+      setinitialEditorData(initialEditorData);
+      setEditorBlocks(initialEditorData.blocks);
     }
   }, [getFunding.data, fundingData]);
 
@@ -28,16 +43,30 @@ const Funding: React.FC = () => {
   };
 
   const calculateDaysLeft = (targetDate: string): number => {
-    // Convert target date string to Date object
     const target = new Date(targetDate);
     const currentDate = new Date();
 
-    // Calculate the difference in milliseconds between the target date and the current date
     const differenceMs = target.getTime() - currentDate.getTime();
 
-    // Calculate the difference in days by dividing the difference in milliseconds by the number of milliseconds in a day
+    // Check if the target date has passed
+    if (differenceMs < 0) {
+      return 0; // Return 0 if target date has passed
+    }
+
+    // Calculate the difference in days
     const differenceDays = Math.ceil(differenceMs / (1000 * 60 * 60 * 24));
     return differenceDays;
+  };
+
+  const handleDonateClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!user) {
+      event.preventDefault();
+      setShowModal(true);
+    } else {
+      router.push(
+        `/funded-projects/${encodeURIComponent(fundingData.id)}/payment`,
+      );
+    }
   };
 
   return (
@@ -65,7 +94,10 @@ const Funding: React.FC = () => {
               <Link
                 href={`/funded-projects/${encodeURIComponent(fundingData.id)}/payment`}
               >
-                <button className="w-72 rounded-lg bg-blue-800 py-2 text-xl text-white hover:bg-blue-900 md:text-2xl">
+                <button
+                  onClick={handleDonateClick}
+                  className="w-72 rounded-lg bg-blue-800 py-2 text-xl text-white hover:bg-blue-900 md:text-2xl"
+                >
                   Donate
                 </button>
               </Link>
@@ -78,7 +110,7 @@ const Funding: React.FC = () => {
                     alt="Donors Icon"
                   />
                   <p className="text-sm font-medium sm:text-base lg:text-lg">
-                    {fundingData.donors}
+                    {numberOfDonor}
                   </p>
                   <p className="text-xs font-light sm:text-sm lg:text-base">
                     Donors
@@ -108,14 +140,19 @@ const Funding: React.FC = () => {
                 alt="Project Image"
                 className="w-full rounded-3xl md:h-96"
               />
-              <div className="mt-4 h-2.5 w-full rounded-full bg-gray-200 lg:mt-8 dark:bg-gray-400">
+              <div className="h-2.5 w-full rounded-full bg-gray-200 lg:mt-8 dark:bg-gray-400">
                 <div
                   className="h-2.5 rounded-full bg-blue-800"
                   style={{
-                    width: `${(fundingData.funds / fundingData.goal) * 100}%`,
+                    width: `${
+                      fundingData.funds >= fundingData.goal
+                        ? "100%"
+                        : `${(fundingData.funds / fundingData.goal) * 100}%`
+                    }`,
                   }}
                 ></div>
               </div>
+
               <div className="mb-4 mt-1 flex justify-between md:mt-4">
                 <p className="text-xs font-medium md:text-sm">
                   Days Left: {calculateDaysLeft(fundingData.targetDate)}
@@ -167,12 +204,23 @@ const Funding: React.FC = () => {
 
         <div className="mx-6 mb-12 mt-6 sm:mx-10 lg:mx-20 lg:mt-12">
           {content === "about" && fundingData?.project && (
-            <AboutComponent about={fundingData.project.about} />
+            <EditorOutput content={initialEditorData} />
           )}
-          {content === "milestone" && <MilestoneComponent />}
-          {content === "comment" && <CommentComponent projectId={`${id}`} />}
+          {content === "milestone" && (
+            <MilestoneComponent milestones={fundingData.milestones} />
+          )}
+          {content === "comment" && (
+            <CommentComponent projectId={projectId as string} />
+          )}
         </div>
       </div>
+
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        message="Please log in to donate."
+        bgColor="bg-gray-700 text-white"
+      />
 
       <Footer />
     </div>

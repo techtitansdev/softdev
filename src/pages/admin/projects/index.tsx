@@ -11,6 +11,8 @@ import { RiSearchLine } from "react-icons/ri";
 import SearchByProject from "~/components/search/SearchByProject";
 import FilterByCategory from "~/components/filter/FilterByCategory";
 import FilterByStatus from "~/components/filter/FilterByStatus";
+import Unauthorized from "~/components/Unauthorized";
+import Loading from "~/components/Loading";
 
 const AdminProjectPage = () => {
   const [projectData, setProjectData] = useState<any>([]);
@@ -31,6 +33,7 @@ const AdminProjectPage = () => {
         a.featured === b.featured ? 0 : a.featured ? -1 : 1,
       );
       setProjectData(sortedProjects);
+      setFilteredProjects(sortedProjects);
     }
   }, [getProjects.data]);
 
@@ -102,23 +105,6 @@ const AdminProjectPage = () => {
     setSearchSuggestions([]);
   };
 
-  const { user, isLoaded } = useUser();
-  const user_role = user?.publicMetadata.admin;
-  const router = useRouter();
-
-  useEffect(() => {
-    if (isLoaded && user_role !== "admin") {
-      router.push("/home");
-    }
-  }, [isLoaded, user_role]);
-
-  if (!isLoaded) {
-    return <div>Loading...</div>;
-  }
-  if (isLoaded && user_role !== "admin") {
-    return <div>UNAUTHORIZED</div>;
-  }
-
   const filterProjects = (
     searchQuery !== "" ? filteredProjects : projectData
   ).filter((project: any) => {
@@ -138,6 +124,17 @@ const AdminProjectPage = () => {
 
     return matchesCategory && matchesPublished;
   });
+
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
+
+  useEffect(() => {}, [isLoaded, user_role]);
+  if (!isLoaded) {
+    return <Loading />;
+  }
+  if (user_role !== "admin") {
+    return <Unauthorized />;
+  }
 
   return (
     <>

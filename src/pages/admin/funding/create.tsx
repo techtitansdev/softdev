@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import { Editor } from "@tinymce/tinymce-react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import { categoriesOption } from "~/data/categories";
@@ -12,20 +11,10 @@ import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import MileStoneTable, { TableRow } from "./components/MilestoneTable";
 import { NewEditor } from "~/components/editor/Editor";
-
-interface FundingData {
-  title: string;
-  project: string;
-  description: string;
-  image: string;
-  hub: string;
-  category: string;
-  type: string;
-  beneficiaries: string;
-  goal: string;
-  date: string;
-  about: string;
-}
+import { useUser } from "@clerk/nextjs";
+import Loading from "~/components/Loading";
+import Unauthorized from "~/components/Unauthorized";
+import { FundingData } from "~/types/fundingData";
 
 function CreateFunding() {
   const [project, setProject] = useState("");
@@ -34,14 +23,8 @@ function CreateFunding() {
     title: project,
   });
 
-  const [milestoneData, setMilestoneData] = useState<TableRow[]>([
-    { milestone: "1", value: "", unit: "", description: "" },
-  ]);
-
-  // Function to handle changes in milestone data
-  const handleMilestoneDataChange = (data: TableRow[]) => {
-    setMilestoneData(data);
-  };
+  const [imageUrl, setImageUrl] = useState("");
+  const [publicId, setPublicId] = useState("");
 
   const transformedProjects =
     getProjects.data?.map((project) => ({
@@ -52,9 +35,6 @@ function CreateFunding() {
   const animatedComponents = makeAnimated();
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
   const router = useRouter();
-
-  const [imageUrl, setImageUrl] = useState("");
-  const [publicId, setPublicId] = useState("");
 
   const [fundingData, setFundingData] = useState<FundingData>({
     title: "",
@@ -68,8 +48,16 @@ function CreateFunding() {
     goal: "",
     date: "",
     about: "",
+    published: false,
+    milestones: [],
   });
   const [initialEditorData, setinitialEditorData] = useState();
+
+  const type = [
+    { label: "Activity", value: "Activity" },
+    { label: "Project", value: "Project" },
+  ];
+
   useEffect(() => {
     if (getSpecificProjects.data) {
       const specificProject = getSpecificProjects.data;
@@ -93,15 +81,6 @@ function CreateFunding() {
       setEditorBlocks(initialEditorData.blocks);
     }
   }, [getSpecificProjects.data]);
-
-  const handleEditorChange = (content: any) => {
-    setEditorContent(content);
-  };
-
-  const type = [
-    { label: "Activity", value: "Activity" },
-    { label: "Project", value: "Project" },
-  ];
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -130,36 +109,45 @@ function CreateFunding() {
 
     // logic for removing the image
   };
+
+  const [milestoneData, setMilestoneData] = useState<TableRow[]>([
+    {
+      milestone: "1",
+      value: 0,
+      unit: "",
+      description: "",
+      id: undefined,
+    },
+  ]);
+
+  const handleMilestoneDataChange = (data: TableRow[]) => {
+    const updatedData = data.map((item) => ({
+      ...item,
+      value:
+        typeof item.value === "string" ? parseFloat(item.value) : item.value,
+    }));
+    setMilestoneData(updatedData);
+    console.log("updated data", updatedData);
+  };
+
   const createFundRaiser = api.fundraiser.create.useMutation();
-  const createMilestone = api.milestone.create.useMutation();
-  const [editorBlocks, setEditorBlocks] = useState([]); 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const [editorBlocks, setEditorBlocks] = useState([]);
+
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+    publish: boolean,
+  ) => {
     e.preventDefault();
 
-    console.log("milestone data:", milestoneData);
-
     try {
-      // Create milestones
-      const milestoneResults = await Promise.all(
-        milestoneData.map(async (milestone) => {
-          const result = await createMilestone.mutateAsync({
-            milestone: milestone.milestone,
-            value: parseFloat(milestone.value),
-            unit: milestone.unit,
-            description: milestone.description,
-            fundraiserId: getSpecificProjects.data?.id ?? "",
-          });
-          return result;
-        }),
-      );
-
-      // Create fundraiser
       const fundraiserResult = await createFundRaiser.mutateAsync({
         goal: parseFloat(fundingData.goal),
         targetDate: new Date(fundingData.date),
         projectId: getSpecificProjects.data?.id ?? "",
         funds: 0,
         donors: 0,
+        milestones: milestoneData,
+        published: publish,
       });
 
       setSuccessModalOpen(true);
@@ -169,12 +157,23 @@ function CreateFunding() {
       }, 2000);
 
       console.log("Project created:", fundraiserResult);
-      console.log("Milestones created:", milestoneResults);
     } catch (error) {
       console.error("Error creating project:", error);
     }
   };
-  console.log(fundingData.category)
+
+  console.log({ milestone: "1", value: 0, unit: "", description: "" });
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
+
+  useEffect(() => {}, [isLoaded, user_role]);
+  if (!isLoaded) {
+    return <Loading />;
+  }
+  if (user_role !== "admin") {
+    return <Unauthorized />;
+  }
+
   return (
     <div>
       <Head>
@@ -191,17 +190,17 @@ function CreateFunding() {
             CREATE FUNDING
           </div>
 
-          <form onSubmit={handleSubmit}>
+          <form>
             <div className="mb-4">
               <label htmlFor="categories" className="font-medium text-gray-700">
                 Select a Project
               </label>
 
               <Select
-                options={transformedProjects} // Pass the constantOptions array here
+                options={transformedProjects}
                 value={transformedProjects.find(
                   (option) => option.value === fundingData.category,
-                )} // Set the value prop based on the selectedConstantValue
+                )}
                 onChange={(selectedOption) => {
                   setImageUrl(getSpecificProjects.data?.image ?? "");
                   setFundingData({
@@ -233,9 +232,9 @@ function CreateFunding() {
                 name="title"
                 value={fundingData.title}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                required
+                className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
                 data-testid="project-select"
+                readOnly
               />
             </div>
 
@@ -251,8 +250,8 @@ function CreateFunding() {
                 name="description"
                 value={fundingData.description}
                 onChange={handleChange}
-                className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm"
-                required
+                className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm outline-none"
+                readOnly
               />
             </div>
 
@@ -295,15 +294,6 @@ function CreateFunding() {
                   />
                 )}
               </CldUploadButton>
-
-              {publicId && (
-                <button
-                  onClick={removeImage}
-                  className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700"
-                >
-                  Remove Image
-                </button>
-              )}
             </div>
 
             <div className="mb-4">
@@ -317,7 +307,7 @@ function CreateFunding() {
                 name="hub"
                 value={fundingData.hub}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
                 readOnly
               />
             </div>
@@ -384,8 +374,8 @@ function CreateFunding() {
                 name="beneficiaries"
                 value={fundingData.beneficiaries}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                required
+                className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
+                readOnly
               />
             </div>
 
@@ -394,7 +384,10 @@ function CreateFunding() {
                 Milestones
               </label>
 
-              <MileStoneTable onRowDataChange={handleMilestoneDataChange} />
+              <MileStoneTable
+                onRowDataChange={handleMilestoneDataChange}
+                existingMilestone={milestoneData}
+              />
             </div>
 
             <div className="mb-4">
@@ -403,11 +396,19 @@ function CreateFunding() {
               </label>
 
               <input
-                type="number"
+                type="text"
                 id="goal"
                 name="goal"
                 value={fundingData.goal}
-                onChange={handleChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (
+                    /^\d*$/.test(value) &&
+                    (value === "" || parseInt(value) >= 1)
+                  ) {
+                    setFundingData({ ...fundingData, goal: value });
+                  }
+                }}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm"
                 required
               />
@@ -435,18 +436,20 @@ function CreateFunding() {
               </label>
             </div>
 
-            <NewEditor onChanges={()=>{}} initialData={editorBlocks}/>
+            <NewEditor onChanges={() => {}} initialData={editorBlocks} />
 
             <button
-              type="submit"
+              type="button"
               className="mr-2 mt-4 rounded-lg bg-gray-600 px-2 py-2 font-medium text-white hover:bg-gray-800 md:mr-4 md:px-6"
+              onClick={(e) => handleSubmit(e as any, false)} // Save as Draft
             >
               Save as Draft
             </button>
 
             <button
-              type="submit"
+              type="button"
               className="mt-4 rounded-lg bg-blue-800 px-4 py-2 font-medium text-white hover:bg-blue-900 md:px-12"
+              onClick={(e) => handleSubmit(e as any, true)} // Publish
             >
               Publish
             </button>

@@ -1,29 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export interface TableRow {
+  id: string | undefined;
   milestone: string;
-  value: string;
+  value: number;
   unit: string;
   description: string;
 }
 
 interface MileStoneTableProps {
   onRowDataChange: (rows: TableRow[]) => void;
+  existingMilestone: TableRow[];
 }
 
-const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
-  const [rows, setRows] = useState<TableRow[]>([
-    { milestone: "1", value: "", unit: "", description: "" },
-  ]);
+const MileStoneTable: React.FC<MileStoneTableProps> = ({
+  onRowDataChange,
+  existingMilestone,
+}) => {
+  const [rows, setRows] = useState<TableRow[]>([]);
+
+  useEffect(() => {
+    if (existingMilestone.length > 0) {
+      setRows(existingMilestone);
+    }
+  }, [existingMilestone]);
 
   const addRow = () => {
     setRows([
       ...rows,
       {
         milestone: `${rows.length + 1}`,
-        value: "",
+        value: 0,
         unit: "",
         description: "",
+        id: undefined,
       },
     ]);
   };
@@ -75,19 +85,23 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
                   type="text"
                   value={row.milestone}
                   readOnly
+                  onChange={(e) =>
+                    handleChange(index, "milestone", e.target.value)
+                  }
                   className="block w-full rounded-sm border border-gray-300 py-2 text-center sm:text-sm"
                   data-testid="milestone-title-input"
                 />
               </td>
               <td>
                 <input
-                  type="text"
+                  type="number"
                   value={row.value}
-                  placeholder=" Ex: 100"
+                  placeholder="Ex: 100"
                   required
                   onChange={(e) => handleChange(index, "value", e.target.value)}
-                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm"
+                  className="block w-full rounded-sm border border-gray-300 py-2 pl-2 sm:text-sm"
                   data-testid="funding-goal-input"
+                  min={1}
                 />
               </td>
               <td>
@@ -97,7 +111,7 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
                   required
                   placeholder=" Ex: books"
                   onChange={(e) => handleChange(index, "unit", e.target.value)}
-                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm"
+                  className="block w-full rounded-sm border border-gray-300 py-2 pl-2 sm:text-sm"
                   data-testid="milestone-unit-input"
                 />
               </td>
@@ -110,7 +124,7 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({ onRowDataChange }) => {
                   onChange={(e) =>
                     handleChange(index, "description", e.target.value)
                   }
-                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm"
+                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm pl-2"
                   data-testid="milestone-description-input"
                 />
               </td>

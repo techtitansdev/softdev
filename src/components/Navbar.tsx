@@ -9,6 +9,7 @@ import { FaPeopleCarry } from "react-icons/fa";
 import { HiArrowNarrowRight } from "react-icons/hi";
 import { AiOutlineClose, AiOutlineHome, AiOutlineMenu } from "react-icons/ai";
 import { UserButton, useClerk, useUser } from "@clerk/nextjs";
+import Image from "next/image";
 
 const navigationLinks = [
   { path: "/home", text: "HOME", icon: <AiOutlineHome size={22} /> },
@@ -72,7 +73,7 @@ export const Navbar = () => {
       <div className="flex h-full w-full items-center justify-between px-4">
         {isMobileView ? (
           <Link href="/">
-            <img
+            <Image
               src="/gsi-logo2.png"
               height={55}
               width={55}
@@ -82,7 +83,7 @@ export const Navbar = () => {
           </Link>
         ) : (
           <Link href="/">
-            <img
+            <Image
               src="/gsi-logo2.png"
               height={90}
               width={90}
@@ -120,6 +121,7 @@ export const Navbar = () => {
             <Link
               href="/login"
               className="mx-4 rounded bg-blue-700 px-6 py-2 font-bold text-white hover:bg-blue-800"
+              data-testid="login"
             >
               LOG IN
             </Link>
@@ -144,7 +146,7 @@ export const Navbar = () => {
       >
         {/* Close button for sm to md view */}
         <div className="mb-4 flex items-center justify-between">
-          <img
+          <Image
             src="/gsi-logo2.png"
             height={55}
             width={55}
@@ -182,9 +184,8 @@ export const Navbar = () => {
               <div className="flex items-center justify-center">
                 {user && (
                   <button
-                    className="mx-16 w-full min-w-[400px] rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800"
+                    className="mx-6 w-full min-w-[300px] rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800 md:mx-16"
                     onClick={() => signOut(() => router.push("/"))}
-                    //data-testid="sign-out"
                   >
                     Sign out
                   </button>
@@ -194,7 +195,7 @@ export const Navbar = () => {
                 <Link href="/login">
                   <li
                     onClick={closeMenu}
-                    className="mx-16 min-w-[400px] rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800"
+                    className="mx-6 min-w-[300px] rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800 md:mx-16"
                     style={{ zIndex: 1 }}
                   >
                     LOGIN

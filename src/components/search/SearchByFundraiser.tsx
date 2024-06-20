@@ -24,7 +24,7 @@ const SearchByFundraiser: React.FC<SearchByFundraiserProps> = ({
       <input
         type="text"
         placeholder="Search"
-        className="w-[325px] rounded-md border border-gray-500 py-2 pl-9 pr-4 outline-gray-400 lg:w-[360px]"
+        className="w-[306px] rounded-md border border-gray-500 py-2 pl-9 pr-4 outline-gray-400 lg:w-[360px]"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}

@@ -8,14 +8,26 @@ import {
   AiOutlineSortDescending,
 } from "react-icons/ai";
 import SearchByDonor from "~/components/search/SearchByDonor";
-import { donorsData } from "~/data/donorsData";
+import Loading from "~/components/Loading";
+import Unauthorized from "~/components/Unauthorized";
+import { api } from "~/utils/api";
 import FilterByProjectName from "~/components/filter/FilterByProjectName";
-import { useRouter } from "next/router";
+
+type Donor = {
+  fullName: string;
+  date: string;
+  email: string;
+  contact: string;
+  projectName: string;
+  paymentMethod: string;
+  amount: number;
+  donatedAs: string;
+};
 
 const Donors = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
-  const [tableData, setTableData] = useState(donorsData);
+  const [itemsPerPage] = useState(10);
+  const [tableData, setTableData] = useState<Donor[]>([]);
   const [selectedProject, setSelectedProject] = useState("All");
   const [isNameSortedAscending, setIsNameSortedAscending] = useState(true);
   const [isProjectListOpen, setIsProjectListOpen] = useState(false);
@@ -23,26 +35,67 @@ const Donors = () => {
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [filteredData, setFilteredData] = useState(tableData);
   const [searchInteraction, setSearchInteraction] = useState(false);
+  const [confirmedSearchQuery, setConfirmedSearchQuery] = useState("");
 
   useEffect(() => {
+    filterData();
     setCurrentPage(1);
-    if (searchInteraction || selectedProject !== "All") {
-      filterData();
-      setSearchInteraction(false);
+  }, [selectedProject, confirmedSearchQuery]);
+
+  const donors = api.funding.getAll.useQuery();
+
+  useEffect(() => {
+    if (donors.data) {
+      const transformedData = donors.data.map((item) => ({
+        fullName: item.fullName,
+        date: new Date(item.date).toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        }),
+        email: item.email || "",
+        contact: item.contact,
+        projectName: item.projectName || "",
+        paymentMethod: item.paymentMethod || "",
+        amount: item.amount,
+        donatedAs: item.donatedAs
+      }));
+      setTableData(transformedData);
+      setCurrentPage(1);
     }
-  }, [tableData, selectedProject, searchQuery, searchInteraction]);
+  }, [donors.data]);
 
   const filterData = () => {
     const filtered = tableData.filter((item) => {
       const matchesProject =
         selectedProject === "All" || item.projectName.includes(selectedProject);
       const matchesSearchQuery =
-        searchQuery === "" ||
-        item.fullName.toLowerCase().includes(searchQuery.toLowerCase());
+        confirmedSearchQuery === "" ||
+        item.fullName
+          .toLowerCase()
+          .includes(confirmedSearchQuery.toLowerCase());
       return matchesProject && matchesSearchQuery;
     });
     setFilteredData(filtered);
   };
+
+  useEffect(() => {
+    if (searchQuery === "") {
+      setConfirmedSearchQuery("");
+    }
+  }, [searchQuery]);
+
+  useEffect(() => {
+    filterData();
+  }, [selectedProject, confirmedSearchQuery, tableData]);
+
+  useEffect(() => {
+    filterData();
+    setCurrentPage(1);
+  }, [selectedProject, searchQuery]);
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
@@ -58,51 +111,48 @@ const Donors = () => {
 
   const currentItems = sortedData.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
-  const toggleNameSortOrder = () =>
+  const toggleNameSortOrder = () => {
     setIsNameSortedAscending(!isNameSortedAscending);
-
-  const [projectFilterChanged, setProjectFilterChanged] = useState(false);
+  };
 
   const handleProjectSelect = (project: string) => {
     setSelectedProject(project);
-    setIsProjectListOpen(false);
-    setProjectFilterChanged(true);
-    if (project === "All") {
-      setFilteredData(tableData);
-    }
   };
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
-    if (projectFilterChanged) {
-      setProjectFilterChanged(false);
-    } else {
-      const suggestions = filteredData
-        .filter((item) =>
-          item.fullName.toLowerCase().includes(value.toLowerCase()),
-        )
-        .map((item) => item.fullName)
-        .filter((value, index, self) => self.indexOf(value) === index);
 
-      if (suggestions.length === 0 && value !== "") {
-        setSearchSuggestions(["No results found"]);
-      } else {
-        setSearchSuggestions(suggestions);
-      }
+    const suggestions = tableData
+      .filter((item) => {
+        const matchesProject =
+          selectedProject === "All" ||
+          item.projectName.includes(selectedProject);
+        const matchesName = item.fullName
+          .toLowerCase()
+          .includes(value.toLowerCase());
+        return matchesProject && matchesName;
+      })
+      .map((item) => item.fullName);
 
-      if (value === "") {
-        setFilteredData(tableData);
-      }
-    }
+    const uniqueSuggestions = Array.from(new Set(suggestions));
+
+    setSearchSuggestions(uniqueSuggestions);
   };
 
   const handleEnterPress = () => {
-    setSearchInteraction(true);
+    if (searchQuery) {
+      setConfirmedSearchQuery(searchQuery);
+      setSearchSuggestions([]);
+      setSearchInteraction(true);
+    }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
+    setConfirmedSearchQuery(suggestion);
     setSearchQuery(suggestion);
     setSearchSuggestions([]);
     setSearchInteraction(true);
@@ -142,19 +192,13 @@ const Donors = () => {
 
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin;
-  const router = useRouter();
 
-  useEffect(() => {
-    if (isLoaded && user_role !== "admin") {
-      router.push("/home");
-    }
-  }, [isLoaded, user_role]);
-
+  useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
-  if (isLoaded && user_role !== "admin") {
-    return <div>UNAUTHORIZED</div>;
+  if (user_role !== "admin") {
+    return <Unauthorized />;
   }
 
   return (
@@ -234,16 +278,19 @@ const Donors = () => {
                     Contact
                   </th>
                   <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
-                    Donated As
-                  </th>
-                  <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
                     Date
                   </th>
                   <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
                     Project Name
                   </th>
                   <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
+                    Payment Method
+                  </th>
+                  <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
                     Amount
+                  </th>
+                  <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
+                    Payment Type
                   </th>
                 </tr>
               </thead>
@@ -260,16 +307,19 @@ const Donors = () => {
                       {item.contact}
                     </td>
                     <td className="border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
-                      {item.donatedAs}
-                    </td>
-                    <td className="border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
                       {item.date}
                     </td>
                     <td className="border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
                       {item.projectName}
                     </td>
+                    <td className="border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
+                      {item.paymentMethod}
+                    </td>
                     <td className="border-2 py-4 pl-8 text-left text-sm font-light text-gray-700">
                       {item.amount}
+                    </td>
+                    <td className="border-2 py-4 pl-8 text-left text-sm font-light text-gray-700">
+                      {item.donatedAs}
                     </td>
                   </tr>
                 ))}

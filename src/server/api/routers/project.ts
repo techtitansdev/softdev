@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { db } from "../../db";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const project = createTRPCRouter({
   create: protectedProcedure
@@ -111,7 +111,7 @@ export const project = createTRPCRouter({
       });
     }),
 
-  getAll: protectedProcedure.query(async () => {
+  getAll: publicProcedure.query(async () => {
     const allProjects = await db.projects.findMany();
     return allProjects;
   }),
@@ -141,11 +141,11 @@ export const project = createTRPCRouter({
 
         return foundProject;
       } catch (error) {
-        throw new Error(`Failed to fetch project: ${error}`);
+        throw new Error(`Failed to fetch project: ${error as string}`);
       }
     }),
 
-  getById: protectedProcedure
+  getById: publicProcedure
     .input(
       z.object({
         id: z.string(),
@@ -165,7 +165,7 @@ export const project = createTRPCRouter({
 
         return foundProject;
       } catch (error) {
-        throw new Error(`Failed to fetch project: ${error}`);
+        throw new Error(`Failed to fetch project: ${error as string}`);
       }
     }),
 
@@ -189,7 +189,7 @@ export const project = createTRPCRouter({
           foundProject.image = "";
         }
       } catch (error) {
-        throw new Error(`Failed to fetch project: ${error}`);
+        throw new Error(`Failed to fetch project: ${error as string}`);
       }
     }),
 });

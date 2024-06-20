@@ -89,7 +89,7 @@ const FundedProjects = () => {
           .map((category: string) => category.trim())
           .includes(selectedCategory));
 
-    return matchesCategory && funding.project.published;
+    return matchesCategory && funding.published;
   });
 
   return (
@@ -102,57 +102,61 @@ const FundedProjects = () => {
 
       <Navbar />
 
-      <div className="mx-auto mt-24 flex max-w-[363px] flex-row-reverse items-center justify-between md:mt-32 lg:mt-36 lg:max-w-[768px] lg:flex-row xl:max-w-[1177px]">
-        <div className="relative flex items-center">
-          <FilterByCategory
-            selectedCategory={selectedCategory}
-            isCategoryListOpen={isCategoryListOpen}
-            toggleCategoryList={toggleCategoryList}
-            handleCategorySelect={handleCategorySelect}
-          />
-        </div>
-
-        <div className="relative ml-auto">
-          <div className="flex items-center">
-            <FundraiserSearchInput
-              value={searchQuery}
-              onChange={handleSearchChange}
-              onEnter={handleEnterPress}
+      <div className="flex min-h-screen flex-col">
+        <div className="mx-auto mt-24 flex max-w-[363px] flex-row-reverse items-center justify-between md:mt-32 lg:mt-36 lg:min-w-[768px] lg:max-w-[768px] lg:flex-row xl:min-w-[1177px] xl:max-w-[1177px]">
+          <div className="relative flex items-center">
+            <FilterByCategory
+              selectedCategory={selectedCategory}
+              isCategoryListOpen={isCategoryListOpen}
+              toggleCategoryList={toggleCategoryList}
+              handleCategorySelect={handleCategorySelect}
             />
           </div>
 
-          {searchSuggestions.length > 0 && (
-            <ul className="absolute z-10 mt-1 max-h-[210px] w-[325px] overflow-scroll rounded border border-gray-300 bg-white lg:w-[360px]">
-              {searchSuggestions.map((suggestion, index) => (
-                <li
-                  key={index}
-                  className="cursor-pointer px-2 py-2 hover:bg-gray-200"
-                  onClick={() => handleSuggestionClick(suggestion)}
-                >
-                  <div className="flex items-center">
-                    <RiSearchLine size={15} className="mr-2" />
-                    {suggestion}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
+          <div className="relative ml-auto">
+            <div className="flex items-center">
+              <FundraiserSearchInput
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onEnter={handleEnterPress}
+              />
+            </div>
 
-      <div className="mx-auto">
-        <div className="mb-12 mt-1 flex items-center justify-center">
-          <div className="mt-4 grid grid-cols-1 gap-12 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-            {filterFunding.map((project: any) => (
-              <div key={project.id}>
-                <FundingCard fundingData={project} />
-              </div>
-            ))}
+            {searchSuggestions.length > 0 && (
+              <ul className="absolute z-10 mt-1 max-h-[210px] w-[325px] overflow-scroll rounded border border-gray-300 bg-white lg:w-[360px]">
+                {searchSuggestions.map((suggestion, index) => (
+                  <li
+                    key={index}
+                    className="cursor-pointer px-2 py-2 hover:bg-gray-200"
+                    onClick={() => handleSuggestionClick(suggestion)}
+                  >
+                    <div className="flex items-center">
+                      <RiSearchLine size={15} className="mr-2" />
+                      {suggestion}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
-      </div>
 
-      <Footer />
+        <div className="mx-auto">
+          <div className="mb-12 mt-1 flex items-center justify-center mx-4">
+            <div className="mt-4 grid grid-cols-1 gap-12 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+              {filterFunding.map((project: any) => (
+                <div key={project.id}>
+                  <FundingCard fundingData={project} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-auto">
+          <Footer />
+        </div>
+      </div>
     </>
   );
 };

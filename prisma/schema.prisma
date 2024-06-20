@@ -23,8 +23,7 @@ model Users {
   role            String     @default("USER")
   admins          Admins[]
   Feedback        Feedback[]
-
-  @@unique([email, phone])
+  Donors          Donors?
 }
 
 model Admins {
@@ -40,9 +39,15 @@ model Admins {
 model Categories {
   id                      String                    @id @default(cuid())
   label                   String
-  value                   String
+  value                   String                    @unique
   assignCategoriesBlog    AssignCategoriesBlog[]
   assignCategoriesProject AssignCategoriesProject[]
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  label String
+  value String @unique
 }
 
 model Blogs {
@@ -76,8 +81,54 @@ model Projects {
   assignAdminsProjects    AssignAdminsProjects[]
   assignCategoriesProject AssignCategoriesProject[]
   fundraisers             Fundraisers[]
-  Milestones              Milestones[]
   Feedback                Feedback[]
+}
+
+model Fundraisers {
+  id         String       @id @default(cuid())
+  projectId  String       @unique()
+  funds      Int
+  goal       Int
+  donors     Int
+  targetDate DateTime
+  created    DateTime     @default(now())
+  updated    DateTime     @updatedAt()
+  complete   Boolean      @default(false)
+  published  Boolean      @default(false)
+  ongoing    Boolean      @default(false)
+  featured   Boolean      @default(false)
+  project    Projects     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  fundings   Fundings[]
+  milestones Milestones[]
+
+  @@index([projectId])
+}
+
+model Donors {
+  id        String     @id @default(cuid())
+  userEmail String     @unique
+  user      Users      @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  fundings  Fundings[]
+
+  @@index([userEmail])
+}
+
+model Fundings {
+  id            String      @id @default(cuid())
+  fullName      String
+  email         String
+  contact       String
+  date          DateTime    @default(now())
+  fundraiserId  String
+  amount        Int
+  paymentMethod String
+  donatedAs     String
+  fundraiser    Fundraisers @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
+  Donors        Donors?     @relation(fields: [donorsId], references: [id])
+  donorsId      String?
+
+  @@index([fundraiserId])
+  @@index([donorsId])
 }
 
 model Feedback {
@@ -94,58 +145,16 @@ model Feedback {
   @@index([projectId])
 }
 
-model Fundraisers {
-  id         String     @id @default(cuid())
-  projectId  String     @unique()
-  funds      Int
-  goal       Int
-  donors     Int
-  targetDate DateTime
-  created    DateTime   @default(now())
-  updated    DateTime   @updatedAt()
-  complete   Boolean    @default(false)
-  published  Boolean    @default(false)
-  ongoing    Boolean    @default(false)
-  featured   Boolean    @default(false)
-  project    Projects   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  fundings   Fundings[]
-
-  @@index([projectId])
-}
-
-model Donors {
-  id       String     @id @default(cuid())
-  fullName String?
-  email    String?
-  phone    String?
-  type     String
-  fundings Fundings[]
-}
-
-model Fundings {
-  id            String      @id @default(cuid())
-  donorId       String
-  fundraiserId  String
-  amount        Int
-  paymentMethod String
-  date          DateTime    @default(now())
-  donor         Donors      @relation(fields: [donorId], references: [id], onDelete: Cascade)
-  fundraiser    Fundraisers @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
-
-  @@index([donorId])
-  @@index([fundraiserId])
-}
-
 model Milestones {
-  id           String   @id @default(cuid())
+  id           String      @id @default(cuid())
   milestone    String
   value        Int
   unit         String
   description  String
-  created      DateTime @default(now())
-  updated      DateTime @updatedAt()
+  created      DateTime    @default(now())
+  updated      DateTime    @updatedAt()
   fundraiserId String
-  fundraiser   Projects @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
+  fundraiser   Fundraisers @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
 
   @@index([fundraiserId])
 }

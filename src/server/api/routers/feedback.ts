@@ -9,6 +9,7 @@ export const feedback = createTRPCRouter({
         userId: z.string(),
         projectId: z.string(),
         feedback: z.string(),
+
       }),
     )
     .mutation(async (opts) => {
@@ -19,8 +20,13 @@ export const feedback = createTRPCRouter({
       });
       return feedback;
     }),
+
   getAll: protectedProcedure.query(async () => {
     const allFeedbacks = await db.feedback.findMany();
+
+    allFeedbacks.sort(
+      (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime(),
+    );
 
     const feedbacks = await Promise.all(
       allFeedbacks.map(async (feedback) => {
@@ -44,6 +50,7 @@ export const feedback = createTRPCRouter({
 
     return feedbacks;
   }),
+
   getByProject: protectedProcedure
     .input(
       z.object({

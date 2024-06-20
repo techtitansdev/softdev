@@ -1,9 +1,13 @@
+import { useUser } from "@clerk/nextjs";
+import { useQueryClient } from "@tanstack/react-query";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
+import ReceiptModal from "~/components/receiptModal";
 import { api } from "~/utils/api";
+// Import the new ReceiptModal component
 
 interface Funding {
   title: string;
@@ -20,22 +24,146 @@ const Payment = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [amount, setAmount] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("");
+  const [currency, setCurrency] = useState("PHP"); // New state for currency
+  const [paymentMethod, setPaymentMethod] = useState("card");
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [cardDetails, setCardDetails] = useState({
+    card_number: "",
+    exp_month: "",
+    exp_year: "",
+    cvc: "",
+    line1: "",
+    city: "",
+    state: "",
+    postal_code: "",
+    country: "PH",
+    line2: "",
+  });
+
+  const paymentMethods = ["card", "gcash"]; // Add more payment methods as needed
+
+  const currencies = ["PHP", "USD", "EUR"]; // List of supported currencies
+
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
+  const payment = api.paymentRouter.createPaymentIntent.useMutation();
+  const createPaymentMethod =
+    api.paymentRouter.createPaymentMethod.useMutation();
+  const createGcashPaymentMethod =
+    api.paymentRouter.createGCashPaymentMethod.useMutation();
+  const attachPaymentIntent =
+    api.paymentRouter.attachPaymentIntent.useMutation();
+  const updateFunds = api.fundraiser.updateFunds.useMutation();
+  const user = useUser();
+  const updateDonor = api.donors.createDonor.useMutation();
+  const createFunding = api.donors.createFunding.useMutation();
+  const userEmail = user.user?.emailAddresses[0]?.emailAddress || "";
+  
+  const checkEmail = api.donors.checkEmailExists.useQuery({
+    email: userEmail,
+  });
+
+  const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
+  const [paymentDetails, setPaymentDetails] = useState<{
+    paymentID:string;
+    amount: number;
+    currency: string;
+    paymentMethod: string;
+    fullName: string;
+    email: string;
+  } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setPaymentError(null);
+    const convertedAmount = parseInt(amount, 10) * 100;
+
     try {
-      console.log({
-        contributionType,
-        fullName,
-        phoneNumber,
-        email,
-        amount,
-        paymentMethod,
+      const paymentIntentResponse = await payment.mutateAsync({
+        amount: convertedAmount,
+        currency: currency, // Use the selected currency
       });
+
+      if (paymentIntentResponse?.data.id) {
+        let paymentMethodResponse;
+
+        if (paymentMethod === "gcash") {
+          paymentMethodResponse = await createGcashPaymentMethod.mutateAsync({
+            email: email,
+            name: fullName,
+            phone: phoneNumber,
+          });
+        } else {
+          paymentMethodResponse = await createPaymentMethod.mutateAsync({
+            details: {
+              card_number: cardDetails.card_number,
+              exp_month: parseInt(cardDetails.exp_month, 10),
+              exp_year: parseInt(cardDetails.exp_year, 10),
+              cvc: cardDetails.cvc,
+            },
+            billing: {
+              name: fullName,
+              address: {
+                line1: cardDetails.line1,
+                city: cardDetails.city,
+                state: cardDetails.state,
+                postal_code: cardDetails.postal_code,
+                country: cardDetails.country,
+                line2: cardDetails.line2,
+              },
+              phone: phoneNumber,
+              email: email,
+            },
+          });
+        }
+
+        const idString = id?.toString() || "";
+        await attachPaymentIntent.mutateAsync({
+          payment_method: paymentMethodResponse.data.id,
+          paymentIntentId: paymentIntentResponse?.data.id,
+          client_key: paymentIntentResponse?.data.attributes.client_key,
+          fundingId: idString,
+        });
+
+  console.log(paymentIntentResponse?.data.id)
+
+        await updateFunds.mutateAsync({
+          id: idString,
+          funds: parseInt(amount, 10),
+        });
+
+        if (checkEmail.data == false) {
+          await updateDonor.mutateAsync({
+            userEmail: userEmail,
+          });
+        }else{
+
+        }
+
+        await createFunding.mutateAsync({
+          fundraiserId: idString,
+          amount: parseInt(amount, 10),
+          donorEmail: userEmail,
+          paymentMethod,
+          fullName: "",
+          email: "",
+          contact: ""
+        });
+
+        setPaymentDetails({
+          paymentID: paymentIntentResponse?.data.id,
+          amount: convertedAmount,
+          currency,
+          paymentMethod,
+          fullName,
+          email,
+        });
+        setIsReceiptModalOpen(true);
+        
+      } else {
+        setPaymentError("Failed to create payment intent.");
+      }
     } catch (error) {
+      console.error("Payment error:", error);
       setPaymentError(
         "An error occurred during payment. Please try again later.",
       );
@@ -45,7 +173,7 @@ const Payment = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (getFunding.data) {
+        if (getFunding.data && getFunding.data.project) {
           const fundingData: Funding = {
             title: getFunding.data.project.title,
             description: getFunding.data.project.description,
@@ -72,7 +200,7 @@ const Payment = () => {
 
       <form
         onSubmit={handleSubmit}
-        className="mx-auto mb-16 mt-24 flex max-w-[1300px] flex-col justify-between md:mt-32  lg:flex-row"
+        className="mx-auto mb-16 mt-24 flex max-w-[1300px] flex-col justify-between md:mt-32 lg:flex-row"
       >
         <div className="flex w-full flex-col items-center justify-center lg:w-1/2">
           {fundingData && (
@@ -172,30 +300,152 @@ const Payment = () => {
             </>
           )}
 
-          <input
-            type="number"
-            min="0"
-            placeholder="Amount"
-            className="mt-6 w-11/12 rounded-md border border-gray-400 py-4 pl-4 pr-4 text-sm shadow-lg md:w-10/12 md:text-base lg:w-9/12"
-            value={amount}
-            required
-            onChange={(e) => setAmount(e.target.value)}
-          />
+          <div className="mt-6 w-11/12 flex rounded-md border border-gray-400 py-4 pl-4 pr-4 shadow-lg md:w-10/12 lg:w-9/12">
+            <input
+              type="number"
+              min="0"
+              placeholder="Amount"
+              className="w-2/3 text-sm md:text-base"
+              value={amount}
+              required
+              onChange={(e) => setAmount(e.target.value)}
+            />
+            <select
+              className="ml-2 w-1/3 text-sm md:text-base"
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              required
+            >
+              {currencies.map((curr) => (
+                <option key={curr} value={curr}>
+                  {curr}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <input
-            type="text"
-            placeholder="Payment Method"
+          <select
             className="mt-6 w-11/12 rounded-md border border-gray-400 py-4 pl-4 pr-4 text-sm shadow-lg md:w-10/12 md:text-base lg:w-9/12"
             value={paymentMethod}
-            required
             onChange={(e) => setPaymentMethod(e.target.value)}
-          />
+            required
+          >
+            {paymentMethods.map((method) => (
+              <option key={method} value={method}>
+                {method.charAt(0).toUpperCase() + method.slice(1)}
+              </option>
+            ))}
+          </select>
+
+          {paymentMethod === "card" && (
+            <div className="mt-6 w-11/12 rounded-md border border-gray-400 p-4 shadow-lg md:w-10/12 lg:w-9/12">
+              <input
+                type="text"
+                placeholder="Card Number"
+                className="my-2 w-full border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none"
+                value={cardDetails.card_number}
+                required
+                onChange={(e) =>
+                  setCardDetails({ ...cardDetails, card_number: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Expiry Month"
+                className="my-2 w-full border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none"
+                value={cardDetails.exp_month}
+                required
+                onChange={(e) =>
+                  setCardDetails({ ...cardDetails, exp_month: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Expiry Year"
+                className="my-2 w-full border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none"
+                value={cardDetails.exp_year}
+                required
+                onChange={(e) =>
+                  setCardDetails({ ...cardDetails, exp_year: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="CVC"
+                className="my-2 w-full border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none"
+                value={cardDetails.cvc}
+                required
+                onChange={(e) =>
+                  setCardDetails({ ...cardDetails, cvc: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Address Line 1"
+                className="my-2 w-full border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none"
+                value={cardDetails.line1}
+                required
+                onChange={(e) =>
+                  setCardDetails({ ...cardDetails, line1: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Address Line 2"
+                className="my-2 w-full border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none"
+                value={cardDetails.line2}
+                onChange={(e) =>
+                  setCardDetails({ ...cardDetails, line2: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="City"
+                className="my-2 w-full border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none"
+                value={cardDetails.city}
+                required
+                onChange={(e) =>
+                  setCardDetails({ ...cardDetails, city: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="State"
+                className="my-2 w-full border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none"
+                value={cardDetails.state}
+                required
+                onChange={(e) =>
+                  setCardDetails({ ...cardDetails, state: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Postal Code"
+                className="my-2 w-full border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none"
+                value={cardDetails.postal_code}
+                required
+                onChange={(e) =>
+                  setCardDetails({ ...cardDetails, postal_code: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Country"
+                className="my-2 w-full border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none"
+                value={cardDetails.country}
+                required
+                onChange={(e) =>
+                  setCardDetails({ ...cardDetails, country: e.target.value })
+                }
+              />
+            </div>
+          )}
 
           {paymentError && <div className="text-red-500">{paymentError}</div>}
 
           <button
             type="submit"
-            className="mt-6 w-11/12 rounded-lg border border-gray-400 bg-blue-800 py-2 text-white hover:bg-blue-900 sm:w-10/12 lg:w-9/12 "
+            className="mt-6 w-11/12 rounded-lg border border-gray-400 bg-blue-800 py-2 text-white hover:bg-blue-900 sm:w-10/12 lg:w-9/12"
           >
             Pay Now
           </button>
@@ -203,6 +453,14 @@ const Payment = () => {
       </form>
 
       <Footer />
+
+      {paymentDetails && (
+        
+        <ReceiptModal
+          isOpen={isReceiptModalOpen}
+          onClose={() => setIsReceiptModalOpen(false)}
+          paymentDetails={paymentDetails} id={id?.toString() || ""}        />
+      )}
     </>
   );
 };

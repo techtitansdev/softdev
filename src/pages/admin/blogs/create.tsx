@@ -6,8 +6,11 @@ import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import { BlogData } from "~/types/blogData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { NewEditor } from "~/components/editor/Editor";
+import { useUser } from "@clerk/nextjs";
+import Loading from "~/components/Loading";
+import Unauthorized from "~/components/Unauthorized";
 
 function CreateBlogs() {
   const createBlog = api.blog.create.useMutation();
@@ -28,7 +31,7 @@ function CreateBlogs() {
 
   const handleEditorChange = (data: any) => {
     // Update state with the new data from the editor
-    setEditorData(data); 
+    setEditorData(data);
   };
 
   const handleChange = (
@@ -54,7 +57,25 @@ function CreateBlogs() {
 
   const removeImage = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Logic for removing the image
+    try {
+      const response = await fetch('/api/deleteImage', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ publicId }),
+      });
+  
+      if (response.ok) {
+        setImageUrl('');
+        setPublicId('');
+      } else {
+        const errorData = await response.json();
+        console.error('Error removing image:', errorData.error);
+      }
+    } catch (error) {
+      console.error('Error removing image:', error);
+    }
   };
 
   const handleSubmit = async (isPublished: boolean) => {
@@ -75,6 +96,17 @@ function CreateBlogs() {
       console.error("Error creating blog:", error);
     }
   };
+
+  const { user, isLoaded } = useUser();
+  const user_role = user?.publicMetadata.admin;
+
+  useEffect(() => {}, [isLoaded, user_role]);
+  if (!isLoaded) {
+    return <Loading />;
+  }
+  if (user_role !== "admin") {
+    return <Unauthorized />;
+  }
 
   return (
     <div>
@@ -182,9 +214,8 @@ function CreateBlogs() {
               </label>
             </div>
 
-            <NewEditor onChanges={handleEditorChange }/>
+            <NewEditor onChanges={handleEditorChange} />
 
-            
             <button
               type="button"
               onClick={() => handleSubmit(false)} // Save as Draft
