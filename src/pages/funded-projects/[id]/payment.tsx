@@ -213,7 +213,7 @@ const Payment = () => {
         onSubmit={handleSubmit}
         className="mx-auto mb-16 mt-24 flex max-w-[1300px] flex-col justify-between md:mt-32 lg:flex-row"
       >
-        <div className="flex w-full flex-col items-center justify-center lg:w-1/2">
+        <div className="flex w-full flex-col items-center lg:w-1/2">
           {fundingData && (
             <div className="flex w-11/12 flex-col md:w-10/12 lg:w-11/12">
               <div className="mx-1 text-base font-normal text-gray-700 md:text-lg">
