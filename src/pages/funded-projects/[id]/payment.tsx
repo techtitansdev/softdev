@@ -129,6 +129,8 @@ const Payment = () => {
         }
 
         const idString = id?.toString() || "";
+
+        // Attach payment intent to payment method
         await attachPaymentIntent.mutateAsync({
           payment_method: paymentMethodResponse.data.id,
           paymentIntentId: paymentIntentResponse?.data.id,
@@ -136,20 +138,21 @@ const Payment = () => {
           fundingId: idString,
         });
 
-        console.log(paymentIntentResponse?.data.id);
-
+        // Update funds and donors in Fundraisers schema
         await updateFunds.mutateAsync({
           id: idString,
           funds: parseInt(amount, 10),
+          donors: 1,
         });
 
-        if (checkEmail.data == false) {
+        // Check if donor email exists
+        if (!checkEmail.data) {
           await updateDonor.mutateAsync({
             userEmail: userEmail,
           });
-        } else {
         }
 
+        // Create funding record
         await createFunding.mutateAsync({
           fundraiserId: idString,
           amount: parseInt(amount, 10),
