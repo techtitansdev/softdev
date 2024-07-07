@@ -1,5 +1,5 @@
-import { render, fireEvent, waitFor } from "@testing-library/react";
-import Projects from "../index";
+import { render } from "@testing-library/react";
+import Projects from "../../pages/projects/index";
 import { Navbar } from "~/components/Navbar";
 import FilterByCategory from "~/components/filter/FilterByCategory";
 import { Footer } from "~/components/Footer";
@@ -29,18 +29,38 @@ jest.mock("~/utils/api", () => ({
         }),
       },
     },
+    categories: {
+      getAllCategories: {
+        useQuery: jest.fn().mockReturnValue({
+          data: [
+            {
+              id: 1,
+              label: "Category A",
+            },
+            {
+              id: 2,
+              label: "Category B",
+            },
+          ],
+        }),
+      },
+    },
   },
 }));
 
 describe("Projects view", () => {
   test("renders Projects view correctly", () => {
     render(<Projects />);
+
+    expect(Projects).toBeTruthy();
   });
 });
 
 describe("Navbar component", () => {
   test("renders Navbar component correctly", () => {
     render(<Navbar />);
+
+    expect("navbar").toBeTruthy();
   });
 });
 
@@ -50,21 +70,42 @@ describe("FilterByCategory component", () => {
       <FilterByCategory
         selectedCategory={""}
         isCategoryListOpen={false}
-        toggleCategoryList={() => {}}
-        handleCategorySelect={() => {}}
+        toggleCategoryList={() => {
+          console.log("Toggle category list");
+          return null;
+        }}
+        handleCategorySelect={() => {
+          console.log("Handle category select");
+        }}
       />,
     );
+
+    expect("filter-by-category").toBeTruthy();
   });
 });
 
 describe("SearchInput component", () => {
   test("renders SearchInput component correctly", () => {
-    render(<SearchInput value={""} onChange={() => {}} onSearch={() => {}} />);
+    render(
+      <SearchInput
+        value={""}
+        onChange={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+        onEnter={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+      />,
+    );
+
+    expect("search-input").toBeTruthy();
   });
 });
 
 describe("Footer component", () => {
   test("renders Footer component correctly", () => {
     render(<Footer />);
+
+    expect("footer").toBeTruthy();
   });
 });

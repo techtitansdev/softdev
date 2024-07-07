@@ -29,7 +29,7 @@ export const RegisterForm = () => {
   const [pendingVerification, setPendingVerification] = useState(false);
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalError, setModalError] = useState("");
+  const [modalError, setModalError] = useState<string>("");
   const [modalBgColor, setModalBgColor] = useState("");
 
   const createUser = api.user.create.useMutation();
@@ -84,7 +84,7 @@ export const RegisterForm = () => {
         setPendingVerification(true);
       } catch (err: any) {
         setModalOpen(true);
-        setModalError(err.errors[0].message);
+        setModalError((err as any)?.errors?.[0]?.message || "");
         setModalBgColor("bg-red-500");
 
         setTimeout(() => {

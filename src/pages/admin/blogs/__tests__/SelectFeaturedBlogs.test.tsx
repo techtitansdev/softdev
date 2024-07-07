@@ -1,6 +1,12 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import AdminBlogPage from "../index";
+
+jest.mock("@clerk/clerk-react", () => ({
+  useClerk: () => ({
+    signOut: jest.fn(),
+  }),
+}));
 
 const mockBlogs = [
   { id: "1", featured: true, title: "Featured Blog 1" },
@@ -47,12 +53,12 @@ jest.mock("@clerk/nextjs", () => ({
 
 describe("AdminBlogPage Component", () => {
   it("should display only featured blogs", () => {
-    const { getByText } = render(<AdminBlogPage />);
+    render(<AdminBlogPage />);
 
     mockBlogs
       .filter((blog) => blog.featured)
       .forEach((blog) => {
-        expect(getByText(blog.title)).toBeTruthy();
+        expect(screen.getByText(blog.title)).toBeInTheDocument();
       });
   });
 });

@@ -1,8 +1,8 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import Comments from "../../index";
 import { Sidebar } from "~/components/Sidebar";
 import FilterByProjectName from "~/components/filter/FilterByProjectName";
-import SearchInput from "~/components/search/SearchByProject";
+import SearchByName from "~/components/search/SearchByName";
 
 jest.mock("next/router", () => ({
   useRouter: () => ({
@@ -20,12 +20,16 @@ jest.mock("@clerk/nextjs", () => ({
 describe("Comments view", () => {
   test("renders Comments view correctly", () => {
     render(<Comments />);
+
+    expect(screen.getByText("Comments view")).toBeInTheDocument();
   });
 });
 
 describe("Sidebar componnet", () => {
   test("renders Sidebar componnet correctly", () => {
     render(<Sidebar />);
+
+    expect(screen.getByText("Sidebar component")).toBeInTheDocument();
   });
 });
 
@@ -38,20 +42,23 @@ describe("FilterByProjectName component", () => {
         toggleProjectList={function (): void {
           throw new Error("Function not implemented.");
         }}
-        handleProjectSelect={function (status: string): void {
+        handleProjectSelect={() => {
           throw new Error("Function not implemented.");
         }}
       />,
     );
+    expect(
+      screen.getByText("FilterByProjectName component"),
+    ).toBeInTheDocument();
   });
 });
 
-describe("SearchInput component", () => {
-  test("renders SearchInput component correctly", () => {
+describe("SearchByName component", () => {
+  test("renders SearchByName component correctly", () => {
     render(
-      <SearchInput
+      <SearchByName
         value={""}
-        onChange={function (value: string): void {
+        onChange={function (): void {
           throw new Error("Function not implemented.");
         }}
         onEnter={function (): void {
@@ -59,5 +66,6 @@ describe("SearchInput component", () => {
         }}
       />,
     );
+    expect(screen.getByText("SearchByName component")).toBeInTheDocument();
   });
 });

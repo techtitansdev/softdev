@@ -1,4 +1,4 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, screen } from "@testing-library/react";
 import EditBlog from "../edit/[id]";
 import { api } from "~/utils/api";
 
@@ -60,31 +60,31 @@ jest.mock("~/utils/api", () => ({
 }));
 
 describe("EditBlog component", () => {
-  it("successfully edits a blog when all data is provided", async () => {
-    const { getByText, getByTestId } = render(<EditBlog />);
+  it("successfully edits a blog when all data is provided", () => {
+    render(<EditBlog />);
 
-    expect(getByTestId("blog-title-input")).toBeTruthy();
-    expect(getByTestId("blog-description-input")).toBeTruthy();
-    expect(getByTestId("blog-image-input")).toBeTruthy();
+    expect(screen.getByTestId("blog-title-input")).toBeInTheDocument();
+    expect(screen.getByTestId("blog-description-input")).toBeInTheDocument();
+    expect(screen.getByTestId("blog-image-input")).toBeInTheDocument();
 
-    fireEvent.change(getByTestId("blog-title-input"), {
+    fireEvent.change(screen.getByTestId("blog-title-input"), {
       target: { value: "Updated Test Blog Title" },
     });
-    fireEvent.change(getByTestId("blog-description-input"), {
+    fireEvent.change(screen.getByTestId("blog-description-input"), {
       target: { value: "Updated Test Blog Description" },
     });
-    fireEvent.change(getByTestId("blog-image-input"), {
+    fireEvent.change(screen.getByTestId("blog-image-input"), {
       target: { value: "Updated Test Blog Image" },
     });
 
-    fireEvent.click(getByText("Publish"));
+    fireEvent.click(screen.getByText("Publish"));
     expect(api.blog.edit.useMutation).toHaveBeenCalled();
   });
 
-  it("does not edit blog if some fields are empty", async () => {
-    const { getByText } = render(<EditBlog />);
+  it("does not edit blog if some fields are empty", () => {
+    render(<EditBlog />);
 
-    fireEvent.click(getByText("Publish"));
+    fireEvent.click(screen.getByText("Publish"));
 
     expect(api.blog.edit.useMutation).toHaveBeenCalled();
   });

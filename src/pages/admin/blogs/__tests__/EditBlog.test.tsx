@@ -61,20 +61,20 @@ jest.mock("~/utils/api", () => ({
 }));
 
 describe("EditBlog component", () => {
-  it("renders edit blog form", async () => {
+  it("renders edit blog form", () => {
     render(<EditBlog />);
 
-    expect(screen.getByText("Blog Title")).toBeTruthy();
-    expect(screen.getByText("Blog Description")).toBeTruthy();
-    expect(screen.getByAltText("Mocked Title")).toBeTruthy();
-    expect(screen.getByText("About")).toBeTruthy();
+    expect(screen.getByText("Blog Title")).toBeInTheDocument();
+    expect(screen.getByText("Blog Description")).toBeInTheDocument();
+    expect(screen.getByAltText("Mocked Title")).toBeInTheDocument();
+    expect(screen.getByText("About")).toBeInTheDocument();
   });
 
   it("submits the form with correct data", async () => {
     render(<EditBlog />);
 
-    userEvent.type(screen.getByText(/Blog Title/i), "New Title");
-    userEvent.type(screen.getByText(/Blog Description/i), "New Excerpt");
+    await userEvent.type(screen.getByText(/Blog Title/i), "New Title");
+    await userEvent.type(screen.getByText(/Blog Description/i), "New Excerpt");
 
     fireEvent.click(screen.getByText(/Save as Draft/i));
 

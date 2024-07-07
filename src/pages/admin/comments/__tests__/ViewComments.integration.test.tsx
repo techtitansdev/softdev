@@ -6,11 +6,21 @@ jest.mock("next/router", () => ({
   useRouter: jest.fn().mockReturnValue({ pathname: "/admin" }),
 }));
 
+jest.mock("@clerk/nextjs", () => ({
+  useUser: jest.fn(() => ({
+    user: { publicMetadata: { admin: "admin" } },
+    isLoaded: true,
+  })),
+  useClerk: jest.fn(() => ({
+    signOut: jest.fn(),
+  })),
+}));
+
 jest.mock("~/utils/api", () => ({
   api: {
     feedback: {
       getAll: {
-        useQuery: jest.fn().mockReturnValue({ data: [] }), 
+        useQuery: jest.fn().mockReturnValue({ data: [] }),
       },
     },
   },
@@ -23,8 +33,8 @@ describe("Comments Component Integration Tests", () => {
   });
 
   test("renders Comments component correctly with unauthorized state", () => {
-    jest.spyOn(window.console, "error").mockImplementation(() => {}); 
-    jest.clearAllMocks(); 
+    jest.spyOn(window.console, "error").mockImplementation();
+    jest.clearAllMocks();
     render(<Comments />);
     expect(screen.getByText("UNAUTHORIZED")).toBeInTheDocument();
   });

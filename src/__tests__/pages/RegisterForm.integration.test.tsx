@@ -1,6 +1,5 @@
-import { render, fireEvent, waitFor } from "@testing-library/react";
-import { RegisterForm } from "../RegisterForm";
-import { api } from "~/utils/api";
+import { render, fireEvent, waitFor, screen } from "@testing-library/react";
+import { RegisterForm } from "../../pages/register/RegisterForm";
 import { useSignUp } from "@clerk/nextjs";
 
 jest.mock("~/utils/api", () => ({
@@ -25,32 +24,31 @@ describe("RegisterForm", () => {
         create: mockSignUp,
       },
     });
+    render(<RegisterForm />);
 
-    const { getByPlaceholderText, getByText } = render(<RegisterForm />);
-
-    fireEvent.change(getByPlaceholderText("First Name"), {
+    fireEvent.change(screen.getByPlaceholderText("First Name"), {
       target: { value: "John" },
     });
-    fireEvent.change(getByPlaceholderText("Last Name"), {
+    fireEvent.change(screen.getByPlaceholderText("Last Name"), {
       target: { value: "Doe" },
     });
-    fireEvent.change(getByPlaceholderText("Email"), {
+    fireEvent.change(screen.getByPlaceholderText("Email"), {
       target: { value: "john.doe@gmail.com" },
     });
-    fireEvent.change(getByPlaceholderText("Address"), {
+    fireEvent.change(screen.getByPlaceholderText("Address"), {
       target: { value: "123 Main St" },
     });
-    fireEvent.change(getByPlaceholderText("Phone Number"), {
+    fireEvent.change(screen.getByPlaceholderText("Phone Number"), {
       target: { value: "09123456789" },
     });
-    fireEvent.change(getByPlaceholderText("Password"), {
+    fireEvent.change(screen.getByPlaceholderText("Password"), {
       target: { value: "Password123!" },
     });
-    fireEvent.change(getByPlaceholderText("Confirm Password"), {
+    fireEvent.change(screen.getByPlaceholderText("Confirm Password"), {
       target: { value: "Password123!" },
     });
 
-    fireEvent.click(getByText("Sign Up"));
+    fireEvent.click(screen.getByText("Sign Up"));
 
     await waitFor(() => {
       expect(mockSignUp).toHaveBeenCalledWith({

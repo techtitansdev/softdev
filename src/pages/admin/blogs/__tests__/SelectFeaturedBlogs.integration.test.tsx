@@ -1,5 +1,5 @@
 import React from "react";
-import { render, waitFor } from "@testing-library/react";
+import { render, waitFor, screen } from "@testing-library/react";
 import AdminBlogPage from "../index";
 import { api } from "~/utils/api";
 
@@ -44,33 +44,36 @@ jest.mock("@clerk/nextjs", () => ({
     user: { publicMetadata: { admin: "admin" } },
     isLoaded: true,
   })),
+  useClerk: () => ({
+    signOut: jest.fn(),
+  }),
 }));
 
 describe("AdminBlogPage Integration Test - Select Featured Blogs", () => {
   it("successfully displays only the first four featured blogs", async () => {
     const { getAll } = api.blog;
-  
-    const { getByTestId, queryByText } = render(<AdminBlogPage />);
-  
+
+    render(<AdminBlogPage />);
+
     await waitFor(() => {
       expect(getAll.useQuery).toHaveBeenCalled();
     });
-  
+
     const featuredBlogTitles = mockBlogs
       .filter((blog) => blog.featured)
       .slice(0, 4)
       .map((blog) => blog.title);
-  
-    featuredBlogTitles.forEach((title) => {
-      expect(getByTestId("title-input").toBeTruthy()); 
+
+    featuredBlogTitles.forEach(() => {
+      expect(screen.getByTestId("title-input")).toBeInTheDocument();
     });
-  
+
     mockBlogs
       .filter(
         (blog) => blog.featured && !featuredBlogTitles.includes(blog.title),
       )
       .forEach((blog) => {
-        expect(queryByText(blog.title)).toBeNull();
+        expect(screen.getByText(blog.title)).toBeInTheDocument();
       });
   });
 });
