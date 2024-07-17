@@ -154,6 +154,7 @@ export const fundraiser = createTRPCRouter({
       z.object({
         id: z.string(),
         funds: z.number(),
+        donors: z.number(),
       }),
     )
     .mutation(async (opts) => {
@@ -168,11 +169,14 @@ export const fundraiser = createTRPCRouter({
         throw new Error("Fundraiser does not exist");
       }
 
-      // Query existing funds
-      const existingFunds = existingFundraiser.funds || 0;
-
-      // Add input amount to existing funds
-      const updatedFunds = existingFunds + input.funds;
+     // Query existing funds and donors
+     const existingFunds = existingFundraiser.funds || 0;
+     const existingDonors = existingFundraiser.donors || 0;
+ 
+     // Add input amount to existing funds and increment donors count
+     const updatedFunds = existingFunds + input.funds;
+     const updatedDonors = existingDonors + input.donors;
+ 
 
       // Update fundraiser details in the database
       const updatedFundraiser = await db.fundraisers.update({
@@ -181,6 +185,7 @@ export const fundraiser = createTRPCRouter({
         },
         data: {
           funds: updatedFunds,
+          donors: updatedDonors,
         },
       });
 

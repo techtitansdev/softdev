@@ -1,6 +1,7 @@
 // components/ReceiptModal.tsx
 import React from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 interface ReceiptModalProps {
   isOpen: boolean;
@@ -13,34 +14,93 @@ interface ReceiptModalProps {
     fullName: string;
     email: string;
   };
-  id: string; // Assuming id is needed for router.push
+  id: string;
 }
 
-const ReceiptModal: React.FC<ReceiptModalProps> = ({ isOpen, onClose, paymentDetails, id }) => {
+const ReceiptModal: React.FC<ReceiptModalProps> = ({
+  isOpen,
+  onClose,
+  paymentDetails,
+}) => {
   const router = useRouter();
 
   if (!isOpen) return null;
 
   const handleClose = () => {
     onClose();
-    router.push(`http://localhost:3000/funded-projects/${id}`);
+    router.push(`/funded-projects`);
   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-4">Payment Receipt</h2>
-        <p><strong>Ref No.:</strong> {paymentDetails.paymentID}</p>
-        <p><strong>Amount:</strong> {paymentDetails.amount / 100} {paymentDetails.currency}</p>
-        <p><strong>Payment Method:</strong> {paymentDetails.paymentMethod}</p>
-        <p><strong>Full Name:</strong> {paymentDetails.fullName}</p>
-        <p><strong>Email:</strong> {paymentDetails.email}</p>
+      <div className="relative mx-2 rounded-lg bg-white p-6 shadow-lg">
         <button
           onClick={handleClose}
-          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700"
+          className="absolute right-2 top-2 text-gray-600 hover:text-gray-900"
         >
-          Close
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
         </button>
+
+        <div className="mb-3 mt-4 flex justify-center">
+          <Image src="/check.png" width={32} height={32} alt="check-icon" />
+        </div>
+
+        <div className="mb-2 text-center text-base font-medium">
+          Payment Success!
+        </div>
+        <div className="my-4 mb-6 text-center text-2xl font-bold">
+          {paymentDetails.amount / 100} {paymentDetails.currency}
+        </div>
+
+        <hr className="border-t-1 my-2 border border-gray-200" />
+
+        <div className="my-4 mt-6 flex justify-between">
+          <span className="mr-6 text-sm">Ref Number</span>
+          <span className="text-sm font-semibold">
+            {paymentDetails.paymentID}
+          </span>
+        </div>
+
+        <div className="my-4 flex justify-between">
+          <span className="text-sm">Payment Method</span>
+          <span className="text-sm font-semibold">
+            {paymentDetails.paymentMethod}
+          </span>
+        </div>
+
+        <div className="my-4 flex justify-between">
+          <span className="text-sm">Sender Name</span>
+          <span className="text-sm font-semibold">
+            {paymentDetails.fullName}
+          </span>
+        </div>
+
+        <div className="my-4 flex justify-between">
+          <span className="mr-20 text-sm">Sender Email</span>
+          <span className="text-sm font-semibold">{paymentDetails.email}</span>
+        </div>
+
+        <hr className="border-t-1 my-2 border-dashed border-gray-400" />
+
+        <div className="my-4 mt-4 flex justify-between">
+          <span className="text-sm">Amount</span>
+          <span className="text-sm font-semibold">
+            {paymentDetails.amount / 100} {paymentDetails.currency}
+          </span>
+        </div>
       </div>
     </div>
   );

@@ -48,20 +48,17 @@ const Donors = () => {
     if (donors.data) {
       const transformedData = donors.data.map((item) => ({
         fullName: item.fullName,
+        email: item.email || "",
+        contact: item.contact,
+        projectName: item.projectName || "",
+        donatedAs: item.donatedAs || "",
+        paymentMethod: item.paymentMethod || "",
         date: new Date(item.date).toLocaleDateString(undefined, {
           year: "numeric",
           month: "short",
           day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
         }),
-        email: item.email || "",
-        contact: item.contact,
-        projectName: item.projectName || "",
-        paymentMethod: item.paymentMethod || "",
         amount: item.amount,
-        donatedAs: item.donatedAs
       }));
       setTableData(transformedData);
       setCurrentPage(1);
@@ -278,19 +275,19 @@ const Donors = () => {
                     Contact
                   </th>
                   <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
-                    Date
+                    Project Name
                   </th>
                   <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
-                    Project Name
+                    Donated As
                   </th>
                   <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
                     Payment Method
                   </th>
                   <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
-                    Amount
+                    Date
                   </th>
                   <th className="border border-gray-700 border-r-gray-100 py-3 pl-8 text-left text-sm font-medium text-gray-700">
-                    Payment Type
+                    Amount
                   </th>
                 </tr>
               </thead>
@@ -307,19 +304,19 @@ const Donors = () => {
                       {item.contact}
                     </td>
                     <td className="border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
-                      {item.date}
+                      {item.projectName}
                     </td>
                     <td className="border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
-                      {item.projectName}
+                      {item.donatedAs}
                     </td>
                     <td className="border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
                       {item.paymentMethod}
                     </td>
-                    <td className="border-2 py-4 pl-8 text-left text-sm font-light text-gray-700">
-                      {item.amount}
+                    <td className="border-2 border-r-white py-4 pl-8 text-left text-sm font-light text-gray-700">
+                      {item.date}
                     </td>
                     <td className="border-2 py-4 pl-8 text-left text-sm font-light text-gray-700">
-                      {item.donatedAs}
+                      {item.amount}
                     </td>
                   </tr>
                 ))}
