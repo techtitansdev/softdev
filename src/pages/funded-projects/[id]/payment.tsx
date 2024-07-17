@@ -1,13 +1,13 @@
 import { useUser } from "@clerk/nextjs";
-import { useQueryClient } from "@tanstack/react-query";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import CurrencyDropdown from "~/components/CurrencyDropdown";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
-import ReceiptModal from "~/components/receiptModal";
+import PaymentMethodDropdown from "~/components/PaymentMethodDropdown";
+import ReceiptModal from "~/components/ReceiptModal";
 import { api } from "~/utils/api";
-// Import the new ReceiptModal component
 
 interface Funding {
   title: string;
@@ -24,8 +24,8 @@ const Payment = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [amount, setAmount] = useState("");
-  const [currency, setCurrency] = useState("PHP"); // New state for currency
-  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [currency, setCurrency] = useState("PHP");
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [cardDetails, setCardDetails] = useState({
     card_number: "",
@@ -33,38 +33,49 @@ const Payment = () => {
     exp_year: "",
     cvc: "",
     line1: "",
+    line2: "",
     city: "",
     state: "",
     postal_code: "",
     country: "PH",
-    line2: "",
   });
 
-  const paymentMethods = ["card", "gcash"]; // Add more payment methods as needed
-
-  const currencies = ["PHP", "USD", "EUR"]; // List of supported currencies
+  const paymentMethods = ["Card", "Gcash"];
+  const currencies = ["PHP", "USD", "EUR"];
 
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
+
   const payment = api.paymentRouter.createPaymentIntent.useMutation();
+
   const createPaymentMethod =
     api.paymentRouter.createPaymentMethod.useMutation();
+
   const createGcashPaymentMethod =
     api.paymentRouter.createGCashPaymentMethod.useMutation();
+
   const attachPaymentIntent =
     api.paymentRouter.attachPaymentIntent.useMutation();
+
   const updateFunds = api.fundraiser.updateFunds.useMutation();
+
   const user = useUser();
   const updateDonor = api.donors.createDonor.useMutation();
+
   const createFunding = api.donors.createFunding.useMutation();
+
   const userEmail = user.user?.emailAddresses[0]?.emailAddress || "";
-  
+
   const checkEmail = api.donors.checkEmailExists.useQuery({
     email: userEmail,
   });
 
+  const handlePaymentMethodChange = (selectedMethod: string) => {
+    setPaymentMethod(selectedMethod);
+  };
+
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState<{
-    paymentID:string;
+    paymentID: string;
     amount: number;
     currency: string;
     paymentMethod: string;
@@ -75,18 +86,19 @@ const Payment = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPaymentError(null);
+
     const convertedAmount = parseInt(amount, 10) * 100;
 
     try {
       const paymentIntentResponse = await payment.mutateAsync({
         amount: convertedAmount,
-        currency: currency, // Use the selected currency
+        currency: currency,
       });
 
       if (paymentIntentResponse?.data.id) {
         let paymentMethodResponse;
 
-        if (paymentMethod === "gcash") {
+        if (paymentMethod === "Gcash") {
           paymentMethodResponse = await createGcashPaymentMethod.mutateAsync({
             email: email,
             name: fullName,
@@ -101,15 +113,15 @@ const Payment = () => {
               cvc: cardDetails.cvc,
             },
             billing: {
-              name: fullName,
               address: {
                 line1: cardDetails.line1,
+                line2: cardDetails.line2,
                 city: cardDetails.city,
                 state: cardDetails.state,
                 postal_code: cardDetails.postal_code,
                 country: cardDetails.country,
-                line2: cardDetails.line2,
               },
+              name: fullName,
               phone: phoneNumber,
               email: email,
             },
@@ -117,6 +129,8 @@ const Payment = () => {
         }
 
         const idString = id?.toString() || "";
+
+        // Attach payment intent to payment method
         await attachPaymentIntent.mutateAsync({
           payment_method: paymentMethodResponse.data.id,
           paymentIntentId: paymentIntentResponse?.data.id,
@@ -124,30 +138,30 @@ const Payment = () => {
           fundingId: idString,
         });
 
-  console.log(paymentIntentResponse?.data.id)
-
+        // Update funds and donors in Fundraisers schema
         await updateFunds.mutateAsync({
           id: idString,
           funds: parseInt(amount, 10),
+          donors: 1,
         });
 
-        if (checkEmail.data == false) {
+        // Check if donor email exists
+        if (!checkEmail.data) {
           await updateDonor.mutateAsync({
             userEmail: userEmail,
           });
-        }else{
-
         }
 
+        // Create funding record
         await createFunding.mutateAsync({
           fundraiserId: idString,
           amount: parseInt(amount, 10),
           donorEmail: userEmail,
           paymentMethod,
-          fullName: "",
-          email: "",
-          contact: "",
-          donatedAs: ""
+          fullName: fullName,
+          email: email,
+          contact: phoneNumber,
+          donatedAs: contributionType,
         });
 
         setPaymentDetails({
@@ -159,7 +173,6 @@ const Payment = () => {
           email,
         });
         setIsReceiptModalOpen(true);
-        
       } else {
         setPaymentError("Failed to create payment intent.");
       }
@@ -203,7 +216,7 @@ const Payment = () => {
         onSubmit={handleSubmit}
         className="mx-auto mb-16 mt-24 flex max-w-[1300px] flex-col justify-between md:mt-32 lg:flex-row"
       >
-        <div className="flex w-full flex-col items-center justify-center lg:w-1/2">
+        <div className="flex w-full flex-col items-center lg:w-1/2">
           {fundingData && (
             <div className="flex w-11/12 flex-col md:w-10/12 lg:w-11/12">
               <div className="mx-1 text-base font-normal text-gray-700 md:text-lg">
@@ -301,44 +314,40 @@ const Payment = () => {
             </>
           )}
 
-          <div className="mt-6 w-11/12 flex rounded-md border border-gray-400 py-4 pl-4 pr-4 shadow-lg md:w-10/12 lg:w-9/12">
+          <div className="mt-6 flex w-11/12 rounded-md border border-gray-400 py-4 pl-4 pr-4 shadow-lg md:w-10/12 lg:w-9/12">
             <input
-              type="number"
-              min="0"
+              type="text"
               placeholder="Amount"
-              className="w-2/3 text-sm md:text-base"
+              className="w-2/3 text-sm outline-none md:text-base"
               value={amount}
               required
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) {
+                  const intValue = parseInt(value, 10);
+                  if (value === "" || intValue >= 1) {
+                    setAmount(value);
+                  }
+                }
+              }}
             />
-            <select
-              className="ml-2 w-1/3 text-sm md:text-base"
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value)}
-              required
-            >
-              {currencies.map((curr) => (
-                <option key={curr} value={curr}>
-                  {curr}
-                </option>
-              ))}
-            </select>
+
+            <CurrencyDropdown
+              options={currencies}
+              selectedOption={currency}
+              onSelect={setCurrency}
+            />
           </div>
 
-          <select
-            className="mt-6 w-11/12 rounded-md border border-gray-400 py-4 pl-4 pr-4 text-sm shadow-lg md:w-10/12 md:text-base lg:w-9/12"
+          <PaymentMethodDropdown
+            className="mt-6 w-11/12 rounded-md border border-gray-400 shadow-lg outline-none md:w-10/12 md:text-base lg:w-9/12"
+            options={paymentMethods}
             value={paymentMethod}
-            onChange={(e) => setPaymentMethod(e.target.value)}
-            required
-          >
-            {paymentMethods.map((method) => (
-              <option key={method} value={method}>
-                {method.charAt(0).toUpperCase() + method.slice(1)}
-              </option>
-            ))}
-          </select>
+            onChange={handlePaymentMethodChange}
+            placeholder="Select Payment Method"
+          />
 
-          {paymentMethod === "card" && (
+          {paymentMethod === "Card" && (
             <div className="mt-6 w-11/12 rounded-md border border-gray-400 p-4 shadow-lg md:w-10/12 lg:w-9/12">
               <input
                 type="text"
@@ -347,7 +356,10 @@ const Payment = () => {
                 value={cardDetails.card_number}
                 required
                 onChange={(e) =>
-                  setCardDetails({ ...cardDetails, card_number: e.target.value })
+                  setCardDetails({
+                    ...cardDetails,
+                    card_number: e.target.value,
+                  })
                 }
               />
               <input
@@ -426,7 +438,10 @@ const Payment = () => {
                 value={cardDetails.postal_code}
                 required
                 onChange={(e) =>
-                  setCardDetails({ ...cardDetails, postal_code: e.target.value })
+                  setCardDetails({
+                    ...cardDetails,
+                    postal_code: e.target.value,
+                  })
                 }
               />
               <input
@@ -456,11 +471,12 @@ const Payment = () => {
       <Footer />
 
       {paymentDetails && (
-        
         <ReceiptModal
           isOpen={isReceiptModalOpen}
           onClose={() => setIsReceiptModalOpen(false)}
-          paymentDetails={paymentDetails} id={id?.toString() || ""}        />
+          paymentDetails={paymentDetails}
+          id={id?.toString() || ""}
+        />
       )}
     </>
   );
