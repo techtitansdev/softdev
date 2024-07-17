@@ -26,9 +26,9 @@ const ReceiptModal: React.FC<ReceiptModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleClose = () => {
+  const handleClose = async () => {
     onClose();
-    router.push(`/funded-projects`);
+    await router.push(`/funded-projects`);
   };
 
   return (

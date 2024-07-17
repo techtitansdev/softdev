@@ -15,6 +15,17 @@ const FeaturedBlogCard: React.FC<BlogCardProps> = ({
   blogData,
   handleDelete,
 }) => {
+  if (
+    !blogData ||
+    !blogData.id ||
+    !blogData.title ||
+    !blogData.created ||
+    !blogData.image ||
+    !blogData.excerpt
+  ) {
+    return null;
+  }
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [featured, setFeatured] = useState(blogData.featured || false);
   const [maxFeaturedReached, setMaxFeaturedReached] = useState(false);
@@ -82,7 +93,6 @@ const FeaturedBlogCard: React.FC<BlogCardProps> = ({
     }
   };
 
-  // Determine card background color based on published status
   const cardBackgroundColor = blogData.published ? "bg-gray-100" : "bg-white";
 
   return (

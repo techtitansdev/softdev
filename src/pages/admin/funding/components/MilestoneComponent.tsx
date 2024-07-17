@@ -22,6 +22,10 @@ const formatDate = (dateString: string) => {
 };
 
 const MilestoneComponent: React.FC<Props> = ({ milestones }) => {
+  if (!milestones || milestones.length === 0) {
+    return <div>No milestones available.</div>;
+  }
+
   return (
     <div className="flex items-center justify-center bg-gray-50 shadow">
       <div className="mx-2 my-6 md:mx-20">

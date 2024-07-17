@@ -15,6 +15,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   projectData,
   handleDelete,
 }) => {
+  if (
+    !projectData ||
+    !projectData.id ||
+    !projectData.title ||
+    !projectData.image ||
+    !projectData.hub
+  ) {
+    return null; // or handle loading state or error state
+  }
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [featured, setFeatured] = useState(projectData.featured || false);
   const [maxFeaturedReached, setMaxFeaturedReached] = useState(false);
@@ -81,7 +91,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     }
   };
 
-  // Determine card background color based on published status
   const cardBackgroundColor = projectData.published
     ? "bg-gray-100"
     : "bg-white";
@@ -102,9 +111,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
           <Link href={`/admin/projects/${encodeURIComponent(projectData.id)}`}>
             <img
-              className="h-56 w-[280px] rounded-sm object-obtain lg:w-[300px]"
+              className="object-obtain h-56 w-[280px] rounded-sm lg:w-[300px]"
               src={projectData.image}
-              alt={projectData.image}
+              alt={projectData.title}
             />
           </Link>
 
