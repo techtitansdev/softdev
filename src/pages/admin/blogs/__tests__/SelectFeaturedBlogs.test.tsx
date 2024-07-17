@@ -2,10 +2,11 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import AdminBlogPage from "../index";
 
-jest.mock("@clerk/clerk-react", () => ({
-  useClerk: () => ({
-    signOut: jest.fn(),
-  }),
+jest.mock("@clerk/nextjs", () => ({
+  useUser: jest.fn(() => ({
+    user: { publicMetadata: { admin: "admin" } },
+    isLoaded: true,
+  }))
 }));
 
 const mockBlogs = [
