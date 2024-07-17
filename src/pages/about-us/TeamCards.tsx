@@ -1,5 +1,6 @@
 import React from "react";
 import { teamImages } from "~/data/teamImages";
+import Image from "next/image";
 
 const TeamCards = () => {
   return (
@@ -10,7 +11,7 @@ const TeamCards = () => {
       }}
     >
       <div className="flex flex-col items-center justify-center">
-        <div className="mb-8 mt-1 md:mt-8 text-3xl font-medium text-gray-700 sm:text-4xl lg:text-5xl">
+        <div className="mb-8 mt-1 text-3xl font-medium text-gray-700 sm:text-4xl md:mt-8 lg:text-5xl">
           Meet Our Team
         </div>
         <div className="mb-12 flex items-center justify-center">
@@ -21,7 +22,7 @@ const TeamCards = () => {
                 className="duration-400 group relative mb-4 transform items-center justify-center transition ease-in-out hover:-translate-y-1 hover:scale-110"
               >
                 <div className="flex flex-col items-center justify-center">
-                  <img
+                  <Image
                     src={member.image}
                     className="h-52 w-52 rounded-full shadow-lg"
                     alt={member.name}
@@ -44,4 +45,4 @@ const TeamCards = () => {
   );
 };
 
-export default TeamCards
+export default TeamCards;
