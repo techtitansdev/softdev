@@ -146,7 +146,8 @@ const Payment = () => {
           paymentMethod,
           fullName: "",
           email: "",
-          contact: ""
+          contact: "",
+          donatedAs: ""
         });
 
         setPaymentDetails({

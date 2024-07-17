@@ -83,9 +83,7 @@ const FeaturedBlogCard: React.FC<BlogCardProps> = ({
   };
 
   // Determine card background color based on published status
-  const cardBackgroundColor = blogData.published
-    ? "bg-gray-100"
-    : "bg-white";
+  const cardBackgroundColor = blogData.published ? "bg-gray-100" : "bg-white";
 
   return (
     <div className="relative">
