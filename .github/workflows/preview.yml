@@ -35,3 +35,8 @@ jobs:
 
       - name: Deploy Project  Artifacts
         run: vercel deploy --prebuilt --token=${{secrets.VERCEL_TOKEN}}
+
+      - name: Build
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+        run: npm run build
