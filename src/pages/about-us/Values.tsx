@@ -1,5 +1,4 @@
 import { values } from "~/data/values";
-import Image from "next/image";
 
 const Values = () => {
   return (
@@ -16,7 +15,7 @@ const Values = () => {
             key={index}
             className={`flex items-center ${index > 1 ? "lg:mt-12" : ""}`}
           >
-            <Image
+            <img
               src={value.imageSrc}
               alt={value.title}
               className="h-32 w-32"

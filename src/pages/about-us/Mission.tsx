@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 
 const Mission = () => {
   return (
@@ -22,7 +21,7 @@ const Mission = () => {
           </p>
         </div>
         <div className="w-full px-6 md:w-1/2 md:max-w-[580px] xl:ml-20 xl:px-0">
-          <Image
+          <img
             src="mission.png"
             alt="Mission"
             className="h-[345px] w-full rounded-lg"
