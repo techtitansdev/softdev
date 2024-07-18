@@ -11,6 +11,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+  if (publicUrl) {
+    console.log("Publishable key is set:", publicUrl);
+  } else {
+    console.log("Publishable key is missing or not set correctly.");
+  }
+
   return (
     <ClerkProvider publishableKey={publicUrl} {...pageProps}>
       <SessionProvider session={session}>
