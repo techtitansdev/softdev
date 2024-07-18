@@ -5,25 +5,24 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { api } from "~/utils/api";
 import "~/styles/globals.css";
 
-const publicUrl = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  if (publicUrl) {
-    console.log("Publishable key is set:", publicUrl);
-  } else {
-    console.log("Publishable key is missing or not set correctly.");
-  }
-
   return (
-    <ClerkProvider publishableKey={publicUrl} {...pageProps}>
+    <ClerkProvider
+      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      {...pageProps}
+    >
       <SessionProvider session={session}>
         <Component {...pageProps} />
       </SessionProvider>
     </ClerkProvider>
   );
 };
+console.log(
+  "Clerk Publishable Key:",
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+);
 
 export default api.withTRPC(MyApp);
