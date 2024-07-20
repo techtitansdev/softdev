@@ -20,9 +20,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
     </ClerkProvider>
   );
 };
-console.log(
+
+/* console.log(
   "Clerk Publishable Key:",
   process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
 );
+*/
 
 export default api.withTRPC(MyApp);

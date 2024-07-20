@@ -22,7 +22,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     !projectData.image ||
     !projectData.hub
   ) {
-    return null; // or handle loading state or error state
+    return null;
   }
 
   const [isModalOpen, setModalOpen] = useState(false);
@@ -113,7 +113,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             <img
               className="object-obtain h-56 w-[280px] rounded-sm lg:w-[300px]"
               src={projectData.image}
-              alt={projectData.title}
+              alt={projectData.image}
             />
           </Link>
 

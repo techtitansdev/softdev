@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import DeleteModal from "~/components/DeleteModal";
-import Image from "next/image";
 
 interface FundingData {
   id: string;
@@ -54,7 +53,7 @@ const FundingCard: React.FC<FundingCardProps> = ({
           className="hover:scale-104 transform rounded-md pb-6 shadow transition duration-500 ease-in-out hover:-translate-y-1"
         >
           <Link href={`/admin/funding/${encodeURIComponent(fundingData.id)}`}>
-            <Image
+            <img
               className="object-obtain h-56 w-[358px] rounded-md"
               src={fundingData.project.image}
               alt="funding-image"

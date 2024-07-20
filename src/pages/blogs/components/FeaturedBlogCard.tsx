@@ -1,7 +1,5 @@
 import Link from "next/link";
 import { LuCalendarDays } from "react-icons/lu";
-import Image from "next/image";
-
 interface BlogData {
   id: string;
   title: string;
@@ -30,12 +28,10 @@ const FeaturedBlogCard: React.FC<FeaturedBlogCardProps> = ({ blogData }) => {
           className="hover:scale-102 transform rounded-lg pb-4 shadow transition duration-500 ease-in-out hover:-translate-y-1"
         >
           <Link href={`/blogs/${encodeURIComponent(blogData.id)}`}>
-            <Image
+            <img
               className="h-56 w-[280px] rounded-t-lg object-cover lg:h-[320px] lg:w-[420px]"
               src={blogData.image}
               alt="blog-image"
-              width={420}
-              height={320}
             />
           </Link>
 

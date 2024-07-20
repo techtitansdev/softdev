@@ -7,7 +7,6 @@ import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
 import PaymentMethodDropdown from "~/components/PaymentMethodDropdown";
 import { api } from "~/utils/api";
-import Image from "next/image";
 import ReceiptModal from "~/components/ReceiptModal";
 
 interface Funding {
@@ -226,7 +225,7 @@ const Payment = () => {
               <div className="mx-1 mb-4 text-3xl font-semibold text-gray-700 md:text-4xl">
                 {fundingData.title}
               </div>
-              <Image
+              <img
                 src={fundingData.image}
                 className="mb-2 h-[350px] w-full rounded-lg shadow-md md:h-96"
                 alt={fundingData.title}
