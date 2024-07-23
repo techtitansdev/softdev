@@ -153,6 +153,8 @@ model Milestones {
   description  String
   created      DateTime    @default(now())
   updated      DateTime    @updatedAt()
+  date         DateTime
+  done         Boolean     
   fundraiserId String
   fundraiser   Fundraisers @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
 

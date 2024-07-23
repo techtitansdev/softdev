@@ -12,12 +12,18 @@ export const fundraiser = createTRPCRouter({
         targetDate: z.date(),
         donors: z.number(),
         published: z.boolean(),
-        milestones: z.array(z.object({
-          milestone: z.string(),
-          value: z.number(),
-          unit: z.string(),
-          description: z.string(),
-        })).optional(),
+        milestones: z
+          .array(
+            z.object({
+              milestone: z.string(),
+              value: z.number(),
+              unit: z.string(),
+              description: z.string(),
+              date: z.date(),
+              done: z.boolean(),
+            }),
+          )
+          .optional(),
       }),
     )
     .mutation(async (opts) => {
@@ -66,13 +72,19 @@ export const fundraiser = createTRPCRouter({
         targetDate: z.date(),
         donors: z.number(),
         published: z.boolean(),
-        milestones: z.array(z.object({
-          id: z.string().optional(),
-          milestone: z.string(),
-          value: z.number(),
-          unit: z.string(),
-          description: z.string(),
-        })).optional(),
+        milestones: z
+          .array(
+            z.object({
+              id: z.string().optional(),
+              milestone: z.string(),
+              value: z.number(),
+              unit: z.string(),
+              description: z.string(),
+              date: z.date(),
+              done: z.boolean(),
+            }),
+          )
+          .optional(),
       }),
     )
     .mutation(async (opts) => {
@@ -107,7 +119,9 @@ export const fundraiser = createTRPCRouter({
         });
 
         // Create a map for quick lookup
-        const existingMilestoneMap = new Map(existingMilestones.map(m => [m.id, m]));
+        const existingMilestoneMap = new Map(
+          existingMilestones.map((m) => [m.id, m]),
+        );
 
         // Process each milestone from input
         for (const milestone of input.milestones) {
@@ -121,6 +135,7 @@ export const fundraiser = createTRPCRouter({
                   value: milestone.value,
                   unit: milestone.unit,
                   description: milestone.description,
+                  date: milestone.date,
                 },
               });
               existingMilestoneMap.delete(milestone.id);
@@ -133,6 +148,8 @@ export const fundraiser = createTRPCRouter({
                 value: milestone.value,
                 unit: milestone.unit,
                 description: milestone.description,
+                date: milestone.date,
+                done: milestone.done,
                 fundraiserId: input.id,
               },
             });

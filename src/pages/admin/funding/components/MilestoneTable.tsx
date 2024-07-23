@@ -6,6 +6,8 @@ export interface TableRow {
   value: number;
   unit: string;
   description: string;
+  date: Date;
+  done: boolean;
 }
 
 interface MileStoneTableProps {
@@ -34,6 +36,8 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
         unit: "",
         description: "",
         id: undefined,
+        date: new Date(),
+        done: false,
       },
     ]);
   };
@@ -124,7 +128,7 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
                   onChange={(e) =>
                     handleChange(index, "description", e.target.value)
                   }
-                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm pl-2"
+                  className="block w-full rounded-sm border border-gray-300 py-2 pl-2 sm:text-sm"
                   data-testid="milestone-description-input"
                 />
               </td>
