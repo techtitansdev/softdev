@@ -1,9 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import DeleteModal from "~/components/DeleteModal";
 
+interface FundingData {
+  id: string;
+  project: {
+    image: string;
+    description: string;
+  };
+  title: string;
+  donors: number;
+  funds: number;
+  goal: number;
+  published: boolean;
+}
+
 interface FundingCardProps {
-  fundingData: any;
+  fundingData: FundingData;
   handleDelete: () => void;
 }
 
@@ -12,6 +25,13 @@ const FundingCard: React.FC<FundingCardProps> = ({
   handleDelete,
 }) => {
   const [isModalOpen, setModalOpen] = useState(false);
+  const [cardClassName, setCardClassName] = useState("");
+
+  useEffect(() => {
+    if (fundingData) {
+      setCardClassName(fundingData.published ? "bg-gray-100" : "");
+    }
+  }, [fundingData]);
 
   const openModal = () => {
     setModalOpen(true);
@@ -21,9 +41,9 @@ const FundingCard: React.FC<FundingCardProps> = ({
     setModalOpen(false);
   };
 
-  const cardClassName = fundingData.published
-    ? "bg-gray-100" 
-    : "";
+  if (!fundingData) {
+    return null;
+  }
 
   return (
     <div className={`rounded-lg ${cardClassName}`}>
@@ -42,7 +62,7 @@ const FundingCard: React.FC<FundingCardProps> = ({
 
           <div className="mx-2 my-2">
             <h5 className="truncate text-lg font-medium tracking-tight text-gray-900">
-              {fundingData.project.title}
+              {fundingData.title}
             </h5>
 
             <div className="max-w-[330px] items-center truncate text-xs font-light text-gray-700 dark:text-gray-500">

@@ -1,6 +1,7 @@
 import Head from "next/head";
-import { RegisterForm } from "./RegisterForm";
+
 import { Footer } from "~/components/Footer";
+import RegisterForm from "./RegisterForm";
 
 const Register = () => {
   return (

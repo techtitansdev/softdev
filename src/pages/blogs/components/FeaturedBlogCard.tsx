@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { LuCalendarDays } from "react-icons/lu";
-
 interface BlogData {
   id: string;
   title: string;
@@ -15,6 +14,10 @@ interface FeaturedBlogCardProps {
 }
 
 const FeaturedBlogCard: React.FC<FeaturedBlogCardProps> = ({ blogData }) => {
+  if (!blogData?.created) {
+    return null;
+  }
+
   const createdDate = new Date(blogData.created).toLocaleDateString();
 
   return (
@@ -22,7 +25,7 @@ const FeaturedBlogCard: React.FC<FeaturedBlogCardProps> = ({ blogData }) => {
       <ul>
         <li
           key={blogData.id}
-          className="transform rounded-lg pb-4 shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-102"
+          className="hover:scale-102 transform rounded-lg pb-4 shadow transition duration-500 ease-in-out hover:-translate-y-1"
         >
           <Link href={`/blogs/${encodeURIComponent(blogData.id)}`}>
             <img
@@ -37,12 +40,14 @@ const FeaturedBlogCard: React.FC<FeaturedBlogCardProps> = ({ blogData }) => {
               {blogData.title}
             </div>
 
-            <div className="my-2 ml-1 flex max-w-[92px] items-center justify-center rounded-sm bg-gray-100 text-xs font-light text-gray-700 lg:text-sm dark:text-gray-500">
-              <div className="mr-1">
-                <LuCalendarDays />
+            {createdDate && (
+              <div className="my-2 ml-1 flex max-w-[92px] items-center justify-center rounded-sm bg-gray-100 text-xs font-light text-gray-700 lg:text-sm dark:text-gray-500">
+                <div className="mr-1">
+                  <LuCalendarDays />
+                </div>
+                {createdDate}
               </div>
-              {createdDate}
-            </div>
+            )}
 
             <div
               className="mx-1 items-center text-xs font-light text-gray-700 lg:text-sm dark:text-gray-500"
