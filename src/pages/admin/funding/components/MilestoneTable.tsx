@@ -6,6 +6,8 @@ export interface TableRow {
   value: number;
   unit: string;
   description: string;
+  date: Date;
+  done: boolean;
 }
 
 interface MileStoneTableProps {
@@ -34,6 +36,9 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
         unit: "",
         description: "",
         id: undefined,
+        date: new Date(),
+        done: false,
+
       },
     ]);
   };
@@ -74,6 +79,12 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
             <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-600">
               Description
             </th>
+            <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-600">
+              Date
+            </th>
+            <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-600">
+              Status
+            </th>
           </tr>
         </thead>
 
@@ -113,6 +124,32 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
                   onChange={(e) => handleChange(index, "unit", e.target.value)}
                   className="block w-full rounded-sm border border-gray-300 py-2 pl-2 sm:text-sm"
                   data-testid="milestone-unit-input"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  value={row.description}
+                  required
+                  placeholder=" sample description"
+                  onChange={(e) =>
+                    handleChange(index, "description", e.target.value)
+                  }
+                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm pl-2"
+                  data-testid="milestone-description-input"
+                />
+              </td>
+              <td>
+                <input
+                  type="date"
+                  value={row.description}
+                  required
+                  placeholder="mm/dd/yyyy"
+                  onChange={(e) =>
+                    handleChange(index, "description", e.target.value)
+                  }
+                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm pl-2"
+                  data-testid="milestone-description-input"
                 />
               </td>
               <td>
