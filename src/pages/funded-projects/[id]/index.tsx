@@ -12,6 +12,7 @@ import { useUser } from "@clerk/nextjs";
 import { Modal } from "~/components/Modal";
 import EditorOutput from "~/components/editor/EditorOutput";
 import MilestoneComponent from "~/pages/admin/funding/components/MilestoneComponent";
+import { funding } from "~/server/api/routers/funding";
 
 const Funding: React.FC = () => {
   const router = useRouter();
@@ -24,11 +25,9 @@ const Funding: React.FC = () => {
   console.log(getFunding.data?.project.id);
   const [editorBlocks, setEditorBlocks] = useState([]);
   const [initialEditorData, setinitialEditorData] = useState();
-  const [numberOfDonor, setNumberOfDonor] = useState(0);
 
   useEffect(() => {
     if (getFunding.data && !fundingData && getFunding.data !== fundingData) {
-      setNumberOfDonor(getFunding.data.fundings.length);
       setFundingData(getFunding.data);
       const initialEditorData = JSON.parse(getFunding.data.project.about);
       setinitialEditorData(initialEditorData);
@@ -110,7 +109,7 @@ const Funding: React.FC = () => {
                     alt="Donors Icon"
                   />
                   <p className="text-sm font-medium sm:text-base lg:text-lg">
-                    {numberOfDonor}
+                    {fundingData.donors}
                   </p>
                   <p className="text-xs font-light sm:text-sm lg:text-base">
                     Donors
