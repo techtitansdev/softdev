@@ -38,7 +38,6 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
         id: undefined,
         date: new Date(),
         done: false,
-
       },
     ]);
   };
@@ -46,7 +45,7 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
   const handleChange = (
     index: number,
     field: keyof TableRow,
-    value: string,
+    value: string | boolean | number | Date,
   ) => {
     const newRows = rows.map((row, rowIndex) => {
       if (rowIndex === index) {
@@ -60,6 +59,18 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
 
     setRows(newRows);
     onRowDataChange(newRows);
+  };
+
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const parseDate = (dateString: string) => {
+    const [year, month, day] = dateString.split("-").map(Number);
+    return new Date(year!, month! - 1, day);
   };
 
   return (
@@ -106,10 +117,12 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
               <td>
                 <input
                   type="number"
-                  value={row.value}
+                  value={row.value ?? 0} // Provide a default value of 0
                   placeholder="Ex: 100"
                   required
-                  onChange={(e) => handleChange(index, "value", e.target.value)}
+                  onChange={(e) =>
+                    handleChange(index, "value", Number(e.target.value))
+                  }
                   className="block w-full rounded-sm border border-gray-300 py-2 pl-2 sm:text-sm"
                   data-testid="funding-goal-input"
                   min={1}
@@ -135,35 +148,35 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
                   onChange={(e) =>
                     handleChange(index, "description", e.target.value)
                   }
-                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm pl-2"
+                  className="block w-full rounded-sm border border-gray-300 py-2 pl-2 sm:text-sm"
                   data-testid="milestone-description-input"
                 />
               </td>
               <td>
                 <input
                   type="date"
-                  value={row.description}
+                  value={formatDate(row.date)}
                   required
-                  placeholder="mm/dd/yyyy"
+                  placeholder="yyyy-mm-dd"
                   onChange={(e) =>
-                    handleChange(index, "description", e.target.value)
+                    handleChange(index, "date", parseDate(e.target.value))
                   }
-                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm pl-2"
-                  data-testid="milestone-description-input"
+                  className="block w-full rounded-sm border border-gray-300 py-2 pl-2 sm:text-sm"
+                  data-testid="milestone-date-input"
                 />
               </td>
               <td>
-                <input
-                  type="text"
-                  value={row.description}
-                  required
-                  placeholder=" sample description"
+                <select
+                  value={row.done.toString()}
                   onChange={(e) =>
-                    handleChange(index, "description", e.target.value)
+                    handleChange(index, "done", e.target.value === "true")
                   }
-                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm pl-2"
-                  data-testid="milestone-description-input"
-                />
+                  className="block w-full rounded-sm border border-gray-300 py-2 pl-2 sm:text-sm"
+                  data-testid="milestone-status-input"
+                >
+                  <option value="false">On Going</option>
+                  <option value="true">Reached</option>
+                </select>
               </td>
             </tr>
           ))}
