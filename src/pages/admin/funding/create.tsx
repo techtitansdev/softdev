@@ -117,6 +117,8 @@ function CreateFunding() {
       unit: "",
       description: "",
       id: undefined,
+      date: new Date(),
+      done: false,
     },
   ]);
 

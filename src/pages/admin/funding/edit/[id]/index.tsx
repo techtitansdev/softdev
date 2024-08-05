@@ -115,6 +115,8 @@ function EditProject() {
       unit: "2",
       description: "this is description",
       id: undefined,
+      date: new Date(),
+      done: false,
     },
   ]);
 
