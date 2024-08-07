@@ -3,6 +3,48 @@ import { db } from "../../db";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const project = createTRPCRouter({
+  newcreate: protectedProcedure
+    .input(
+      z.object({
+        title: z.string(),
+        description: z.string(),
+        image: z.string(),
+        hub: z.string(),
+        category: z.string(),
+        type: z.string(),
+        beneficiaries: z.string(),
+        about: z.object({
+          projectTitle: z.string(),
+          projectDescription: z.string(),
+          projectLink: z.string(),
+          projectImage: z.string(),
+          projectObjDescription: z.string(),
+          projectObjImage: z.string(),
+          projectName1: z.string(),
+          projectName1Description: z.string(),
+          projectName1Image: z.string(),
+          projectName2: z.string(),
+          projectName2Description: z.string(),
+          projectName2Image: z.string(),
+          theme: z.string(),}),
+        published: z.boolean(),
+        featured: z.boolean(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+
+      const newProject = {
+        ...input,
+        about: JSON.stringify(input.about), 
+      };
+    
+    const project = await db.projects.create({
+      data: newProject,
+    });
+    return project;
+    }),
+
   create: protectedProcedure
     .input(
       z.object({
