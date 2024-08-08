@@ -22,7 +22,7 @@ interface Category {
 }
 
 function CreateProjects() {
-  const createProject = api.project.create.useMutation();
+  const createProject = api.project.createProject.useMutation();
   const allcategory = api.categories.getAllCategories.useQuery();
   const createCategory = api.categories.create.useMutation();
   const [newcategory, setNewCategory] = useState<Category[]>([]);
@@ -55,7 +55,22 @@ function CreateProjects() {
     category: "",
     type: "",
     beneficiaries: "",
-    about: "",
+    about: {
+      // Change this to match the ProjectAboutData type
+      projectTitle: "",
+      projectDescription: "",
+      projectLink: "",
+      projectImage: "",
+      projectObjDescription: "",
+      projectObjImage: "",
+      projectName1: "",
+      projectName1Description: "",
+      projectName1Image: "",
+      projectName2: "",
+      projectName2Description: "",
+      projectName2Image: "",
+      theme: "",
+    },
     published: false,
     featured: false,
   });
@@ -212,22 +227,29 @@ function CreateProjects() {
 
       const result = await createProject.mutateAsync({
         ...projectData,
-        image: featuredImageUrl,
-        published: isPublished,
+        about: {
+          ...projectData.about,
+          projectObjImage: objectiveImageUrl,
+          projectImage: projectImageUrl,
+          projectName1Image: projectName1ImageUrl,
+          projectName2Image: projectName2ImageUrl,
+         
+        },
+        image: projectImageUrl, // Overriding image field if needed
+        published: isPublished, // Assuming `isPublished` is a boolean variable in your test
         featured: false,
       });
-
-      console.log("About Data:", aboutData);
-      console.log("projectImageUrl", projectImageUrl);
-      console.log("objctiveUrl", objectiveImageUrl);
-      console.log("projectUrl", projectName1ImageUrl, projectName2ImageUrl);
+      // console.log("About Data:", aboutData);
+      //   console.log("projectImageUrl", projectImageUrl);
+      //   console.log("objctiveUrl", objectiveImageUrl);
+      //   console.log("projectUrl", projectName1ImageUrl, projectName2ImageUrl);
+      console.log("Project created:", result);
 
       setSuccessModalOpen(true);
 
       setTimeout(() => {
         router.push("/admin/projects");
       }, 2000);
-      console.log("Project created:", result);
     } catch (error) {
       console.error("Error creating project:", error);
     }
@@ -243,6 +265,13 @@ function CreateProjects() {
   if (user_role !== "admin") {
     return <Unauthorized />;
   }
+
+  useEffect(() => {
+    setProjectData({
+      ...projectData,
+      about: aboutData,
+    });
+  }, [aboutData]);
 
   return (
     <div>
@@ -265,7 +294,6 @@ function CreateProjects() {
               <label htmlFor="title" className="font-medium text-gray-700">
                 Project Title
               </label>
-
               <input
                 type="text"
                 id="title"
@@ -413,7 +441,6 @@ function CreateProjects() {
             </div>
 
             <div className="mb-2 mt-12 text-xl">Project Design</div>
-
             <div className="flex items-center justify-between">
               <div className="">
                 <div className="">
@@ -423,7 +450,7 @@ function CreateProjects() {
                     id="projectTitle"
                     name="projectTitle"
                     maxLength={40}
-                    value={aboutData.projectTitle}
+                    value={projectData.about.projectTitle}
                     onChange={handleChange}
                     className="text-bold mb-1 mt-1 h-12 w-[530px] rounded-md border border-gray-400 p-2 text-lg font-medium outline-gray-400"
                     required
@@ -434,7 +461,7 @@ function CreateProjects() {
                     id="projectDescription"
                     name="projectDescription"
                     placeholder="Project Description"
-                    value={aboutData.projectDescription}
+                    value={projectData.about.projectDescription}
                     maxLength={500}
                     onChange={handleChange}
                     className="mt-1 h-60 w-[530px] rounded-md border border-gray-400 p-2 text-base outline-gray-400"
