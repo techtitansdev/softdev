@@ -27,7 +27,7 @@ jobs:
         run: npm install --global vercel
 
       - name: Pull Vercel Environment Information
-        run: vercel --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Check Environment Variables
         run: echo "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is $NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"
