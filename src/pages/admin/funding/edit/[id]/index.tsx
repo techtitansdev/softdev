@@ -59,19 +59,6 @@ function EditProject() {
   const [editorBlocks, setEditorBlocks] = useState([]);
   const [initialEditorData, setInitialEditorData] = useState();
 
-  type TableRow = {
-      id: string | undefined;
-      milestone: string;
-      value: number;
-      unit: string;
-      description: string;
-      created: Date;
-      updated: Date;
-      fundraiserId: string;
-      date: Date;
-      done: boolean;
-  };
-  
   useEffect(() => {
     if (getProject.data) {
       setProjectData((prevData) => ({
@@ -97,14 +84,7 @@ function EditProject() {
       );
       setInitialEditorData(initialEditorData);
       setEditorBlocks(initialEditorData.blocks);
-
-      const transformedMilestones = getProject.data.milestones.map((milestone) => ({
-        ...milestone,
-        date: new Date(), 
-        done: false,
-      }));
-
-      setMilestoneData(transformedMilestones);
+      setMilestoneData(getProject.data.milestones);
       setImageUrl(getProject.data.project.image || "");
     }
   }, [getProject.data]);
@@ -137,9 +117,6 @@ function EditProject() {
       id: undefined,
       date: new Date(),
       done: false,
-      created: new Date(),
-      updated: new Date(),
-      fundraiserId: ""
     },
   ]);
 

@@ -8,9 +8,6 @@ export interface TableRow {
   description: string;
   date: Date;
   done: boolean;
-  created: Date;
-  updated: Date;
-  fundraiserId: string;
 }
 
 interface MileStoneTableProps {
@@ -41,9 +38,6 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
         id: undefined,
         date: new Date(),
         done: false,
-        created: new Date(),
-        updated: new Date(),
-        fundraiserId: ""
       },
     ]);
   };
