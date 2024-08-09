@@ -46,7 +46,11 @@ const MilestoneComponent: React.FC<Props> = ({ milestones }) => {
                   milestone.done ? "after:bg-emerald-600" : "after:bg-slate-300"
                 }`}
               >
-                <time className="left-0 mb-3 inline-flex h-6 w-24 translate-y-0.5 items-center justify-center rounded-full text-xs font-semibold uppercase text-gray-600 sm:absolute sm:mb-0">
+                <time
+                  className={`left-0 mb-3 inline-flex h-6 w-24 translate-y-0.5 items-center justify-center rounded-full text-xs font-semibold uppercase sm:absolute sm:mb-0 ${
+                    milestone.done ? "text-emerald-700" : "text-gray-600"
+                  }`}
+                >
                   {formatDate(milestone.date)}
                 </time>
                 <div className="text-lg font-bold text-slate-900">
