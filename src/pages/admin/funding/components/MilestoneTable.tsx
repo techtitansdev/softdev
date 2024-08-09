@@ -43,7 +43,7 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
         done: false,
         created: new Date(),
         updated: new Date(),
-        fundraiserId: ""
+        fundraiserId: "",
       },
     ]);
   };
@@ -123,12 +123,17 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
               <td>
                 <input
                   type="number"
-                  value={row.value ?? 0} // Provide a default value of 0
+                  value={row.value || ""}
                   placeholder="Ex: 100"
                   required
-                  onChange={(e) =>
-                    handleChange(index, "value", Number(e.target.value))
-                  }
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const numericValue = Number(value);
+
+                    if (value === "" || numericValue > 0) {
+                      handleChange(index, "value", numericValue);
+                    }
+                  }}
                   className="block w-full rounded-sm border border-gray-300 py-2 pl-2 sm:text-sm"
                   data-testid="funding-goal-input"
                   min={1}
@@ -177,7 +182,9 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
                   onChange={(e) =>
                     handleChange(index, "done", e.target.value === "true")
                   }
-                  className="block w-full rounded-sm border border-gray-300 py-2 pl-2 sm:text-sm"
+                  className={`block w-full rounded-sm border py-2 pl-2 sm:text-sm ${
+                    row.done ? "bg-green-300" : "bg-yellow-300"
+                  }`}
                   data-testid="milestone-status-input"
                 >
                   <option value="false">On Going</option>

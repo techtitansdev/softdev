@@ -10,7 +10,7 @@ import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import { FundingData } from "~/types/fundingData";
-import MileStoneTable, { TableRow } from "../../components/MilestoneTable";
+import MileStoneTableEdit from "../../components/MilestoneTableEdit";
 import { NewEditor } from "~/components/editor/Editor";
 
 function EditProject() {
@@ -60,18 +60,18 @@ function EditProject() {
   const [initialEditorData, setInitialEditorData] = useState();
 
   type TableRow = {
-      id: string | undefined;
-      milestone: string;
-      value: number;
-      unit: string;
-      description: string;
-      created: Date;
-      updated: Date;
-      fundraiserId: string;
-      date: Date;
-      done: boolean;
+    id: string | undefined;
+    milestone: string;
+    value: number;
+    unit: string;
+    description: string;
+    created: Date;
+    updated: Date;
+    fundraiserId: string;
+    date: Date | null;
+    done: boolean;
   };
-  
+
   useEffect(() => {
     if (getProject.data) {
       setProjectData((prevData) => ({
@@ -98,11 +98,13 @@ function EditProject() {
       setInitialEditorData(initialEditorData);
       setEditorBlocks(initialEditorData.blocks);
 
-      const transformedMilestones = getProject.data.milestones.map((milestone) => ({
-        ...milestone,
-        date: new Date(), 
-        done: false,
-      }));
+      const transformedMilestones = getProject.data.milestones.map(
+        (milestone) => ({
+          ...milestone,
+          date: new Date(milestone.date),
+          done: milestone.done,
+        }),
+      );
 
       setMilestoneData(transformedMilestones);
       setImageUrl(getProject.data.project.image || "");
@@ -139,7 +141,7 @@ function EditProject() {
       done: false,
       created: new Date(),
       updated: new Date(),
-      fundraiserId: ""
+      fundraiserId: "",
     },
   ]);
 
@@ -391,9 +393,9 @@ function EditProject() {
                   Milestones
                 </label>
 
-                <MileStoneTable
+                <MileStoneTableEdit
                   onRowDataChange={handleMilestoneDataChange}
-                  existingMilestone={milestoneData}
+                  existingMilestones={milestoneData}
                 />
               </div>
 
