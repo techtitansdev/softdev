@@ -12,14 +12,18 @@ export const fundraiser = createTRPCRouter({
         targetDate: z.date(),
         donors: z.number(),
         published: z.boolean(),
-        milestones: z.array(z.object({
-          milestone: z.string(),
-          value: z.number(),
-          unit: z.string(),
-          description: z.string(),
-          date: z.date(), 
-          done: z.boolean().optional(),
-        })).optional(),
+        milestones: z
+          .array(
+            z.object({
+              milestone: z.string(),
+              value: z.number(),
+              unit: z.string(),
+              description: z.string(),
+              date: z.date(),
+              done: z.boolean().optional(),
+            }),
+          )
+          .optional(),
       }),
     )
     .mutation(async (opts) => {
@@ -62,15 +66,17 @@ export const fundraiser = createTRPCRouter({
       return fundraiser;
     }),
   edit: protectedProcedure
-        .input(
-          z.object({
-            id: z.string(),
-            funds: z.number(),
-            goal: z.number(),
-            targetDate: z.date(),
-            donors: z.number(),
-            published: z.boolean(),
-            milestones: z.array(z.object({
+    .input(
+      z.object({
+        id: z.string(),
+        funds: z.number(),
+        goal: z.number(),
+        targetDate: z.date(),
+        donors: z.number(),
+        published: z.boolean(),
+        milestones: z
+          .array(
+            z.object({
               id: z.string().optional(),
               milestone: z.string(),
               value: z.number(),
@@ -78,9 +84,11 @@ export const fundraiser = createTRPCRouter({
               description: z.string(),
               date: z.date(),
               done: z.boolean().optional(),
-            })).optional(),
-          }),
-        )
+            }),
+          )
+          .optional(),
+      }),
+    )
     .mutation(async (opts) => {
       const { input } = opts;
 
@@ -108,7 +116,9 @@ export const fundraiser = createTRPCRouter({
           where: { fundraiserId: input.id },
         });
 
-        const existingMilestoneMap = new Map(existingMilestones.map(m => [m.id, m]));
+        const existingMilestoneMap = new Map(
+          existingMilestones.map((m) => [m.id, m]),
+        );
 
         for (const milestone of input.milestones) {
           if (milestone.id) {
@@ -120,6 +130,7 @@ export const fundraiser = createTRPCRouter({
                   value: milestone.value,
                   unit: milestone.unit,
                   date: milestone.date,
+                  done: milestone.done ?? false,
                 },
               });
               existingMilestoneMap.delete(milestone.id);
@@ -133,7 +144,7 @@ export const fundraiser = createTRPCRouter({
                 description: milestone.description,
                 fundraiserId: input.id,
                 date: milestone.date,
-                done: false,
+                done: milestone.done ?? false,
               },
             });
           }
