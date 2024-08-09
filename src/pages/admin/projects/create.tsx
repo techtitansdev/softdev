@@ -56,7 +56,6 @@ function CreateProjects() {
     type: "",
     beneficiaries: "",
     about: {
-      // Change this to match the ProjectAboutData type
       projectTitle: "",
       projectDescription: "",
       projectLink: "",
@@ -233,16 +232,12 @@ function CreateProjects() {
           projectImage: projectImageUrl,
           projectName1Image: projectName1ImageUrl,
           projectName2Image: projectName2ImageUrl,
-         
         },
-        image: projectImageUrl, // Overriding image field if needed
-        published: isPublished, // Assuming `isPublished` is a boolean variable in your test
+        image: featuredImageUrl,
+        published: isPublished,
         featured: false,
       });
-      // console.log("About Data:", aboutData);
-      //   console.log("projectImageUrl", projectImageUrl);
-      //   console.log("objctiveUrl", objectiveImageUrl);
-      //   console.log("projectUrl", projectName1ImageUrl, projectName2ImageUrl);
+
       console.log("Project created:", result);
 
       setSuccessModalOpen(true);
