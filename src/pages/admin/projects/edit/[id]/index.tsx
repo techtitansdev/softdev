@@ -12,6 +12,7 @@ import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import UploadIcon from "~/components/svg/UploadIcon";
+import React from 'react';
 
 interface ProjectAbout {
   projectTitle: string;

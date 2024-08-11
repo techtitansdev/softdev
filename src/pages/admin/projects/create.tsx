@@ -15,6 +15,7 @@ import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import UploadIcon from "~/components/svg/UploadIcon";
 import { ProjectAboutData } from "~/types/projectAbout";
+import React from 'react';
 
 interface Category {
   label: string;
