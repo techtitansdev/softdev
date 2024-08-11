@@ -6,6 +6,11 @@ export interface TableRow {
   value: number;
   unit: string;
   description: string;
+  date: Date;
+  done: boolean;
+  created: Date;
+  updated: Date;
+  fundraiserId: string;
 }
 
 interface MileStoneTableProps {
@@ -34,6 +39,11 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
         unit: "",
         description: "",
         id: undefined,
+        date: new Date(),
+        done: false,
+        created: new Date(),
+        updated: new Date(),
+        fundraiserId: "",
       },
     ]);
   };
@@ -41,7 +51,7 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
   const handleChange = (
     index: number,
     field: keyof TableRow,
-    value: string,
+    value: string | boolean | number | Date,
   ) => {
     const newRows = rows.map((row, rowIndex) => {
       if (rowIndex === index) {
@@ -55,6 +65,18 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
 
     setRows(newRows);
     onRowDataChange(newRows);
+  };
+
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const parseDate = (dateString: string) => {
+    const [year, month, day] = dateString.split("-").map(Number);
+    return new Date(year!, month! - 1, day);
   };
 
   return (
@@ -73,6 +95,12 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
             </th>
             <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-600">
               Description
+            </th>
+            <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-600">
+              Date
+            </th>
+            <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-600">
+              Status
             </th>
           </tr>
         </thead>
@@ -95,10 +123,17 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
               <td>
                 <input
                   type="number"
-                  value={row.value}
+                  value={row.value || ""}
                   placeholder="Ex: 100"
                   required
-                  onChange={(e) => handleChange(index, "value", e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const numericValue = Number(value);
+
+                    if (value === "" || numericValue > 0) {
+                      handleChange(index, "value", numericValue);
+                    }
+                  }}
                   className="block w-full rounded-sm border border-gray-300 py-2 pl-2 sm:text-sm"
                   data-testid="funding-goal-input"
                   min={1}
@@ -124,9 +159,37 @@ const MileStoneTable: React.FC<MileStoneTableProps> = ({
                   onChange={(e) =>
                     handleChange(index, "description", e.target.value)
                   }
-                  className="block w-full rounded-sm border border-gray-300 py-2 sm:text-sm pl-2"
+                  className="block w-full rounded-sm border border-gray-300 py-2 pl-2 sm:text-sm"
                   data-testid="milestone-description-input"
                 />
+              </td>
+              <td>
+                <input
+                  type="date"
+                  value={formatDate(row.date)}
+                  required
+                  placeholder="yyyy-mm-dd"
+                  onChange={(e) =>
+                    handleChange(index, "date", parseDate(e.target.value))
+                  }
+                  className="block w-full rounded-sm border border-gray-300 py-2 pl-2 sm:text-sm"
+                  data-testid="milestone-date-input"
+                />
+              </td>
+              <td>
+                <select
+                  value={row.done.toString()}
+                  onChange={(e) =>
+                    handleChange(index, "done", e.target.value === "true")
+                  }
+                  className={`block w-full rounded-sm border py-2 pl-2 sm:text-sm ${
+                    row.done ? "bg-green-300" : "bg-yellow-300"
+                  }`}
+                  data-testid="milestone-status-input"
+                >
+                  <option value="false">On Going</option>
+                  <option value="true">Reached</option>
+                </select>
               </td>
             </tr>
           ))}

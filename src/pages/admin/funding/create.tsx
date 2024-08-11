@@ -117,6 +117,11 @@ function CreateFunding() {
       unit: "",
       description: "",
       id: undefined,
+      date: new Date(),
+      done: false,
+      created: new Date(),
+      updated: new Date(),
+      fundraiserId: ""
     },
   ]);
 

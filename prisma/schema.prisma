@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider     = "sqlite"
+  provider     = "postgresql"
   url          = env("DATABASE_URL")
-  relationMode = "prisma"
 }
 
 model Users {
@@ -174,6 +173,8 @@ model Milestones {
   description  String
   created      DateTime    @default(now())
   updated      DateTime    @updatedAt()
+  date         DateTime
+  done         Boolean     
   fundraiserId String
   fundraiser   Fundraisers @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
 

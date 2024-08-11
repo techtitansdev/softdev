@@ -11,6 +11,8 @@ export const milestone = createTRPCRouter({
         unit: z.string(),
         fundraiserId: z.string(),
         description: z.string(),
+        date: z.date(),
+        done: z.boolean(),
       }),
     )
     .mutation(async (opts) => {
@@ -43,4 +45,3 @@ export const milestone = createTRPCRouter({
 });
 
 export const milestoneCaller = milestone.createCaller;
-
