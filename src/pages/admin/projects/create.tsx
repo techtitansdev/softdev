@@ -1,11 +1,5 @@
 import Head from "next/head";
-import {
-  ChangeEvent,
-  MutableRefObject,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import Select from "react-select";
@@ -15,12 +9,13 @@ import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import CreatableSelect from "react-select/creatable";
-
 import { categoriesOption } from "~/data/categories";
-import { NewEditor } from "~/components/editor/Editor";
 import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
+import UploadIcon from "~/components/svg/UploadIcon";
+import { ProjectAboutData } from "~/types/projectAbout";
+import React from 'react';
 
 interface Category {
   label: string;
@@ -28,16 +23,30 @@ interface Category {
 }
 
 function CreateProjects() {
-  const createProject = api.project.create.useMutation();
+  const createProject = api.project.createProject.useMutation();
   const allcategory = api.categories.getAllCategories.useQuery();
   const createCategory = api.categories.create.useMutation();
-  const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
-  const [editorData, setEditorData] = useState(null);
-  const [imageUrl, setImageUrl] = useState("");
-  const [publicId, setPublicId] = useState("");
   const [newcategory, setNewCategory] = useState<Category[]>([]);
-  const editorRef: MutableRefObject<any> = useRef(null);
   const router = useRouter();
+
+  const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
+
+  const [featuredImageUrl, setImageUrl] = useState("");
+  const [featuredImagePublicId, setPublicId] = useState("");
+
+  const [projectImageUrl, setProjectImageUrl] = useState("");
+  const [projectImagePublicId, setProjectImagePublicId] = useState("");
+
+  const [objectiveImageUrl, setObjectiveImageUrl] = useState("");
+  const [objectiveImagePublicId, setObjectiveImagePublicId] = useState("");
+
+  const [projectName1ImageUrl, setProjectName1ImageUrl] = useState("");
+  const [projectName1ImagePublicId, setProjectName1ImagePublicId] =
+    useState("");
+
+  const [projectName2ImageUrl, setProjectName2ImageUrl] = useState("");
+  const [projectName2ImagePublicId, setProjectName2ImagePublicId] =
+    useState("");
 
   const [projectData, setProjectData] = useState<ProjectData>({
     title: "",
@@ -47,28 +56,62 @@ function CreateProjects() {
     category: "",
     type: "",
     beneficiaries: "",
-    about: "",
+    about: {
+      projectTitle: "",
+      projectDescription: "",
+      projectLink: "",
+      projectImage: "",
+      projectObjDescription: "",
+      projectObjImage: "",
+      projectName1: "",
+      projectName1Description: "",
+      projectName1Image: "",
+      projectName2: "",
+      projectName2Description: "",
+      projectName2Image: "",
+      theme: "",
+    },
     published: false,
     featured: false,
   });
+
+  const [aboutData, setAboutData] = useState<ProjectAboutData>({
+    projectTitle: "",
+    projectDescription: "",
+    projectLink: "",
+    projectImage: "",
+    projectObjDescription: "",
+    projectObjImage: "",
+    projectName1: "",
+    projectName1Description: "",
+    projectName1Image: "",
+    projectName2: "",
+    projectName2Description: "",
+    projectName2Image: "",
+    theme: "",
+  });
+
+  useEffect(() => {
+    setProjectData({
+      ...projectData,
+      about: aboutData,
+    });
+  }, [aboutData]);
 
   const addNewCategory = (input: string) => {
     const newCategories = input.split(",").map((category) => category.trim());
 
     newCategories.forEach((newCategory) => {
-      // Check if the input already exists in categoriesOption
       const existsInCategoriesOption = categoriesOption.some(
         (category) =>
           category.value.toLowerCase() === newCategory.toLowerCase(),
       );
 
-      // Check if the input already exists in newcategory
       const existsInNewCategory = newcategory.some(
         (category) =>
           category.value.toLowerCase() === newCategory.toLowerCase(),
       );
 
-      // If the input is not in categoriesOption and not already in newcategory, add it to newcategory
       if (
         !existsInCategoriesOption &&
         !existsInNewCategory &&
@@ -92,42 +135,87 @@ function CreateProjects() {
   ) => {
     const { name, value } = e.target;
     setProjectData({ ...projectData, [name]: value });
+    setAboutData({ ...aboutData, [name]: value });
   };
 
-  const handleImageUpload = (result: CldUploadWidgetResults) => {
+  const handleImageUpload = (result: CldUploadWidgetResults, type: string) => {
     console.log("result: ", result);
     const info = result.info as object;
 
     if ("secure_url" in info && "public_id" in info) {
       const url = info.secure_url as string;
       const public_id = info.public_id as string;
-      setImageUrl(url);
-      setPublicId(public_id);
+
+      switch (type) {
+        case "featured":
+          setImageUrl(url);
+          setPublicId(public_id);
+          break;
+        case "project":
+          setProjectImageUrl(url);
+          setProjectImagePublicId(public_id);
+          break;
+        case "objective":
+          setObjectiveImageUrl(url);
+          setObjectiveImagePublicId(public_id);
+          break;
+        case "name1":
+          setProjectName1ImageUrl(url);
+          setProjectName1ImagePublicId(public_id);
+          break;
+        case "name2":
+          setProjectName2ImageUrl(url);
+          setProjectName2ImagePublicId(public_id);
+          break;
+        default:
+          break;
+      }
       console.log("url: ", url);
       console.log("public_id: ", public_id);
     }
   };
 
-  const removeImage = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const removeImage = async (imageType: string, publicId: string) => {
     try {
-      const response = await fetch('/api/deleteImage', {
-        method: 'DELETE',
+      const response = await fetch("/api/deleteImage", {
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ publicId }),
       });
-  
+
       if (response.ok) {
-        setImageUrl('');
-        setPublicId('');
+        switch (imageType) {
+          case "featured":
+            setImageUrl("");
+            setPublicId("");
+            break;
+          case "project":
+            setProjectImageUrl("");
+            setProjectImagePublicId("");
+            break;
+          case "objective":
+            setObjectiveImageUrl("");
+            setObjectiveImagePublicId("");
+            break;
+          case "name1":
+            setProjectName1ImageUrl("");
+            setProjectName1ImagePublicId("");
+            break;
+          case "name2":
+            setProjectName2ImageUrl("");
+            setProjectName2ImagePublicId("");
+            break;
+          default:
+            console.error("Unknown image type");
+        }
       } else {
         const errorData = await response.json();
-        console.error('Error removing image:', errorData.error);
+        console.error("Error removing image:", errorData.error);
       }
     } catch (error) {
-      console.error('Error removing image:', error);
+      console.error("Error removing image:", error);
     }
   };
 
@@ -143,28 +231,31 @@ function CreateProjects() {
           }),
         );
       }
+
       const result = await createProject.mutateAsync({
         ...projectData,
-        about: JSON.stringify(editorData, null, 2),
-        image: imageUrl,
+        about: {
+          ...projectData.about,
+          projectObjImage: objectiveImageUrl,
+          projectImage: projectImageUrl,
+          projectName1Image: projectName1ImageUrl,
+          projectName2Image: projectName2ImageUrl,
+        },
+        image: featuredImageUrl,
         published: isPublished,
         featured: false,
       });
+
+      console.log("Project created:", result);
 
       setSuccessModalOpen(true);
 
       setTimeout(() => {
         router.push("/admin/projects");
       }, 2000);
-      console.log("Project created:", result);
     } catch (error) {
       console.error("Error creating project:", error);
     }
-  };
-
-  const handleChanges = (data: any) => {
-    // Update state with the new data from the editor
-    setEditorData(data);
   };
 
   const { user, isLoaded } = useUser();
@@ -189,7 +280,7 @@ function CreateProjects() {
       <div className="flex">
         <Sidebar />
 
-        <div className="mx-auto p-10">
+        <div className="mx-auto p-10 md:min-w-[700px] lg:min-w-[900px] xl:min-w-[1250px]">
           <div className="mb-10 mt-16 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
             CREATE PROJECT
           </div>
@@ -199,14 +290,13 @@ function CreateProjects() {
               <label htmlFor="title" className="font-medium text-gray-700">
                 Project Title
               </label>
-
               <input
                 type="text"
                 id="title"
                 name="title"
                 value={projectData.title}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                className="mt-1 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
                 required
               />
             </div>
@@ -223,7 +313,7 @@ function CreateProjects() {
                 name="description"
                 value={projectData.description}
                 onChange={handleChange}
-                className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm"
+                className="mt-1 h-56 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
                 required
               />
             </div>
@@ -236,30 +326,15 @@ function CreateProjects() {
               <CldUploadButton
                 uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
                 className={`relative mt-4 grid h-72 w-72 place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
-                  imageUrl && "pointer-events-none"
+                  featuredImageUrl && "pointer-events-none"
                 }`}
-                onUpload={handleImageUpload}
+                onUpload={(result) => handleImageUpload(result, "featured")}
               >
-                <div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="h-6 w-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                    />
-                  </svg>
-                </div>
+                <UploadIcon />
 
-                {imageUrl && (
+                {featuredImageUrl && (
                   <Image
-                    src={imageUrl}
+                    src={featuredImageUrl}
                     fill
                     sizes="72"
                     className="absolute inset-0 object-cover"
@@ -268,10 +343,10 @@ function CreateProjects() {
                 )}
               </CldUploadButton>
 
-              {publicId && (
+              {featuredImagePublicId && (
                 <button
-                  onClick={removeImage}
-                  className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700"
+                  onClick={() => removeImage("featured", featuredImagePublicId)}
+                  className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                 >
                   Remove Image
                 </button>
@@ -289,7 +364,7 @@ function CreateProjects() {
                 name="hub"
                 value={projectData.hub}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                className="mt-1 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
                 required
               />
             </div>
@@ -356,18 +431,267 @@ function CreateProjects() {
                 name="beneficiaries"
                 value={projectData.beneficiaries}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                className="mt-1 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
                 required
               />
             </div>
 
-            <div className="mb-4">
-              <label htmlFor="about" className="font-medium text-gray-700">
-                About
-              </label>
+            <div className="mb-2 mt-12 text-xl">Project Design</div>
+            <div className="flex items-center justify-between">
+              <div className="">
+                <div className="">
+                  <input
+                    placeholder="Project Title"
+                    type="text"
+                    id="projectTitle"
+                    name="projectTitle"
+                    maxLength={40}
+                    value={aboutData.projectTitle}
+                    onChange={handleChange}
+                    className="text-bold mb-1 mt-1 h-12 w-[530px] rounded-md border border-gray-400 p-2 text-lg font-medium outline-gray-400"
+                    required
+                  />
+                </div>
+                <div className="">
+                  <textarea
+                    id="projectDescription"
+                    name="projectDescription"
+                    placeholder="Project Description"
+                    value={aboutData.projectDescription}
+                    maxLength={500}
+                    onChange={handleChange}
+                    className="mt-1 h-60 w-[530px] rounded-md border border-gray-400 p-2 text-base outline-gray-400"
+                    required
+                  />
+                </div>
+                Connect with us:
+                <input
+                  placeholder="Project Link"
+                  type="text"
+                  id="projectLink"
+                  name="projectLink"
+                  value={aboutData.projectLink}
+                  onChange={handleChange}
+                  className="ml-2 mt-1 w-[400px] rounded-md border border-gray-400 p-2 text-base outline-gray-400"
+                />
+              </div>
+
+              <div>
+                <CldUploadButton
+                  uploadPreset={
+                    process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+                  }
+                  className={`relative grid h-[355px] w-[530px] place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                    projectImageUrl && "pointer-events-none"
+                  }`}
+                  onUpload={(result) => handleImageUpload(result, "project")}
+                >
+                  <UploadIcon />
+                  {projectImageUrl && (
+                    <Image
+                      src={projectImageUrl}
+                      fill
+                      sizes="72"
+                      className="absolute inset-0 object-cover"
+                      alt={aboutData.projectTitle}
+                    />
+                  )}
+                </CldUploadButton>
+
+                {projectImagePublicId && (
+                  <button
+                    onClick={() => removeImage("project", projectImagePublicId)}
+                    className=" mt-1 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
+                  >
+                    Remove Image
+                  </button>
+                )}
+              </div>
             </div>
-            <div className="min-w-[300px]">
-              <NewEditor onChanges={handleChanges} />
+
+            <div className="mt-16 text-center text-2xl font-medium">
+              Project Objectives
+            </div>
+
+            <div className="flex items-center justify-center">
+              <textarea
+                id="projectObjDescription"
+                name="projectObjDescription"
+                placeholder="Project Objectives Description"
+                maxLength={210}
+                value={aboutData.projectObjDescription}
+                onChange={handleChange}
+                className="mt-1 w-[950px] rounded-md border border-gray-400 p-2 text-center outline-gray-400"
+                required
+              />
+            </div>
+
+            <div className="flex flex-col items-center justify-center">
+              <CldUploadButton
+                uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+                className={`relative mt-8 grid h-[380px] w-[1250px] place-items-center justify-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                  objectiveImageUrl && "pointer-events-none"
+                }`}
+                onUpload={(result) => handleImageUpload(result, "objective")}
+              >
+                <UploadIcon />
+                {objectiveImageUrl && (
+                  <Image
+                    src={objectiveImageUrl}
+                    fill
+                    sizes="72"
+                    className="absolute inset-0 object-cover"
+                    alt={aboutData.projectTitle}
+                  />
+                )}
+              </CldUploadButton>
+              {objectiveImagePublicId && (
+                <button
+                  onClick={() =>
+                    removeImage("objective", objectiveImagePublicId)
+                  }
+                  className="mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
+                >
+                  Remove Image
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="">
+                <div className="">
+                  <input
+                    placeholder="Example Project Name"
+                    type="text"
+                    id="projectName1"
+                    name="projectName1"
+                    maxLength={30}
+                    value={aboutData.projectName1}
+                    onChange={handleChange}
+                    className="text-bold mb-1 mt-12 h-12 w-[550px] rounded-md border border-gray-400 p-2 text-center text-lg font-medium outline-gray-400"
+                    required
+                  />
+                </div>
+
+                <div className="">
+                  <textarea
+                    placeholder="Small Description"
+                    id="projectName1Description"
+                    name="projectName1Description"
+                    maxLength={100}
+                    value={aboutData.projectName1Description}
+                    onChange={handleChange}
+                    className="mb-1 mt-1 h-12 w-[550px] rounded-md border border-gray-400 p-2 text-center text-base font-medium outline-gray-400"
+                    required
+                  />
+                </div>
+
+                <CldUploadButton
+                  uploadPreset={
+                    process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+                  }
+                  className={`relative mt-4 grid h-[550px] w-[560px] place-items-center justify-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                    projectName1ImageUrl && "pointer-events-none"
+                  }`}
+                  onUpload={(result) => handleImageUpload(result, "name1")}
+                >
+                  <UploadIcon />
+                  {projectName1ImageUrl && (
+                    <Image
+                      src={projectName1ImageUrl}
+                      fill
+                      sizes="72"
+                      className="absolute inset-0 object-cover"
+                      alt={projectData.title}
+                    />
+                  )}
+                </CldUploadButton>
+                {projectName1ImagePublicId && (
+                  <button
+                    onClick={() =>
+                      removeImage("name1", projectName1ImagePublicId)
+                    }
+                    className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
+                  >
+                    Remove Image
+                  </button>
+                )}
+              </div>
+
+              <div className="flex items-center justify-center">
+                <div className="">
+                  <div className="">
+                    <input
+                      placeholder="Example Project Name"
+                      type="text"
+                      id="projectName2"
+                      name="projectName2"
+                      maxLength={30}
+                      value={aboutData.projectName2}
+                      onChange={handleChange}
+                      className="text-bold mb-1 mt-12 h-12 w-[550px] rounded-md border border-gray-400 p-2 text-center text-lg font-medium outline-gray-400"
+                      required
+                    />
+                  </div>
+
+                  <div className="">
+                    <input
+                      placeholder="Small Description"
+                      type="text"
+                      id="projectName2Description"
+                      name="projectName2Description"
+                      maxLength={100}
+                      value={aboutData.projectName2Description}
+                      onChange={handleChange}
+                      className="mb-1 mt-1 h-12 w-[550px] rounded-md border border-gray-400 p-2 text-center text-base font-medium outline-gray-400"
+                      required
+                    />
+                  </div>
+
+                  <CldUploadButton
+                    uploadPreset={
+                      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+                    }
+                    className={`relative mt-4 grid h-[560px] w-[560px] place-items-center justify-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                      projectName2ImageUrl && "pointer-events-none"
+                    }`}
+                    onUpload={(result) => handleImageUpload(result, "name2")}
+                  >
+                    <UploadIcon />
+                    {projectName2ImageUrl && (
+                      <Image
+                        src={projectName2ImageUrl}
+                        fill
+                        sizes="72"
+                        className="absolute inset-0 object-cover"
+                        alt={projectData.title}
+                      />
+                    )}
+                  </CldUploadButton>
+                  {projectName2ImagePublicId && (
+                    <button
+                      onClick={() =>
+                        removeImage("name2", projectName2ImagePublicId)
+                      }
+                      className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
+                    >
+                      Remove Image
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 text-lg">Color Theme </div>
+            <div>
+              <input
+                className="h-12 w-44"
+                type="color"
+                value={aboutData.theme}
+                onChange={(e) =>
+                  setAboutData({ ...aboutData, theme: e.target.value })
+                }
+              />
             </div>
 
             <button

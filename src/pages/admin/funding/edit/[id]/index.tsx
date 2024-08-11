@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { FundingData } from "~/types/fundingData";
 import MileStoneTableEdit from "../../components/MilestoneTableEdit";
 import { NewEditor } from "~/components/editor/Editor";
+import React from 'react';
 
 function EditProject() {
   const router = useRouter();
@@ -72,44 +73,44 @@ function EditProject() {
     done: boolean;
   };
 
-  useEffect(() => {
-    if (getProject.data) {
-      setProjectData((prevData) => ({
-        title: getProject.data.project.title || prevData.title,
-        project: getProject.data.project.title || prevData.project,
-        description:
-          getProject.data.project.description || prevData.description,
-        image: getProject.data.project.image || prevData.image,
-        hub: getProject.data.project.hub || prevData.hub,
-        category: getProject.data.project.category || prevData.category,
-        type: getProject.data.project.type || prevData.type,
-        beneficiaries:
-          getProject.data.project.beneficiaries || prevData.beneficiaries,
-        about: getProject.data.project.about || prevData.about,
-        goal: getProject.data.goal?.toString() || prevData.goal,
-        date: getProject.data.targetDate?.toString() || prevData.date,
-        milestones: getProject.data.milestones || prevData.milestones,
-        published: getProject.data.project.published || prevData.published,
-      }));
+  // useEffect(() => {
+  //   if (getProject.data) {
+  //     setProjectData((prevData) => ({
+  //       title: getProject.data.project.title || prevData.title,
+  //       project: getProject.data.project.title || prevData.project,
+  //       description:
+  //         getProject.data.project.description || prevData.description,
+  //       image: getProject.data.project.image || prevData.image,
+  //       hub: getProject.data.project.hub || prevData.hub,
+  //       category: getProject.data.project.category || prevData.category,
+  //       type: getProject.data.project.type || prevData.type,
+  //       beneficiaries:
+  //         getProject.data.project.beneficiaries || prevData.beneficiaries,
+  //       // about: getProject.data.project.about || prevData.about,
+  //       goal: getProject.data.goal?.toString() || prevData.goal,
+  //       date: getProject.data.targetDate?.toString() || prevData.date,
+  //       milestones: getProject.data.milestones || prevData.milestones,
+  //       published: getProject.data.project.published || prevData.published,
+  //     }));
 
-      const initialEditorData = JSON.parse(
-        getProject.data.project.about || "{}",
-      );
-      setInitialEditorData(initialEditorData);
-      setEditorBlocks(initialEditorData.blocks);
+  //     const initialEditorData = JSON.parse(
+  //       getProject.data.project.about || "{}",
+  //     );
+  //     setInitialEditorData(initialEditorData);
+  //     setEditorBlocks(initialEditorData.blocks);
 
-      const transformedMilestones = getProject.data.milestones.map(
-        (milestone) => ({
-          ...milestone,
-          date: new Date(milestone.date),
-          done: milestone.done,
-        }),
-      );
+  //     const transformedMilestones = getProject.data.milestones.map(
+  //       (milestone) => ({
+  //         ...milestone,
+  //         date: new Date(milestone.date),
+  //         done: milestone.done,
+  //       }),
+  //     );
 
-      setMilestoneData(transformedMilestones);
-      setImageUrl(getProject.data.project.image || "");
-    }
-  }, [getProject.data]);
+  //     setMilestoneData(transformedMilestones);
+  //     setImageUrl(getProject.data.project.image || "");
+  //   }
+  // }, [getProject.data]);
 
   const type = [
     { label: "Activity", value: "Activity" },

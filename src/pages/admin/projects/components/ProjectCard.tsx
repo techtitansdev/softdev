@@ -37,7 +37,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     setModalOpen(false);
   };
 
-  const editProjectMutation = api.project.edit.useMutation();
+  const editProjectMutation = api.project.editProject.useMutation();
   const featuredProjectsQueryResult = api.project.getFeaturedCount.useQuery();
 
   const toggleFeatured = async () => {

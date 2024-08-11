@@ -15,6 +15,7 @@ import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import { FundingData } from "~/types/fundingData";
+import React from 'react';
 
 function CreateFunding() {
   const [project, setProject] = useState("");
@@ -71,14 +72,9 @@ function CreateFunding() {
         image: specificProject.image ?? "",
         title: specificProject.title ?? "",
         description: specificProject.description ?? "",
-        about: specificProject.about ?? "",
+        // about: specificProject.about ?? "",
       });
       setImageUrl(specificProject.image ?? "");
-      console.log("aboutdata", fundingData.about);
-      console.log("aboutdata2", fundingData.category);
-      const initialEditorData = JSON.parse(getSpecificProjects?.data.about);
-      setinitialEditorData(initialEditorData);
-      setEditorBlocks(initialEditorData.blocks);
     }
   }, [getSpecificProjects.data]);
 
@@ -219,7 +215,7 @@ function CreateFunding() {
                     image: getSpecificProjects.data?.image ?? "",
                     title: getSpecificProjects.data?.title ?? "",
                     description: getSpecificProjects.data?.description ?? "",
-                    about: getSpecificProjects.data?.about ?? "",
+                    // about: getSpecificProjects.data?.about ?? "",
                   });
                   setProject(selectedOption ? selectedOption.value : "");
                 }}

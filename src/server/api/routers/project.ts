@@ -3,7 +3,7 @@ import { db } from "../../db";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const project = createTRPCRouter({
-  create: protectedProcedure
+  createProject: protectedProcedure
     .input(
       z.object({
         title: z.string(),
@@ -13,7 +13,21 @@ export const project = createTRPCRouter({
         category: z.string(),
         type: z.string(),
         beneficiaries: z.string(),
-        about: z.string(),
+        about: z.object({
+          projectTitle: z.string(),
+          projectDescription: z.string(),
+          projectLink: z.string(),
+          projectImage: z.string(),
+          projectObjDescription: z.string(),
+          projectObjImage: z.string(),
+          projectName1: z.string(),
+          projectName1Description: z.string(),
+          projectName1Image: z.string(),
+          projectName2: z.string(),
+          projectName2Description: z.string(),
+          projectName2Image: z.string(),
+          theme: z.string(),
+        }),
         published: z.boolean(),
         featured: z.boolean(),
       }),
@@ -21,16 +35,47 @@ export const project = createTRPCRouter({
     .mutation(async (opts) => {
       const { input } = opts;
 
-      const newProject = {
-        ...input,
-      };
+      // Create the project first
       const project = await db.projects.create({
-        data: newProject,
+        data: {
+          title: input.title,
+          description: input.description,
+          image: input.image,
+          hub: input.hub,
+          category: input.category,
+          type: input.type,
+          beneficiaries: input.beneficiaries,
+          published: input.published,
+          featured: input.featured,
+        },
       });
+
+      // Now create the "about" entry using the newly created project's ID
+      const aboutData = {
+        projectId: project.id, // Use the ID from the created project
+        projectTitle: input.about.projectTitle,
+        projectDescription: input.about.projectDescription,
+        projectLink: input.about.projectLink,
+        projectImage: input.about.projectImage,
+        projectObjDescription: input.about.projectObjDescription,
+        projectObjImage: input.about.projectObjImage,
+        projectName1: input.about.projectName1,
+        projectName1Description: input.about.projectName1Description,
+        projectName1Image: input.about.projectName1Image,
+        projectName2: input.about.projectName2,
+        projectName2Description: input.about.projectName2Description,
+        projectName2Image: input.about.projectName2Image,
+        theme: input.about.theme,
+      };
+
+      await db.about.create({
+        data: aboutData,
+      });
+
       return project;
     }),
 
-  edit: protectedProcedure
+  editProject: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -41,7 +86,21 @@ export const project = createTRPCRouter({
         category: z.string(),
         type: z.string(),
         beneficiaries: z.string(),
-        about: z.string(),
+        about: z.object({
+          projectTitle: z.string(),
+          projectDescription: z.string(),
+          projectLink: z.string(),
+          projectImage: z.string(),
+          projectObjDescription: z.string(),
+          projectObjImage: z.string(),
+          projectName1: z.string(),
+          projectName1Description: z.string(),
+          projectName1Image: z.string(),
+          projectName2: z.string(),
+          projectName2Description: z.string(),
+          projectName2Image: z.string(),
+          theme: z.string(),
+        }),
         published: z.boolean(),
         featured: z.boolean(),
       }),
@@ -59,7 +118,7 @@ export const project = createTRPCRouter({
         }
       }
 
-      //check if project exists
+      // Check if project exists
       const existingProject = await db.projects.findUnique({
         where: { id: input.id },
       });
@@ -67,17 +126,43 @@ export const project = createTRPCRouter({
       if (!existingProject) {
         throw new Error("Project Does Not Exist");
       }
-      const newDetails = {
-        ...input,
-      };
 
-      //update project details in the database
+      // Update project details in the database
       const updatedProject = await db.projects.update({
-        where: {
-          id: input.id,
+        where: { id: input.id },
+        data: {
+          title: input.title,
+          description: input.description,
+          image: input.image,
+          hub: input.hub,
+          category: input.category,
+          type: input.type,
+          beneficiaries: input.beneficiaries,
+          published: input.published,
+          featured: input.featured,
         },
-        data: newDetails,
       });
+
+      // Update the "about" entry related to the project
+      await db.about.update({
+        where: { projectId: input.id },
+        data: {
+          projectTitle: input.about.projectTitle,
+          projectDescription: input.about.projectDescription,
+          projectLink: input.about.projectLink,
+          projectImage: input.about.projectImage,
+          projectObjDescription: input.about.projectObjDescription,
+          projectObjImage: input.about.projectObjImage,
+          projectName1: input.about.projectName1,
+          projectName1Description: input.about.projectName1Description,
+          projectName1Image: input.about.projectName1Image,
+          projectName2: input.about.projectName2,
+          projectName2Description: input.about.projectName2Description,
+          projectName2Image: input.about.projectName2Image,
+          theme: input.about.theme,
+        },
+      });
+
       return updatedProject;
     }),
 
@@ -85,6 +170,7 @@ export const project = createTRPCRouter({
     const featuredProjectsCount = await db.projects.count({
       where: { featured: true },
     });
+
     return featuredProjectsCount;
   }),
 
@@ -157,6 +243,9 @@ export const project = createTRPCRouter({
       try {
         const foundProject = await db.projects.findUnique({
           where: { id: input.id },
+          include: {
+            about: true, // Assuming 'about' is a related entity
+          },
         });
 
         if (!foundProject) {
@@ -168,7 +257,6 @@ export const project = createTRPCRouter({
         throw new Error(`Failed to fetch project: ${error as string}`);
       }
     }),
-
   removeImage: protectedProcedure
     .input(
       z.object({
