@@ -17,25 +17,16 @@ const FundingPage: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
   const [fundingData, setFundingData] = useState<any>(null);
-  const [initialEditorData,setinitialEditorData] = useState()
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
-  const [editorBlocks, setEditorBlocks] = useState();
+
   useEffect(() => {
     if (getFunding.data && !fundingData && getFunding.data !== fundingData) {
-
-   
-      const initialEditorData = JSON.parse(getFunding.data.project.about);
       setFundingData(getFunding.data);
-      setinitialEditorData(initialEditorData)
-    setEditorBlocks(initialEditorData.blocks);
-      console.log(getFunding.data.project.about)
     }
   }, [getFunding.data, fundingData]);
 
   const [content, setContent] = useState("about");
 
-  
-  
   const changeContent = (newContent: string) => {
     setContent(newContent);
   };
@@ -223,9 +214,9 @@ const FundingPage: React.FC = () => {
           <hr className="mx-6 my-4 h-px border-0 bg-gray-700 py-0.5 sm:mx-10"></hr>
 
           <div className="mx-6 mb-12 mt-6 sm:mx-10 lg:mx-20 lg:mt-12">
-            {content === "about" && fundingData?.project && (
-              <EditorOutput content={initialEditorData}/>
-            )}
+            {/* {content === "about" && fundingData?.project && (
+              <EditorOutput content={initialEditorData} />
+            )} */}
             {content === "milestone" && (
               <MilestoneComponent milestones={fundingData.milestones} />
             )}
