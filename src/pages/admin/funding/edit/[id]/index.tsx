@@ -10,7 +10,7 @@ import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import { FundingData } from "~/types/fundingData";
-import MileStoneTable, { TableRow } from "../../components/MilestoneTable";
+import MileStoneTableEdit from "../../components/MilestoneTableEdit";
 import { NewEditor } from "~/components/editor/Editor";
 
 function EditProject() {
@@ -59,6 +59,19 @@ function EditProject() {
   const [editorBlocks, setEditorBlocks] = useState([]);
   const [initialEditorData, setInitialEditorData] = useState();
 
+  type TableRow = {
+    id: string | undefined;
+    milestone: string;
+    value: number;
+    unit: string;
+    description: string;
+    created: Date;
+    updated: Date;
+    fundraiserId: string;
+    date: Date | null;
+    done: boolean;
+  };
+
   useEffect(() => {
     if (getProject.data) {
       setProjectData((prevData) => ({
@@ -84,7 +97,16 @@ function EditProject() {
       );
       setInitialEditorData(initialEditorData);
       setEditorBlocks(initialEditorData.blocks);
-      setMilestoneData(getProject.data.milestones);
+
+      const transformedMilestones = getProject.data.milestones.map(
+        (milestone) => ({
+          ...milestone,
+          date: new Date(milestone.date),
+          done: milestone.done,
+        }),
+      );
+
+      setMilestoneData(transformedMilestones);
       setImageUrl(getProject.data.project.image || "");
     }
   }, [getProject.data]);
@@ -115,6 +137,11 @@ function EditProject() {
       unit: "2",
       description: "this is description",
       id: undefined,
+      date: new Date(),
+      done: false,
+      created: new Date(),
+      updated: new Date(),
+      fundraiserId: "",
     },
   ]);
 
@@ -366,9 +393,9 @@ function EditProject() {
                   Milestones
                 </label>
 
-                <MileStoneTable
+                <MileStoneTableEdit
                   onRowDataChange={handleMilestoneDataChange}
-                  existingMilestone={milestoneData}
+                  existingMilestones={milestoneData}
                 />
               </div>
 

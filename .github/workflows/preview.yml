@@ -5,12 +5,11 @@ env:
 on:
   push:
     branches-ignore:
-        - dev
-        - main
+      - dev
+      - main
 
 jobs:
-  Deploy-Preview: 
-
+  Deploy-Preview:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,14 +22,30 @@ jobs:
           node-version: "20"
       - name: Install dependencies
         run: npm install
-      
+
       - name: Install Vercel CLI
         run: npm install --global vercel
 
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
+      - name: Check Environment Variables
+        run: echo "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is $NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+
+      - name: Build
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+        run: npm run build
+
       - name: Build Project  Artifacts
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
         run: vercel build --token=${{secrets.VERCEL_TOKEN}}
 
       - name: Deploy Project  Artifacts

@@ -14,7 +14,7 @@ import { OtpVerification } from "~/components/OtpVerification";
 import { api } from "~/utils/api";
 import { Modal } from "~/components/Modal";
 
-export const RegisterForm = () => {
+const RegisterForm = () => {
   const initialValues: Register = {
     firstName: "",
     lastName: "",
@@ -363,3 +363,5 @@ export const RegisterForm = () => {
     </div>
   );
 };
+
+export default RegisterForm;

@@ -6,8 +6,8 @@ import CurrencyDropdown from "~/components/CurrencyDropdown";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
 import PaymentMethodDropdown from "~/components/PaymentMethodDropdown";
-import ReceiptModal from "~/components/ReceiptModal";
 import { api } from "~/utils/api";
+import ReceiptModal from "~/components/ReceiptModal";
 
 interface Funding {
   title: string;
@@ -63,7 +63,7 @@ const Payment = () => {
 
   const createFunding = api.donors.createFunding.useMutation();
 
-  const userEmail = user.user?.emailAddresses[0]?.emailAddress || "";
+  const userEmail = user.user?.emailAddresses[0]?.emailAddress ?? "";
 
   const checkEmail = api.donors.checkEmailExists.useQuery({
     email: userEmail,
@@ -475,7 +475,7 @@ const Payment = () => {
           isOpen={isReceiptModalOpen}
           onClose={() => setIsReceiptModalOpen(false)}
           paymentDetails={paymentDetails}
-          id={id?.toString() || ""}
+          id={id?.toString() ?? ""}
         />
       )}
     </>

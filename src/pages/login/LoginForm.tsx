@@ -1,6 +1,5 @@
-import { OrganizationSwitcher, useAuth, useSignIn } from "@clerk/nextjs";
+import { useSignIn } from "@clerk/nextjs";
 import Link from "next/link";
-import router from "next/router";
 import { useState } from "react";
 import {
   AiOutlineExclamationCircle,
@@ -12,7 +11,7 @@ import {
 import { Modal } from "~/components/Modal";
 import { validateLogin } from "~/utils/validateLogin";
 
-export const LoginForm = () => {
+const LoginForm = () => {
   const { isLoaded, signIn, setActive } = useSignIn();
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
@@ -225,3 +224,5 @@ export const LoginForm = () => {
     </>
   );
 };
+
+export default LoginForm;
