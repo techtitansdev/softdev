@@ -90,6 +90,13 @@ function CreateProjects() {
     theme: "",
   });
 
+  useEffect(() => {
+    setProjectData({
+      ...projectData,
+      about: aboutData,
+    });
+  }, [aboutData]);
+
   const addNewCategory = (input: string) => {
     const newCategories = input.split(",").map((category) => category.trim());
 
@@ -260,13 +267,6 @@ function CreateProjects() {
   if (user_role !== "admin") {
     return <Unauthorized />;
   }
-
-  useEffect(() => {
-    setProjectData({
-      ...projectData,
-      about: aboutData,
-    });
-  }, [aboutData]);
 
   return (
     <div>
@@ -445,7 +445,7 @@ function CreateProjects() {
                     id="projectTitle"
                     name="projectTitle"
                     maxLength={40}
-                    value={projectData.about.projectTitle}
+                    value={aboutData.projectTitle}
                     onChange={handleChange}
                     className="text-bold mb-1 mt-1 h-12 w-[530px] rounded-md border border-gray-400 p-2 text-lg font-medium outline-gray-400"
                     required
@@ -456,7 +456,7 @@ function CreateProjects() {
                     id="projectDescription"
                     name="projectDescription"
                     placeholder="Project Description"
-                    value={projectData.about.projectDescription}
+                    value={aboutData.projectDescription}
                     maxLength={500}
                     onChange={handleChange}
                     className="mt-1 h-60 w-[530px] rounded-md border border-gray-400 p-2 text-base outline-gray-400"
