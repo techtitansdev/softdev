@@ -219,6 +219,9 @@ export const project = createTRPCRouter({
       try {
         const foundProject = await db.projects.findFirst({
           where: { title: input.title },
+          include: {
+            about: true,
+          },
         });
 
         if (!foundProject) {

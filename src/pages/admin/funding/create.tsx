@@ -5,27 +5,27 @@ import { api } from "~/utils/api";
 import { categoriesOption } from "~/data/categories";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
+import { CldUploadButton } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import MileStoneTable, { TableRow } from "./components/MilestoneTable";
-import { NewEditor } from "~/components/editor/Editor";
 import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import { FundingData } from "~/types/fundingData";
-import React from 'react';
+import React from "react";
+import UploadIcon from "~/components/svg/UploadIcon";
 
 function CreateFunding() {
   const [project, setProject] = useState("");
   const getProjects = api.project.getAllProjectTitles.useQuery();
-  const getSpecificProjects = api.project.getByTitle.useQuery({
-    title: project,
-  });
 
-  const [imageUrl, setImageUrl] = useState("");
-  const [publicId, setPublicId] = useState("");
+  const [featuredImageUrl, setFeaturedImageUrl] = useState("");
+  const [projectImageUrl, setProjectImageUrl] = useState("");
+  const [objectiveImageUrl, setObjectiveImageUrl] = useState("");
+  const [projectName1ImageUrl, setProjectName1ImageUrl] = useState("");
+  const [projectName2ImageUrl, setProjectName2ImageUrl] = useState("");
 
   const transformedProjects =
     getProjects.data?.map((project) => ({
@@ -48,33 +48,54 @@ function CreateFunding() {
     beneficiaries: "",
     goal: "",
     date: "",
-    about: "",
+    about: {
+      projectTitle: "",
+      projectDescription: "",
+      projectLink: "",
+      projectImage: "",
+      projectObjDescription: "",
+      projectObjImage: "",
+      projectName1: "",
+      projectName1Description: "",
+      projectName1Image: "",
+      projectName2: "",
+      projectName2Description: "",
+      projectName2Image: "",
+      theme: "",
+    },
     published: false,
     milestones: [],
   });
-  const [initialEditorData, setinitialEditorData] = useState();
 
   const type = [
     { label: "Activity", value: "Activity" },
     { label: "Project", value: "Project" },
   ];
 
+  const getSpecificProjects = api.project.getByTitle.useQuery({
+    title: project,
+  });
+
   useEffect(() => {
     if (getSpecificProjects.data) {
       const specificProject = getSpecificProjects.data;
-      setFundingData({
-        ...fundingData,
-        project: specificProject.title ?? "",
-        hub: specificProject.hub ?? "",
-        category: specificProject.category ?? "",
-        beneficiaries: specificProject.beneficiaries ?? "",
-        type: specificProject.type ?? "",
-        image: specificProject.image ?? "",
-        title: specificProject.title ?? "",
-        description: specificProject.description ?? "",
-        // about: specificProject.about ?? "",
-      });
-      setImageUrl(specificProject.image ?? "");
+      setFundingData((prevState) => ({
+        ...prevState,
+        title: specificProject.title,
+        project: specificProject.title,
+        description: specificProject.description,
+        image: specificProject.image,
+        hub: specificProject.hub,
+        category: specificProject.category,
+        type: specificProject.type,
+        beneficiaries: specificProject.beneficiaries,
+        milestones: [],
+        goal: "",
+        date: "",
+        published: specificProject.published,
+      }));
+
+      setFeaturedImageUrl(specificProject.image);
     }
   }, [getSpecificProjects.data]);
 
@@ -82,28 +103,23 @@ function CreateFunding() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
-    setFundingData({ ...fundingData, [name]: value });
-  };
+    const [field, key] = name.split(".");
 
-  const [editorContent, setEditorContent] = useState("");
-  const handleImageUpload = (result: CldUploadWidgetResults) => {
-    console.log("result: ", result);
-    const info = result.info as object;
-
-    if ("secure_url" in info && "public_id" in info) {
-      const url = info.secure_url as string;
-      const public_id = info.public_id as string;
-      setImageUrl(url);
-      setPublicId(public_id);
-      console.log("url: ", url);
-      console.log("public_id: ", public_id);
+    // Check if field is 'about' and key is defined
+    if (field === "about" && key) {
+      setFundingData((prevState) => ({
+        ...prevState,
+        about: {
+          ...prevState.about,
+          [key]: value,
+        },
+      }));
+    } else {
+      setFundingData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
     }
-  };
-
-  const removeImage = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // logic for removing the image
   };
 
   const [milestoneData, setMilestoneData] = useState<TableRow[]>([
@@ -117,7 +133,7 @@ function CreateFunding() {
       done: false,
       created: new Date(),
       updated: new Date(),
-      fundraiserId: ""
+      fundraiserId: "",
     },
   ]);
 
@@ -132,7 +148,6 @@ function CreateFunding() {
   };
 
   const createFundRaiser = api.fundraiser.create.useMutation();
-  const [editorBlocks, setEditorBlocks] = useState([]);
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
@@ -163,7 +178,6 @@ function CreateFunding() {
     }
   };
 
-  console.log({ milestone: "1", value: 0, unit: "", description: "" });
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin;
 
@@ -186,7 +200,7 @@ function CreateFunding() {
       <div className="flex">
         <Sidebar />
 
-        <div className="mx-auto p-10">
+        <div className="mx-auto p-10 md:min-w-[700px] lg:min-w-[900px] xl:min-w-[1250px]">
           <div className="mb-10 mt-16 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
             CREATE FUNDING
           </div>
@@ -203,7 +217,7 @@ function CreateFunding() {
                   (option) => option.value === fundingData.category,
                 )}
                 onChange={(selectedOption) => {
-                  setImageUrl(getSpecificProjects.data?.image ?? "");
+                  setFeaturedImageUrl(getSpecificProjects.data?.image ?? "");
                   setFundingData({
                     ...fundingData,
                     project: selectedOption ? selectedOption.value : "",
@@ -215,7 +229,6 @@ function CreateFunding() {
                     image: getSpecificProjects.data?.image ?? "",
                     title: getSpecificProjects.data?.title ?? "",
                     description: getSpecificProjects.data?.description ?? "",
-                    // about: getSpecificProjects.data?.about ?? "",
                   });
                   setProject(selectedOption ? selectedOption.value : "");
                 }}
@@ -229,7 +242,7 @@ function CreateFunding() {
 
               <input
                 type="text"
-                id="titile"
+                id="title"
                 name="title"
                 value={fundingData.title}
                 onChange={handleChange}
@@ -262,32 +275,14 @@ function CreateFunding() {
               </label>
 
               <CldUploadButton
-                uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
                 className={`relative mt-4 grid h-72 w-72 place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
-                  imageUrl && "pointer-events-none"
+                  featuredImageUrl && "pointer-events-none"
                 }`}
-                onUpload={handleImageUpload}
               >
-                <div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="h-6 w-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                    />
-                  </svg>
-                </div>
-
-                {imageUrl && (
+                <UploadIcon />
+                {featuredImageUrl && (
                   <Image
-                    src={imageUrl}
+                    src={featuredImageUrl}
                     fill
                     sizes="72"
                     className="absolute inset-0 object-cover"
@@ -380,7 +375,215 @@ function CreateFunding() {
               />
             </div>
 
-            <div className="mb-4">
+            <div className="mb-2 mt-12 text-xl">Project Design</div>
+            <div className="flex items-center justify-between">
+              <div className="">
+                <div className="">
+                  <input
+                    placeholder="Project Title"
+                    type="text"
+                    id="projectTitle"
+                    name="about.projectTitle"
+                    maxLength={40}
+                    value={fundingData.about.projectTitle}
+                    onChange={handleChange}
+                    className="text-bold mb-1 mt-1 h-12 w-[530px] rounded-md border border-gray-400 p-2 text-lg font-medium outline-gray-400"
+                    required
+                  />
+                </div>
+                <div className="">
+                  <textarea
+                    id="projectDescription"
+                    name="projectDescription"
+                    placeholder="Project Description"
+                    value={fundingData.about.projectDescription}
+                    maxLength={500}
+                    onChange={handleChange}
+                    className="mt-1 h-60 w-[530px] rounded-md border border-gray-400 p-2 text-base outline-gray-400"
+                    required
+                  />
+                </div>
+                Connect with us:
+                <input
+                  placeholder="Project Link"
+                  type="text"
+                  id="projectLink"
+                  name="projectLink"
+                  // value={aboutData.projectLink}
+                  onChange={handleChange}
+                  className="ml-2 mt-1 w-[400px] rounded-md border border-gray-400 p-2 text-base outline-gray-400"
+                />
+              </div>
+
+              <div>
+                <CldUploadButton
+                  uploadPreset={
+                    process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+                  }
+                  className={`relative grid h-[355px] w-[530px] place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                    projectImageUrl && "pointer-events-none"
+                  }`}
+                >
+                  <UploadIcon />
+                  {projectImageUrl && (
+                    <Image
+                      src={projectImageUrl}
+                      fill
+                      sizes="72"
+                      className="absolute inset-0 object-cover"
+                      alt={"aboutData.projectTitle"}
+                    />
+                  )}
+                </CldUploadButton>
+              </div>
+            </div>
+
+            <div className="mt-16 text-center text-2xl font-medium">
+              Project Objectives
+            </div>
+
+            <div className="flex items-center justify-center">
+              <textarea
+                id="projectObjDescription"
+                name="projectObjDescription"
+                placeholder="Project Objectives Description"
+                maxLength={210}
+                // value={aboutData.projectObjDescription}
+                onChange={handleChange}
+                className="mt-1 w-[950px] rounded-md border border-gray-400 p-2 text-center outline-gray-400"
+                required
+              />
+            </div>
+
+            <div className="flex flex-col items-center justify-center">
+              <CldUploadButton
+                className={`relative mt-8 grid h-[380px] w-[1250px] place-items-center justify-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                  objectiveImageUrl && "pointer-events-none"
+                }`}
+              >
+                <UploadIcon />
+                {objectiveImageUrl && (
+                  <Image
+                    src={objectiveImageUrl}
+                    fill
+                    sizes="72"
+                    className="absolute inset-0 object-cover"
+                    alt={"aboutData.projectTitle"}
+                  />
+                )}
+              </CldUploadButton>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="">
+                <div className="">
+                  <input
+                    placeholder="Example Project Name"
+                    type="text"
+                    id="projectName1"
+                    name="projectName1"
+                    maxLength={30}
+                    // value={aboutData.projectName1}
+                    onChange={handleChange}
+                    className="text-bold mb-1 mt-12 h-12 w-[550px] rounded-md border border-gray-400 p-2 text-center text-lg font-medium outline-gray-400"
+                    required
+                  />
+                </div>
+
+                <div className="">
+                  <textarea
+                    placeholder="Small Description"
+                    id="projectName1Description"
+                    name="projectName1Description"
+                    maxLength={100}
+                    // value={aboutData.projectName1Description}
+                    onChange={handleChange}
+                    className="mb-1 mt-1 h-12 w-[550px] rounded-md border border-gray-400 p-2 text-center text-base font-medium outline-gray-400"
+                    required
+                  />
+                </div>
+
+                <CldUploadButton
+                  className={`relative mt-4 grid h-[550px] w-[560px] place-items-center justify-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                    projectName1ImageUrl && "pointer-events-none"
+                  }`}
+                >
+                  <UploadIcon />
+                  {projectName1ImageUrl && (
+                    <Image
+                      src={projectName1ImageUrl}
+                      fill
+                      sizes="72"
+                      className="absolute inset-0 object-cover"
+                      alt={"projectData.title"}
+                    />
+                  )}
+                </CldUploadButton>
+              </div>
+
+              <div className="flex items-center justify-center">
+                <div className="">
+                  <div className="">
+                    <input
+                      placeholder="Example Project Name"
+                      type="text"
+                      id="projectName2"
+                      name="projectName2"
+                      maxLength={30}
+                      // value={aboutData.projectName2}
+                      onChange={handleChange}
+                      className="text-bold mb-1 mt-12 h-12 w-[550px] rounded-md border border-gray-400 p-2 text-center text-lg font-medium outline-gray-400"
+                      required
+                    />
+                  </div>
+
+                  <div className="">
+                    <input
+                      placeholder="Small Description"
+                      type="text"
+                      id="projectName2Description"
+                      name="projectName2Description"
+                      maxLength={100}
+                      // value={aboutData.projectName2Description}
+                      onChange={handleChange}
+                      className="mb-1 mt-1 h-12 w-[550px] rounded-md border border-gray-400 p-2 text-center text-base font-medium outline-gray-400"
+                      required
+                    />
+                  </div>
+
+                  <CldUploadButton
+                    className={`relative mt-4 grid h-[560px] w-[560px] place-items-center justify-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                      projectName2ImageUrl && "pointer-events-none"
+                    }`}
+                  >
+                    <UploadIcon />
+                    {projectName2ImageUrl && (
+                      <Image
+                        src={projectName2ImageUrl}
+                        fill
+                        sizes="72"
+                        className="absolute inset-0 object-cover"
+                        alt={"projectData.title"}
+                      />
+                    )}
+                  </CldUploadButton>
+                </div>
+              </div>
+            </div>
+
+            {/* <div className="mt-8 text-lg">Color Theme </div>
+            <div>
+              <input
+                className="h-12 w-44"
+                type="color"
+                value={aboutData.theme}
+                onChange={(e) =>
+                  setAboutData({ ...aboutData, theme: e.target.value })
+                }
+              />
+            </div>  */}
+
+            <div className="mb-2 mt-10">
               <label htmlFor="milestones" className="font-medium text-gray-700">
                 Milestones
               </label>
@@ -430,14 +633,6 @@ function CreateFunding() {
                 required
               />
             </div>
-
-            <div className="mb-4">
-              <label htmlFor="about" className="font-medium text-gray-700">
-                About
-              </label>
-            </div>
-
-            <NewEditor onChanges={() => {}} initialData={editorBlocks} />
 
             <button
               type="button"
