@@ -33,6 +33,7 @@ const RegisterForm = () => {
   const [modalBgColor, setModalBgColor] = useState("");
 
   const createUser = api.user.create.useMutation();
+  const verifyUser = api.user.verify.useMutation();
   const { signUp } = useSignUp();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,14 +73,7 @@ const RegisterForm = () => {
           strategy: "email_code",
         });
 
-        createUser.mutate({
-          email: formValues.email,
-          firstName: formValues.firstName,
-          lastName: formValues.lastName,
-          address: formValues.address,
-          phone: formValues.phone,
-          password: formValues.password,
-        });
+        
 
         setPendingVerification(true);
       } catch (err: any) {
@@ -359,7 +353,17 @@ const RegisterForm = () => {
           />
         </form>
       )}
-      {pendingVerification && <OtpVerification />}
+      {pendingVerification && <OtpVerification  onSuccess={function (): void {
+        createUser.mutate({
+          email: formValues.email,
+          firstName: formValues.firstName,
+          lastName: formValues.lastName,
+          address: formValues.address,
+          phone: formValues.phone,
+          password: formValues.password,
+          emailVerified: true
+        });
+      } } />}
     </div>
   );
 };

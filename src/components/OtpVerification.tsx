@@ -3,7 +3,13 @@ import router from "next/router";
 import React, { useEffect, useState } from "react";
 import { Modal } from "./Modal";
 
-export const OtpVerification = () => {
+interface OtpVerificationProps {
+  onSuccess: () => void;
+}
+
+export const OtpVerification: React.FC<OtpVerificationProps> = ({
+  onSuccess,
+}) => {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
   const { isLoaded, signUp, setActive } = useSignUp();
   const [code, setCode] = useState("");
@@ -40,6 +46,7 @@ export const OtpVerification = () => {
         setTimeout(() => {
           setModalOpen(false);
           router.push("/");
+          onSuccess(); // Call onSuccess callback here
         }, 2000);
       }
     } catch (err: any) {
@@ -63,7 +70,7 @@ export const OtpVerification = () => {
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    index: number,
+    index: number
   ) => {
     const inputValue = e.target.value;
 
