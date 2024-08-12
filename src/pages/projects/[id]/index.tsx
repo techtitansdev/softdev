@@ -19,11 +19,8 @@ const SpecificProjectDetails = () => {
   if (error) {
     return <div>Error loading project data: {error.message}</div>;
   }
-  if (!projectData || projectData.about.length === 0) {
-    return <div>No project found.</div>;
-  }
 
-  const project = projectData.about[0];
+  const project = projectData?.about[0];
 
   return (
     <>

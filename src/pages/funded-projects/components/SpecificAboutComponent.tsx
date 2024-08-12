@@ -1,49 +1,23 @@
-import { useRouter } from "next/router";
-import { api } from "~/utils/api";
-import Head from "next/head";
-import Loading from "~/components/Loading";
-import Unauthorized from "~/components/Unauthorized";
 import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
-import { Sidebar } from "~/components/Sidebar";
+import { useRouter } from "next/router";
+import React from "react";
 
-const ProjectDetailsPage = () => {
+import { api } from "~/utils/api";
+
+const SpecificAboutComponent: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const {
-    data: projectData,
-    isLoading,
-    error,
-  } = api.project.getById.useQuery({ id: id as string });
+  const { data: projectData } = api.fundraiser.getById.useQuery({
+    id: id as string,
+  });
 
-  const { user, isLoaded } = useUser();
-  const user_role = user?.publicMetadata.admin;
-
-  if (!isLoaded || isLoading) {
-    return <Loading />;
-  }
-  if (user_role !== "admin") {
-    return <Unauthorized />;
-  }
-  if (error) {
-    return <div>Error loading project data: {error.message}</div>;
-  }
-
-  const project = projectData.about[0];
+  const project = projectData?.project?.about[0];
 
   return (
     <div className="flex">
-      <Head>
-        <title>{project?.projectTitle} - Global Shapers Iloilo</title>
-        <meta name="description" content="Project details page" />
-        <link rel="icon" href="/gsi-logo.png" />
-      </Head>
-
-      <Sidebar />
-
       <div className="mx-auto lg:max-w-[1200px] xl:max-w-[1230px]">
-        <div className="flex flex-col-reverse items-center sm:pt-16 lg:flex-row lg:pt-28">
+        <div className="flex flex-col-reverse items-center sm:pt-16 lg:flex-row lg:pt-6">
           <div className="w-full flex-col items-center justify-center lg:w-1/2">
             <p
               className="mb-2 mt-2 px-4 text-xl font-medium sm:mb-4 sm:mt-8 sm:px-6 sm:text-2xl lg:mt-4 lg:text-3xl xl:px-0 xl:text-4xl"
@@ -70,7 +44,7 @@ const ProjectDetailsPage = () => {
           <div className="mt-2 w-full rounded-md px-4 sm:px-6 lg:w-1/2 lg:max-w-[650px] lg:pr-6 xl:ml-12 xl:px-0">
             <img
               src={project?.projectImage}
-              className="min-h-[260px] min-w-[200px] rounded-md sm:min-h-[350px]"
+              className="min-h-[260px] min-w-[200px] rounded-md object-cover sm:min-h-[350px]"
               alt="Project Image"
             />
           </div>
@@ -90,12 +64,12 @@ const ProjectDetailsPage = () => {
         <div className="">
           <img
             src={project?.projectObjImage}
-            className="mx-auto mb-10 h-[460px] w-[1250px]"
+            className="mx-auto mb-10 h-auto max-w-full"
             alt="Project Objectives"
-          ></img>
+          />
         </div>
 
-        <div className="mx-auto mb-10 grid max-w-[1360px] grid-cols-1 items-center justify-center md:mb-16 lg:grid-cols-2">
+        <div className="mx-auto mb-10 grid max-w-[1360px] grid-cols-1 items-center justify-center md:mb-8 lg:grid-cols-2">
           <div className="flex-col">
             <div
               className={`mb-1 text-center text-2xl font-medium md:text-3xl`}
@@ -137,4 +111,4 @@ const ProjectDetailsPage = () => {
   );
 };
 
-export default ProjectDetailsPage;
+export default SpecificAboutComponent;

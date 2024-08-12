@@ -3,7 +3,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import Select from "react-select";
-import { ProjectData } from "~/types/projectData";
+import { ProjectAboutData, ProjectData } from "~/types/projectData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
@@ -14,8 +14,7 @@ import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import UploadIcon from "~/components/svg/UploadIcon";
-import { ProjectAboutData } from "~/types/projectAbout";
-import React from 'react';
+import React from "react";
 
 interface Category {
   label: string;
