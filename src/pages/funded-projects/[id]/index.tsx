@@ -10,6 +10,7 @@ import { Footer } from "~/components/Footer";
 import { useUser } from "@clerk/nextjs";
 import { Modal } from "~/components/Modal";
 import MilestoneComponent from "~/pages/admin/funding/components/MilestoneComponent";
+import SpecificAboutComponent from "../components/SpecificAboutComponent";
 
 const Funding: React.FC = () => {
   const router = useRouter();
@@ -194,9 +195,9 @@ const Funding: React.FC = () => {
         <hr className="mx-6 my-4 h-px border-0 bg-gray-700 py-0.5 sm:mx-10"></hr>
 
         <div className="mx-6 mb-12 mt-6 sm:mx-10 lg:mx-20 lg:mt-12">
-          {/* {content === "about" && fundingData?.project && (
-            
-          )} */}
+          {content === "about" && fundingData?.project && (
+            <SpecificAboutComponent />
+          )}
           {content === "milestone" && (
             <MilestoneComponent milestones={fundingData.milestones} />
           )}
