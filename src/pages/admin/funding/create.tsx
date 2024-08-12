@@ -4,7 +4,6 @@ import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import { categoriesOption } from "~/data/categories";
 import Select from "react-select";
-import makeAnimated from "react-select/animated";
 import { CldUploadButton } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
@@ -16,6 +15,7 @@ import Unauthorized from "~/components/Unauthorized";
 import { FundingData } from "~/types/fundingData";
 import React from "react";
 import UploadIcon from "~/components/svg/UploadIcon";
+import { ProjectAboutData } from "~/types/projectData";
 
 function CreateFunding() {
   const [project, setProject] = useState("");
@@ -33,7 +33,6 @@ function CreateFunding() {
       value: project,
     })) || [];
 
-  const animatedComponents = makeAnimated();
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
   const router = useRouter();
 
@@ -79,6 +78,10 @@ function CreateFunding() {
   useEffect(() => {
     if (getSpecificProjects.data) {
       const specificProject = getSpecificProjects.data;
+
+      const aboutData: ProjectAboutData =
+        specificProject.about[0] || ({} as ProjectAboutData);
+
       setFundingData((prevState) => ({
         ...prevState,
         title: specificProject.title,
@@ -89,6 +92,21 @@ function CreateFunding() {
         category: specificProject.category,
         type: specificProject.type,
         beneficiaries: specificProject.beneficiaries,
+        about: {
+          projectTitle: aboutData.projectTitle || "",
+          projectDescription: aboutData.projectDescription || "",
+          projectLink: aboutData.projectLink || "",
+          projectImage: aboutData.projectImage || "",
+          projectObjDescription: aboutData.projectObjDescription || "",
+          projectObjImage: aboutData.projectObjImage || "",
+          projectName1: aboutData.projectName1 || "",
+          projectName1Description: aboutData.projectName1Description || "",
+          projectName1Image: aboutData.projectName1Image || "",
+          projectName2: aboutData.projectName2 || "",
+          projectName2Description: aboutData.projectName2Description || "",
+          projectName2Image: aboutData.projectName2Image || "",
+          theme: aboutData.theme || "",
+        },
         milestones: [],
         goal: "",
         date: "",
@@ -96,6 +114,10 @@ function CreateFunding() {
       }));
 
       setFeaturedImageUrl(specificProject.image);
+      setProjectImageUrl(aboutData.projectImage);
+      setObjectiveImageUrl(aboutData.projectObjImage);
+      setProjectName1ImageUrl(aboutData.projectName1Image);
+      setProjectName2ImageUrl(aboutData.projectName2Image);
     }
   }, [getSpecificProjects.data]);
 
@@ -105,7 +127,6 @@ function CreateFunding() {
     const { name, value } = e.target;
     const [field, key] = name.split(".");
 
-    // Check if field is 'about' and key is defined
     if (field === "about" && key) {
       setFundingData((prevState) => ({
         ...prevState,
@@ -217,24 +238,15 @@ function CreateFunding() {
                   (option) => option.value === fundingData.category,
                 )}
                 onChange={(selectedOption) => {
-                  setFeaturedImageUrl(getSpecificProjects.data?.image ?? "");
                   setFundingData({
                     ...fundingData,
-                    project: selectedOption ? selectedOption.value : "",
-                    hub: getSpecificProjects.data?.hub ?? "",
-                    category: getSpecificProjects.data?.category ?? "",
-                    beneficiaries:
-                      getSpecificProjects.data?.beneficiaries ?? "",
-                    type: getSpecificProjects.data?.type ?? "",
-                    image: getSpecificProjects.data?.image ?? "",
-                    title: getSpecificProjects.data?.title ?? "",
-                    description: getSpecificProjects.data?.description ?? "",
                   });
                   setProject(selectedOption ? selectedOption.value : "");
                 }}
                 className="z-20"
               />
             </div>
+
             <div className="mb-4">
               <label htmlFor="title" className="font-medium text-gray-700">
                 Fundraiser Title
@@ -242,12 +254,8 @@ function CreateFunding() {
 
               <input
                 type="text"
-                id="title"
-                name="title"
                 value={fundingData.title}
-                onChange={handleChange}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
-                data-testid="project-select"
                 readOnly
               />
             </div>
@@ -260,10 +268,7 @@ function CreateFunding() {
                 Fundraiser Description
               </label>
               <textarea
-                id="description"
-                name="description"
                 value={fundingData.description}
-                onChange={handleChange}
                 className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm outline-none"
                 readOnly
               />
@@ -299,10 +304,7 @@ function CreateFunding() {
 
               <input
                 type="text"
-                id="hub"
-                name="hub"
                 value={fundingData.hub}
-                onChange={handleChange}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
                 readOnly
               />
@@ -314,24 +316,9 @@ function CreateFunding() {
               </label>
 
               <Select
-                id="long-value-select"
-                instanceId="long-value-select"
-                options={categoriesOption}
-                closeMenuOnSelect={false}
-                components={animatedComponents}
-                isMulti
                 value={categoriesOption.filter((option) =>
                   fundingData.category.split(",").includes(option.value),
                 )}
-                onChange={(selectedOption) => {
-                  const selectedValues = selectedOption
-                    ? selectedOption.map((option) => option.value)
-                    : [];
-                  setFundingData({
-                    ...fundingData,
-                    category: selectedValues.join(","),
-                  });
-                }}
                 className="z-20"
                 isDisabled={true}
               />
@@ -345,12 +332,6 @@ function CreateFunding() {
               <Select
                 options={type}
                 value={type.find((option) => option.value === fundingData.type)}
-                onChange={(selectedOption) => {
-                  setFundingData({
-                    ...fundingData,
-                    type: selectedOption ? selectedOption.value : "",
-                  });
-                }}
                 className="z-10"
                 isDisabled={true}
               />
@@ -366,10 +347,7 @@ function CreateFunding() {
 
               <input
                 type="text"
-                id="beneficiaries"
-                name="beneficiaries"
                 value={fundingData.beneficiaries}
-                onChange={handleChange}
                 className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
                 readOnly
               />
@@ -381,14 +359,10 @@ function CreateFunding() {
                 <div className="">
                   <input
                     placeholder="Project Title"
-                    type="text"
-                    id="projectTitle"
-                    name="about.projectTitle"
                     maxLength={40}
                     value={fundingData.about.projectTitle}
-                    onChange={handleChange}
-                    className="text-bold mb-1 mt-1 h-12 w-[530px] rounded-md border border-gray-400 p-2 text-lg font-medium outline-gray-400"
-                    required
+                    className="text-bold mb-1 mt-1 h-12 w-[530px] rounded-md border p-2 text-lg shadow-sm outline-none"
+                    readOnly
                   />
                 </div>
                 <div className="">
@@ -398,20 +372,17 @@ function CreateFunding() {
                     placeholder="Project Description"
                     value={fundingData.about.projectDescription}
                     maxLength={500}
-                    onChange={handleChange}
-                    className="mt-1 h-60 w-[530px] rounded-md border border-gray-400 p-2 text-base outline-gray-400"
-                    required
+                    className="mt-1 h-60 w-[530px] rounded-md border p-2 shadow-sm outline-none"
+                    readOnly
                   />
                 </div>
                 Connect with us:
                 <input
                   placeholder="Project Link"
                   type="text"
-                  id="projectLink"
-                  name="projectLink"
-                  // value={aboutData.projectLink}
-                  onChange={handleChange}
-                  className="ml-2 mt-1 w-[400px] rounded-md border border-gray-400 p-2 text-base outline-gray-400"
+                  value={fundingData.about.projectLink}
+                  className="ml-2 mt-1 w-[400px] rounded-md border p-2 shadow-sm outline-none"
+                  readOnly
                 />
               </div>
 
@@ -444,14 +415,11 @@ function CreateFunding() {
 
             <div className="flex items-center justify-center">
               <textarea
-                id="projectObjDescription"
-                name="projectObjDescription"
                 placeholder="Project Objectives Description"
                 maxLength={210}
-                // value={aboutData.projectObjDescription}
-                onChange={handleChange}
-                className="mt-1 w-[950px] rounded-md border border-gray-400 p-2 text-center outline-gray-400"
-                required
+                value={fundingData.about.projectObjDescription}
+                className="mt-1 w-[950px]  rounded-md border p-2 text-center shadow-sm outline-none"
+                readOnly
               />
             </div>
 
@@ -480,25 +448,20 @@ function CreateFunding() {
                   <input
                     placeholder="Example Project Name"
                     type="text"
-                    id="projectName1"
-                    name="projectName1"
                     maxLength={30}
-                    // value={aboutData.projectName1}
-                    onChange={handleChange}
-                    className="text-bold mb-1 mt-12 h-12 w-[550px] rounded-md border border-gray-400 p-2 text-center text-lg font-medium outline-gray-400"
-                    required
+                    value={fundingData.about.projectName1}
+                    className="text-bold mb-1 mt-12 h-12 w-[550px]  rounded-md border p-2 text-center text-lg shadow-sm outline-none"
+                    readOnly
                   />
                 </div>
 
                 <div className="">
                   <textarea
                     placeholder="Small Description"
-                    id="projectName1Description"
-                    name="projectName1Description"
                     maxLength={100}
-                    // value={aboutData.projectName1Description}
+                    value={fundingData.about.projectName1Description}
                     onChange={handleChange}
-                    className="mb-1 mt-1 h-12 w-[550px] rounded-md border border-gray-400 p-2 text-center text-base font-medium outline-gray-400"
+                    className="mb-1 mt-1 h-12 w-[550px]  rounded-md border p-2 text-center shadow-sm outline-none"
                     required
                   />
                 </div>
@@ -527,12 +490,10 @@ function CreateFunding() {
                     <input
                       placeholder="Example Project Name"
                       type="text"
-                      id="projectName2"
-                      name="projectName2"
                       maxLength={30}
-                      // value={aboutData.projectName2}
+                      value={fundingData.about.projectName2}
                       onChange={handleChange}
-                      className="text-bold mb-1 mt-12 h-12 w-[550px] rounded-md border border-gray-400 p-2 text-center text-lg font-medium outline-gray-400"
+                      className="text-bold mb-1 mt-12 h-12 w-[550px]  rounded-md border p-2 text-center text-lg shadow-sm outline-none"
                       required
                     />
                   </div>
@@ -541,12 +502,10 @@ function CreateFunding() {
                     <input
                       placeholder="Small Description"
                       type="text"
-                      id="projectName2Description"
-                      name="projectName2Description"
                       maxLength={100}
-                      // value={aboutData.projectName2Description}
+                      value={fundingData.about.projectName2Description}
                       onChange={handleChange}
-                      className="mb-1 mt-1 h-12 w-[550px] rounded-md border border-gray-400 p-2 text-center text-base font-medium outline-gray-400"
+                      className="mb-1 mt-1 h-12 w-[550px]  rounded-md border p-2 text-center shadow-sm outline-none"
                       required
                     />
                   </div>
@@ -571,19 +530,17 @@ function CreateFunding() {
               </div>
             </div>
 
-            {/* <div className="mt-8 text-lg">Color Theme </div>
+            <div className="mt-6 text-lg">Color Theme </div>
             <div>
               <input
-                className="h-12 w-44"
+                className="h-10 w-40"
                 type="color"
-                value={aboutData.theme}
-                onChange={(e) =>
-                  setAboutData({ ...aboutData, theme: e.target.value })
-                }
+                value={fundingData.about.theme}
+                disabled
               />
-            </div>  */}
+            </div>
 
-            <div className="mb-2 mt-10">
+            <div className="mb-2 mt-8">
               <label htmlFor="milestones" className="font-medium text-gray-700">
                 Milestones
               </label>
