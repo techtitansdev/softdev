@@ -239,7 +239,11 @@ export const fundraiser = createTRPCRouter({
         const foundFunding = await db.fundraisers.findUnique({
           where: { id: input.id },
           include: {
-            project: true,
+            project: {
+              include: {
+                about: true, 
+              },
+            },
             milestones: true,
             fundings: true,
           },

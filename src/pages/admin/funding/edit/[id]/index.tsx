@@ -4,29 +4,30 @@ import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import { categoriesOption } from "~/data/categories";
 import Select from "react-select";
-import makeAnimated from "react-select/animated";
-import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
+import { CldUploadButton } from "next-cloudinary";
 import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import { FundingData } from "~/types/fundingData";
 import MileStoneTableEdit from "../../components/MilestoneTableEdit";
-import { NewEditor } from "~/components/editor/Editor";
+import React from "react";
+import UploadIcon from "~/components/svg/UploadIcon";
 
 function EditProject() {
   const router = useRouter();
   const { id } = router.query;
-  const animatedComponents = makeAnimated();
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
-  const [publicId, setPublicId] = useState("");
+
+  const [featuredImageUrl, setFeaturedImageUrl] = useState("");
+  const [projectImageUrl, setProjectImageUrl] = useState("");
+  const [objectiveImageUrl, setObjectiveImageUrl] = useState("");
+  const [projectName1ImageUrl, setProjectName1ImageUrl] = useState("");
+  const [projectName2ImageUrl, setProjectName2ImageUrl] = useState("");
 
   const getProject = api.fundraiser.getById.useQuery(
     { id: id as string },
     { enabled: !!id },
   );
-
-  const deleteImage = api.project.removeImage.useMutation();
 
   const editProject = api.fundraiser.edit.useMutation({
     onSuccess: () => {
@@ -51,13 +52,24 @@ function EditProject() {
     beneficiaries: "",
     goal: "",
     date: "",
-    about: "",
+    about: {
+      projectTitle: "",
+      projectDescription: "",
+      projectLink: "",
+      projectImage: "",
+      projectObjDescription: "",
+      projectObjImage: "",
+      projectName1: "",
+      projectName1Description: "",
+      projectName1Image: "",
+      projectName2: "",
+      projectName2Description: "",
+      projectName2Image: "",
+      theme: "",
+    },
     milestones: [],
     published: false,
   });
-
-  const [editorBlocks, setEditorBlocks] = useState([]);
-  const [initialEditorData, setInitialEditorData] = useState();
 
   type TableRow = {
     id: string | undefined;
@@ -74,40 +86,94 @@ function EditProject() {
 
   useEffect(() => {
     if (getProject.data) {
+      const { project, milestones } = getProject.data;
+
+      // Ensure aboutData is not undefined and has properties
+      const aboutData =
+        project.about && project.about.length > 0 ? project.about[0] : {};
+
       setProjectData((prevData) => ({
-        title: getProject.data.project.title || prevData.title,
-        project: getProject.data.project.title || prevData.project,
-        description:
-          getProject.data.project.description || prevData.description,
-        image: getProject.data.project.image || prevData.image,
-        hub: getProject.data.project.hub || prevData.hub,
-        category: getProject.data.project.category || prevData.category,
-        type: getProject.data.project.type || prevData.type,
-        beneficiaries:
-          getProject.data.project.beneficiaries || prevData.beneficiaries,
-        about: getProject.data.project.about || prevData.about,
+        ...prevData,
+        title: project.title || prevData.title,
+        project: project.title || prevData.project,
+        description: project.description || prevData.description,
+        image: project.image || prevData.image,
+        hub: project.hub || prevData.hub,
+        category: project.category || prevData.category,
+        type: project.type || prevData.type,
+        beneficiaries: project.beneficiaries || prevData.beneficiaries,
         goal: getProject.data.goal?.toString() || prevData.goal,
         date: getProject.data.targetDate?.toString() || prevData.date,
-        milestones: getProject.data.milestones || prevData.milestones,
-        published: getProject.data.project.published || prevData.published,
+        milestones: milestones || prevData.milestones,
+        published: project.published || prevData.published,
+        about: {
+          projectTitle:
+            (aboutData as any)?.projectTitle ||
+            prevData.about?.projectTitle ||
+            "",
+          projectDescription:
+            (aboutData as any)?.projectDescription ||
+            prevData.about?.projectDescription ||
+            "",
+          projectLink:
+            (aboutData as any)?.projectLink ||
+            prevData.about?.projectLink ||
+            "",
+          projectImage:
+            (aboutData as any)?.projectImage ||
+            prevData.about?.projectImage ||
+            "",
+          projectObjDescription:
+            (aboutData as any)?.projectObjDescription ||
+            prevData.about?.projectObjDescription ||
+            "",
+          projectObjImage:
+            (aboutData as any)?.projectObjImage ||
+            prevData.about?.projectObjImage ||
+            "",
+          projectName1:
+            (aboutData as any)?.projectName1 ||
+            prevData.about?.projectName1 ||
+            "",
+          projectName1Description:
+            (aboutData as any)?.projectName1Description ||
+            prevData.about?.projectName1Description ||
+            "",
+          projectName1Image:
+            (aboutData as any)?.projectName1Image ||
+            prevData.about?.projectName1Image ||
+            "",
+          projectName2:
+            (aboutData as any)?.projectName2 ||
+            prevData.about?.projectName2 ||
+            "",
+          projectName2Description:
+            (aboutData as any)?.projectName2Description ||
+            prevData.about?.projectName2Description ||
+            "",
+          projectName2Image:
+            (aboutData as any)?.projectName2Image ||
+            prevData.about?.projectName2Image ||
+            "",
+          theme: (aboutData as any)?.theme || prevData.about?.theme || "",
+        },
       }));
 
-      const initialEditorData = JSON.parse(
-        getProject.data.project.about || "{}",
-      );
-      setInitialEditorData(initialEditorData);
-      setEditorBlocks(initialEditorData.blocks);
+      // Setting URLs for images
+      setFeaturedImageUrl(project.image || "");
+      setProjectImageUrl((aboutData as any)?.projectImage || "");
+      setObjectiveImageUrl((aboutData as any)?.projectObjImage || "");
+      setProjectName1ImageUrl((aboutData as any)?.projectName1Image || "");
+      setProjectName2ImageUrl((aboutData as any)?.projectName2Image || "");
 
-      const transformedMilestones = getProject.data.milestones.map(
-        (milestone) => ({
-          ...milestone,
-          date: new Date(milestone.date),
-          done: milestone.done,
-        }),
-      );
+      // Transforming and setting milestones
+      const transformedMilestones = milestones.map((milestone) => ({
+        ...milestone,
+        date: new Date(milestone.date),
+        done: milestone.done,
+      }));
 
       setMilestoneData(transformedMilestones);
-      setImageUrl(getProject.data.project.image || "");
     }
   }, [getProject.data]);
 
@@ -167,20 +233,6 @@ function EditProject() {
 
   const convertedDate = `${year}-${month}-${day}`;
 
-  const handleImageUpload = (result: CldUploadWidgetResults) => {
-    const info = result.info as object;
-    if ("secure_url" in info && "public_id" in info) {
-      const url = info.secure_url as string;
-      const public_id = info.public_id as string;
-      setImageUrl(url);
-      setPublicId(public_id);
-      setProjectData({
-        ...projectData,
-        image: url,
-      });
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent, isPublished: boolean) => {
     e.preventDefault();
     editProject.mutate({
@@ -207,7 +259,7 @@ function EditProject() {
         <div className="flex">
           <Sidebar />
 
-          <div className="mx-auto p-10">
+          <div className="mx-auto p-10 md:min-w-[700px] lg:min-w-[900px] xl:min-w-[1250px]">
             <div className="mb-10 mt-16 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
               EDIT FUNDING
             </div>
@@ -220,8 +272,6 @@ function EditProject() {
 
                 <input
                   type="text"
-                  id="title"
-                  name="title"
                   placeholder="title"
                   value={projectData.title}
                   className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
@@ -239,8 +289,6 @@ function EditProject() {
                 </label>
 
                 <textarea
-                  id="description"
-                  name="description"
                   value={projectData.description}
                   onChange={handleChange}
                   className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm outline-none"
@@ -257,29 +305,13 @@ function EditProject() {
                   uploadPreset={
                     process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
                   }
-                  className={`relative mt-4 grid h-72 w-72 place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${imageUrl && "pointer-events-none"}`}
-                  onUpload={handleImageUpload}
+                  className={`relative mt-4 grid h-72 w-72 place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${featuredImageUrl && "pointer-events-none"}`}
                 >
-                  <div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="h-6 w-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                      />
-                    </svg>
-                  </div>
+                  <UploadIcon />
 
-                  {imageUrl && (
+                  {featuredImageUrl && (
                     <Image
-                      src={imageUrl}
+                      src={featuredImageUrl}
                       fill
                       sizes="72"
                       className="absolute inset-0 object-cover"
@@ -299,8 +331,6 @@ function EditProject() {
 
                 <input
                   type="text"
-                  id="hub"
-                  name="hub"
                   placeholder="hub"
                   value={projectData.hub}
                   onChange={handleChange}
@@ -318,26 +348,12 @@ function EditProject() {
                 </label>
 
                 <Select
-                  id="long-value-select"
-                  instanceId="long-value-select"
                   placeholder="categories"
                   options={categoriesOption}
-                  closeMenuOnSelect={false}
-                  components={animatedComponents}
                   isMulti
                   value={categoriesOption.filter((option) =>
                     projectData.category.split(",").includes(option.value),
                   )}
-                  onChange={(selectedOption) => {
-                    const selectedValues = selectedOption
-                      ? selectedOption.map((option) => option.value)
-                      : [];
-                    setProjectData({
-                      ...projectData,
-                      category: selectedValues.join(","),
-                    });
-                  }}
-                  className="z-20"
                   isDisabled={true}
                 />
               </div>
@@ -348,19 +364,11 @@ function EditProject() {
                 </label>
 
                 <Select
-                  id="long-value-select"
-                  instanceId="long-value-select"
                   placeholder="type"
                   options={type}
                   value={type.find(
                     (option) => option.value === projectData.type,
                   )}
-                  onChange={(selectedOption) => {
-                    setProjectData({
-                      ...projectData,
-                      type: selectedOption ? selectedOption.value : "",
-                    });
-                  }}
                   className="z-10"
                   isDisabled={true}
                 />
@@ -376,12 +384,196 @@ function EditProject() {
 
                 <input
                   type="text"
-                  id="beneficiaries"
-                  name="beneficiaries"
                   value={projectData.beneficiaries}
-                  onChange={handleChange}
                   className="mt-1 w-full rounded-md border p-2 shadow-sm outline-none"
                   readOnly
+                />
+              </div>
+
+              <div className="mb-2 mt-12 text-xl">Project Design</div>
+              <div className="flex items-center justify-between">
+                <div className="">
+                  <div className="">
+                    <input
+                      placeholder="Project Title"
+                      maxLength={40}
+                      value={projectData.about.projectTitle}
+                      className="text-bold mb-1 mt-1 h-12 w-[530px] rounded-md border p-2 text-lg shadow-sm outline-none"
+                      readOnly
+                    />
+                  </div>
+                  <div className="">
+                    <textarea
+                      id="projectDescription"
+                      name="projectDescription"
+                      placeholder="Project Description"
+                      value={projectData.about.projectDescription}
+                      maxLength={500}
+                      className="mt-1 h-60 w-[530px] rounded-md border p-2 shadow-sm outline-none"
+                      readOnly
+                    />
+                  </div>
+                  Connect with us:
+                  <input
+                    placeholder="Project Link"
+                    type="text"
+                    value={projectData.about.projectLink}
+                    className="ml-2 mt-1 w-[400px] rounded-md border p-2 shadow-sm outline-none"
+                    readOnly
+                  />
+                </div>
+
+                <div>
+                  <CldUploadButton
+                    uploadPreset={
+                      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+                    }
+                    className={`relative grid h-[355px] w-[530px] place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                      projectImageUrl && "pointer-events-none"
+                    }`}
+                  >
+                    <UploadIcon />
+                    {projectImageUrl && (
+                      <Image
+                        src={projectImageUrl}
+                        fill
+                        sizes="72"
+                        className="absolute inset-0 object-cover"
+                        alt={"aboutData.projectTitle"}
+                      />
+                    )}
+                  </CldUploadButton>
+                </div>
+              </div>
+
+              <div className="mt-16 text-center text-2xl font-medium">
+                Project Objectives
+              </div>
+
+              <div className="flex items-center justify-center">
+                <textarea
+                  placeholder="Project Objectives Description"
+                  maxLength={210}
+                  // value={fundingData.about.projectObjDescription}
+                  className="mt-1 w-[950px]  rounded-md border p-2 text-center shadow-sm outline-none"
+                  readOnly
+                />
+              </div>
+
+              <div className="flex flex-col items-center justify-center">
+                <CldUploadButton
+                  className={`relative mt-8 grid h-[380px] w-[1250px] place-items-center justify-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                    objectiveImageUrl && "pointer-events-none"
+                  }`}
+                >
+                  <UploadIcon />
+                  {objectiveImageUrl && (
+                    <Image
+                      src={objectiveImageUrl}
+                      fill
+                      sizes="72"
+                      className="absolute inset-0 object-cover"
+                      alt={"aboutData.projectTitle"}
+                    />
+                  )}
+                </CldUploadButton>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="">
+                  <div className="">
+                    <input
+                      placeholder="Example Project Name"
+                      type="text"
+                      maxLength={30}
+                      value={projectData.about.projectName1}
+                      className="text-bold mb-1 mt-12 h-12 w-[550px]  rounded-md border p-2 text-center text-lg shadow-sm outline-none"
+                      readOnly
+                    />
+                  </div>
+
+                  <div className="">
+                    <textarea
+                      placeholder="Small Description"
+                      maxLength={100}
+                      value={projectData.about.projectName1Description}
+                      onChange={handleChange}
+                      className="mb-1 mt-1 h-12 w-[550px]  rounded-md border p-2 text-center shadow-sm outline-none"
+                      required
+                    />
+                  </div>
+
+                  <CldUploadButton
+                    className={`relative mt-4 grid h-[550px] w-[560px] place-items-center justify-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                      projectName1ImageUrl && "pointer-events-none"
+                    }`}
+                  >
+                    <UploadIcon />
+                    {projectName1ImageUrl && (
+                      <Image
+                        src={projectName1ImageUrl}
+                        fill
+                        sizes="72"
+                        className="absolute inset-0 object-cover"
+                        alt={"projectData.title"}
+                      />
+                    )}
+                  </CldUploadButton>
+                </div>
+
+                <div className="flex items-center justify-center">
+                  <div className="">
+                    <div className="">
+                      <input
+                        placeholder="Example Project Name"
+                        type="text"
+                        maxLength={30}
+                        value={projectData.about.projectName2}
+                        onChange={handleChange}
+                        className="text-bold mb-1 mt-12 h-12 w-[550px]  rounded-md border p-2 text-center text-lg shadow-sm outline-none"
+                        required
+                      />
+                    </div>
+
+                    <div className="">
+                      <input
+                        placeholder="Small Description"
+                        type="text"
+                        maxLength={100}
+                        value={projectData.about.projectName2Description}
+                        onChange={handleChange}
+                        className="mb-1 mt-1 h-12 w-[550px]  rounded-md border p-2 text-center shadow-sm outline-none"
+                        required
+                      />
+                    </div>
+
+                    <CldUploadButton
+                      className={`relative mt-4 grid h-[560px] w-[560px] place-items-center justify-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                        projectName2ImageUrl && "pointer-events-none"
+                      }`}
+                    >
+                      <UploadIcon />
+                      {projectName2ImageUrl && (
+                        <Image
+                          src={projectName2ImageUrl}
+                          fill
+                          sizes="72"
+                          className="absolute inset-0 object-cover"
+                          alt={"projectData.title"}
+                        />
+                      )}
+                    </CldUploadButton>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 text-lg">Color Theme </div>
+              <div>
+                <input
+                  className="h-10 w-40"
+                  type="color"
+                  value={projectData.about.theme}
+                  disabled
                 />
               </div>
 
@@ -440,7 +632,6 @@ function EditProject() {
                 </label>
               </div>
 
-              <NewEditor onChanges={() => {}} initialData={editorBlocks} />
               <button
                 type="submit"
                 className="mr-2 mt-4 rounded-lg bg-gray-600 px-2 py-2 font-medium text-white hover:bg-gray-800 md:mr-4 md:px-6"

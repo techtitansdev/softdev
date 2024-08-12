@@ -74,13 +74,34 @@ model Projects {
   beneficiaries           String
   created                 DateTime                  @default(now())
   updated                 DateTime                  @updatedAt()
-  about                   String
   published               Boolean                   @default(false)
   featured                Boolean                   @default(false)
   assignAdminsProjects    AssignAdminsProjects[]
   assignCategoriesProject AssignCategoriesProject[]
   fundraisers             Fundraisers[]
   Feedback                Feedback[]
+  about                   About[]
+  
+}
+model About {
+  id                    String      @id @default(cuid())
+  projectId  String       @unique()
+  projectTitle          String
+  projectDescription    String
+  projectLink           String
+  projectImage          String
+  projectObjDescription String
+  projectObjImage       String
+  projectName1          String
+  projectName1Description String
+  projectName1Image     String
+  projectName2          String
+  projectName2Description String
+  projectName2Image     String
+  theme                 String
+  project    Projects     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])// Relation field to link multiple Projects to About
 }
 
 model Fundraisers {

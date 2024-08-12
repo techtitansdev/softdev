@@ -3,15 +3,14 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
-import AboutComponent from "../components/AboutComponent";
 
 import CommentComponent from "../components/CommentComponent";
 import { Navbar } from "~/components/Navbar";
 import { Footer } from "~/components/Footer";
 import { useUser } from "@clerk/nextjs";
 import { Modal } from "~/components/Modal";
-import EditorOutput from "~/components/editor/EditorOutput";
 import MilestoneComponent from "~/pages/admin/funding/components/MilestoneComponent";
+import SpecificAboutComponent from "../components/SpecificAboutComponent";
 
 const Funding: React.FC = () => {
   const router = useRouter();
@@ -22,17 +21,10 @@ const Funding: React.FC = () => {
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
   const projectId = getFunding.data?.project.id;
   console.log(getFunding.data?.project.id);
-  const [editorBlocks, setEditorBlocks] = useState([]);
-  const [initialEditorData, setinitialEditorData] = useState();
-  const [numberOfDonor, setNumberOfDonor] = useState(0);
 
   useEffect(() => {
     if (getFunding.data && !fundingData && getFunding.data !== fundingData) {
-      setNumberOfDonor(getFunding.data.fundings.length);
       setFundingData(getFunding.data);
-      const initialEditorData = JSON.parse(getFunding.data.project.about);
-      setinitialEditorData(initialEditorData);
-      setEditorBlocks(initialEditorData.blocks);
     }
   }, [getFunding.data, fundingData]);
 
@@ -110,7 +102,7 @@ const Funding: React.FC = () => {
                     alt="Donors Icon"
                   />
                   <p className="text-sm font-medium sm:text-base lg:text-lg">
-                    {numberOfDonor}
+                    {fundingData.donors}
                   </p>
                   <p className="text-xs font-light sm:text-sm lg:text-base">
                     Donors
@@ -204,7 +196,7 @@ const Funding: React.FC = () => {
 
         <div className="mx-6 mb-12 mt-6 sm:mx-10 lg:mx-20 lg:mt-12">
           {content === "about" && fundingData?.project && (
-            <EditorOutput content={initialEditorData} />
+            <SpecificAboutComponent />
           )}
           {content === "milestone" && (
             <MilestoneComponent milestones={fundingData.milestones} />

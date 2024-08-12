@@ -1,8 +1,6 @@
 import Head from "next/head";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Sidebar } from "~/components/Sidebar";
-import AboutComponent from "../components/AboutComponent";
 import MilestoneComponent from "../components/MilestoneComponent";
 import CommentComponent from "../components/CommentComponent";
 import { useRouter } from "next/router";
@@ -10,84 +8,36 @@ import { api } from "~/utils/api";
 import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
-import { NewEditor } from "~/components/editor/Editor";
-import EditorOutput from "~/components/editor/EditorOutput";
+import AboutComponent from "../components/AboutComponent";
 
 const FundingPage: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
   const [fundingData, setFundingData] = useState<any>(null);
-  const [initialEditorData,setinitialEditorData] = useState()
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
-  const [editorBlocks, setEditorBlocks] = useState();
+
   useEffect(() => {
     if (getFunding.data && !fundingData && getFunding.data !== fundingData) {
-
-   
-      const initialEditorData = JSON.parse(getFunding.data.project.about);
       setFundingData(getFunding.data);
-      setinitialEditorData(initialEditorData)
-    setEditorBlocks(initialEditorData.blocks);
-      console.log(getFunding.data.project.about)
     }
   }, [getFunding.data, fundingData]);
 
   const [content, setContent] = useState("about");
 
-  
-  
   const changeContent = (newContent: string) => {
     setContent(newContent);
   };
 
   const calculateDaysLeft = (targetDate: string): number => {
-    // Convert target date string to Date object
     const target = new Date(targetDate);
     const currentDate = new Date();
 
-    // Calculate the difference in milliseconds between the target date and the current date
     const differenceMs = target.getTime() - currentDate.getTime();
 
-    // Calculate the difference in days
     const differenceDays = Math.ceil(differenceMs / (1000 * 60 * 60 * 24));
 
     return differenceDays;
   };
-
-  const milestones = [
-    {
-      milestone: 1,
-      value: 100,
-      unit: "Students",
-      date: "May, 2020",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    },
-    {
-      milestone: 2,
-      value: 200,
-      unit: "Students",
-      date: "May, 2021",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    },
-    {
-      milestone: 3,
-      value: 300,
-      unit: "Students",
-      date: "May, 2022",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    },
-    {
-      milestone: 4,
-      value: 400,
-      unit: "Students",
-      date: "May, 2023",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    },
-  ];
 
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin;
@@ -223,9 +173,7 @@ const FundingPage: React.FC = () => {
           <hr className="mx-6 my-4 h-px border-0 bg-gray-700 py-0.5 sm:mx-10"></hr>
 
           <div className="mx-6 mb-12 mt-6 sm:mx-10 lg:mx-20 lg:mt-12">
-            {content === "about" && fundingData?.project && (
-              <EditorOutput content={initialEditorData}/>
-            )}
+            {content === "about" && fundingData?.project && <AboutComponent />}
             {content === "milestone" && (
               <MilestoneComponent milestones={fundingData.milestones} />
             )}
