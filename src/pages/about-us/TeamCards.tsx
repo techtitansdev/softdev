@@ -1,11 +1,12 @@
 import React from "react";
+import Image from "next/image";
 import { teamImages } from "~/data/teamImages";
 
 const TeamCards = () => {
   return (
     <div
       style={{
-        backgroundImage: " url('bg-1.png')",
+        backgroundImage: "url('/bg-1.png')",
         backgroundSize: "100% 100%",
       }}
     >
@@ -21,16 +22,18 @@ const TeamCards = () => {
                 className="duration-400 group relative mb-4 transform items-center justify-center transition ease-in-out hover:-translate-y-1 hover:scale-110"
               >
                 <div className="flex flex-col items-center justify-center">
-                  <img
-                    src={member.image}
-                    className="h-52 w-52 rounded-full shadow-lg"
+                  <Image
+                    src={`/${member.image}`}
                     alt={member.name}
+                    width={208}
+                    height={208}
+                    className="h-52 w-52 rounded-full shadow-lg"
                   />
                   <div className="w-full p-1 group-hover:opacity-100">
                     <div className="ml-2 rounded-t-md bg-white bg-gradient-to-r from-blue-500 to-blue-900 px-1 text-center text-lg font-medium tracking-tight text-white">
                       {member.name}
                     </div>
-                    <div className="text-normal boder-black ml-2 rounded-b-md border bg-white text-center font-light tracking-tight text-blue-800">
+                    <div className="text-normal ml-2 rounded-b-md border border-black bg-white text-center font-light tracking-tight text-blue-800">
                       {member.position}
                     </div>
                   </div>
