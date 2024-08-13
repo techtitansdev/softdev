@@ -11,10 +11,12 @@ import { useUser } from "@clerk/nextjs";
 import { Modal } from "~/components/Modal";
 import MilestoneComponent from "~/pages/admin/funding/components/MilestoneComponent";
 import SpecificAboutComponent from "../components/SpecificAboutComponent";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 const Funding: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
+
   const [fundingData, setFundingData] = useState<any>(null);
   const { user } = useUser();
   const [showModal, setShowModal] = useState(false);
@@ -54,12 +56,20 @@ const Funding: React.FC = () => {
     if (!user) {
       event.preventDefault();
       setShowModal(true);
+
+      setTimeout(() => {
+        setShowModal(false);
+      }, 2000);
     } else {
       router.push(
         `/funded-projects/${encodeURIComponent(fundingData.id)}/payment`,
       );
     }
   };
+
+  if (getFunding.isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div>
