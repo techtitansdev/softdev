@@ -33,11 +33,11 @@ const Partners = () => {
           style={{
             backgroundImage: showBackgroundImage
               ? "url('partner-bg.png')"
-              : "none",
+              : "url('bg-1.png')",
             backgroundSize: "100% 100%",
           }}
         >
-          <div className="mx-auto flex max-w-[340px] flex-col items-center rounded-xl bg-white p-8 shadow-xl sm:max-w-[600px] md:max-w-[720px] lg:max-w-[960px]">
+          <div className="mx-auto flex max-w-[340px] flex-col items-center rounded-xl bg-white p-8 shadow sm:max-w-[600px] md:max-w-[720px] lg:max-w-[960px]">
             <div className="mb-8 text-center text-2xl md:text-3xl">
               In collaboration with:
             </div>
