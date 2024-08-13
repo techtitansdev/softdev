@@ -12,6 +12,8 @@ import { FundingData } from "~/types/fundingData";
 import MileStoneTableEdit from "../../components/MilestoneTableEdit";
 import React from "react";
 import UploadIcon from "~/components/svg/UploadIcon";
+import sendEmail from "~/pages/api/sendEmail";
+ 
 
 function EditProject() {
   const router = useRouter();
@@ -23,12 +25,37 @@ function EditProject() {
   const [objectiveImageUrl, setObjectiveImageUrl] = useState("");
   const [projectName1ImageUrl, setProjectName1ImageUrl] = useState("");
   const [projectName2ImageUrl, setProjectName2ImageUrl] = useState("");
-
+  const [initialMilestoneData, setInitialMilestoneData] = useState<TableRow[]>(
+    []
+  );
   const getProject = api.fundraiser.getById.useQuery(
     { id: id as string },
     { enabled: !!id },
   );
-
+  
+  async function sendEmailRequest() {
+    try {
+      const response = await fetch("/api/sendEmail", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          to:"ferendavetorred@gmail.com",
+          subject: "Milestone Achieved: Project Completion",
+          text: "The milestone \"Project Completion\" has been achieved.\n\nDetails:\n- Value: 100%\n- Description: The project has been successfully completed.",
+         }),
+      });
+  
+      if (response.ok) {
+        console.log("Email sent successfully");
+      } else {
+        console.error("Failed to send email");
+      }
+    } catch (error) {
+      console.error("Error sending email request:", error);
+    }
+  }
   const editProject = api.fundraiser.edit.useMutation({
     onSuccess: () => {
       setSuccessModalOpen(true);
@@ -225,6 +252,28 @@ function EditProject() {
     setMilestoneData(data);
   };
 
+ 
+  const compareMilestones = () => {
+    const changes = milestoneData.filter((currentMilestone, index) => {
+      const initialMilestone = initialMilestoneData[index];
+      return (
+        currentMilestone.value !== initialMilestone!.value || 
+        currentMilestone.milestone !== initialMilestone!.milestone ||
+        currentMilestone.unit !== initialMilestone!.unit ||
+        currentMilestone.description !== initialMilestone!.description ||
+        currentMilestone.date?.getTime() !==
+          initialMilestone!.date?.getTime() ||
+        currentMilestone.done !== initialMilestone!.done
+      );
+    });
+
+    if (changes.length > 0) {
+      console.log("Milestone changes:", changes);
+    } else {
+      console.log("No milestone changes.");
+    }
+  };
+
   const dateObject = new Date(projectData.date);
 
   const year = dateObject.getFullYear();
@@ -235,6 +284,7 @@ function EditProject() {
 
   const handleSubmit = async (e: React.FormEvent, isPublished: boolean) => {
     e.preventDefault();
+    sendEmailRequest();
     editProject.mutate({
       ...projectData,
       id: id as string,
@@ -454,7 +504,7 @@ function EditProject() {
                 <textarea
                   placeholder="Project Objectives Description"
                   maxLength={210}
-                  // value={fundingData.about.projectObjDescription}
+                  value={projectData.about.projectObjDescription}
                   className="mt-1 w-[950px]  rounded-md border p-2 text-center shadow-sm outline-none"
                   readOnly
                 />
