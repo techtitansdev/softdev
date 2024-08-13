@@ -5,7 +5,11 @@ const Index = () => {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace("/home");
+    const redirect = async () => {
+      await router.replace("/home");
+    };
+
+    redirect();
   }, [router]);
 
   return null;

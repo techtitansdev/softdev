@@ -11,10 +11,12 @@ import { useUser } from "@clerk/nextjs";
 import { Modal } from "~/components/Modal";
 import MilestoneComponent from "~/pages/admin/funding/components/MilestoneComponent";
 import SpecificAboutComponent from "../components/SpecificAboutComponent";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 const Funding: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
+
   const [fundingData, setFundingData] = useState<any>(null);
   const { user } = useUser();
   const [showModal, setShowModal] = useState(false);
@@ -54,12 +56,20 @@ const Funding: React.FC = () => {
     if (!user) {
       event.preventDefault();
       setShowModal(true);
+
+      setTimeout(() => {
+        setShowModal(false);
+      }, 2000);
     } else {
       router.push(
         `/funded-projects/${encodeURIComponent(fundingData.id)}/payment`,
       );
     }
   };
+
+  if (getFunding.isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div>
@@ -158,7 +168,7 @@ const Funding: React.FC = () => {
         </div>
 
         <div className="flex flex-col">
-          <div className="ml-10 space-x-4 text-sm font-medium sm:space-x-16 md:ml-24 md:space-x-24 md:text-base lg:space-x-32">
+          <div className="ml-10 space-x-8 text-sm font-medium sm:space-x-16 md:ml-24 md:space-x-24 md:text-base lg:space-x-32">
             <button
               onClick={() => changeContent("about")}
               className={`font-semibold text-gray-800 ${
@@ -192,9 +202,9 @@ const Funding: React.FC = () => {
           </div>
         </div>
 
-        <hr className="mx-6 my-4 h-px border-0 bg-gray-700 py-0.5 sm:mx-10"></hr>
+        <hr className="mx-5 my-4 h-px border-0 bg-gray-700 py-0.5 sm:mx-10"></hr>
 
-        <div className="mx-6 mb-12 mt-6 sm:mx-10 lg:mx-20 lg:mt-12">
+        <div className="mx-3 mb-12 mt-6 sm:mx-4 lg:mx-20 lg:mt-12">
           {content === "about" && fundingData?.project && (
             <SpecificAboutComponent />
           )}

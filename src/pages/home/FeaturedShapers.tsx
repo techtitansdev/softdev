@@ -14,7 +14,7 @@ const FeaturedShapers = () => {
       <div className="mx-auto max-w-screen-xl py-6 pb-10 lg:p-6 lg:py-6 xl:pb-16">
         <div className="flex items-center justify-center xl:justify-between">
           <div className="flex-col">
-            <div className="mx-auto mt-1 text-center text-2xl font-normal md:font-medium text-gray-800 sm:mt-4 sm:max-w-[610px] sm:text-left sm:text-3xl xl:mx-0 xl:max-w-[900px]">
+            <div className="mx-auto mt-1 text-center text-2xl font-normal text-gray-800 sm:mt-4 sm:max-w-[610px] sm:text-left sm:text-3xl md:font-medium xl:mx-0 xl:max-w-[900px]">
               FEATURED SHAPERS
             </div>
 
@@ -23,13 +23,6 @@ const FeaturedShapers = () => {
               their insights they have gleaned from their time at hub.
             </div>
           </div>
-
-          <Link
-            href="/shapers"
-            className="mr-1 hidden rounded-md border border-gray-800 bg-gray-50 px-5 py-1 font-medium hover:bg-gray-200 xl:block"
-          >
-            See All
-          </Link>
         </div>
 
         <div className="flex items-center justify-center">
@@ -62,14 +55,6 @@ const FeaturedShapers = () => {
               </div>
             ))}
           </div>
-        </div>
-        <div className="flex items-center justify-center">
-          <Link
-            href="/shapers"
-            className="mt-5 rounded-md border border-gray-800 bg-gray-50 px-16 py-1 font-medium hover:bg-gray-200 xl:hidden"
-          >
-            See All
-          </Link>
         </div>
       </div>
     </div>
