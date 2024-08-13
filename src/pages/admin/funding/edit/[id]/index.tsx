@@ -15,7 +15,7 @@ import UploadIcon from "~/components/svg/UploadIcon";
 import sendEmail from "~/pages/api/sendEmail";
  
 
-function EditProject() {
+function EditFundraiser() {
   const router = useRouter();
   const { id } = router.query;
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
@@ -711,4 +711,4 @@ function EditProject() {
   );
 }
 
-export default EditProject;
+export default EditFundraiser;
