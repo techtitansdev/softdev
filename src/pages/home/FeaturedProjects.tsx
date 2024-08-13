@@ -14,9 +14,10 @@ const FeaturedProjects = () => {
   }, [getProjects.data]);
 
   const featuredProjects = projectData.filter(
-    (project: { featured: boolean, published: boolean }) => project.featured === true && project.published === true
+    (project: { featured: boolean; published: boolean }) =>
+      project.featured === true && project.published === true,
   );
-  
+
   return (
     <div className="bg-gray-50 bg-cover bg-center shadow">
       <div className="mx-auto max-w-screen-xl py-6 pb-10 lg:p-6 lg:py-6 xl:pb-12">
@@ -33,7 +34,7 @@ const FeaturedProjects = () => {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4">
             {featuredProjects.map((card: any) => (
               <div key={card.id}>
-                <Link href={card.title === "Tech For All" ? "projects/tech4all" : `/projects/${card.id}`}>
+                <Link href={`/projects/${card.id}`}>
                   <div className="w-full transform cursor-pointer justify-self-start rounded-lg font-medium shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105 dark:bg-white">
                     <img
                       className="h-52 w-72 rounded-t-lg object-cover"
