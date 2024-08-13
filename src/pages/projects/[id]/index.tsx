@@ -1,9 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-
 import { Footer } from "~/components/Footer";
-
+import LoadingSpinner from "~/components/LoadingSpinner";
 import { Navbar } from "~/components/Navbar";
 
 import { api } from "~/utils/api";
@@ -12,9 +11,17 @@ const SpecificProjectDetails = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data: projectData, error } = api.project.getById.useQuery({
+  const {
+    data: projectData,
+    error,
+    isLoading,
+  } = api.project.getById.useQuery({
     id: id as string,
   });
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   if (error) {
     return <div>Error loading project data: {error.message}</div>;
