@@ -6,62 +6,215 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
-
-    @@index([name])
+model Users {
+  id              String     @id @default(cuid())
+  email           String     @unique
+  emailVerified   Boolean    @default(false)
+  emailVerifiedAt DateTime?
+  firstName       String
+  lastName        String
+  address         String
+  phone           String
+  password        String
+  created         DateTime   @default(now())
+  updated         DateTime   @updatedAt()
+  role            String     @default("USER")
+  admins          Admins[]
+  Feedback        Feedback[]
+  Donors          Donors?
 }
 
-// Necessary for Next auth
-model Account {
-    id                String  @id @default(cuid())
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String? // @db.Text
-    session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Admins {
+  id                   String                 @id @default(cuid())
+  userEmail            String                 @unique
+  user                 Users                  @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  assignAdminBlogs     AssignAdminBlogs[]
+  assignAdminsProjects AssignAdminsProjects[]
 
-    @@unique([provider, providerAccountId])
+  @@index([userEmail])
 }
 
-model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Categories {
+  id                      String                    @id @default(cuid())
+  label                   String
+  value                   String                    @unique
+  assignCategoriesBlog    AssignCategoriesBlog[]
+  assignCategoriesProject AssignCategoriesProject[]
 }
 
-model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    posts         Post[]
+model Category {
+  id    Int    @id @default(autoincrement())
+  label String
+  value String @unique
+}
+
+model Blogs {
+  id                   String                 @id @default(cuid())
+  title                String
+  excerpt              String
+  image                String
+  content              String
+  created              DateTime               @default(now())
+  updated              DateTime               @updatedAt()
+  published            Boolean                @default(false)
+  featured             Boolean                @default(false)
+  assignAdminBlogs     AssignAdminBlogs[]
+  assignCategoriesBlog AssignCategoriesBlog[]
+}
+
+model Projects {
+  id                      String                    @id @default(cuid())
+  title                   String
+  description             String
+  image                   String
+  hub                     String
+  category                String
+  type                    String
+  beneficiaries           String
+  created                 DateTime                  @default(now())
+  updated                 DateTime                  @updatedAt()
+  published               Boolean                   @default(false)
+  featured                Boolean                   @default(false)
+  assignAdminsProjects    AssignAdminsProjects[]
+  assignCategoriesProject AssignCategoriesProject[]
+  fundraisers             Fundraisers[]
+  Feedback                Feedback[]
+  about                   About[]
+  
+}
+model About {
+  id                    String      @id @default(cuid())
+  projectId  String       @unique()
+  projectTitle          String
+  projectDescription    String
+  projectLink           String
+  projectImage          String
+  projectObjDescription String
+  projectObjImage       String
+  projectName1          String
+  projectName1Description String
+  projectName1Image     String
+  projectName2          String
+  projectName2Description String
+  projectName2Image     String
+  theme                 String
+  project    Projects     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])// Relation field to link multiple Projects to About
+}
+
+model Fundraisers {
+  id         String       @id @default(cuid())
+  projectId  String       @unique()
+  funds      Int
+  goal       Int
+  donors     Int
+  targetDate DateTime
+  created    DateTime     @default(now())
+  updated    DateTime     @updatedAt()
+  complete   Boolean      @default(false)
+  published  Boolean      @default(false)
+  ongoing    Boolean      @default(false)
+  featured   Boolean      @default(false)
+  project    Projects     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  fundings   Fundings[]
+  milestones Milestones[]
+
+  @@index([projectId])
+}
+
+model Donors {
+  id        String     @id @default(cuid())
+  userEmail String     @unique
+  user      Users      @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  fundings  Fundings[]
+
+  @@index([userEmail])
+}
+
+model Fundings {
+  id            String      @id @default(cuid())
+  fullName      String
+  email         String
+  contact       String
+  date          DateTime    @default(now())
+  fundraiserId  String
+  amount        Int
+  paymentMethod String
+  donatedAs     String
+  fundraiser    Fundraisers @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
+  Donors        Donors?     @relation(fields: [donorsId], references: [id])
+  donorsId      String?
+
+  @@index([fundraiserId])
+  @@index([donorsId])
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String
+  projectId String
+  feedback  String
+  created   DateTime @default(now())
+
+  user    Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([projectId])
+}
+
+model Milestones {
+  id           String      @id @default(cuid())
+  milestone    String
+  value        Int
+  unit         String
+  description  String
+  created      DateTime    @default(now())
+  updated      DateTime    @updatedAt()
+  date         DateTime
+  done         Boolean     
+  fundraiserId String
+  fundraiser   Fundraisers @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
+
+  @@index([fundraiserId])
+}
+
+model AssignAdminBlogs {
+  id      String @id @default(cuid())
+  adminId String
+  blogId  String
+  admin   Admins @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  blogs   Blogs  @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@index([adminId])
+  @@index([blogId])
+}
+
+model AssignAdminsProjects {
+  id        String   @id @default(cuid())
+  adminId   String
+  projectId String
+  admin     Admins   @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([adminId])
+  @@index([projectId])
+}
+
+model AssignCategoriesBlog {
+  id         String     @id @default(cuid())
+  categoryId String
+  blogId     String
+  category   Categories @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  blog       Blogs      @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
+  @@index([blogId])
 }
 
 model VerificationToken {

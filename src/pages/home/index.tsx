@@ -1,13 +1,13 @@
 import Head from "next/head";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
-import { carouselImages } from "~/data/carouselImages";
 import AboutSection from "./AboutSection";
-import Carousel from "./Carousel";
 import FeaturedProjects from "./FeaturedProjects";
 import FeaturedShapers from "./FeaturedShapers";
 import HowItWorks from "./HowItWorks";
 import WelcomeSection from "./WelcomeSection";
+import Carousel from "./Carousel";
+import { carouselImages } from "~/data/carouselmages";
 
 const Home = () => {
   return (

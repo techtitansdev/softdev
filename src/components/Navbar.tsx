@@ -8,7 +8,8 @@ import { GoProjectSymlink } from "react-icons/go";
 import { FaPeopleCarry } from "react-icons/fa";
 import { HiArrowNarrowRight } from "react-icons/hi";
 import { AiOutlineClose, AiOutlineHome, AiOutlineMenu } from "react-icons/ai";
-import Image from 'next/image'
+import { UserButton, useClerk, useUser } from "@clerk/nextjs";
+import Image from "next/image";
 
 const navigationLinks = [
   { path: "/home", text: "HOME", icon: <AiOutlineHome size={22} /> },
@@ -21,6 +22,7 @@ const navigationLinks = [
 
 export const Navbar = () => {
   const router = useRouter();
+  const { signOut } = useClerk();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
@@ -59,6 +61,8 @@ export const Navbar = () => {
   }, []);
 
   const closeMenu = () => setMenuOpen(false);
+
+  const { user } = useUser();
 
   return (
     <nav
@@ -109,12 +113,19 @@ export const Navbar = () => {
         </div>
 
         <div className="hidden justify-end lg:flex">
-          <Link
-            href="/login"
-            className="mx-4 rounded bg-blue-700 px-6 py-2 font-bold text-white hover:bg-blue-800"
-          >
-            LOG IN
-          </Link>
+          <div className="mr-4">
+            {user && <UserButton afterSignOutUrl="/home" />}
+          </div>
+
+          {!user && (
+            <Link
+              href="/login"
+              className="mx-4 rounded bg-blue-700 px-6 py-2 font-bold text-white hover:bg-blue-800"
+              data-testid="login"
+            >
+              LOG IN
+            </Link>
+          )}
         </div>
 
         {/* Hamburger menu */}
@@ -169,16 +180,28 @@ export const Navbar = () => {
               </Link>
             ))}
 
-            <div className="absolute bottom-12 left-0 w-full pb-4 pt-10 shadow-inner">
-              <Link href="/login">
-                <li
-                  onClick={closeMenu}
-                  className="mx-16 rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800"
-                  style={{ zIndex: 1 }}
-                >
-                  LOGIN
-                </li>
-              </Link>
+            <div className="absolute bottom-0 left-0 w-full py-8 shadow-inner">
+              <div className="flex items-center justify-center">
+                {user && (
+                  <button
+                    className="mx-6 w-full min-w-[300px] rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800 md:mx-16"
+                    onClick={() => signOut(() => router.push("/"))}
+                  >
+                    Sign out
+                  </button>
+                )}
+              </div>
+              {!user && (
+                <Link href="/login">
+                  <li
+                    onClick={closeMenu}
+                    className="mx-6 min-w-[300px] rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800 md:mx-16"
+                    style={{ zIndex: 1 }}
+                  >
+                    LOGIN
+                  </li>
+                </Link>
+              )}
             </div>
           </ul>
         </div>

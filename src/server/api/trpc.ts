@@ -7,14 +7,14 @@
  * need to use are documented accordingly near the end.
  */
 
+import { User } from "@clerk/nextjs/api";
+import { getAuth, clerkClient } from "@clerk/nextjs/server";
 import { initTRPC, TRPCError } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import { type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { db } from "../db";
 
-import { getServerAuthSession } from "~/server/auth";
-import { db } from "~/server/db";
 
 /**
  * 1. CONTEXT
@@ -25,7 +25,7 @@ import { db } from "~/server/db";
  */
 
 interface CreateContextOptions {
-  session: Session | null;
+  user: User | null;
 }
 
 /**
@@ -40,7 +40,7 @@ interface CreateContextOptions {
  */
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
-    session: opts.session,
+    user: opts.user,
     db,
   };
 };
@@ -55,10 +55,17 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const { req, res } = opts;
 
   // Get the session from the server using the getServerSession wrapper function
-  const session = await getServerAuthSession({ req, res });
+
+  async function getUser() {
+    const { userId } = getAuth(req);
+    const user = userId ? await clerkClient.users.getUser(userId) : null;
+    return user;
+  }
+
+  const user = await getUser();
 
   return createInnerTRPCContext({
-    session,
+    user,
   });
 };
 
@@ -109,13 +116,14 @@ export const publicProcedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.session?.user) {
+  if (!ctx.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
+
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
+      user: ctx.user,
     },
   });
 });

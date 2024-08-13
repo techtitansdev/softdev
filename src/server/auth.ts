@@ -9,6 +9,8 @@ import DiscordProvider from "next-auth/providers/discord";
 
 import { env } from "~/env.mjs";
 import { db } from "~/server/db";
+import Email, { EmailProvider } from "next-auth/providers/email";
+import { ClerkOptions } from "@clerk/nextjs/server";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -36,6 +38,8 @@ declare module "next-auth" {
  *
  * @see https://next-auth.js.org/configuration/options
  */
+
+
 export const authOptions: NextAuthOptions = {
   callbacks: {
     session: ({ session, user }) => ({
