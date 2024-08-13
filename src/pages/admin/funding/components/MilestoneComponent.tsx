@@ -57,7 +57,14 @@ const MilestoneComponent: React.FC<Props> = ({ milestones }) => {
                   {milestone.value} {milestone.unit}
                 </div>
               </div>
-              <div className="text-sm font-light text-slate-600">
+              <div
+                className="text-sm font-light text-slate-600"
+                style={{
+                  wordBreak: "break-word",
+                  overflowWrap: "break-word",
+                  maxWidth: "100%", 
+                }}
+              >
                 {milestone.description}
               </div>
             </div>

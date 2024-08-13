@@ -72,7 +72,7 @@ const Funding: React.FC = () => {
       <Navbar />
 
       <div className="mx-auto max-w-[1460px] flex-col">
-        <div className="mx-auto mt-24 flex flex-col-reverse items-center justify-between px-6 pb-10 sm:px-10 lg:flex-row lg:px-12 lg:pt-20 xl:px-24">
+        <div className="mx-auto mt-24 flex flex-col-reverse items-center justify-between px-4 pb-10 sm:px-10 lg:flex-row lg:px-12 lg:pt-20 xl:px-24">
           {fundingData && (
             <div key={fundingData.id} className="w-full lg:w-1/2">
               <p className="mb-2 text-2xl font-semibold text-gray-700 sm:text-3xl md:mb-5 md:text-4xl lg:text-5xl xl:text-6xl">
@@ -132,7 +132,7 @@ const Funding: React.FC = () => {
                 alt="Project Image"
                 className="w-full rounded-3xl md:h-96"
               />
-              <div className="h-2.5 w-full rounded-full bg-gray-200 lg:mt-8 dark:bg-gray-400">
+              <div className="mt-4 h-2.5 w-full rounded-full bg-gray-200 lg:mt-8 dark:bg-gray-400">
                 <div
                   className="h-2.5 rounded-full bg-blue-800"
                   style={{
