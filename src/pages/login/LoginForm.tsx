@@ -16,7 +16,6 @@ const LoginForm = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [modalBgColor, setModalBgColor] = useState("");
-  const [isLoading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -186,12 +185,9 @@ const LoginForm = () => {
                   </div>
                 )}
               </div>
-              <div className="mt-2 flex justify-end text-sm font-semibold sm:text-base">
-                <Link href="/otp-verification">Forgot Password?</Link>
-              </div>
             </div>
 
-            <div className="mt-16 px-5 sm:px-8 md:px-36 lg:px-16 xl:px-24">
+            <div className="mt-20 px-5 sm:px-8 md:px-36 lg:px-16 xl:px-24">
               <button
                 type="submit"
                 className="block w-full rounded-lg bg-gray-600 px-4 py-3 font-bold text-white hover:bg-gray-800"
