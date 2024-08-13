@@ -44,6 +44,11 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ projectId }) => {
         message: "You must be logged in to post a comment.",
         bgColor: "bg-gray-700",
       });
+
+      setTimeout(() => {
+        setModalContent(null);
+      }, 2000);
+
       return;
     }
 
@@ -52,6 +57,11 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ projectId }) => {
         message: "Please leave a feedback before submitting.",
         bgColor: "bg-red-500",
       });
+
+      setTimeout(() => {
+        setModalContent(null);
+      }, 2000);
+
       return;
     }
 

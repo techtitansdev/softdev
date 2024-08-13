@@ -51,7 +51,7 @@ const SpecificAboutComponent: React.FC = () => {
         </div>
 
         <div
-          className={`mt-10 flex items-center justify-center text-2xl font-medium sm:text-3xl lg:mt-24 xl:text-4xl`}
+          className={`mt-2 flex items-center justify-center text-2xl font-medium sm:text-3xl md:mt-10 lg:mt-24 xl:text-4xl`}
           style={{ color: project?.theme }}
         >
           Project Objectives
@@ -64,7 +64,7 @@ const SpecificAboutComponent: React.FC = () => {
         <div className="">
           <img
             src={project?.projectObjImage}
-            className="mx-auto mb-10 h-auto max-w-full"
+            className="mx-auto mb-6 h-auto max-w-full md:mb-10"
             alt="Project Objectives"
           />
         </div>
@@ -90,7 +90,7 @@ const SpecificAboutComponent: React.FC = () => {
 
           <div className="flex-col lg:pl-8">
             <div
-              className={`mb-1 mt-12 text-center text-2xl font-medium md:mt-16 md:text-3xl lg:mt-0`}
+              className={`mb-1 mt-6 text-center text-2xl font-medium md:mt-16 md:text-3xl lg:mt-0`}
               style={{ color: project?.theme }}
             >
               {project?.projectName2}

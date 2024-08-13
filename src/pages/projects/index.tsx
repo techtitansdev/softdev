@@ -7,24 +7,26 @@ import ProjectCard from "./ProjectCard";
 import FilterByCategory from "~/components/filter/FilterByCategory";
 import { RiSearchLine } from "react-icons/ri";
 import SearchInput from "~/components/search/SearchByProject";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 const Projects = () => {
   const [projectData, setProjectData] = useState<any>([]);
   const getProjects = api.project.getAll.useQuery();
-
-  useEffect(() => {
-    if (getProjects.data) {
-      setProjectData(getProjects.data);
-      setFilteredProjects(getProjects.data);
-    }
-  }, [getProjects.data]);
 
   const [selectedCategory, setSelectedCategory] = useState("Categories");
   const [isCategoryListOpen, setIsCategoryListOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [filteredProjects, setFilteredProjects] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    if (getProjects.data) {
+      setProjectData(getProjects.data);
+      setFilteredProjects(getProjects.data);
+      setLoading(false);
+    }
+  }, [getProjects.data]);
   const toggleCategoryList = () => {
     setIsCategoryListOpen(!isCategoryListOpen);
   };
@@ -139,15 +141,19 @@ const Projects = () => {
           </div>
         </div>
 
-        <div className="mb-16 mt-1 flex flex-grow items-center justify-center">
-          <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filterProjects.map((project: any) => (
-              <div key={project.id}>
-                <ProjectCard projectData={project} />
-              </div>
-            ))}
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          <div className="mb-16 mt-1 flex flex-grow items-center justify-center">
+            <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {filterProjects.map((project: any) => (
+                <div key={project.id}>
+                  <ProjectCard projectData={project} />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         <Footer />
       </div>
