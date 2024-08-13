@@ -4,6 +4,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { Navbar } from "~/components/Navbar";
 import { Footer } from "~/components/Footer";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 interface Blog {
   blogTitle: string;
@@ -19,9 +20,17 @@ const SpecificBlogDetailsPage = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data: blogData, error } = api.blog.getById.useQuery({
+  const {
+    data: blogData,
+    error,
+    isLoading,
+  } = api.blog.getById.useQuery({
     id: id as string,
   });
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   if (error) {
     return <div>Error loading blog data: {error.message}</div>;

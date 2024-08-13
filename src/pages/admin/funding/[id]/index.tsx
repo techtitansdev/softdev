@@ -119,10 +119,15 @@ const FundingPage: React.FC = () => {
                   <div
                     className="h-2.5 rounded-full bg-blue-800"
                     style={{
-                      width: `${(fundingData.funds / fundingData.goal) * 100}%`,
+                      width: `${
+                        fundingData.funds >= fundingData.goal
+                          ? "100%"
+                          : `${(fundingData.funds / fundingData.goal) * 100}%`
+                      }`,
                     }}
                   ></div>
                 </div>
+
                 <div className="mb-4 mt-1 flex justify-between md:mt-4">
                   <p className="text-xs font-medium md:text-sm">
                     Days Left: {calculateDaysLeft(fundingData.targetDate)}
