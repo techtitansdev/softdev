@@ -6,7 +6,7 @@ import { categoriesOption } from "~/data/categories";
 import Select from "react-select";
 import { CldUploadButton } from "next-cloudinary";
 import Image from "next/image";
-import { Modal } from "~/components/Modal";
+
 import { useRouter } from "next/router";
 import MileStoneTable, { TableRow } from "./components/MilestoneTable";
 import { useUser } from "@clerk/nextjs";
@@ -16,6 +16,7 @@ import { FundingData } from "~/types/fundingData";
 import React from "react";
 import UploadIcon from "~/components/svg/UploadIcon";
 import { ProjectAboutData } from "~/types/projectData";
+import { Modal } from "~/components/Modal";
 
 function CreateFunding() {
   const [project, setProject] = useState("");
