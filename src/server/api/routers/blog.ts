@@ -32,7 +32,7 @@ export const blog = createTRPCRouter({
       });
       return blog;
     }),
-  
+
   getAll: publicProcedure.query(async () => {
     const allBlogs = await db.blogs.findMany();
     return allBlogs;
@@ -67,7 +67,7 @@ export const blog = createTRPCRouter({
         title: z.string(),
         excerpt: z.string(),
         image: z.string(),
-        blogTile: z.string(),
+        blogTitle: z.string(),
         blogDescription: z.string(),
         blogImage: z.string(),
         blogDescription1: z.string(),
@@ -107,6 +107,45 @@ export const blog = createTRPCRouter({
         },
         data: newDetails,
       });
+      return updatedBlog;
+    }),
+
+  editBlogFeatured: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        featured: z.boolean(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+
+      if (input.featured) {
+        const featuredBlogs = await db.blogs.count({
+          where: { featured: true },
+        });
+        if (featuredBlogs >= 4) {
+          throw new Error("Maximum number of featured blogs reached.");
+        }
+      }
+
+      // Check if blog exists
+      const existingBlog = await db.blogs.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!existingBlog) {
+        throw new Error("Blog Does Not Exist");
+      }
+
+      // Update only the featured status
+      const updatedBlog = await db.blogs.update({
+        where: { id: input.id },
+        data: {
+          featured: input.featured,
+        },
+      });
+
       return updatedBlog;
     }),
 
