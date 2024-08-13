@@ -9,7 +9,13 @@ export const blog = createTRPCRouter({
         title: z.string(),
         excerpt: z.string(),
         image: z.string(),
-        content: z.string(),
+        blogTitle: z.string(),
+        blogDescription: z.string(),
+        blogImage: z.string(),
+        blogDescription1: z.string(),
+        blogImage1: z.string(),
+        blogDescription2: z.string(),
+        blogImage2: z.string(),
         published: z.boolean(),
         featured: z.boolean(),
       }),
@@ -26,6 +32,7 @@ export const blog = createTRPCRouter({
       });
       return blog;
     }),
+  
   getAll: publicProcedure.query(async () => {
     const allBlogs = await db.blogs.findMany();
     return allBlogs;
@@ -60,7 +67,13 @@ export const blog = createTRPCRouter({
         title: z.string(),
         excerpt: z.string(),
         image: z.string(),
-        content: z.string(),
+        blogTile: z.string(),
+        blogDescription: z.string(),
+        blogImage: z.string(),
+        blogDescription1: z.string(),
+        blogImage1: z.string(),
+        blogDescription2: z.string(),
+        blogImage2: z.string(),
         published: z.boolean(),
         featured: z.boolean(),
       }),
