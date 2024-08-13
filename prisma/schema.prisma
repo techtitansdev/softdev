@@ -54,7 +54,13 @@ model Blogs {
   title                String
   excerpt              String
   image                String
-  content              String
+  blogTitle            String
+  blogDescription      String
+  blogImage            String
+  blogDescription1     String
+  blogImage1           String
+  blogDescription2     String
+  blogImage2           String
   created              DateTime               @default(now())
   updated              DateTime               @updatedAt()
   published            Boolean                @default(false)

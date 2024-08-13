@@ -7,30 +7,46 @@ import Image from "next/image";
 import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import { BlogData } from "~/types/blogData";
-import { NewEditor } from "~/components/editor/Editor";
 import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
+import UploadIcon from "~/components/svg/UploadIcon";
 
 function EditBlog() {
   const router = useRouter();
   const { id } = router.query;
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
-  const [publicId, setPublicId] = useState("");
+
+  const [featuredImage, setFeaturedImage] = useState("");
+  const [featuredImagePublicId, setFeaturedImagePublicId] = useState("");
+
+  const [blogImage, setBlogImage] = useState("");
+  const [blogPublicId, setBlogPublicId] = useState("");
+
+  const [blogImage1, setBlogImage1] = useState("");
+  const [blogPublicId1, setBlogPublicId1] = useState("");
+
+  const [blogImage2, setBlogImage2] = useState("");
+  const [blogPublicId2, setBlogPublicId2] = useState("");
+
   const getBlog = api.blog.getById.useQuery({ id: id as string });
   const categories = api.categories.getAllCategories.useQuery();
   const categoriesOption = categories.data || [];
   categoriesOption.sort((a, b) => a.label.localeCompare(b.label));
-  const [editorBlocks, setEditorBlocks] = useState([]);
-  const [initialEditorData, setinitialEditorData] = useState();
+
   const deleteImage = api.blog.removeImage.useMutation();
 
   const [blogData, setBlogData] = useState<BlogData>({
     title: "",
     excerpt: "",
     image: "",
-    content: "",
+    blogTitle: "",
+    blogDescription: "",
+    blogImage: "",
+    blogDescription1: "",
+    blogImage1: "",
+    blogDescription2: "",
+    blogImage2: "",
     published: false,
     featured: false,
   });
@@ -48,31 +64,13 @@ function EditBlog() {
     },
   });
 
-  const [editorContent, setEditorContent] = useState("");
-
-  const handleEditorChange = (content: any) => {
-    setEditorContent(content);
-  };
-
-  useEffect(() => {
-    setEditorContent(blogData.content);
-  }, [blogData.content]);
-
   useEffect(() => {
     if (getBlog.data) {
       setBlogData((prevData) => ({
         ...prevData,
-        about: getBlog.data.content || "",
       }));
-
-      const initialEditorData = JSON.parse(
-        getBlog.data.content || '{"blocks":[]}',
-      );
-      setinitialEditorData(initialEditorData);
-      setEditorBlocks(initialEditorData.blocks);
     }
   }, [getBlog.data]);
-
 
   useEffect(() => {
     if (getBlog.data) {
@@ -81,7 +79,13 @@ function EditBlog() {
           prevData.title !== getBlog.data.title ||
           prevData.excerpt !== getBlog.data.excerpt ||
           prevData.image !== getBlog.data.image ||
-          prevData.content !== getBlog.data.content ||
+          prevData.blogTitle !== getBlog.data.blogTitle ||
+          prevData.blogDescription !== getBlog.data.blogDescription ||
+          prevData.blogImage !== getBlog.data.blogImage ||
+          prevData.blogDescription1 !== getBlog.data.blogDescription1 ||
+          prevData.blogImage1 !== getBlog.data.blogImage1 ||
+          prevData.blogDescription2 !== getBlog.data.blogDescription2 ||
+          prevData.blogImage2 !== getBlog.data.blogImage2 ||
           prevData.published !== getBlog.data.published ||
           prevData.featured !== getBlog.data.featured
         ) {
@@ -89,7 +93,13 @@ function EditBlog() {
             title: getBlog.data.title,
             excerpt: getBlog.data.excerpt,
             image: getBlog.data.image,
-            content: getBlog.data.content,
+            blogTitle: getBlog.data.blogTitle,
+            blogDescription: getBlog.data.blogDescription,
+            blogImage: getBlog.data.blogImage,
+            blogDescription1: getBlog.data.blogDescription1,
+            blogImage1: getBlog.data.blogImage1,
+            blogDescription2: getBlog.data.blogDescription2,
+            blogImage2: getBlog.data.blogImage2,
             published: getBlog.data.published,
             featured: getBlog.data.featured,
           };
@@ -97,10 +107,10 @@ function EditBlog() {
           return prevData;
         }
       });
-      setImageUrl(getBlog.data.image);
-      const initialEditorData = JSON.parse(getBlog.data.content);
-      setinitialEditorData(initialEditorData)
-      setEditorBlocks(initialEditorData.blocks)
+      setFeaturedImage(getBlog.data.image);
+      setBlogImage(getBlog.data.blogImage);
+      setBlogImage1(getBlog.data.blogImage1);
+      setBlogImage2(getBlog.data.blogImage2);
     }
   }, [getBlog.data]);
 
@@ -111,34 +121,77 @@ function EditBlog() {
     setBlogData({ ...blogData, [name]: value });
   };
 
-  const handleImageUpload = (result: CldUploadWidgetResults) => {
+  const handleImageUpload = (result: CldUploadWidgetResults, type: string) => {
     console.log("result: ", result);
     const info = result.info as object;
 
     if ("secure_url" in info && "public_id" in info) {
       const url = info.secure_url as string;
       const public_id = info.public_id as string;
-      setImageUrl(url);
-      setPublicId(public_id);
-      blogData.image = url;
+
+      switch (type) {
+        case "featured":
+          setFeaturedImage(url);
+          setFeaturedImagePublicId(public_id);
+          break;
+        case "image":
+          setBlogImage(url);
+          setBlogPublicId(public_id);
+          break;
+        case "image1":
+          setBlogImage1(url);
+          setBlogPublicId1(public_id);
+          break;
+        case "image2":
+          setBlogImage2(url);
+          setBlogPublicId2(public_id);
+          break;
+        default:
+          break;
+      }
       console.log("url: ", url);
       console.log("public_id: ", public_id);
     }
   };
 
-  const removeImage = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const removeImage = async (imageType: string, publicId: string) => {
     try {
-      deleteImage.mutate({
-        id: id as string,
+      const response = await fetch("/api/deleteImage", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ publicId }),
       });
-      setImageUrl("");
-      setBlogData({
-        ...blogData,
-        image: "",
-      });
+
+      if (response.ok) {
+        switch (imageType) {
+          case "featured":
+            setFeaturedImage("");
+            setFeaturedImagePublicId("");
+            break;
+          case "image":
+            setBlogImage("");
+            setBlogPublicId("");
+            break;
+          case "image1":
+            setBlogImage1("");
+            setBlogPublicId1("");
+            break;
+          case "image2":
+            setBlogImage2("");
+            setBlogPublicId2("");
+            break;
+
+          default:
+            console.error("Unknown image type");
+        }
+      } else {
+        const errorData = await response.json();
+        console.error("Error removing image:", errorData.error);
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Error removing image:", error);
     }
   };
 
@@ -146,15 +199,16 @@ function EditBlog() {
     const data = {
       ...blogData,
       id: id as string,
-      image: imageUrl,
-      cotent: JSON.stringify(editorData || initialEditorData || [], null, 2),
+      image: featuredImage,
+      blogImage: blogImage,
+      blogImage1: blogImage1,
+      blogImage2Image: blogImage2,
       published: isPublished,
       featured: false,
     };
 
     try {
       const editedBlog = await editBlog.mutateAsync(data);
-
       setBlogData(editedBlog);
       setSuccessModalOpen(true);
       setTimeout(() => {
@@ -165,14 +219,9 @@ function EditBlog() {
     }
   };
 
-  const [editorData, setEditorData] = useState(null);
-
   const handleChanges = (data: any) => {
-    setEditorData(data);
-
     setBlogData({
       ...blogData,
-      content: JSON.stringify(data, null, 2),
     });
   };
 
@@ -204,7 +253,7 @@ function EditBlog() {
               EDIT BLOG
             </div>
 
-            <form onSubmit={() => handleSubmit(false)}>
+            <form>
               <div className="mb-4">
                 <label htmlFor="title" className="font-medium text-gray-700">
                   Blog Title
@@ -214,11 +263,10 @@ function EditBlog() {
                   type="text"
                   id="title"
                   name="title"
-                  placeholder="title"
                   value={blogData.title}
-                  className="mt-1 w-full rounded-md border p-2 shadow-sm"
-                  required
                   onChange={handleChange}
+                  className="mt-1 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
+                  required
                   data-testid="blog-title-input"
                 />
               </div>
@@ -227,13 +275,12 @@ function EditBlog() {
                 <label htmlFor="excerpt" className="font-medium text-gray-700">
                   Blog Description
                 </label>
-
                 <textarea
                   id="excerpt"
                   name="excerpt"
                   value={blogData.excerpt}
                   onChange={handleChange}
-                  className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm"
+                  className="mt-1 h-56 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
                   required
                   data-testid="blog-description-input"
                 />
@@ -249,31 +296,16 @@ function EditBlog() {
                     process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
                   }
                   className={`relative mt-4 grid h-72 w-72 place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
-                    imageUrl && "pointer-events-none"
+                    featuredImage && "pointer-events-none"
                   }`}
-                  onUpload={handleImageUpload}
+                  onUpload={(result) => handleImageUpload(result, "featured")}
                   data-testid="blog-image-input"
                 >
-                  <div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="h-6 w-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                      />
-                    </svg>
-                  </div>
+                  <UploadIcon />
 
-                  {imageUrl && (
+                  {featuredImage && (
                     <Image
-                      src={imageUrl}
+                      src={featuredImage}
                       fill
                       sizes="72"
                       className="absolute inset-0 object-cover"
@@ -282,49 +314,178 @@ function EditBlog() {
                   )}
                 </CldUploadButton>
 
-                {imageUrl && (
+                {featuredImagePublicId && (
                   <button
-                    onClick={removeImage}
-                    className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700"
+                    onClick={() =>
+                      removeImage("featured", featuredImagePublicId)
+                    }
+                    className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                   >
                     Remove Image
                   </button>
                 )}
               </div>
 
-              <div className="mb-4">
-                <label htmlFor="about" className="font-medium text-gray-700">
-                  About
-                </label>
+              <div className="mb-2 mt-12 text-xl"> Blog Design</div>
+
+              <div>
+                <textarea
+                  placeholder="Blog Title"
+                  id="blogTitle"
+                  name="blogTitle"
+                  maxLength={500}
+                  value={blogData.blogTitle}
+                  onChange={handleChange}
+                  className="text-bold mb-1 mt-1 h-20 w-[900px] rounded-md border border-gray-400 p-2 text-2xl font-medium outline-gray-400"
+                  required
+                />
               </div>
 
-              <div className="min-w-[300px]">
-                <NewEditor
-                  onChanges={handleChanges}
-                  initialData={editorBlocks}
+              <div>
+                <textarea
+                  placeholder="Small Description"
+                  id="blogDescription"
+                  name="blogDescription"
+                  maxLength={1000}
+                  value={blogData.blogDescription}
+                  onChange={handleChange}
+                  className="text-bold mb-1 mt-1 h-24 w-[900px] rounded-md border border-gray-400 p-2 font-medium outline-gray-400"
+                  required
                 />
+              </div>
+
+              <CldUploadButton
+                uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+                className={`relative mt-4 grid h-[550px] w-[1180px] place-items-center justify-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                  blogImage && "pointer-events-none"
+                }`}
+                onUpload={(result) => handleImageUpload(result, "image")}
+              >
+                <UploadIcon />
+                {blogImage && (
+                  <Image
+                    src={blogImage}
+                    fill
+                    sizes="72"
+                    className="absolute inset-0 object-cover"
+                    alt={blogData.title}
+                  />
+                )}
+              </CldUploadButton>
+
+              {blogPublicId && (
+                <button
+                  onClick={() => removeImage("image", blogPublicId)}
+                  className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
+                >
+                  Remove Image
+                </button>
+              )}
+
+              <div className="mt-12 flex items-center justify-between">
+                <div>
+                  <CldUploadButton
+                    uploadPreset={
+                      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+                    }
+                    className={`relative grid h-[320px] w-[550px] place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                      blogImage1 && "pointer-events-none"
+                    }`}
+                    onUpload={(result) => handleImageUpload(result, "image1")}
+                  >
+                    <UploadIcon />
+                    {blogImage1 && (
+                      <Image
+                        src={blogImage1}
+                        fill
+                        sizes="72"
+                        className="absolute inset-0 object-cover"
+                        alt={blogData.blogTitle}
+                      />
+                    )}
+                  </CldUploadButton>
+
+                  {blogPublicId1 && (
+                    <button
+                      onClick={() => removeImage("image1", blogPublicId1)}
+                      className=" mt-1 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
+                    >
+                      Remove Image
+                    </button>
+                  )}
+                </div>
+                <textarea
+                  id="blogDescription1"
+                  name="blogDescription1"
+                  placeholder="Blog Info"
+                  value={blogData.blogDescription1}
+                  maxLength={1000}
+                  onChange={handleChange}
+                  className="ml-12 mt-1 h-[320px] w-[550px] rounded-md border border-gray-400 p-2 text-base outline-gray-400"
+                  required
+                />
+              </div>
+
+              <div className="mt-12 flex items-center justify-between">
+                <textarea
+                  id="blogDescription2"
+                  name="blogDescription2"
+                  placeholder="Blog Info"
+                  value={blogData.blogDescription2}
+                  maxLength={1000}
+                  onChange={handleChange}
+                  className="mt-1 h-[320px] w-[550px] rounded-md border border-gray-400 p-2 text-base outline-gray-400"
+                  required
+                />
+
+                <div>
+                  <CldUploadButton
+                    uploadPreset={
+                      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+                    }
+                    className={`relative ml-12 grid h-[320px] w-[550px] place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                      blogImage2 && "pointer-events-none"
+                    }`}
+                    onUpload={(result) => handleImageUpload(result, "image2")}
+                  >
+                    <UploadIcon />
+                    {blogImage2 && (
+                      <Image
+                        src={blogImage2}
+                        fill
+                        sizes="72"
+                        className="absolute inset-0 object-cover"
+                        alt={blogData.blogTitle}
+                      />
+                    )}
+                  </CldUploadButton>
+
+                  {blogPublicId2 && (
+                    <button
+                      onClick={() => removeImage("image2", blogPublicId2)}
+                      className=" mt-1 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
+                    >
+                      Remove Image
+                    </button>
+                  )}
+                </div>
               </div>
 
               <button
                 type="button"
+                onClick={() => handleSubmit(false)} // Save as Draft
                 className="mr-2 mt-4 rounded-lg bg-gray-600 px-2 py-2 font-medium text-white hover:bg-gray-800 md:mr-4 md:px-6"
-                onClick={() => {
-                  handleSubmit(false); // Pass false for "Save as Draft"
-                }}
               >
                 Save as Draft
               </button>
 
               <button
                 type="button"
+                onClick={() => handleSubmit(true)} // Publish
                 className="mt-4 rounded-lg bg-blue-800 px-4 py-2 font-medium text-white hover:bg-blue-900 md:px-12"
-                onClick={() => {
-                  handleSubmit(true); // Pass true for "Publish"
-                }}
               >
                 Publish
               </button>
-
             </form>
           </div>
         </div>
