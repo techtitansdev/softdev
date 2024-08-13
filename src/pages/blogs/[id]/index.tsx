@@ -64,7 +64,7 @@ const SpecificBlogDetailsPage = () => {
             height={200}
           />
         ) : (
-          <div>No image available</div>
+          <div></div>
         )}
 
         <div className="flex flex-col-reverse items-center px-2 pt-4 lg:flex-row lg:pt-16">
@@ -78,7 +78,7 @@ const SpecificBlogDetailsPage = () => {
                 height={300}
               />
             ) : (
-              <div>No image available</div>
+              <div></div>
             )}
           </div>
 
@@ -106,7 +106,7 @@ const SpecificBlogDetailsPage = () => {
                 height={300}
               />
             ) : (
-              <div>No image available</div>
+              <div></div>
             )}
           </div>
         </div>
