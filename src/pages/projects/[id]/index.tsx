@@ -25,14 +25,14 @@ const SpecificProjectDetails = () => {
   return (
     <>
       <Head>
-        <title>{project?.projectTitle} - Global Shapers Iloilo</title>
+        <title>{project?.projectTitle} | Global Shapers Iloilo</title>
         <meta name="description" content="Project details page" />
         <link rel="icon" href="/gsi-logo.png" />
       </Head>
 
       <Navbar />
 
-      <div className="mx-auto mt-[65px] lg:max-w-[1200px] xl:max-w-[1230px]">
+      <div className="mx-auto mt-[80px] lg:max-w-[1200px] xl:max-w-[1230px]">
         <div className="flex flex-col-reverse items-center sm:pt-16 lg:flex-row lg:pt-28">
           <div className="w-full flex-col items-center justify-center lg:w-1/2">
             <p
@@ -67,7 +67,7 @@ const SpecificProjectDetails = () => {
         </div>
 
         <div
-          className={`mt-10 flex items-center justify-center text-2xl font-medium sm:text-3xl lg:mt-24 xl:text-4xl`}
+          className={`mt-2 flex items-center justify-center text-2xl font-medium sm:text-3xl md:mt-10 lg:mt-24 xl:text-4xl`}
           style={{ color: project?.theme }}
         >
           Project Objectives
@@ -80,12 +80,12 @@ const SpecificProjectDetails = () => {
         <div className="">
           <img
             src={project?.projectObjImage}
-            className="mx-auto mb-10 h-[460px] w-[1250px]"
+            className="mx-auto mb-4 h-[460px] w-[1250px] md:mb-10"
             alt="Project Objectives"
           ></img>
         </div>
 
-        <div className="mx-auto mb-10 grid max-w-[1360px] grid-cols-1 items-center justify-center md:mb-16 lg:grid-cols-2">
+        <div className="mx-auto mb-4 grid max-w-[1360px] grid-cols-1 items-center justify-center md:mb-16 lg:grid-cols-2">
           <div className="flex-col">
             <div
               className={`mb-1 text-center text-2xl font-medium md:text-3xl`}
@@ -106,7 +106,7 @@ const SpecificProjectDetails = () => {
 
           <div className="flex-col lg:pl-8">
             <div
-              className={`mb-1 mt-12 text-center text-2xl font-medium md:mt-16 md:text-3xl lg:mt-0`}
+              className={`mb-1 mt-10 text-center text-2xl font-medium md:mt-16 md:text-3xl lg:mt-0`}
               style={{ color: project?.theme }}
             >
               {project?.projectName2}
