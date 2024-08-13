@@ -454,7 +454,7 @@ function EditProject() {
                 <textarea
                   placeholder="Project Objectives Description"
                   maxLength={210}
-                  // value={fundingData.about.projectObjDescription}
+                  value={projectData.about.projectObjDescription}
                   className="mt-1 w-[950px]  rounded-md border p-2 text-center shadow-sm outline-none"
                   readOnly
                 />
