@@ -5,14 +5,17 @@ import { api } from "~/utils/api";
 import BlogCard from "./components/BlogCard";
 import { Footer } from "~/components/Footer";
 import FeaturedBlogCard from "./components/FeaturedBlogCard";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 const Blogs = () => {
   const [blogData, setBlogData] = useState<any>([]);
+  const [loading, setLoading] = useState(true);
   const getBlogs = api.blog.getAll.useQuery();
 
   useEffect(() => {
     if (getBlogs.data) {
       setBlogData(getBlogs.data);
+      setLoading(false);
     }
   }, [getBlogs.data]);
 
@@ -35,25 +38,33 @@ const Blogs = () => {
       <div className="flex min-h-screen flex-col">
         <Navbar />
         <main className="mx-auto mt-24 max-w-[280px] flex-grow items-center justify-between md:mt-32 md:max-w-[570px] lg:mt-36 lg:max-w-[950px] lg:flex-row xl:max-w-[1275px]">
-          <div className="mb-4 mt-1 flex items-center justify-center">
-            <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-              {featuredBlogs.map((blog: any) => (
-                <div key={blog.id}>
-                  <FeaturedBlogCard blogData={blog} />
-                </div>
-              ))}
+          {loading ? (
+            <div className="flex min-h-screen items-center justify-center">
+              <LoadingSpinner /> {/* Render the LoadingSpinner component */}
             </div>
-          </div>
+          ) : (
+            <>
+              <div className="mb-4 mt-1 flex items-center justify-center">
+                <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+                  {featuredBlogs.map((blog: any) => (
+                    <div key={blog.id}>
+                      <FeaturedBlogCard blogData={blog} />
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-          <div className="mb-4 mt-1 flex items-center justify-center md:mb-12">
-            <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {unfeaturedBlogs.map((blog: any) => (
-                <div key={blog.id}>
-                  <BlogCard blogData={blog} />
+              <div className="mb-4 mt-1 flex items-center justify-center md:mb-12">
+                <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {unfeaturedBlogs.map((blog: any) => (
+                    <div key={blog.id}>
+                      <BlogCard blogData={blog} />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            </>
+          )}
         </main>
         <Footer />
       </div>
