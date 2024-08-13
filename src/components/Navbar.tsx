@@ -180,11 +180,11 @@ export const Navbar = () => {
               </Link>
             ))}
 
-            <div className="absolute bottom-0 left-0 w-full py-8 shadow-inner">
+            <div className="absolute bottom-0 left-0 w-full py-1">
               <div className="flex items-center justify-center">
                 {user && (
                   <button
-                    className="mx-6 w-full min-w-[300px] rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800 md:mx-16"
+                    className="mx-2 w-full min-w-[300px] rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800 md:mx-16"
                     onClick={() => signOut(() => router.push("/"))}
                   >
                     Sign out
@@ -195,7 +195,7 @@ export const Navbar = () => {
                 <Link href="/login">
                   <li
                     onClick={closeMenu}
-                    className="mx-6 min-w-[300px] rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800 md:mx-16"
+                    className="mx-2 min-w-[300px] rounded-lg bg-blue-700 py-3 text-center text-lg font-bold text-white shadow-md hover:bg-blue-800 md:mx-16"
                     style={{ zIndex: 1 }}
                   >
                     LOGIN
