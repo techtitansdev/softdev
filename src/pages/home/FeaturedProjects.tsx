@@ -2,6 +2,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { IoLocationSharp } from "react-icons/io5";
 import { api } from "~/utils/api";
+import Image from "next/image";
 
 const FeaturedProjects = () => {
   const [projectData, setProjectData] = useState<any>([]);
@@ -36,11 +37,14 @@ const FeaturedProjects = () => {
               <div key={card.id}>
                 <Link href={`/projects/${card.id}`}>
                   <div className="w-full transform cursor-pointer justify-self-start rounded-lg font-medium shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105 dark:bg-white">
-                    <img
-                      className="h-52 w-72 rounded-t-lg object-cover"
-                      src={card.image}
-                      alt={card.title}
-                    />
+                    <div className="relative h-52 w-72">
+                      <Image
+                        src={card.image}
+                        alt={card.title}
+                        layout="fill"
+                        className="rounded-t-lg object-cover"
+                      />
+                    </div>
                     <div className="p-4">
                       <div className="card-title">
                         <div className="mb-1 text-xl tracking-tight text-gray-900">
