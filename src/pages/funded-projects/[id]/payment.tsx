@@ -2,12 +2,12 @@ import { useUser } from "@clerk/nextjs";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import CurrencyDropdown from "~/components/CurrencyDropdown";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
 import PaymentMethodDropdown from "~/components/PaymentMethodDropdown";
 import { api } from "~/utils/api";
 import ReceiptModal from "~/components/ReceiptModal";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 interface Funding {
   title: string;
@@ -19,6 +19,7 @@ const Payment = () => {
   const router = useRouter();
   const { id } = router.query;
   const [fundingData, setFundingData] = useState<Funding | null>(null);
+  const [loading, setLoading] = useState(false);
   const [contributionType, setContributionType] = useState("Individual");
   const [fullName, setFullName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -40,8 +41,7 @@ const Payment = () => {
     country: "PH",
   });
 
-  const paymentMethods = ["Card", "Gcash"];
-  const currencies = ["PHP", "USD", "EUR"];
+  const paymentMethods = ["Card"];
 
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
 
@@ -85,7 +85,9 @@ const Payment = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     setPaymentError(null);
+    setLoading(true);
 
     const convertedAmount = parseInt(amount, 10) * 100;
 
@@ -179,8 +181,10 @@ const Payment = () => {
     } catch (error) {
       console.error("Payment error:", error);
       setPaymentError(
-        "An error occurred during payment. Please try again later.",
+        "An error occurred during payment. Please check your details.",
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -211,6 +215,12 @@ const Payment = () => {
       </Head>
 
       <Navbar />
+      
+      {loading && (
+        <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-white bg-opacity-50">
+          <LoadingSpinner />
+        </div>
+      )}
 
       <form
         onSubmit={handleSubmit}
@@ -292,6 +302,7 @@ const Payment = () => {
                 placeholder="Full Name"
                 className="my-2 w-11/12 border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none md:w-10/12 md:text-base lg:w-9/12"
                 value={fullName}
+                maxLength={50}
                 required
                 onChange={(e) => setFullName(e.target.value)}
               />
@@ -304,7 +315,7 @@ const Payment = () => {
                 onChange={(e) => setPhoneNumber(e.target.value)}
               />
               <input
-                type="text"
+                type="email"
                 placeholder="Email Address"
                 className="my-2 w-11/12 border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none md:w-10/12 md:text-base lg:w-9/12"
                 value={email}
@@ -331,12 +342,6 @@ const Payment = () => {
                 }
               }}
             />
-
-            <CurrencyDropdown
-              options={currencies}
-              selectedOption={currency}
-              onSelect={setCurrency}
-            />
           </div>
 
           <PaymentMethodDropdown
@@ -354,44 +359,61 @@ const Payment = () => {
                 placeholder="Card Number"
                 className="my-2 w-full border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none"
                 value={cardDetails.card_number}
+                inputMode="numeric"
+                pattern="[0-9]*"
                 required
-                onChange={(e) =>
-                  setCardDetails({
-                    ...cardDetails,
-                    card_number: e.target.value,
-                  })
-                }
+                onChange={(e) => {
+                  const { value } = e.target;
+                  if (/^\d*$/.test(value)) {
+                    setCardDetails({ ...cardDetails, card_number: value });
+                  }
+                }}
               />
               <input
                 type="text"
                 placeholder="Expiry Month"
                 className="my-2 w-full border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none"
                 value={cardDetails.exp_month}
+                inputMode="numeric"
+                pattern="[0-9]*"
                 required
-                onChange={(e) =>
-                  setCardDetails({ ...cardDetails, exp_month: e.target.value })
-                }
+                onChange={(e) => {
+                  const { value } = e.target;
+                  if (/^\d*$/.test(value)) {
+                    setCardDetails({ ...cardDetails, exp_month: value });
+                  }
+                }}
               />
               <input
                 type="text"
                 placeholder="Expiry Year"
                 className="my-2 w-full border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none"
                 value={cardDetails.exp_year}
+                inputMode="numeric"
+                pattern="[0-9]*"
                 required
-                onChange={(e) =>
-                  setCardDetails({ ...cardDetails, exp_year: e.target.value })
-                }
+                onChange={(e) => {
+                  const { value } = e.target;
+                  if (/^\d*$/.test(value)) {
+                    setCardDetails({ ...cardDetails, exp_year: value });
+                  }
+                }}
               />
+
               <input
                 type="text"
                 placeholder="CVC"
                 className="my-2 w-full border-b border-gray-800 py-2 pl-2 pr-3 text-sm text-black outline-none focus:outline-none"
                 value={cardDetails.cvc}
                 required
-                onChange={(e) =>
-                  setCardDetails({ ...cardDetails, cvc: e.target.value })
-                }
+                onChange={(e) => {
+                  const { value } = e.target;
+                  if (/^\d*$/.test(value)) {
+                    setCardDetails({ ...cardDetails, cvc: value });
+                  }
+                }}
               />
+
               <input
                 type="text"
                 placeholder="Address Line 1"
@@ -457,11 +479,16 @@ const Payment = () => {
             </div>
           )}
 
-          {paymentError && <div className="text-red-500">{paymentError}</div>}
+          {paymentError && (
+            <div className="mx-1 mt-3 text-center text-sm text-red-500">
+              {paymentError}
+            </div>
+          )}
 
           <button
             type="submit"
             className="mt-6 w-11/12 rounded-lg border border-gray-400 bg-blue-800 py-2 text-white hover:bg-blue-900 sm:w-10/12 lg:w-9/12"
+            disabled={loading}
           >
             Pay Now
           </button>
