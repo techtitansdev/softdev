@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider     = "postgresql"
-  url          = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model Users {
@@ -54,13 +54,17 @@ model Blogs {
   title                String
   excerpt              String
   image                String
+  imageId              String
   blogTitle            String
   blogDescription      String
   blogImage            String
+  blogImageId          String
   blogDescription1     String
   blogImage1           String
+  blogImage1Id         String
   blogDescription2     String
   blogImage2           String
+  blogImage2Id         String
   created              DateTime               @default(now())
   updated              DateTime               @updatedAt()
   published            Boolean                @default(false)
@@ -87,27 +91,27 @@ model Projects {
   fundraisers             Fundraisers[]
   Feedback                Feedback[]
   about                   About[]
-  
 }
-model About {
-  id                    String      @id @default(cuid())
-  projectId  String       @unique()
-  projectTitle          String
-  projectDescription    String
-  projectLink           String
-  projectImage          String
-  projectObjDescription String
-  projectObjImage       String
-  projectName1          String
-  projectName1Description String
-  projectName1Image     String
-  projectName2          String
-  projectName2Description String
-  projectName2Image     String
-  theme                 String
-  project    Projects     @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-  @@index([projectId])// Relation field to link multiple Projects to About
+model About {
+  id                      String   @id @default(cuid())
+  projectId               String   @unique()
+  projectTitle            String
+  projectDescription      String
+  projectLink             String
+  projectImage            String
+  projectObjDescription   String
+  projectObjImage         String
+  projectName1            String
+  projectName1Description String
+  projectName1Image       String
+  projectName2            String
+  projectName2Description String
+  projectName2Image       String
+  theme                   String
+  project                 Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId]) // Relation field to link multiple Projects to About
 }
 
 model Fundraisers {
@@ -180,7 +184,7 @@ model Milestones {
   created      DateTime    @default(now())
   updated      DateTime    @updatedAt()
   date         DateTime
-  done         Boolean     
+  done         Boolean
   fundraiserId String
   fundraiser   Fundraisers @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
 
