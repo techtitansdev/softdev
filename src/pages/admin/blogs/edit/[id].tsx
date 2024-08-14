@@ -167,18 +167,22 @@ function EditBlog() {
       if (response.ok) {
         switch (imageType) {
           case "featured":
+            deleteImage.mutate({id:featuredImagePublicId})
             setFeaturedImage("");
             setFeaturedImagePublicId("");
             break;
           case "image":
+            deleteImage.mutate({id:blogPublicId})
             setBlogImage("");
             setBlogPublicId("");
             break;
           case "image1":
+            deleteImage.mutate({id:blogPublicId1})
             setBlogImage1("");
             setBlogPublicId1("");
             break;
           case "image2":
+            deleteImage.mutate({id:blogPublicId2})
             setBlogImage2("");
             setBlogPublicId2("");
             break;
@@ -314,7 +318,7 @@ function EditBlog() {
                   )}
                 </CldUploadButton>
 
-                {featuredImagePublicId && (
+                {featuredImage && (
                   <button
                     onClick={() =>
                       removeImage("featured", featuredImagePublicId)
@@ -422,7 +426,6 @@ function EditBlog() {
                   maxLength={1000}
                   onChange={handleChange}
                   className="ml-12 mt-1 h-[320px] w-[550px] rounded-md border border-gray-400 p-2 text-base outline-gray-400"
-                  required
                 />
               </div>
 
@@ -435,7 +438,6 @@ function EditBlog() {
                   maxLength={1000}
                   onChange={handleChange}
                   className="mt-1 h-[320px] w-[550px] rounded-md border border-gray-400 p-2 text-base outline-gray-400"
-                  required
                 />
 
                 <div>
