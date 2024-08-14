@@ -227,7 +227,7 @@ const Payment = () => {
               </div>
               <img
                 src={fundingData.image}
-                className="mb-2 h-[350px] w-full rounded-lg shadow-md md:h-96"
+                className="mb-2 h-[350px] w-full rounded-lg object-cover shadow-md md:h-96"
                 alt={fundingData.title}
               />
               <div className="md:text-normal text-medium mx-1 line-clamp-3 text-sm font-light">
