@@ -26,6 +26,8 @@ export interface ProjectAbout {
 }
 
 export interface FundingData {
+  donors: number;
+  funds: number;
   title: string;
   project: string;
   description: string;

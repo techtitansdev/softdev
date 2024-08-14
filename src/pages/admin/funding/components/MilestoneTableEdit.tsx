@@ -16,11 +16,13 @@ export interface TableRow {
 interface MilestoneTableEditProps {
   onRowDataChange: (rows: TableRow[]) => void;
   existingMilestones: TableRow[];
+  setMilestoneUpdated: (updated: boolean) => void; // Added prop for setMilestoneUpdated
 }
 
 const MilestoneTableEdit: React.FC<MilestoneTableEditProps> = ({
   onRowDataChange,
   existingMilestones,
+  setMilestoneUpdated, // Destructuring the new prop
 }) => {
   const [rows, setRows] = useState<TableRow[]>([]);
 
@@ -70,6 +72,7 @@ const MilestoneTableEdit: React.FC<MilestoneTableEditProps> = ({
 
     setRows(newRows);
     onRowDataChange(newRows);
+    setMilestoneUpdated(true); // Trigger the update flag
   };
 
   const formatDate = (date: Date | null) => {
