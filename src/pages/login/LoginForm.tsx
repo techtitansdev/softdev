@@ -1,6 +1,5 @@
-import { OrganizationSwitcher, useAuth, useSignIn } from "@clerk/nextjs";
+import { useSignIn } from "@clerk/nextjs";
 import Link from "next/link";
-import router from "next/router";
 import { useState } from "react";
 import {
   AiOutlineExclamationCircle,
@@ -12,12 +11,11 @@ import {
 import { Modal } from "~/components/Modal";
 import { validateLogin } from "~/utils/validateLogin";
 
-export const LoginForm = () => {
+const LoginForm = () => {
   const { isLoaded, signIn, setActive } = useSignIn();
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [modalBgColor, setModalBgColor] = useState("");
-  const [isLoading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -187,12 +185,9 @@ export const LoginForm = () => {
                   </div>
                 )}
               </div>
-              <div className="mt-2 flex justify-end text-sm font-semibold sm:text-base">
-                <Link href="/otp-verification">Forgot Password?</Link>
-              </div>
             </div>
 
-            <div className="mt-16 px-5 sm:px-8 md:px-36 lg:px-16 xl:px-24">
+            <div className="mt-20 px-5 sm:px-8 md:px-36 lg:px-16 xl:px-24">
               <button
                 type="submit"
                 className="block w-full rounded-lg bg-gray-600 px-4 py-3 font-bold text-white hover:bg-gray-800"
@@ -225,3 +220,5 @@ export const LoginForm = () => {
     </>
   );
 };
+
+export default LoginForm;

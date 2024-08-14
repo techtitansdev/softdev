@@ -19,6 +19,8 @@ export const userRouter = createTRPCRouter({
         address: z.string(),
         phone: z.string(),
         password: z.string(),
+        emailVerified:z.boolean(),
+
       }),
     )
     .mutation(async (opts) => {
@@ -42,6 +44,7 @@ export const userRouter = createTRPCRouter({
       const newUser = {
         ...input,
         password: hashedPassword,
+        emailVerifiedAt: new Date().toISOString(),
       };
 
       const user = await db.users.create({

@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider     = "sqlite"
+  provider     = "postgresql"
   url          = env("DATABASE_URL")
-  relationMode = "prisma"
 }
 
 model Users {
@@ -55,7 +54,13 @@ model Blogs {
   title                String
   excerpt              String
   image                String
-  content              String
+  blogTitle            String
+  blogDescription      String
+  blogImage            String
+  blogDescription1     String
+  blogImage1           String
+  blogDescription2     String
+  blogImage2           String
   created              DateTime               @default(now())
   updated              DateTime               @updatedAt()
   published            Boolean                @default(false)
@@ -75,13 +80,34 @@ model Projects {
   beneficiaries           String
   created                 DateTime                  @default(now())
   updated                 DateTime                  @updatedAt()
-  about                   String
   published               Boolean                   @default(false)
   featured                Boolean                   @default(false)
   assignAdminsProjects    AssignAdminsProjects[]
   assignCategoriesProject AssignCategoriesProject[]
   fundraisers             Fundraisers[]
   Feedback                Feedback[]
+  about                   About[]
+  
+}
+model About {
+  id                    String      @id @default(cuid())
+  projectId  String       @unique()
+  projectTitle          String
+  projectDescription    String
+  projectLink           String
+  projectImage          String
+  projectObjDescription String
+  projectObjImage       String
+  projectName1          String
+  projectName1Description String
+  projectName1Image     String
+  projectName2          String
+  projectName2Description String
+  projectName2Image     String
+  theme                 String
+  project    Projects     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])// Relation field to link multiple Projects to About
 }
 
 model Fundraisers {
@@ -153,6 +179,8 @@ model Milestones {
   description  String
   created      DateTime    @default(now())
   updated      DateTime    @updatedAt()
+  date         DateTime
+  done         Boolean     
   fundraiserId String
   fundraiser   Fundraisers @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
 

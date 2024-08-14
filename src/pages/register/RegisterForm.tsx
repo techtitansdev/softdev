@@ -14,7 +14,7 @@ import { OtpVerification } from "~/components/OtpVerification";
 import { api } from "~/utils/api";
 import { Modal } from "~/components/Modal";
 
-export const RegisterForm = () => {
+const RegisterForm = () => {
   const initialValues: Register = {
     firstName: "",
     lastName: "",
@@ -33,6 +33,7 @@ export const RegisterForm = () => {
   const [modalBgColor, setModalBgColor] = useState("");
 
   const createUser = api.user.create.useMutation();
+  const verifyUser = api.user.verify.useMutation();
   const { signUp } = useSignUp();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,14 +73,7 @@ export const RegisterForm = () => {
           strategy: "email_code",
         });
 
-        createUser.mutate({
-          email: formValues.email,
-          firstName: formValues.firstName,
-          lastName: formValues.lastName,
-          address: formValues.address,
-          phone: formValues.phone,
-          password: formValues.password,
-        });
+        
 
         setPendingVerification(true);
       } catch (err: any) {
@@ -359,7 +353,19 @@ export const RegisterForm = () => {
           />
         </form>
       )}
-      {pendingVerification && <OtpVerification />}
+      {pendingVerification && <OtpVerification  onSuccess={function (): void {
+        createUser.mutate({
+          email: formValues.email,
+          firstName: formValues.firstName,
+          lastName: formValues.lastName,
+          address: formValues.address,
+          phone: formValues.phone,
+          password: formValues.password,
+          emailVerified: true
+        });
+      } } />}
     </div>
   );
 };
+
+export default RegisterForm;

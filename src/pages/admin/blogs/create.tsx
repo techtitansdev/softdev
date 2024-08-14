@@ -7,32 +7,42 @@ import { useRouter } from "next/router";
 import { BlogData } from "~/types/blogData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import { ChangeEvent, useEffect, useState } from "react";
-import { NewEditor } from "~/components/editor/Editor";
 import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
+import UploadIcon from "~/components/svg/UploadIcon";
 
 function CreateBlogs() {
   const createBlog = api.blog.create.useMutation();
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
   const router = useRouter();
 
-  const [imageUrl, setImageUrl] = useState("");
-  const [publicId, setPublicId] = useState("");
-  const [editorData, setEditorData] = useState(null);
   const [blogData, setBlogData] = useState<BlogData>({
     title: "",
     excerpt: "",
     image: "",
-    content: "",
+    blogTitle: "",
+    blogDescription: "",
+    blogImage: "",
+    blogDescription1: "",
+    blogImage1: "",
+    blogDescription2: "",
+    blogImage2: "",
     published: false,
     featured: false,
   });
 
-  const handleEditorChange = (data: any) => {
-    // Update state with the new data from the editor
-    setEditorData(data);
-  };
+  const [featuredImage, setFeaturedImage] = useState("");
+  const [featuredImagePublicId, setFeaturedImagePublicId] = useState("");
+
+  const [blogImage, setBlogImage] = useState("");
+  const [blogPublicId, setBlogPublicId] = useState("");
+
+  const [blogImage1, setBlogImage1] = useState("");
+  const [blogPublicId1, setBlogPublicId1] = useState("");
+
+  const [blogImage2, setBlogImage2] = useState("");
+  const [blogPublicId2, setBlogPublicId2] = useState("");
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -41,40 +51,77 @@ function CreateBlogs() {
     setBlogData({ ...blogData, [name]: value });
   };
 
-  const handleImageUpload = (result: CldUploadWidgetResults) => {
+  const handleImageUpload = (result: CldUploadWidgetResults, type: string) => {
     console.log("result: ", result);
     const info = result.info as object;
 
     if ("secure_url" in info && "public_id" in info) {
       const url = info.secure_url as string;
       const public_id = info.public_id as string;
-      setImageUrl(url);
-      setPublicId(public_id);
+
+      switch (type) {
+        case "featured":
+          setFeaturedImage(url);
+          setFeaturedImagePublicId(public_id);
+          break;
+        case "image":
+          setBlogImage(url);
+          setBlogPublicId(public_id);
+          break;
+        case "image1":
+          setBlogImage1(url);
+          setBlogPublicId1(public_id);
+          break;
+        case "image2":
+          setBlogImage2(url);
+          setBlogPublicId2(public_id);
+          break;
+        default:
+          break;
+      }
       console.log("url: ", url);
       console.log("public_id: ", public_id);
     }
   };
 
-  const removeImage = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const removeImage = async (imageType: string, publicId: string) => {
     try {
-      const response = await fetch('/api/deleteImage', {
-        method: 'DELETE',
+      const response = await fetch("/api/deleteImage", {
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ publicId }),
       });
-  
+
       if (response.ok) {
-        setImageUrl('');
-        setPublicId('');
+        switch (imageType) {
+          case "featured":
+            setFeaturedImage("");
+            setFeaturedImagePublicId("");
+            break;
+          case "image":
+            setBlogImage("");
+            setBlogPublicId("");
+            break;
+          case "image1":
+            setBlogImage1("");
+            setBlogPublicId1("");
+            break;
+          case "image2":
+            setBlogImage2("");
+            setBlogPublicId2("");
+            break;
+
+          default:
+            console.error("Unknown image type");
+        }
       } else {
         const errorData = await response.json();
-        console.error('Error removing image:', errorData.error);
+        console.error("Error removing image:", errorData.error);
       }
     } catch (error) {
-      console.error('Error removing image:', error);
+      console.error("Error removing image:", error);
     }
   };
 
@@ -82,8 +129,10 @@ function CreateBlogs() {
     try {
       const result = await createBlog.mutateAsync({
         ...blogData,
-        content: JSON.stringify(editorData, null, 2),
-        image: imageUrl,
+        image: featuredImage,
+        blogImage: blogImage,
+        blogImage1: blogImage1,
+        blogImage2: blogImage2,
         published: isPublished,
       });
       setSuccessModalOpen(true);
@@ -119,7 +168,7 @@ function CreateBlogs() {
       <div className="flex">
         <Sidebar />
 
-        <div className="mx-auto p-10">
+        <div className="mx-auto p-10 md:min-w-[700px] lg:min-w-[900px] xl:min-w-[1250px]">
           <div className="mb-10 mt-16 border-b-2 border-black pb-4 text-2xl font-medium text-gray-800 md:text-3xl">
             CREATE BLOG
           </div>
@@ -136,7 +185,7 @@ function CreateBlogs() {
                 name="title"
                 value={blogData.title}
                 onChange={handleChange}
-                className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                className="mt-1 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
                 required
                 data-testid="blog-title-input"
               />
@@ -151,7 +200,7 @@ function CreateBlogs() {
                 name="excerpt"
                 value={blogData.excerpt}
                 onChange={handleChange}
-                className="mt-1 h-56 w-full rounded-md border p-2 shadow-sm"
+                className="mt-1 h-56 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
                 required
                 data-testid="blog-description-input"
               />
@@ -165,31 +214,16 @@ function CreateBlogs() {
               <CldUploadButton
                 uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
                 className={`relative mt-4 grid h-72 w-72 place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
-                  imageUrl && "pointer-events-none"
+                  featuredImage && "pointer-events-none"
                 }`}
-                onUpload={handleImageUpload}
+                onUpload={(result) => handleImageUpload(result, "featured")}
                 data-testid="blog-image-input"
               >
-                <div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="h-6 w-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                    />
-                  </svg>
-                </div>
+                <UploadIcon />
 
-                {imageUrl && (
+                {featuredImage && (
                   <Image
-                    src={imageUrl}
+                    src={featuredImage}
                     fill
                     sizes="72"
                     className="absolute inset-0 object-cover"
@@ -198,23 +232,160 @@ function CreateBlogs() {
                 )}
               </CldUploadButton>
 
-              {publicId && (
+              {featuredImagePublicId && (
                 <button
-                  onClick={removeImage}
-                  className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700"
+                  onClick={() => removeImage("featured", featuredImagePublicId)}
+                  className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                 >
                   Remove Image
                 </button>
               )}
             </div>
 
-            <div className="mb-4">
-              <label htmlFor="content" className="font-medium text-gray-700">
-                About
-              </label>
+            <div className="mb-2 mt-12 text-xl"> Blog Design</div>
+
+            <div>
+              <textarea
+                placeholder="Blog Title"
+                id="blogTitle"
+                name="blogTitle"
+                maxLength={500}
+                value={blogData.blogTitle}
+                onChange={handleChange}
+                className="text-bold mb-1 mt-1 h-20 w-[900px] rounded-md border border-gray-400 p-2 text-2xl font-medium outline-gray-400"
+                required
+              />
             </div>
 
-            <NewEditor onChanges={handleEditorChange} />
+            <div>
+              <textarea
+                placeholder="Small Description"
+                id="blogDescription"
+                name="blogDescription"
+                maxLength={1000}
+                value={blogData.blogDescription}
+                onChange={handleChange}
+                className="text-bold mb-1 mt-1 h-24 w-[900px] rounded-md border border-gray-400 p-2 font-medium outline-gray-400"
+                required
+              />
+            </div>
+
+            <CldUploadButton
+              uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+              className={`relative mt-4 grid h-[550px] w-[1180px] place-items-center justify-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                blogImage && "pointer-events-none"
+              }`}
+              onUpload={(result) => handleImageUpload(result, "image")}
+            >
+              <UploadIcon />
+              {blogImage && (
+                <Image
+                  src={blogImage}
+                  fill
+                  sizes="72"
+                  className="absolute inset-0 object-cover"
+                  alt={blogData.title}
+                />
+              )}
+            </CldUploadButton>
+
+            {blogPublicId && (
+              <button
+                onClick={() => removeImage("image", blogPublicId)}
+                className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
+              >
+                Remove Image
+              </button>
+            )}
+
+            <div className="mt-12 flex items-center justify-between">
+              <div>
+                <CldUploadButton
+                  uploadPreset={
+                    process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+                  }
+                  className={`relative grid h-[320px] w-[550px] place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                    blogImage1 && "pointer-events-none"
+                  }`}
+                  onUpload={(result) => handleImageUpload(result, "image1")}
+                >
+                  <UploadIcon />
+                  {blogImage1 && (
+                    <Image
+                      src={blogImage1}
+                      fill
+                      sizes="72"
+                      className="absolute inset-0 object-cover"
+                      alt={blogData.blogTitle}
+                    />
+                  )}
+                </CldUploadButton>
+
+                {blogPublicId1 && (
+                  <button
+                    onClick={() => removeImage("image1", blogPublicId1)}
+                    className=" mt-1 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
+                  >
+                    Remove Image
+                  </button>
+                )}
+              </div>
+              <textarea
+                id="blogDescription1"
+                name="blogDescription1"
+                placeholder="Blog Info"
+                value={blogData.blogDescription1}
+                maxLength={1000}
+                onChange={handleChange}
+                className="ml-12 mt-1 h-[320px] w-[550px] rounded-md border border-gray-400 p-2 text-base outline-gray-400"
+                required
+              />
+            </div>
+
+            <div className="mt-12 flex items-center justify-between">
+              <textarea
+                id="blogDescription2"
+                name="blogDescription2"
+                placeholder="Blog Info"
+                value={blogData.blogDescription2}
+                maxLength={1000}
+                onChange={handleChange}
+                className="mt-1 h-[320px] w-[550px] rounded-md border border-gray-400 p-2 text-base outline-gray-400"
+                required
+              />
+
+              <div>
+                <CldUploadButton
+                  uploadPreset={
+                    process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+                  }
+                  className={`relative ml-12 grid h-[320px] w-[550px] place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                    blogImage2 && "pointer-events-none"
+                  }`}
+                  onUpload={(result) => handleImageUpload(result, "image2")}
+                >
+                  <UploadIcon />
+                  {blogImage2 && (
+                    <Image
+                      src={blogImage2}
+                      fill
+                      sizes="72"
+                      className="absolute inset-0 object-cover"
+                      alt={blogData.blogTitle}
+                    />
+                  )}
+                </CldUploadButton>
+
+                {blogPublicId2 && (
+                  <button
+                    onClick={() => removeImage("image2", blogPublicId2)}
+                    className=" mt-1 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
+                  >
+                    Remove Image
+                  </button>
+                )}
+              </div>
+            </div>
 
             <button
               type="button"

@@ -38,8 +38,8 @@ export const Sidebar = () => {
 
   const handleSignOut = async () => {
     try {
-      router.push("/");
       await signOut();
+      router.push("/");
     } catch (error) {
       console.error("Error signing out:", error);
     }

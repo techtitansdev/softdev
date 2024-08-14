@@ -7,15 +7,17 @@ import { RiSearchLine } from "react-icons/ri";
 import FilterByCategory from "~/components/filter/FilterByCategory";
 import { Footer } from "~/components/Footer";
 import FundraiserSearchInput from "~/components/search/SearchByFundraiser";
-
+import LoadingSpinner from "~/components/LoadingSpinner";
 const FundedProjects = () => {
   const [fundingData, setFundingData] = useState<any>([]);
+  const [loading, setLoading] = useState(true);
   const getFunding = api.fundraiser.getAll.useQuery();
 
   useEffect(() => {
     if (getFunding.data) {
       setFundingData(getFunding.data);
       setFilteredFunding(getFunding.data);
+      setLoading(false);
     }
   }, [getFunding.data]);
 
@@ -141,17 +143,21 @@ const FundedProjects = () => {
           </div>
         </div>
 
-        <div className="mx-auto">
-          <div className="mb-12 mt-1 flex items-center justify-center mx-4">
-            <div className="mt-4 grid grid-cols-1 gap-12 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-              {filterFunding.map((project: any) => (
-                <div key={project.id}>
-                  <FundingCard fundingData={project} />
-                </div>
-              ))}
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          <div className="mx-auto">
+            <div className="mx-4 mb-12 mt-1 flex items-center justify-center">
+              <div className="mt-4 grid grid-cols-1 gap-12 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+                {filterFunding.map((project: any) => (
+                  <div key={project.id}>
+                    <FundingCard fundingData={project} />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="mt-auto">
           <Footer />

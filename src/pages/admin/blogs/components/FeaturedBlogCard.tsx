@@ -15,6 +15,17 @@ const FeaturedBlogCard: React.FC<BlogCardProps> = ({
   blogData,
   handleDelete,
 }) => {
+  if (
+    !blogData ||
+    !blogData.id ||
+    !blogData.title ||
+    !blogData.created ||
+    !blogData.image ||
+    !blogData.excerpt
+  ) {
+    return null;
+  }
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [featured, setFeatured] = useState(blogData.featured || false);
   const [maxFeaturedReached, setMaxFeaturedReached] = useState(false);
@@ -28,8 +39,8 @@ const FeaturedBlogCard: React.FC<BlogCardProps> = ({
     setModalOpen(false);
   };
 
-  const editBlogMutation = api.blog.edit.useMutation();
-  const featuredBlogsQueryResult = api.blog.getFeaturedCount.useQuery();
+  const editBlogFeaturedMutation = api.blog.editBlogFeatured.useMutation();
+  const featuredBlogsQuery = api.blog.getFeaturedCount.useQuery();
 
   const toggleFeatured = async () => {
     const newFeaturedStatus = !featured;
@@ -37,42 +48,32 @@ const FeaturedBlogCard: React.FC<BlogCardProps> = ({
     const confirmation = window.confirm(
       `Are you sure you want to ${
         newFeaturedStatus ? "feature" : "unfeature"
-      } ${blogData.title}`,
+      } ${blogData.title}?`,
     );
 
     if (!confirmation) {
       return;
     }
 
-    setFeatured(newFeaturedStatus);
-
     try {
-      if (newFeaturedStatus && featuredBlogsQueryResult.isSuccess) {
-        const featuredBlogsCount = featuredBlogsQueryResult.data;
-        if (featuredBlogsCount >= 3) {
-          setFeatured(!newFeaturedStatus);
+      if (newFeaturedStatus && featuredBlogsQuery.isSuccess) {
+        const featuredProjectsCount = featuredBlogsQuery.data;
+        if (featuredProjectsCount >= 4) {
           setMaxFeaturedReached(true);
-          setTimeout(() => {
-            setMaxFeaturedReached(false);
-          }, 3000);
+          setTimeout(() => setMaxFeaturedReached(false), 3000);
           return;
         }
-      } else if (featuredBlogsQueryResult.isError) {
+      } else if (featuredBlogsQuery.isError) {
         console.error(
-          "Error fetching featured blogs count:",
-          featuredBlogsQueryResult.error,
+          "Error fetching featured projects count:",
+          featuredBlogsQuery.error,
         );
         return;
       }
 
-      const updatedBlogData = {
-        ...blogData,
-        featured: newFeaturedStatus,
-      };
-
-      await editBlogMutation.mutateAsync({
+      await editBlogFeaturedMutation.mutateAsync({
         id: blogData.id,
-        ...updatedBlogData,
+        featured: newFeaturedStatus,
       });
 
       setFeatured(newFeaturedStatus);
@@ -82,10 +83,7 @@ const FeaturedBlogCard: React.FC<BlogCardProps> = ({
     }
   };
 
-  // Determine card background color based on published status
-  const cardBackgroundColor = blogData.published
-    ? "bg-gray-100"
-    : "bg-white";
+  const cardBackgroundColor = blogData.published ? "bg-gray-100" : "bg-white";
 
   return (
     <div className="relative">

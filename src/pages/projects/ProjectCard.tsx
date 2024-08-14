@@ -1,11 +1,22 @@
 import Link from "next/link";
 import { IoLocationSharp } from "react-icons/io5";
 
+interface ProjectData {
+  id: string;
+  image: string;
+  title: string;
+  hub: string;
+}
+
 interface ProjectCardProps {
-  projectData: any;
+  projectData: ProjectData;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ projectData }) => {
+  if (!projectData) {
+    return null;
+  }
+
   return (
     <div>
       <ul>

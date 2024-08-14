@@ -12,12 +12,18 @@ export const fundraiser = createTRPCRouter({
         targetDate: z.date(),
         donors: z.number(),
         published: z.boolean(),
-        milestones: z.array(z.object({
-          milestone: z.string(),
-          value: z.number(),
-          unit: z.string(),
-          description: z.string(),
-        })).optional(),
+        milestones: z
+          .array(
+            z.object({
+              milestone: z.string(),
+              value: z.number(),
+              unit: z.string(),
+              description: z.string(),
+              date: z.date(),
+              done: z.boolean().optional(),
+            }),
+          )
+          .optional(),
       }),
     )
     .mutation(async (opts) => {
@@ -50,6 +56,8 @@ export const fundraiser = createTRPCRouter({
             data: {
               ...milestone,
               fundraiserId: fundraiser.id,
+              date: milestone.date,
+              done: milestone.done ?? false,
             },
           });
         }
@@ -66,19 +74,24 @@ export const fundraiser = createTRPCRouter({
         targetDate: z.date(),
         donors: z.number(),
         published: z.boolean(),
-        milestones: z.array(z.object({
-          id: z.string().optional(),
-          milestone: z.string(),
-          value: z.number(),
-          unit: z.string(),
-          description: z.string(),
-        })).optional(),
+        milestones: z
+          .array(
+            z.object({
+              id: z.string().optional(),
+              milestone: z.string(),
+              value: z.number(),
+              unit: z.string(),
+              description: z.string(),
+              date: z.date(),
+              done: z.boolean().optional(),
+            }),
+          )
+          .optional(),
       }),
     )
     .mutation(async (opts) => {
       const { input } = opts;
 
-      // Check if fundraiser exists
       const existingFundraiser = await db.fundraisers.findUnique({
         where: { id: input.id },
       });
@@ -87,7 +100,6 @@ export const fundraiser = createTRPCRouter({
         throw new Error("Fundraiser does not exist");
       }
 
-      // Update fundraiser details
       const updatedFundraiser = await db.fundraisers.update({
         where: { id: input.id },
         data: {
@@ -99,20 +111,17 @@ export const fundraiser = createTRPCRouter({
         },
       });
 
-      // Update milestones if provided
       if (input.milestones) {
-        // Fetch existing milestones
         const existingMilestones = await db.milestones.findMany({
           where: { fundraiserId: input.id },
         });
 
-        // Create a map for quick lookup
-        const existingMilestoneMap = new Map(existingMilestones.map(m => [m.id, m]));
+        const existingMilestoneMap = new Map(
+          existingMilestones.map((m) => [m.id, m]),
+        );
 
-        // Process each milestone from input
         for (const milestone of input.milestones) {
           if (milestone.id) {
-            // Update existing milestone
             if (existingMilestoneMap.has(milestone.id)) {
               await db.milestones.update({
                 where: { id: milestone.id },
@@ -120,13 +129,13 @@ export const fundraiser = createTRPCRouter({
                   milestone: milestone.milestone,
                   value: milestone.value,
                   unit: milestone.unit,
-                  description: milestone.description,
+                  date: milestone.date,
+                  done: milestone.done ?? false,
                 },
               });
               existingMilestoneMap.delete(milestone.id);
             }
           } else {
-            // Create new milestone
             await db.milestones.create({
               data: {
                 milestone: milestone.milestone,
@@ -134,12 +143,12 @@ export const fundraiser = createTRPCRouter({
                 unit: milestone.unit,
                 description: milestone.description,
                 fundraiserId: input.id,
+                date: milestone.date,
+                done: milestone.done ?? false,
               },
             });
           }
         }
-
-        // Delete remaining milestones in the map (those not in the input)
         for (const remainingMilestone of existingMilestoneMap.values()) {
           await db.milestones.delete({
             where: { id: remainingMilestone.id },
@@ -154,12 +163,12 @@ export const fundraiser = createTRPCRouter({
       z.object({
         id: z.string(),
         funds: z.number(),
+        donors: z.number(),
       }),
     )
     .mutation(async (opts) => {
       const { input } = opts;
 
-      // Check if fundraiser exists
       const existingFundraiser = await db.fundraisers.findUnique({
         where: { id: input.id },
       });
@@ -168,19 +177,19 @@ export const fundraiser = createTRPCRouter({
         throw new Error("Fundraiser does not exist");
       }
 
-      // Query existing funds
       const existingFunds = existingFundraiser.funds || 0;
+      const existingDonors = existingFundraiser.donors || 0;
 
-      // Add input amount to existing funds
       const updatedFunds = existingFunds + input.funds;
+      const updatedDonors = existingDonors + input.donors;
 
-      // Update fundraiser details in the database
       const updatedFundraiser = await db.fundraisers.update({
         where: {
           id: input.id,
         },
         data: {
           funds: updatedFunds,
+          donors: updatedDonors,
         },
       });
 
@@ -196,7 +205,6 @@ export const fundraiser = createTRPCRouter({
     .mutation(async (opts) => {
       const { input } = opts;
 
-      //check if project exists:
       const existingFundraiser = await db.fundraisers.findUnique({
         where: { id: input.id },
       });
@@ -231,7 +239,11 @@ export const fundraiser = createTRPCRouter({
         const foundFunding = await db.fundraisers.findUnique({
           where: { id: input.id },
           include: {
-            project: true,
+            project: {
+              include: {
+                about: true, 
+              },
+            },
             milestones: true,
             fundings: true,
           },

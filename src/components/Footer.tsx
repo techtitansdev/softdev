@@ -51,7 +51,7 @@ export const Footer = () => {
                 <AiFillInstagram size={22} />
               </Link>
               <Link
-                href="https://www.globalshapers.org/hubs/iloilo-hub"
+                href="https://www.globalshapers.org/community-details/a0eb0000003eOmrAAE"
                 className="mx-3 rounded-full bg-white px-1 py-1 hover:bg-gray-400"
               >
                 <CiGlobe size={22} />

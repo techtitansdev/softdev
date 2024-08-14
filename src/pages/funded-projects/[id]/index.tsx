@@ -3,36 +3,30 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
-import AboutComponent from "../components/AboutComponent";
 
 import CommentComponent from "../components/CommentComponent";
 import { Navbar } from "~/components/Navbar";
 import { Footer } from "~/components/Footer";
 import { useUser } from "@clerk/nextjs";
 import { Modal } from "~/components/Modal";
-import EditorOutput from "~/components/editor/EditorOutput";
 import MilestoneComponent from "~/pages/admin/funding/components/MilestoneComponent";
+import SpecificAboutComponent from "../components/SpecificAboutComponent";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 const Funding: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
+
   const [fundingData, setFundingData] = useState<any>(null);
   const { user } = useUser();
   const [showModal, setShowModal] = useState(false);
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
   const projectId = getFunding.data?.project.id;
   console.log(getFunding.data?.project.id);
-  const [editorBlocks, setEditorBlocks] = useState([]);
-  const [initialEditorData, setinitialEditorData] = useState();
-  const [numberOfDonor, setNumberOfDonor] = useState(0);
 
   useEffect(() => {
     if (getFunding.data && !fundingData && getFunding.data !== fundingData) {
-      setNumberOfDonor(getFunding.data.fundings.length);
       setFundingData(getFunding.data);
-      const initialEditorData = JSON.parse(getFunding.data.project.about);
-      setinitialEditorData(initialEditorData);
-      setEditorBlocks(initialEditorData.blocks);
     }
   }, [getFunding.data, fundingData]);
 
@@ -62,12 +56,20 @@ const Funding: React.FC = () => {
     if (!user) {
       event.preventDefault();
       setShowModal(true);
+
+      setTimeout(() => {
+        setShowModal(false);
+      }, 2000);
     } else {
       router.push(
         `/funded-projects/${encodeURIComponent(fundingData.id)}/payment`,
       );
     }
   };
+
+  if (getFunding.isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div>
@@ -80,7 +82,7 @@ const Funding: React.FC = () => {
       <Navbar />
 
       <div className="mx-auto max-w-[1460px] flex-col">
-        <div className="mx-auto mt-24 flex flex-col-reverse items-center justify-between px-6 pb-10 sm:px-10 lg:flex-row lg:px-12 lg:pt-20 xl:px-24">
+        <div className="mx-auto mt-24 flex flex-col-reverse items-center justify-between px-4 pb-10 sm:px-10 lg:flex-row lg:px-12 lg:pt-20 xl:px-24">
           {fundingData && (
             <div key={fundingData.id} className="w-full lg:w-1/2">
               <p className="mb-2 text-2xl font-semibold text-gray-700 sm:text-3xl md:mb-5 md:text-4xl lg:text-5xl xl:text-6xl">
@@ -110,7 +112,7 @@ const Funding: React.FC = () => {
                     alt="Donors Icon"
                   />
                   <p className="text-sm font-medium sm:text-base lg:text-lg">
-                    {numberOfDonor}
+                    {fundingData.donors}
                   </p>
                   <p className="text-xs font-light sm:text-sm lg:text-base">
                     Donors
@@ -140,7 +142,7 @@ const Funding: React.FC = () => {
                 alt="Project Image"
                 className="w-full rounded-3xl md:h-96"
               />
-              <div className="h-2.5 w-full rounded-full bg-gray-200 lg:mt-8 dark:bg-gray-400">
+              <div className="mt-4 h-2.5 w-full rounded-full bg-gray-200 lg:mt-8 dark:bg-gray-400">
                 <div
                   className="h-2.5 rounded-full bg-blue-800"
                   style={{
@@ -166,7 +168,7 @@ const Funding: React.FC = () => {
         </div>
 
         <div className="flex flex-col">
-          <div className="ml-10 space-x-4 text-sm font-medium sm:space-x-16 md:ml-24 md:space-x-24 md:text-base lg:space-x-32">
+          <div className="ml-10 space-x-8 text-sm font-medium sm:space-x-16 md:ml-24 md:space-x-24 md:text-base lg:space-x-32">
             <button
               onClick={() => changeContent("about")}
               className={`font-semibold text-gray-800 ${
@@ -200,11 +202,11 @@ const Funding: React.FC = () => {
           </div>
         </div>
 
-        <hr className="mx-6 my-4 h-px border-0 bg-gray-700 py-0.5 sm:mx-10"></hr>
+        <hr className="mx-5 my-4 h-px border-0 bg-gray-700 py-0.5 sm:mx-10"></hr>
 
-        <div className="mx-6 mb-12 mt-6 sm:mx-10 lg:mx-20 lg:mt-12">
+        <div className="mx-3 mb-12 mt-6 sm:mx-4 lg:mx-20 lg:mt-12">
           {content === "about" && fundingData?.project && (
-            <EditorOutput content={initialEditorData} />
+            <SpecificAboutComponent />
           )}
           {content === "milestone" && (
             <MilestoneComponent milestones={fundingData.milestones} />

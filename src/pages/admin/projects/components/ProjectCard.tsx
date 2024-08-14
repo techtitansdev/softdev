@@ -15,20 +15,26 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   projectData,
   handleDelete,
 }) => {
+  if (
+    !projectData ||
+    !projectData.id ||
+    !projectData.title ||
+    !projectData.image ||
+    !projectData.hub
+  ) {
+    return null;
+  }
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [featured, setFeatured] = useState(projectData.featured || false);
   const [maxFeaturedReached, setMaxFeaturedReached] = useState(false);
 
-  const openModal = () => {
-    setModalOpen(true);
-  };
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
 
-  const closeModal = () => {
-    setModalOpen(false);
-  };
-
-  const editProjectMutation = api.project.edit.useMutation();
-  const featuredProjectsQueryResult = api.project.getFeaturedCount.useQuery();
+  const editProjectFeaturedMutation =
+    api.project.editProjectFeatured.useMutation();
+  const featuredProjectsQuery = api.project.getFeaturedCount.useQuery();
 
   const toggleFeatured = async () => {
     const newFeaturedStatus = !featured;
@@ -36,42 +42,32 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     const confirmation = window.confirm(
       `Are you sure you want to ${
         newFeaturedStatus ? "feature" : "unfeature"
-      } ${projectData.title}`,
+      } ${projectData.title}?`,
     );
 
     if (!confirmation) {
       return;
     }
 
-    setFeatured(newFeaturedStatus);
-
     try {
-      if (newFeaturedStatus && featuredProjectsQueryResult.isSuccess) {
-        const featuredProjectsCount = featuredProjectsQueryResult.data;
+      if (newFeaturedStatus && featuredProjectsQuery.isSuccess) {
+        const featuredProjectsCount = featuredProjectsQuery.data;
         if (featuredProjectsCount >= 4) {
-          setFeatured(!newFeaturedStatus);
           setMaxFeaturedReached(true);
-          setTimeout(() => {
-            setMaxFeaturedReached(false);
-          }, 3000);
+          setTimeout(() => setMaxFeaturedReached(false), 3000);
           return;
         }
-      } else if (featuredProjectsQueryResult.isError) {
+      } else if (featuredProjectsQuery.isError) {
         console.error(
           "Error fetching featured projects count:",
-          featuredProjectsQueryResult.error,
+          featuredProjectsQuery.error,
         );
         return;
       }
 
-      const updatedProjectData = {
-        ...projectData,
-        featured: newFeaturedStatus,
-      };
-
-      await editProjectMutation.mutateAsync({
+      await editProjectFeaturedMutation.mutateAsync({
         id: projectData.id,
-        ...updatedProjectData,
+        featured: newFeaturedStatus,
       });
 
       setFeatured(newFeaturedStatus);
@@ -81,7 +77,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     }
   };
 
-  // Determine card background color based on published status
   const cardBackgroundColor = projectData.published
     ? "bg-gray-100"
     : "bg-white";
@@ -102,9 +97,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
           <Link href={`/admin/projects/${encodeURIComponent(projectData.id)}`}>
             <img
-              className="h-56 w-[280px] rounded-sm object-obtain lg:w-[300px]"
+              className="object-obtain h-56 w-[280px] rounded-sm lg:w-[300px]"
               src={projectData.image}
-              alt={projectData.image}
+              alt={projectData.title}
             />
           </Link>
 
