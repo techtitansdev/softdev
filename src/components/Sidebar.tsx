@@ -42,8 +42,8 @@ export const Sidebar = () => {
   const handleSignOut = async () => {
     setIsLoading(true);
     try {
-      await signOut();
       router.push("/");
+      await signOut();
     } catch (error) {
       console.error("Error signing out:", error);
       setIsLoading(false);
