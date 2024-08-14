@@ -14,7 +14,11 @@ const HowItWorks = () => {
         </p>
       </div>
       <div className="mx-auto mb-10 mt-3 flex w-full items-center justify-center px-4 sm:mb-20 sm:px-6">
-        <video controls className="min-w-[200px] max-w-[1400px]">
+        <video
+          controls
+          className="min-w-[200px] max-w-[1400px]"
+          poster="/poster-image.png"
+        >
           <source src="/fundimpact.mp4" type="video/mp4" />
         </video>
       </div>

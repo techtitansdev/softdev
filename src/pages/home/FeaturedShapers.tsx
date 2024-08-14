@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import Image from "next/image";
 import { featuredShapers } from "~/data/featuredShapers";
 
 const FeaturedShapers = () => {
@@ -7,7 +8,7 @@ const FeaturedShapers = () => {
     <div
       className="mt-1 bg-contain"
       style={{
-        backgroundImage: " url('bg-1.png')",
+        backgroundImage: "url('/bg-1.png')",
         backgroundSize: "100% 100%",
       }}
     >
@@ -32,11 +33,12 @@ const FeaturedShapers = () => {
                 key={index}
                 className="group relative mb-1 cursor-pointer items-center justify-center overflow-hidden rounded-md transition-shadow hover:shadow-xl hover:shadow-black/30"
               >
-                <div className="h-96 w-72">
-                  <img
-                    className="object-obtain h-full w-full transition-transform duration-500 group-hover:rotate-3 group-hover:scale-105"
-                    src={shaper.imageUrl}
+                <div className="relative h-96 w-72">
+                  <Image
+                    className="object-obtain transition-transform duration-500 group-hover:rotate-3 group-hover:scale-105"
+                    src={`/${shaper.imageUrl}`}
                     alt={shaper.title}
+                    layout="fill"
                   />
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black group-hover:from-black/70 group-hover:via-black/60 group-hover:to-black/70"></div>
