@@ -87,9 +87,9 @@ const SpecificProjectDetails = () => {
         <div className="">
           <img
             src={project?.projectObjImage}
-            className="mx-auto mb-4 h-[460px] w-[1250px] md:mb-10"
+            className="mx-auto mb-6 h-auto max-w-full md:mb-10"
             alt="Project Objectives"
-          ></img>
+          />
         </div>
 
         <div className="mx-auto mb-4 grid max-w-[1360px] grid-cols-1 items-center justify-center md:mb-16 lg:grid-cols-2">
@@ -124,7 +124,7 @@ const SpecificProjectDetails = () => {
 
             <img
               src={project?.projectName2Image}
-              className="mx-auto h-[560px] w-[680px]"
+              className="mx-auto w-[680px] md:h-[560px]"
               alt="projectImage2"
             ></img>
           </div>

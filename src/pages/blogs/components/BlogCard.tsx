@@ -30,7 +30,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData }) => {
         >
           <Link href={`/blogs/${encodeURIComponent(blogData.id)}`}>
             <img
-              className="object-obtain h-56 w-[280px] rounded-t-lg lg:w-[300px]"
+              className="h-56 w-[280px] rounded-t-lg object-cover lg:w-[300px]"
               src={blogData.image}
               alt="blog-image"
             />

@@ -33,7 +33,7 @@ const TeamCards = () => {
                     <div className="ml-2 rounded-t-md bg-white bg-gradient-to-r from-blue-500 to-blue-900 px-1 text-center text-lg font-medium tracking-tight text-white">
                       {member.name}
                     </div>
-                    <div className="text-normal ml-2 rounded-b-md border border-black bg-white text-center font-light tracking-tight text-blue-800">
+                    <div className="text-normal ml-2 rounded-b-md border border-gray-200 bg-white text-center font-light tracking-tight text-blue-800">
                       {member.position}
                     </div>
                   </div>
