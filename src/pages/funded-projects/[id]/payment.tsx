@@ -164,6 +164,25 @@ const Payment = () => {
           donatedAs: contributionType,
         });
 
+        // Send email receipt
+        await fetch("/api/sendEmailReceipt", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            to: email,
+            subject: `${fundingData?.title} Donation Receipt`,
+            text: `Thank you for your generous donation of ${currency} ${amount} to ${fundingData?.title}.`,
+            projectTitle: fundingData?.title,
+            projectId: idString,
+            currency,
+            amount: parseInt(amount, 10),
+            clientID: paymentIntentResponse?.data.attributes.client_key,
+            method: paymentMethod,
+          }),
+        });
+
         setPaymentDetails({
           paymentID: paymentIntentResponse?.data.id,
           amount: convertedAmount,
