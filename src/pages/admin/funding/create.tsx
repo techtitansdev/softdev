@@ -47,6 +47,8 @@ function CreateFunding() {
     beneficiaries: "",
     goal: "",
     date: "",
+    donors:0,
+    funds:0,
     about: {
       projectTitle: "",
       projectDescription: "",

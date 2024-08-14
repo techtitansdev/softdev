@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Image from "next/image";
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
 import { impactAreasData } from "~/data/impactAreasData";
@@ -14,9 +15,9 @@ const Impact = () => {
 
       <Navbar />
 
-      <div className="mx-auto mt-24 max-w-[365px] flex-col items-center px-2  sm:max-w-[405px] md:mt-36 md:max-w-[780px] xl:max-w-[1175px]">
+      <div className="mx-auto mt-24 max-w-[365px] flex-col items-center px-2 sm:max-w-[405px] md:mt-36 md:max-w-[780px] xl:max-w-[1175px]">
         <div className="text-3xl text-black lg:text-4xl">Areas of Impact</div>
-        <hr className="dark-bg-gray-800 my-4 mb-8 h-px border-0 bg-gray-800"></hr>
+        <hr className="dark-bg-gray-800 my-4 mb-8 h-px border-0 bg-gray-800" />
       </div>
 
       <div className="mb-10 flex items-center justify-center md:mb-24">
@@ -28,14 +29,19 @@ const Impact = () => {
             >
               <div className="flex items-center">
                 <div className="flex-1">
-                  <img className="h-40 w-[140px]" src={card.image} alt="Impact"/>
+                  <Image
+                    src={`/${card.image}`}
+                    alt={card.title}
+                    width={140}
+                    height={160}
+                    className="h-40 w-[140px]"
+                  />
                 </div>
                 <div className="mx-2 my-2 flex-1">
                   <div className="w-56 text-lg font-medium tracking-tight text-gray-900">
                     {card.title}
                   </div>
-
-                  <div className=" mt-1 text-sm font-light text-gray-900">
+                  <div className="mt-1 text-sm font-light text-gray-900">
                     {card.excerpt}
                   </div>
                 </div>

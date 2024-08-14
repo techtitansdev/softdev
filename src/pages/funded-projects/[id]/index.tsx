@@ -140,7 +140,7 @@ const Funding: React.FC = () => {
               <img
                 src={fundingData.project.image}
                 alt="Project Image"
-                className="w-full rounded-3xl md:h-96"
+                className="w-full rounded-3xl object-cover md:h-96"
               />
               <div className="mt-4 h-2.5 w-full rounded-full bg-gray-200 lg:mt-8 dark:bg-gray-400">
                 <div
