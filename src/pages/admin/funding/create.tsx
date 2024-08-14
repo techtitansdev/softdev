@@ -10,12 +10,12 @@ import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import MileStoneTable, { TableRow } from "./components/MilestoneTable";
 import { useUser } from "@clerk/nextjs";
-import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import { FundingData } from "~/types/fundingData";
 import React from "react";
 import UploadIcon from "~/components/svg/UploadIcon";
 import { ProjectAboutData } from "~/types/projectData";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 function CreateFunding() {
   const [project, setProject] = useState("");
@@ -204,7 +204,7 @@ function CreateFunding() {
 
   useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;

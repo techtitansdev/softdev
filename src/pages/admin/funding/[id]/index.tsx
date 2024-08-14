@@ -6,9 +6,9 @@ import CommentComponent from "../components/CommentComponent";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { useUser } from "@clerk/nextjs";
-import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import AboutComponent from "../components/AboutComponent";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 const FundingPage: React.FC = () => {
   const router = useRouter();
@@ -44,7 +44,7 @@ const FundingPage: React.FC = () => {
 
   useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;
@@ -175,9 +175,9 @@ const FundingPage: React.FC = () => {
             </div>
           </div>
 
-          <hr className="mx-6 my-4 h-px border-0 bg-gray-700 py-0.5 sm:mx-10"></hr>
+          <hr className="mx-4 my-4 h-px border-0 bg-gray-700 py-0.5 sm:mx-10"></hr>
 
-          <div className="mx-6 mb-12 mt-6 sm:mx-10 lg:mx-20 lg:mt-12">
+          <div className="mx-2 mb-12 mt-6 sm:mx-10 lg:mx-20 lg:mt-12">
             {content === "about" && fundingData?.project && <AboutComponent />}
             {content === "milestone" && (
               <MilestoneComponent milestones={fundingData.milestones} />

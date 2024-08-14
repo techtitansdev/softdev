@@ -4,15 +4,14 @@ import Link from "next/link";
 import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import { useUser } from "@clerk/nextjs";
-import { useRouter } from "next/router";
 import { Modal } from "~/components/Modal";
 import BlogCard from "./components/BlogCard";
 import FeaturedBlogCard from "./components/FeaturedBlogCard";
 import FilterByStatus from "~/components/filter/FilterByStatus";
 import SearchByBlogs from "~/components/search/SearchByBlogs";
 import { RiSearchLine } from "react-icons/ri";
-import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 const AdminBlogPage = () => {
   const [blogData, setBlogData] = useState<any>([]);
@@ -124,7 +123,7 @@ const AdminBlogPage = () => {
 
   useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;
