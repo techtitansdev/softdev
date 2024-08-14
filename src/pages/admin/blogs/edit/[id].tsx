@@ -236,6 +236,11 @@ function EditBlog() {
     return <Unauthorized />;
   }
 
+  useEffect(()=>{
+    
+    console.log("id:",featuredImagePublicId)
+  })
+
   return (
     <>
       <div>
@@ -314,10 +319,10 @@ function EditBlog() {
                   )}
                 </CldUploadButton>
 
-                {featuredImagePublicId && (
+                {featuredImage && (
                   <button
                     onClick={() =>
-                      removeImage("featured", featuredImagePublicId)
+                      removeImage("featured", featuredImage)
                     }
                     className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                   >
@@ -373,9 +378,9 @@ function EditBlog() {
                 )}
               </CldUploadButton>
 
-              {blogPublicId && (
+              {blogImage && (
                 <button
-                  onClick={() => removeImage("image", blogPublicId)}
+                  onClick={() => removeImage("image", blogImage)}
                   className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                 >
                   Remove Image
