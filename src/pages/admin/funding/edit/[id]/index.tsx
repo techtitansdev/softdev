@@ -12,8 +12,7 @@ import { FundingData } from "~/types/fundingData";
 import MileStoneTableEdit from "../../components/MilestoneTableEdit";
 import React from "react";
 import UploadIcon from "~/components/svg/UploadIcon";
-import sendEmail from "~/pages/api/sendEmail";
- 
+
 
 function EditFundraiser() {
   const router = useRouter();
@@ -25,28 +24,63 @@ function EditFundraiser() {
   const [objectiveImageUrl, setObjectiveImageUrl] = useState("");
   const [projectName1ImageUrl, setProjectName1ImageUrl] = useState("");
   const [projectName2ImageUrl, setProjectName2ImageUrl] = useState("");
-  const [initialMilestoneData, setInitialMilestoneData] = useState<TableRow[]>(
-    []
-  );
+  const [newMilestone, setInitialMilestoneData] = useState<TableRow[]>([]);
+  const [receivers, setReceivers] = useState("")
   const getProject = api.fundraiser.getById.useQuery(
     { id: id as string },
     { enabled: !!id },
   );
+
+  // Get funding data
+  const fundingData = getProject.data?.fundings;
+
+  // Default value for fundingData if it is undefined
+  const defaultFundingData: {
+    id: string;
+    fullName: string;
+    email: string;
+    contact: string;
+    date: Date;
+    fundraiserId: string;
+    amount: number;
+    paymentMethod: string;
+    donatedAs: string;
+    donorsId: string | null;
+  }[] = [];
+
+  // Use fundingData if defined, otherwise use defaultFundingData
+  const dataToUse = fundingData || defaultFundingData;
+
+  // Extract unique emails into a Set
+  const emailSet = new Set(dataToUse.map((item) => item.email));
+
+  // Convert Set to Array
+  const uniqueEmailArray = Array.from(emailSet);
+
+  // Convert the array to a comma-separated string
+  const emailString = uniqueEmailArray.join(", ");
+
+  // Log the comma-separated string
   
-  async function sendEmailRequest() {
+
+  async function sendEmailRequest(data: TableRow[]) {
     try {
-      const response = await fetch("/api/sendEmail", {
-        method: 'POST',
+      const response = await fetch("/api/sendEmailMilestones", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          to:"ferendavetorred@gmail.com",
-          subject: "Milestone Achieved: Project Completion",
-          text: "The milestone \"Project Completion\" has been achieved.\n\nDetails:\n- Value: 100%\n- Description: The project has been successfully completed.",
-         }),
+        body: JSON.stringify({
+          to: receivers,
+          subject:
+            "Milestone Achieved: Project " + getProject.data?.project.title,
+          text: 'The milestone "Project Completion" has been achieved.\n\nDetails:\n- Value: 100%\n- Description: The project has been successfully completed.',
+          projectTitle: getProject.data?.project.title,
+          projectId: getProject.data?.id,
+          milestones: milestoneData,
+        }),
       });
-  
+
       if (response.ok) {
         console.log("Email sent successfully");
       } else {
@@ -79,6 +113,8 @@ function EditFundraiser() {
     beneficiaries: "",
     goal: "",
     date: "",
+    funds: 0,
+    donors: 0,
     about: {
       projectTitle: "",
       projectDescription: "",
@@ -133,6 +169,8 @@ function EditFundraiser() {
         date: getProject.data.targetDate?.toString() || prevData.date,
         milestones: milestones || prevData.milestones,
         published: project.published || prevData.published,
+        funds: getProject.data.funds || prevData.funds,
+        donors: getProject.data.donors || prevData.donors,
         about: {
           projectTitle:
             (aboutData as any)?.projectTitle ||
@@ -244,34 +282,19 @@ function EditFundraiser() {
       return { ...rest, value: Number(item.value) };
     });
   };
+  const milestoneUpdate = () => {
+    setMilestoneUpdated(true);
+    console.log("trues");
+  };
+  const [milestoneUpdated, setMilestoneUpdated] = useState(false);
 
   const dataWithoutIdAndConvertedValue =
     getObjectsWithoutIdAndConvertValue(milestoneData);
 
   const handleMilestoneDataChange = (data: TableRow[]) => {
     setMilestoneData(data);
-  };
-
- 
-  const compareMilestones = () => {
-    const changes = milestoneData.filter((currentMilestone, index) => {
-      const initialMilestone = initialMilestoneData[index];
-      return (
-        currentMilestone.value !== initialMilestone!.value || 
-        currentMilestone.milestone !== initialMilestone!.milestone ||
-        currentMilestone.unit !== initialMilestone!.unit ||
-        currentMilestone.description !== initialMilestone!.description ||
-        currentMilestone.date?.getTime() !==
-          initialMilestone!.date?.getTime() ||
-        currentMilestone.done !== initialMilestone!.done
-      );
-    });
-
-    if (changes.length > 0) {
-      console.log("Milestone changes:", changes);
-    } else {
-      console.log("No milestone changes.");
-    }
+    setInitialMilestoneData(data);
+    setReceivers(emailString);
   };
 
   const dateObject = new Date(projectData.date);
@@ -284,16 +307,18 @@ function EditFundraiser() {
 
   const handleSubmit = async (e: React.FormEvent, isPublished: boolean) => {
     e.preventDefault();
-    sendEmailRequest();
+    if (milestoneUpdated) {
+      sendEmailRequest(milestoneData);
+    }
     editProject.mutate({
       ...projectData,
       id: id as string,
       goal: parseInt(projectData.goal, 10),
-      donors: 0,
+      donors: projectData.donors,
       targetDate: new Date(projectData.date),
-      funds: 0,
       published: isPublished,
       milestones: dataWithoutIdAndConvertedValue,
+      funds: projectData.funds,
     });
   };
 
@@ -638,6 +663,7 @@ function EditFundraiser() {
                 <MileStoneTableEdit
                   onRowDataChange={handleMilestoneDataChange}
                   existingMilestones={milestoneData}
+                  setMilestoneUpdated={milestoneUpdate}
                 />
               </div>
 
