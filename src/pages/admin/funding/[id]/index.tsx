@@ -9,12 +9,14 @@ import { useUser } from "@clerk/nextjs";
 import Unauthorized from "~/components/Unauthorized";
 import AboutComponent from "../components/AboutComponent";
 import LoadingSpinner from "~/components/LoadingSpinner";
+import { Modal } from "~/components/Modal";
 
 const FundingPage: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
   const [fundingData, setFundingData] = useState<any>(null);
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (getFunding.data && !fundingData && getFunding.data !== fundingData) {
@@ -37,6 +39,14 @@ const FundingPage: React.FC = () => {
     const differenceDays = Math.ceil(differenceMs / (1000 * 60 * 60 * 24));
 
     return differenceDays;
+  };
+
+  const handleDonateClick = () => {
+    setShowModal(true);
+
+    setTimeout(() => {
+      setShowModal(false);
+    }, 2000);
   };
 
   const { user, isLoaded } = useUser();
@@ -73,7 +83,10 @@ const FundingPage: React.FC = () => {
                   {fundingData.project?.description}
                 </p>
 
-                <button className="w-72 rounded-lg bg-blue-800 py-2 text-xl text-white hover:bg-blue-900 md:text-2xl">
+                <button
+                  className="w-72 rounded-lg bg-blue-800 py-2 text-xl text-white hover:bg-blue-900 md:text-2xl"
+                  onClick={handleDonateClick}
+                >
                   Donate
                 </button>
 
@@ -113,7 +126,7 @@ const FundingPage: React.FC = () => {
                 <img
                   src={fundingData.project.image}
                   alt="Project Image"
-                  className="w-full rounded-3xl md:h-96"
+                  className="w-full rounded-3xl object-cover md:h-96"
                 />
                 <div className="mt-4 h-2.5 w-full rounded-full bg-gray-200 lg:mt-8 dark:bg-gray-400">
                   <div
@@ -186,6 +199,13 @@ const FundingPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        message="Please log in as a user to donate."
+        bgColor="bg-gray-700 text-white"
+      />
     </div>
   );
 };
