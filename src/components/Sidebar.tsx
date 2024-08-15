@@ -7,6 +7,7 @@ import { FaDonate } from "react-icons/fa";
 import { useClerk } from "@clerk/nextjs";
 import { PiSignOutLight } from "react-icons/pi";
 import LoadingSpinner from "./LoadingSpinner";
+import { MdOutlineAdminPanelSettings } from "react-icons/md";
 
 export const Sidebar = () => {
   const Menus = [
@@ -14,6 +15,11 @@ export const Sidebar = () => {
       title: "Dashboard",
       icon: <BiSolidDashboard size={25} />,
       link: "/admin",
+    },
+    {
+      title: "Administrator",
+      icon: <MdOutlineAdminPanelSettings size={25} />,
+      link: "/admin/administrator",
     },
     {
       title: "Funding",
@@ -31,11 +37,6 @@ export const Sidebar = () => {
       title: "Comments",
       icon: <AiOutlineComment size={25} />,
       link: "/admin/comments",
-    },
-    {
-      title: "Administrator",
-      icon: <AiOutlineComment size={25} />,
-      link: "/admin/administrator",
     },
   ];
   const [open, setOpen] = useState(true);
