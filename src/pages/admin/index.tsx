@@ -27,7 +27,9 @@ export const Admin = () => {
 
       <div className="flex">
         <Sidebar />
-        <div className="mx-auto mt-72 text-5xl"> Dashboard </div>
+        <div className="flex h-screen flex-grow items-center justify-center">
+          <div className="text-[60px] font-medium">Welcome Shapers</div>
+        </div>
       </div>
     </>
   );

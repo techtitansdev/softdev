@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { clerkClient, useUser } from "@clerk/nextjs";
 import Head from "next/head";
 import { Sidebar } from "~/components/Sidebar";
-import Loading from "~/components/Loading";
+
 import Unauthorized from "~/components/Unauthorized";
 import { api } from "~/utils/api";
 import AdminModal from "~/components/AddAdminModal";
-import { Modal } from "~/components/Modal"; // Import your custom modal
+import { Modal } from "~/components/Modal";
+import { useUser } from "@clerk/nextjs";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 const Administrators = () => {
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin ? "ADMIN" : "USER";
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(""); // State for error messages
-  const [userDetails, setUserDetails] = useState(null); // State for user details
+  const [errorMessage, setErrorMessage] = useState("");
+  const [userDetails, setUserDetails] = useState(null);
   const [userId, setUserId] = useState("");
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const {
@@ -26,7 +27,7 @@ const Administrators = () => {
   const setRole = api.user.setRole.useMutation({
     onSuccess: () => {
       refetch();
-      setIsModalOpen(false); // Close the modal after success
+      setIsModalOpen(false);
     },
     onError: (error) => {
       setErrorMessage(
@@ -116,7 +117,7 @@ const Administrators = () => {
     }
   };
   if (!isLoaded || isAdminsLoading) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
 
   if (user_role !== "ADMIN") {
@@ -154,8 +155,8 @@ const Administrators = () => {
             </AdminModal>
 
             <Modal
-              isOpen={!!errorMessage} // Show modal if there's an error message
-              onClose={() => setErrorMessage("")} // Hide modal on close
+              isOpen={!!errorMessage}
+              onClose={() => setErrorMessage("")}
               message={errorMessage}
               bgColor="bg-red-500"
             />
@@ -170,7 +171,7 @@ const Administrators = () => {
                     <span>{admin.email}</span>
                     <button
                       onClick={() => handleRemoveAdmin(admin.email)}
-                      className="ml-4 rounded bg-red-500 px-4 py-2 text-white hover:bg-red-700"
+                      className="ml-4 rounded bg-red-500 px-4 py-1 text-white hover:bg-red-700"
                     >
                       Remove
                     </button>
@@ -183,7 +184,7 @@ const Administrators = () => {
 
             <button
               onClick={() => setIsModalOpen(true)}
-              className="mb-4 rounded bg-green-500 px-4 py-2 text-white hover:bg-green-700"
+              className="mb-4 mt-2 rounded bg-blue-700 px-4 py-2 text-white hover:bg-blue-800"
             >
               Add Admin
             </button>
