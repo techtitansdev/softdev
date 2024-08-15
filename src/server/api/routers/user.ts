@@ -13,14 +13,14 @@ export const userRouter = createTRPCRouter({
   create: publicProcedure
     .input(
       z.object({
+        id:z.string(),
         email: z.string().toLowerCase(),
         firstName: z.string(),
         lastName: z.string(),
         address: z.string(),
         phone: z.string(),
         password: z.string(),
-        emailVerified:z.boolean(),
-
+        emailVerified: z.boolean(),
       }),
     )
     .mutation(async (opts) => {
@@ -103,28 +103,39 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
-  getRole: publicProcedure
-    .input(
-      z.object({
-        email: z.string().toLowerCase(),
-      }),
-    )
-    .query(async (opts) => {
-      const { input } = opts;
+    getRole: publicProcedure
+    .input(z.object({ email: z.string().toLowerCase() }))
+    .query(async ({ input }) => {
+      const { email } = input;
 
-      //check if user exists
+      // Fetch user from the database
       const user = await db.users.findUnique({
-        where: {
-          email: input.email,
-        },
+        where: { email },
       });
+
       if (!user) {
         throw new Error("User not found");
       }
-      //return the user role
+
+      // Return the user's role
       return user.role;
     }),
+  getAdmins: publicProcedure.query(async () => {
+    // Fetch all users with the role of ADMIN
+    const admins = await db.users.findMany({
+      where: {
+        role: "ADMIN",
+      },
+    });
 
+    // If no admins are found, you might want to throw an error or return an empty array
+    if (!admins.length) {
+      throw new Error("No ADMIN users found");
+    }
+
+    // Return the list of ADMIN users
+    return admins;
+  }),
   setRole: protectedProcedure
     .input(
       z.object({
@@ -154,6 +165,33 @@ export const userRouter = createTRPCRouter({
           role: input.role,
         },
       });
+    }),
+  removeAdmin: publicProcedure
+    .input(
+      z.object({
+        email: z.string(), // Expect an email as input
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const { email } = input;
+
+      // Update the user role from ADMIN to USER
+      const updatedUser = await db.users.update({
+        where: { email },
+        data: { role: "USER" },
+      });
+
+      // Handle the case where the user does not exist or is not an ADMIN
+      if (!updatedUser) {
+        throw new Error(
+          `User with email ${email} not found or already a USER.`,
+        );
+      }
+
+      return {
+        success: true,
+        message: `User ${email} has been changed to USER.`,
+      };
     }),
 });
 
