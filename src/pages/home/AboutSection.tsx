@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import Image from "next/image";
 
 const AboutSection = () => {
   const [ref, inView] = useInView({
@@ -16,16 +17,18 @@ const AboutSection = () => {
     <div
       className="bg-blue-800 bg-contain py-8 sm:py-10"
       style={{
-        backgroundImage: " url('fundimpact-bg.png')",
+        backgroundImage: " url('/fundimpact-bg.png')",
         backgroundSize: "100% 100%",
       }}
     >
       <div className="mx-auto flex max-w-[1241px] flex-col items-center justify-between sm:flex-row">
         <div className="w-full sm:pl-6 md:w-1/2 lg:pr-16 xl:pl-0">
-          <img
+          <Image
             src="/fund-impact.png"
             alt="About Fundimpact"
-            className="h-[320px] w-full px-4 sm:px-0 md:h-[390px] xl:h-[400px]"
+            width={800}
+            height={400}
+            className="h-[300px] w-full px-4 sm:px-0 md:h-[390px] lg:h-[400px]"
           />
         </div>
 
@@ -43,7 +46,7 @@ const AboutSection = () => {
             Why are we so excited? Need a little background?
           </p>
 
-          <p className="lg: max-w-[590px] text-sm font-light text-gray-50 sm:text-sm xl:text-base">
+          <p className="text-sm font-light text-gray-50 sm:text-sm lg:max-w-[590px] xl:text-base">
             Within our website, we act as a vibrant center where Ilonggo
             changemakers come together to transform creative concepts into
             reality. Recognizing that groundbreaking ideas and ambitious

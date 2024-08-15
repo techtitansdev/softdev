@@ -1,8 +1,7 @@
 import { useUser } from "@clerk/nextjs";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import Loading from "~/components/Loading";
+import LoadingSpinner from "~/components/LoadingSpinner";
 import { Sidebar } from "~/components/Sidebar";
 import Unauthorized from "~/components/Unauthorized";
 
@@ -12,7 +11,7 @@ export const Admin = () => {
 
   useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <Loading/>
+    return <LoadingSpinner />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;
@@ -28,7 +27,9 @@ export const Admin = () => {
 
       <div className="flex">
         <Sidebar />
-        <div className="mx-auto mt-72 text-5xl"> Dashboard </div>
+        <div className="flex h-screen flex-grow items-center justify-center">
+          <div className="text-[60px] font-medium">Welcome Shapers</div>
+        </div>
       </div>
     </>
   );

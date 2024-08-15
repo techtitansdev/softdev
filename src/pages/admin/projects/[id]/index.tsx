@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import Head from "next/head";
-import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import { Sidebar } from "~/components/Sidebar";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 const ProjectDetailsPage = () => {
   const router = useRouter();
@@ -21,7 +21,7 @@ const ProjectDetailsPage = () => {
   const user_role = user?.publicMetadata.admin;
 
   if (!isLoaded || isLoading) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;
@@ -46,16 +46,16 @@ const ProjectDetailsPage = () => {
         <div className="flex flex-col-reverse items-center sm:pt-16 lg:flex-row lg:pt-28">
           <div className="w-full flex-col items-center justify-center lg:w-1/2">
             <p
-              className="mb-2 mt-2 px-4 text-xl font-medium sm:mb-4 sm:mt-8 sm:px-6 sm:text-2xl lg:mt-4 lg:text-3xl xl:px-0 xl:text-4xl"
+              className="mb-2 mt-2 px-2 text-xl font-medium sm:mb-4 sm:mt-8 sm:px-6 sm:text-2xl lg:mt-4 lg:text-3xl xl:px-0 xl:text-4xl"
               style={{ color: project?.theme }}
             >
               {project?.projectTitle}
             </p>
 
-            <p className="mb-2 px-4 text-xs font-light text-gray-800 sm:max-w-[700px] sm:px-6 sm:text-base md:max-w-[750px] lg:max-w-[530px] xl:px-0 xl:text-lg">
+            <p className="mb-2 px-2 text-xs font-light text-gray-800 sm:max-w-[700px] sm:px-6 sm:text-base md:max-w-[750px] lg:max-w-[530px] xl:px-0 xl:text-lg">
               {project?.projectDescription}
             </p>
-            <p className="mb-8 px-4 text-xs font-light text-gray-800 sm:px-6 sm:text-base md:mb-44 md:max-w-[530px] lg:mb-0 lg:text-lg xl:px-0">
+            <p className="mb-8 px-2 text-xs font-light text-gray-800 sm:px-6 sm:text-base md:mb-44 md:max-w-[530px] lg:mb-0 lg:text-lg xl:px-0">
               Connect with us:
               <Link
                 href={`${project?.projectLink}`}
@@ -67,7 +67,7 @@ const ProjectDetailsPage = () => {
             </p>
           </div>
 
-          <div className="mt-2 w-full rounded-md px-4 sm:px-6 lg:w-1/2 lg:max-w-[650px] lg:pr-6 xl:ml-12 xl:px-0">
+          <div className="mt-2 w-full rounded-md px-2 sm:px-6 lg:w-1/2 lg:max-w-[650px] lg:pr-6 xl:ml-12 xl:px-0">
             <img
               src={project?.projectImage}
               className="min-h-[260px] min-w-[200px] rounded-md sm:min-h-[350px]"
@@ -90,9 +90,9 @@ const ProjectDetailsPage = () => {
         <div className="">
           <img
             src={project?.projectObjImage}
-            className="mx-auto mb-10 h-[460px] w-[1250px]"
+            className="mx-auto mb-6 h-auto max-w-full md:mb-10"
             alt="Project Objectives"
-          ></img>
+          />
         </div>
 
         <div className="mx-auto mb-10 grid max-w-[1360px] grid-cols-1 items-center justify-center md:mb-16 lg:grid-cols-2">
@@ -127,7 +127,7 @@ const ProjectDetailsPage = () => {
 
             <img
               src={project?.projectName2Image}
-              className="mx-auto h-[560px] w-[680px]"
+              className="mx-auto w-[680px] md:h-[560px]"
               alt="projectImage2"
             ></img>
           </div>

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { Footer } from "~/components/Footer";
 import LoadingSpinner from "~/components/LoadingSpinner";
 import { Navbar } from "~/components/Navbar";
+import Image from "next/image";
 
 import { api } from "~/utils/api";
 
@@ -49,10 +50,10 @@ const SpecificProjectDetails = () => {
               {project?.projectTitle}
             </p>
 
-            <p className="mb-2 px-4 text-xs font-light text-gray-800 sm:max-w-[700px] sm:px-6 sm:text-base md:max-w-[750px] lg:max-w-[530px] xl:px-0 xl:text-lg">
+            <p className="mb-2 px-4 text-xs font-light text-gray-800 sm:max-w-[700px] sm:px-6 sm:text-base md:max-w-[1000px] lg:max-w-[530px] xl:px-0 xl:text-lg">
               {project?.projectDescription}
             </p>
-            <p className="mb-8 px-4 text-xs font-light text-gray-800 sm:px-6 sm:text-base md:mb-44 md:max-w-[530px] lg:mb-0 lg:text-lg xl:px-0">
+            <p className="mb-8 px-4 text-xs font-light text-gray-800 sm:px-6 sm:text-base md:mb-4 md:max-w-[530px] lg:mb-0 lg:text-lg xl:px-0">
               Connect with us:
               <Link
                 href={`${project?.projectLink}`}
@@ -65,11 +66,14 @@ const SpecificProjectDetails = () => {
           </div>
 
           <div className="mt-2 w-full rounded-md px-4 sm:px-6 lg:w-1/2 lg:max-w-[650px] lg:pr-6 xl:ml-12 xl:px-0">
-            <img
-              src={project?.projectImage}
-              className="min-h-[260px] min-w-[200px] rounded-md sm:min-h-[350px]"
-              alt="Project Image"
-            />
+            <div className="relative h-[260px] rounded-md sm:h-[350px]">
+              <Image
+                src={project?.projectImage || ""}
+                alt="Project Image"
+                layout="fill"
+                className="rounded-md"
+              />
+            </div>
           </div>
         </div>
 
@@ -84,12 +88,17 @@ const SpecificProjectDetails = () => {
           {project?.projectObjDescription}
         </div>
 
-        <div className="">
-          <img
-            src={project?.projectObjImage}
-            className="mx-auto mb-4 h-[460px] w-[1250px] md:mb-10"
-            alt="Project Objectives"
-          ></img>
+        <div className="relative mx-auto mb-6 md:mb-10">
+          <div className="h-auto w-full">
+            <Image
+              src={project?.projectObjImage || ""}
+              alt="Project Objectives"
+              layout="responsive"
+              width={1200}
+              height={675}
+              className="rounded-md"
+            />
+          </div>
         </div>
 
         <div className="mx-auto mb-4 grid max-w-[1360px] grid-cols-1 items-center justify-center md:mb-16 lg:grid-cols-2">
@@ -124,7 +133,7 @@ const SpecificProjectDetails = () => {
 
             <img
               src={project?.projectName2Image}
-              className="mx-auto h-[560px] w-[680px]"
+              className="mx-auto w-[680px] md:h-[560px]"
               alt="projectImage2"
             ></img>
           </div>

@@ -11,10 +11,10 @@ import { useRouter } from "next/router";
 import CreatableSelect from "react-select/creatable";
 import { categoriesOption } from "~/data/categories";
 import { useUser } from "@clerk/nextjs";
-import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import UploadIcon from "~/components/svg/UploadIcon";
 import React from "react";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 interface Category {
   label: string;
@@ -269,7 +269,7 @@ function CreateProjects() {
 
   useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;

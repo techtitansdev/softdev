@@ -97,7 +97,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
           <Link href={`/admin/projects/${encodeURIComponent(projectData.id)}`}>
             <img
-              className="object-obtain h-56 w-[280px] rounded-sm lg:w-[300px]"
+              className="h-56 w-[280px] rounded-sm object-cover lg:w-[300px]"
               src={projectData.image}
               alt={projectData.title}
             />
