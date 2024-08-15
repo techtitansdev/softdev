@@ -32,6 +32,11 @@ export const Sidebar = () => {
       icon: <AiOutlineComment size={25} />,
       link: "/admin/comments",
     },
+    {
+      title: "Administrator",
+      icon: <AiOutlineComment size={25} />,
+      link: "/admin/administrator",
+    },
   ];
   const [open, setOpen] = useState(true);
   const router = useRouter();
