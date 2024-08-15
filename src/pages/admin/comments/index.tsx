@@ -12,8 +12,8 @@ import SearchByName from "~/components/search/SearchByName";
 import FilterByCommentProjectName from "~/components/filter/FilterByCommentProjectName";
 import { api } from "~/utils/api";
 import { Feedback } from "~/types/Feedback";
-import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 const Comments = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -185,7 +185,7 @@ const Comments = () => {
 
   useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;

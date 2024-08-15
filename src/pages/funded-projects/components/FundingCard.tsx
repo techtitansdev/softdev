@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 interface FundingCardProps {
   fundingData?: {
@@ -27,11 +28,14 @@ const FundingCard: React.FC<FundingCardProps> = ({ fundingData }) => {
           className="hover:scale-104 transform rounded-md transition duration-500 ease-in-out hover:-translate-y-1"
         >
           <Link href={`/funded-projects/${encodeURIComponent(fundingData.id)}`}>
-            <img
-              className="h-56 w-[360px] rounded-2xl object-cover"
-              src={fundingData.project?.image}
-              alt="funding-image"
-            />
+            <div className="relative h-56 w-[360px] overflow-hidden rounded-2xl">
+              <Image
+                src={fundingData.project?.image || ""}
+                alt="funding-image"
+                layout="fill"
+                objectFit="cover"
+              />
+            </div>
           </Link>
 
           <div className="mx-2 my-2">

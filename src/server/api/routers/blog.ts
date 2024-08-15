@@ -9,13 +9,17 @@ export const blog = createTRPCRouter({
         title: z.string(),
         excerpt: z.string(),
         image: z.string(),
+        imageId: z.string(),
         blogTitle: z.string(),
         blogDescription: z.string(),
         blogImage: z.string(),
+        blogImageId: z.string(),
         blogDescription1: z.string(),
         blogImage1: z.string(),
+        blogImage1Id: z.string(),
         blogDescription2: z.string(),
         blogImage2: z.string(),
+        blogImage2Id: z.string(),
         published: z.boolean(),
         featured: z.boolean(),
       }),
@@ -67,13 +71,17 @@ export const blog = createTRPCRouter({
         title: z.string(),
         excerpt: z.string(),
         image: z.string(),
+        imageId: z.string(),
         blogTitle: z.string(),
         blogDescription: z.string(),
         blogImage: z.string(),
+        blogImageId: z.string(),
         blogDescription1: z.string(),
         blogImage1: z.string(),
+        blogImage1Id: z.string(),
         blogDescription2: z.string(),
         blogImage2: z.string(),
+        blogImage2Id: z.string(),
         published: z.boolean(),
         featured: z.boolean(),
       }),
@@ -202,28 +210,133 @@ export const blog = createTRPCRouter({
       }
     }),
 
-  removeImage: protectedProcedure
+  UpdateFeaturedImage: protectedProcedure
     .input(
       z.object({
         id: z.string(),
+        image: z.string(),
+        imageId: z.string(),
       }),
     )
     .mutation(async (opts) => {
       const { input } = opts;
 
-      try {
-        const foundBlog = await db.blogs.findUnique({
-          where: { id: input.id },
-        });
+      const existingBlog = await db.blogs.findUnique({
+        where: { id: input.id },
+      });
 
-        if (!foundBlog) {
-          throw new Error("Blog not found");
-        } else {
-          foundBlog.image = "";
-        }
-      } catch (error) {
-        throw new Error(`Failed to fetch blog: ${error as string}`);
+      if (!existingBlog) {
+        throw new Error("Blog Does Not Exist");
       }
+      const newDetails = {
+        ...existingBlog,
+        image: input.image,
+        imageId: input.imageId,
+      };
+
+      const updatedBlog = await db.blogs.update({
+        where: {
+          id: input.id,
+        },
+        data: newDetails,
+      });
+      return updatedBlog;
+    }),
+  UpdateBlogImage: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        blogImage: z.string(),
+        blogImageId: z.string(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+
+      const existingBlog = await db.blogs.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!existingBlog) {
+        throw new Error("Blog Does Not Exist");
+      }
+      const newDetails = {
+        ...existingBlog,
+        blogImage: input.blogImage,
+        blogImageId: input.blogImageId,
+      };
+
+      const updatedBlog = await db.blogs.update({
+        where: {
+          id: input.id,
+        },
+        data: newDetails,
+      });
+      return updatedBlog;
+    }),
+  UpdateBlogImage1: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        blogImage1: z.string(),
+        blogImage1Id: z.string(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+
+      const existingBlog = await db.blogs.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!existingBlog) {
+        throw new Error("Blog Does Not Exist");
+      }
+      const newDetails = {
+        ...existingBlog,
+        blogImage1: input.blogImage1,
+        blogImage1Id: input.blogImage1Id,
+      };
+
+      const updatedBlog = await db.blogs.update({
+        where: {
+          id: input.id,
+        },
+        data: newDetails,
+      });
+      return updatedBlog;
+    }),
+  UpdateBlogImage2: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        blogImage2: z.string(),
+        blogImage2Id: z.string(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+
+      const existingBlog = await db.blogs.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!existingBlog) {
+        throw new Error("Blog Does Not Exist");
+      }
+      const newDetails = {
+        ...existingBlog,
+        blogImage2: input.blogImage2,
+        blogImage2Id: input.blogImage2Id,
+      };
+
+      const updatedBlog = await db.blogs.update({
+        where: {
+          id: input.id,
+        },
+        data: newDetails,
+      });
+      return updatedBlog;
     }),
 });
 

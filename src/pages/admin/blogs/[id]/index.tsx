@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import Head from "next/head";
-import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import { useUser } from "@clerk/nextjs";
 import { Sidebar } from "~/components/Sidebar";
 import Image from "next/image";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 const BlogDetailsPage = () => {
   const router = useRouter();
@@ -21,7 +21,7 @@ const BlogDetailsPage = () => {
   const user_role = user?.publicMetadata.admin;
 
   if (!isLoaded || isLoading) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;

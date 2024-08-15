@@ -8,9 +8,9 @@ import { Modal } from "~/components/Modal";
 import { useRouter } from "next/router";
 import { BlogData } from "~/types/blogData";
 import { useUser } from "@clerk/nextjs";
-import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import UploadIcon from "~/components/svg/UploadIcon";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 function EditBlog() {
   const router = useRouter();
@@ -29,24 +29,34 @@ function EditBlog() {
   const [blogImage2, setBlogImage2] = useState("");
   const [blogPublicId2, setBlogPublicId2] = useState("");
 
-  const getBlog = api.blog.getById.useQuery({ id: id as string });
+  const getBlog = api.blog.getById.useQuery(
+    { id: id as string },
+    { enabled: !!id },
+  );
   const categories = api.categories.getAllCategories.useQuery();
   const categoriesOption = categories.data || [];
   categoriesOption.sort((a, b) => a.label.localeCompare(b.label));
 
-  const deleteImage = api.blog.removeImage.useMutation();
+  const updateFeaturedImage = api.blog.UpdateFeaturedImage.useMutation();
+  const updateBlogImage = api.blog.UpdateBlogImage.useMutation();
+  const updateBlogImage1 = api.blog.UpdateBlogImage1.useMutation();
+  const updateBlogImage2 = api.blog.UpdateBlogImage2.useMutation();
 
   const [blogData, setBlogData] = useState<BlogData>({
     title: "",
     excerpt: "",
     image: "",
+    imageId: "",
     blogTitle: "",
     blogDescription: "",
     blogImage: "",
+    blogImageId: "",
     blogDescription1: "",
     blogImage1: "",
+    blogImage1Id: "",
     blogDescription2: "",
     blogImage2: "",
+    blogImage2Id: "",
     published: false,
     featured: false,
   });
@@ -75,42 +85,56 @@ function EditBlog() {
   useEffect(() => {
     if (getBlog.data) {
       setBlogData((prevData) => {
-        if (
+        const dataChanged =
           prevData.title !== getBlog.data.title ||
           prevData.excerpt !== getBlog.data.excerpt ||
           prevData.image !== getBlog.data.image ||
+          prevData.imageId !== getBlog.data.imageId ||
           prevData.blogTitle !== getBlog.data.blogTitle ||
           prevData.blogDescription !== getBlog.data.blogDescription ||
           prevData.blogImage !== getBlog.data.blogImage ||
+          prevData.blogImageId !== getBlog.data.blogImageId ||
           prevData.blogDescription1 !== getBlog.data.blogDescription1 ||
           prevData.blogImage1 !== getBlog.data.blogImage1 ||
+          prevData.blogImage1Id !== getBlog.data.blogImage1Id ||
           prevData.blogDescription2 !== getBlog.data.blogDescription2 ||
           prevData.blogImage2 !== getBlog.data.blogImage2 ||
+          prevData.blogImage2Id !== getBlog.data.blogImage2Id ||
           prevData.published !== getBlog.data.published ||
-          prevData.featured !== getBlog.data.featured
-        ) {
+          prevData.featured !== getBlog.data.featured;
+
+        if (dataChanged) {
           return {
             title: getBlog.data.title,
             excerpt: getBlog.data.excerpt,
             image: getBlog.data.image,
+            imageId: getBlog.data.imageId,
             blogTitle: getBlog.data.blogTitle,
             blogDescription: getBlog.data.blogDescription,
             blogImage: getBlog.data.blogImage,
+            blogImageId: getBlog.data.blogImageId,
             blogDescription1: getBlog.data.blogDescription1,
             blogImage1: getBlog.data.blogImage1,
+            blogImage1Id: getBlog.data.blogImage1Id,
             blogDescription2: getBlog.data.blogDescription2,
             blogImage2: getBlog.data.blogImage2,
+            blogImage2Id: getBlog.data.blogImage2Id,
             published: getBlog.data.published,
             featured: getBlog.data.featured,
           };
-        } else {
-          return prevData;
         }
+        return prevData;
       });
+
+      // Update individual image states
       setFeaturedImage(getBlog.data.image);
+      setFeaturedImagePublicId(getBlog.data.imageId);
       setBlogImage(getBlog.data.blogImage);
+      setBlogPublicId(getBlog.data.blogImageId);
       setBlogImage1(getBlog.data.blogImage1);
+      setBlogPublicId1(getBlog.data.blogImage1Id);
       setBlogImage2(getBlog.data.blogImage2);
+      setBlogPublicId2(getBlog.data.blogImage2Id);
     }
   }, [getBlog.data]);
 
@@ -133,18 +157,40 @@ function EditBlog() {
         case "featured":
           setFeaturedImage(url);
           setFeaturedImagePublicId(public_id);
+          updateFeaturedImage.mutate({
+            id: getBlog.data!.id,
+            image: url,
+            imageId: public_id,
+          });
+
           break;
         case "image":
           setBlogImage(url);
           setBlogPublicId(public_id);
+          updateBlogImage.mutate({
+            id: getBlog.data!.id,
+            blogImage: url,
+            blogImageId: public_id,
+          });
+
           break;
         case "image1":
           setBlogImage1(url);
           setBlogPublicId1(public_id);
+          updateBlogImage1.mutate({
+            id: getBlog.data!.id,
+            blogImage1: url,
+            blogImage1Id: public_id,
+          });
           break;
         case "image2":
           setBlogImage2(url);
           setBlogPublicId2(public_id);
+          updateBlogImage2.mutate({
+            id: getBlog.data!.id,
+            blogImage2: url,
+            blogImage2Id: public_id,
+          });
           break;
         default:
           break;
@@ -167,18 +213,38 @@ function EditBlog() {
       if (response.ok) {
         switch (imageType) {
           case "featured":
+            updateFeaturedImage.mutate({
+              id: getBlog.data!.id,
+              image: "",
+              imageId: "",
+            });
             setFeaturedImage("");
             setFeaturedImagePublicId("");
             break;
           case "image":
+            updateBlogImage.mutate({
+              id: getBlog.data!.id,
+              blogImage: "",
+              blogImageId: "",
+            });
             setBlogImage("");
             setBlogPublicId("");
             break;
           case "image1":
+            updateBlogImage1.mutate({
+              id: getBlog.data!.id,
+              blogImage1: "",
+              blogImage1Id: "",
+            });
             setBlogImage1("");
             setBlogPublicId1("");
             break;
           case "image2":
+            updateBlogImage2.mutate({
+              id: getBlog.data!.id,
+              blogImage2: "",
+              blogImage2Id: "",
+            });
             setBlogImage2("");
             setBlogPublicId2("");
             break;
@@ -230,7 +296,7 @@ function EditBlog() {
 
   useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;

@@ -8,9 +8,9 @@ import { BlogData } from "~/types/blogData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import UploadIcon from "~/components/svg/UploadIcon";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 function CreateBlogs() {
   const createBlog = api.blog.create.useMutation();
@@ -21,13 +21,17 @@ function CreateBlogs() {
     title: "",
     excerpt: "",
     image: "",
+    imageId:"",
     blogTitle: "",
     blogDescription: "",
     blogImage: "",
+    blogImageId: "",
     blogDescription1: "",
     blogImage1: "",
+    blogImage1Id: "",
     blogDescription2: "",
     blogImage2: "",
+    blogImage2Id: "",
     published: false,
     featured: false,
   });
@@ -134,6 +138,10 @@ function CreateBlogs() {
         blogImage1: blogImage1,
         blogImage2: blogImage2,
         published: isPublished,
+        imageId: featuredImagePublicId,
+        blogImageId: blogPublicId,
+        blogImage1Id: blogPublicId1,
+        blogImage2Id: blogPublicId2,
       });
       setSuccessModalOpen(true);
 
@@ -151,7 +159,7 @@ function CreateBlogs() {
 
   useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;

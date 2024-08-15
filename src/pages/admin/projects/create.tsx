@@ -11,10 +11,10 @@ import { useRouter } from "next/router";
 import CreatableSelect from "react-select/creatable";
 import { categoriesOption } from "~/data/categories";
 import { useUser } from "@clerk/nextjs";
-import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import UploadIcon from "~/components/svg/UploadIcon";
 import React from "react";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 interface Category {
   label: string;
@@ -51,6 +51,7 @@ function CreateProjects() {
     title: "",
     description: "",
     image: "",
+    imageId: "",
     hub: "",
     category: "",
     type: "",
@@ -149,6 +150,7 @@ function CreateProjects() {
         case "featured":
           setImageUrl(url);
           setPublicId(public_id);
+
           break;
         case "project":
           setProjectImageUrl(url);
@@ -239,8 +241,13 @@ function CreateProjects() {
           projectImage: projectImageUrl,
           projectName1Image: projectName1ImageUrl,
           projectName2Image: projectName2ImageUrl,
+          projectImageId: projectImagePublicId,
+          objectiveImageId: objectiveImagePublicId,
+          projectName1ImageId: projectName1ImagePublicId,
+          projectName2ImageId: projectName2ImagePublicId,
         },
         image: featuredImageUrl,
+        imageId: featuredImagePublicId,
         published: isPublished,
         featured: false,
       });
@@ -262,7 +269,7 @@ function CreateProjects() {
 
   useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;
