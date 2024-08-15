@@ -29,7 +29,7 @@ interface ModalProps {
           </button>
           <button
             onClick={onConfirm}
-            className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-700"
+            className="rounded bg-blue-700 px-4 py-2 text-white hover:bg-blue-800"
           >
             Confirm
           </button>
