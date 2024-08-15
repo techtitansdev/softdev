@@ -9,6 +9,7 @@ export const project = createTRPCRouter({
         title: z.string(),
         description: z.string(),
         image: z.string(),
+        imageId: z.string(),
         hub: z.string(),
         category: z.string(),
         type: z.string(),
@@ -27,6 +28,10 @@ export const project = createTRPCRouter({
           projectName2Description: z.string(),
           projectName2Image: z.string(),
           theme: z.string(),
+          projectImageId: z.string(),
+          objectiveImageId: z.string(),
+          projectName1ImageId: z.string(),
+          projectName2ImageId: z.string(),
         }),
         published: z.boolean(),
         featured: z.boolean(),
@@ -41,6 +46,7 @@ export const project = createTRPCRouter({
           title: input.title,
           description: input.description,
           image: input.image,
+          imageId: input.imageId,
           hub: input.hub,
           category: input.category,
           type: input.type,
@@ -50,9 +56,8 @@ export const project = createTRPCRouter({
         },
       });
 
-      // Now create the "about" entry using the newly created project's ID
       const aboutData = {
-        projectId: project.id, // Use the ID from the created project
+        projectId: project.id,
         projectTitle: input.about.projectTitle,
         projectDescription: input.about.projectDescription,
         projectLink: input.about.projectLink,
@@ -66,6 +71,10 @@ export const project = createTRPCRouter({
         projectName2Description: input.about.projectName2Description,
         projectName2Image: input.about.projectName2Image,
         theme: input.about.theme,
+        projectImageId: input.about.projectImageId,
+        objectiveImageId: input.about.objectiveImageId,
+        projectName1ImageId: input.about.projectName1ImageId,
+        projectName2ImageId: input.about.projectName2ImageId,
       };
 
       await db.about.create({
@@ -82,6 +91,7 @@ export const project = createTRPCRouter({
         title: z.string(),
         description: z.string(),
         image: z.string(),
+        imageId: z.string(),
         hub: z.string(),
         category: z.string(),
         type: z.string(),
@@ -100,6 +110,10 @@ export const project = createTRPCRouter({
           projectName2Description: z.string(),
           projectName2Image: z.string(),
           theme: z.string(),
+          projectImageId: z.string(),
+          objectiveImageId: z.string(),
+          projectName1ImageId: z.string(),
+          projectName2ImageId: z.string(),
         }),
         published: z.boolean(),
         featured: z.boolean(),
@@ -134,6 +148,7 @@ export const project = createTRPCRouter({
           title: input.title,
           description: input.description,
           image: input.image,
+          imageId: input.imageId,
           hub: input.hub,
           category: input.category,
           type: input.type,
@@ -160,22 +175,26 @@ export const project = createTRPCRouter({
           projectName2Description: input.about.projectName2Description,
           projectName2Image: input.about.projectName2Image,
           theme: input.about.theme,
+          projectImageId: input.about.projectImageId,
+          objectiveImageId: input.about.objectiveImageId,
+          projectName1ImageId: input.about.projectName1ImageId,
+          projectName2ImageId: input.about.projectName2ImageId,
         },
       });
 
       return updatedProject;
     }),
 
-    editProjectFeatured: protectedProcedure
+  editProjectFeatured: protectedProcedure
     .input(
       z.object({
         id: z.string(),
         featured: z.boolean(),
-      })
+      }),
     )
     .mutation(async (opts) => {
       const { input } = opts;
-  
+
       // Check if the project is being featured and if the maximum limit is reached
       if (input.featured) {
         const featuredProjects = await db.projects.count({
@@ -185,16 +204,16 @@ export const project = createTRPCRouter({
           throw new Error("Maximum number of featured projects reached.");
         }
       }
-  
+
       // Check if project exists
       const existingProject = await db.projects.findUnique({
         where: { id: input.id },
       });
-  
+
       if (!existingProject) {
         throw new Error("Project Does Not Exist");
       }
-  
+
       // Update only the featured status
       const updatedProject = await db.projects.update({
         where: { id: input.id },
@@ -202,10 +221,9 @@ export const project = createTRPCRouter({
           featured: input.featured,
         },
       });
-  
+
       return updatedProject;
     }),
-  
 
   getFeaturedCount: protectedProcedure.query(async () => {
     const featuredProjectsCount = await db.projects.count({
@@ -323,6 +341,158 @@ export const project = createTRPCRouter({
       } catch (error) {
         throw new Error(`Failed to fetch project: ${error as string}`);
       }
+    }),
+  UpdateFeaturedImage: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        image: z.string(),
+        imageId: z.string(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+
+      const existingProject = await db.projects.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!existingProject) {
+        throw new Error("Blog Does Not Exist");
+      }
+      const newDetails = {
+        ...existingProject,
+        image: input.image,
+        imageId: input.imageId,
+      };
+
+      const updatedProject = await db.projects.update({
+        where: {
+          id: input.id,
+        },
+        data: newDetails,
+      });
+      return updatedProject;
+    }),
+  UpdateProjectImage: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        image: z.string(),
+        imageId: z.string(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+
+      const existingProjectAbout = await db.projects.findUnique({
+        where: { id: input.id },
+        include: { about: true },
+      });
+
+      if (!existingProjectAbout) {
+        throw new Error("Blog Does Not Exist");
+      }
+
+      const updatedAbout = await db.about.update({
+        where: { projectId: input.id },
+        data: {
+          ...existingProjectAbout,
+          projectImage: input.image,
+          projectImageId: input.imageId,
+        },
+      });
+      return updatedAbout;
+    }),
+  UpdateObjectiveImage: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        image: z.string(),
+        imageId: z.string(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+
+      const existingProjectAbout = await db.projects.findUnique({
+        where: { id: input.id },
+        include: { about: true },
+      });
+
+      if (!existingProjectAbout) {
+        throw new Error("Blog Does Not Exist");
+      }
+
+      const updatedAbout = await db.about.update({
+        where: { projectId: input.id },
+        data: {
+          ...existingProjectAbout,
+          projectObjImage: input.image,
+          objectiveImageId: input.imageId,
+        },
+      });
+      return updatedAbout;
+    }),
+  UpdateProjectName1Image: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        image: z.string(),
+        imageId: z.string(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+
+      const existingProjectAbout = await db.projects.findUnique({
+        where: { id: input.id },
+        include: { about: true },
+      });
+
+      if (!existingProjectAbout) {
+        throw new Error("Blog Does Not Exist");
+      }
+
+      const updatedAbout = await db.about.update({
+        where: { projectId: input.id },
+        data: {
+          ...existingProjectAbout,
+          projectName1Image: input.image,
+          projectName1ImageId: input.imageId,
+        },
+      });
+      return updatedAbout;
+    }),
+  UpdateProjectName2Image: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        image: z.string(),
+        imageId: z.string(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+
+      const existingProjectAbout = await db.projects.findUnique({
+        where: { id: input.id },
+        include: { about: true },
+      });
+
+      if (!existingProjectAbout) {
+        throw new Error("Blog Does Not Exist");
+      }
+
+      const updatedAbout = await db.about.update({
+        where: { projectId: input.id },
+        data: {
+          ...existingProjectAbout,
+          projectName2Image: input.image,
+          projectName1ImageId: input.imageId,
+        },
+      });
+      return updatedAbout;
     }),
 });
 

@@ -252,7 +252,6 @@ function EditBlog() {
           default:
             console.error("Unknown image type");
         }
-        console.log("public id", publicId);
       } else {
         const errorData = await response.json();
         console.error("Error removing image:", errorData.error);

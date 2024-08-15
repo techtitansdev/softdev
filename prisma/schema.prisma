@@ -78,6 +78,7 @@ model Projects {
   title                   String
   description             String
   image                   String
+  imageId                 String
   hub                     String
   category                String
   type                    String
@@ -94,8 +95,8 @@ model Projects {
 }
 
 model About {
-  id                      String   @id @default(cuid())
-  projectId               String   @unique()
+  id                      String @id @default(cuid())
+  projectId               String @unique()
   projectTitle            String
   projectDescription      String
   projectLink             String
@@ -109,7 +110,12 @@ model About {
   projectName2Description String
   projectName2Image       String
   theme                   String
-  project                 Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectImageId          String
+  objectiveImageId        String
+  projectName1ImageId     String
+  projectName2ImageId     String
+
+  project Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([projectId]) // Relation field to link multiple Projects to About
 }

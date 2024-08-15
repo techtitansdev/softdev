@@ -12,7 +12,7 @@ import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import UploadIcon from "~/components/svg/UploadIcon";
-import React from 'react';
+import React from "react";
 
 interface ProjectAbout {
   projectTitle: string;
@@ -28,6 +28,10 @@ interface ProjectAbout {
   projectName2Description: string;
   projectName2Image: string;
   theme: string;
+  projectImageId: string;
+  objectiveImageId: string;
+  projectName1ImageId: string;
+  projectName2ImageId: string;
 }
 
 interface ProjectData {
@@ -35,6 +39,7 @@ interface ProjectData {
   title: string;
   description: string;
   image: string;
+  imageId: string;
   hub: string;
   category: string;
   type: string;
@@ -68,11 +73,22 @@ function EditProject() {
 
   const deleteImage = api.project.removeImage.useMutation();
 
-  const getProject = api.project.getById.useQuery({ id: id as string });
+  const getProject = api.project.getById.useQuery(
+    { id: id as string },
+    { enabled: !!id },
+  );
 
   const categories = api.categories.getAllCategories.useQuery();
   const categoriesOption = categories.data || [];
   categoriesOption.sort((a, b) => a.label.localeCompare(b.label));
+
+  const updateFeaturedImage = api.project.UpdateFeaturedImage.useMutation();
+  const updateProjectImage = api.project.UpdateProjectImage.useMutation();
+  const updateObjectiveImage = api.project.UpdateObjectiveImage.useMutation();
+  const updateProjectName1Image =
+    api.project.UpdateProjectName1Image.useMutation();
+  const updateProjectName2Image =
+    api.project.UpdateProjectName2Image.useMutation();
 
   const editProject = api.project.editProject.useMutation({
     onSuccess: () => {
@@ -92,6 +108,7 @@ function EditProject() {
     title: "",
     description: "",
     image: "",
+    imageId: "",
     hub: "",
     category: "",
     type: "",
@@ -112,6 +129,10 @@ function EditProject() {
       projectName2Description: "",
       projectName2Image: "",
       theme: "",
+      projectImageId: "",
+      objectiveImageId: "",
+      projectName1ImageId: "",
+      projectName2ImageId: "",
     },
   });
 
@@ -173,22 +194,47 @@ function EditProject() {
         case "featured":
           setFeaturedImageUrl(url);
           setFeaturedImagePublicId(public_id);
+          updateFeaturedImage.mutate({
+            id: getProject.data!.id,
+            image: url,
+            imageId: public_id,
+          });
           break;
         case "project":
           setProjectImageUrl(url);
           setProjectImagePublicId(public_id);
+          updateProjectImage.mutate({
+            id: getProject.data!.id,
+            image: url,
+            imageId: public_id,
+          });
           break;
         case "objective":
           setObjectiveImageUrl(url);
           setObjectiveImagePublicId(public_id);
+          updateObjectiveImage.mutate({
+            id: getProject.data!.id,
+            image: url,
+            imageId: public_id,
+          });
           break;
         case "name1":
           setProjectName1ImageUrl(url);
           setProjectName1ImagePublicId(public_id);
+          updateProjectName1Image.mutate({
+            id: getProject.data!.id,
+            image: url,
+            imageId: public_id,
+          });
           break;
         case "name2":
           setProjectName2ImageUrl(url);
           setProjectName2ImagePublicId(public_id);
+          updateProjectName2Image.mutate({
+            id: getProject.data!.id,
+            image: url,
+            imageId: public_id,
+          });
           break;
         default:
           break;
@@ -196,64 +242,111 @@ function EditProject() {
     }
   };
 
-  const removeImage = async (e: React.FormEvent, type: string) => {
+  const removeImage = async (
+    e: React.FormEvent,
+    type: string,
+    publicId: string,
+  ) => {
     e.preventDefault();
-
     try {
-      await deleteImage.mutateAsync({
-        id: id as string,
+      const response = await fetch("/api/deleteImage", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ publicId }),
       });
+      if (response.ok) {
+        switch (type) {
+          case "featured":
+            updateFeaturedImage.mutate({
+              id: getProject.data!.id,
+              image: "",
+              imageId: "",
+            });
+            setFeaturedImageUrl("");
+            setFeaturedImagePublicId("");
+            setProjectData((prevData) => ({
+              ...prevData,
+              image: "",
+              imageId: "",
+            }));
+            break;
+          case "project":
+            updateProjectImage.mutate({
+              id: getProject.data!.id,
+              image: "",
+              imageId: "",
+            });
+            setProjectImageUrl("");
+            setProjectImagePublicId("");
+            setProjectData((prevData) => ({
+              ...prevData,
+              about: {
+                ...prevData.about,
+                projectImage: "",
+                projectImageId: "",
+              },
+            }));
+            break;
+          case "objective":
+            updateObjectiveImage.mutate({
+              id: getProject.data!.id,
+              image: "",
+              imageId: "",
+            });
+            setObjectiveImageUrl("");
+            setObjectiveImagePublicId("");
+            setProjectData((prevData) => ({
+              ...prevData,
+              about: {
+                ...prevData.about,
+                projectObjImage: "",
+                objectiveImageId: "",
+              },
+            }));
+            break;
+          case "name1":
+            updateProjectName1Image.mutate({
+              id: getProject.data!.id,
+              image: "",
+              imageId: "",
+            });
+            setProjectName1ImageUrl("");
+            setProjectName1ImagePublicId("");
+            setProjectData((prevData) => ({
+              ...prevData,
+              about: {
+                ...prevData.about,
+                projectName1Image: "",
+                projectName1ImageId: "",
+              },
+            }));
+            break;
+          case "name2":
+            updateProjectName2Image.mutate({
+              id: getProject.data!.id,
+              image: "",
+              imageId: "",
+            });
+            setProjectName2ImageUrl("");
+            setProjectName2ImagePublicId("");
+            setProjectData((prevData) => ({
+              ...prevData,
+              about: {
+                ...prevData.about,
+                projectName2Image: "",
+                projectName2ImageId: "",
+              },
+            }));
+            break;
 
-      switch (type) {
-        case "featured":
-          setFeaturedImageUrl("");
-          setProjectData((prevData) => ({
-            ...prevData,
-            image: "",
-          }));
-          break;
-        case "project":
-          setProjectImageUrl("");
-          setProjectData((prevData) => ({
-            ...prevData,
-            about: {
-              ...prevData.about,
-              projectImage: "",
-            },
-          }));
-          break;
-        case "objective":
-          setObjectiveImageUrl("");
-          setProjectData((prevData) => ({
-            ...prevData,
-            about: {
-              ...prevData.about,
-              projectObjImage: "",
-            },
-          }));
-          break;
-        case "name1":
-          setProjectName1ImageUrl("");
-          setProjectData((prevData) => ({
-            ...prevData,
-            about: {
-              ...prevData.about,
-              projectName1Image: "",
-            },
-          }));
-          break;
-        case "name2":
-          setProjectName2ImageUrl("");
-          setProjectData((prevData) => ({
-            ...prevData,
-            about: {
-              ...prevData.about,
-              projectName2Image: "",
-            },
-          }));
-          break;
-        default:
-          break;
+          default:
+            console.error("Unknown image type");
+        }
+      } else {
+        const errorData = await response.json();
+        console.error("Error removing image:", errorData.error);
       }
     } catch (error) {
       console.error("Error removing image:", error);
@@ -265,6 +358,7 @@ function EditProject() {
       ...projectData,
       id: id as string,
       image: featuredImageUrl,
+      imageId: featuredImagePublicId,
       published: isPublished,
       featured: false,
       about: {
@@ -273,6 +367,10 @@ function EditProject() {
         projectObjImage: objectiveImageUrl,
         projectName1Image: projectName1ImageUrl,
         projectName2Image: projectName2ImageUrl,
+        projectImageId: projectImagePublicId,
+        objectiveImageId: objectiveImagePublicId,
+        projectName1ImageId: projectName1ImagePublicId,
+        projectName2ImageId: projectName2ImagePublicId,
       },
     };
 
@@ -380,7 +478,9 @@ function EditProject() {
 
                 {featuredImageUrl && (
                   <button
-                    onClick={(e) => removeImage(e, "featured")}
+                    onClick={(e) =>
+                      removeImage(e, "featured", featuredImagePublicId)
+                    }
                     className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                   >
                     Remove Image
@@ -549,7 +649,9 @@ function EditProject() {
 
                   {projectImageUrl && (
                     <button
-                      onClick={(e) => removeImage(e, "project")}
+                      onClick={(e) =>
+                        removeImage(e, "project", projectImagePublicId)
+                      }
                       className=" mt-1 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                     >
                       Remove Image
@@ -598,7 +700,9 @@ function EditProject() {
                 </CldUploadButton>
                 {objectiveImageUrl && (
                   <button
-                    onClick={(e) => removeImage(e, "objective")}
+                    onClick={(e) =>
+                      removeImage(e, "objective", objectiveImagePublicId)
+                    }
                     className="mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                   >
                     Remove Image
@@ -657,7 +761,9 @@ function EditProject() {
                   </CldUploadButton>
                   {projectImageUrl && (
                     <button
-                      onClick={(e) => removeImage(e, "name1")}
+                      onClick={(e) =>
+                        removeImage(e, "name1", projectName1ImagePublicId)
+                      }
                       className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                     >
                       Remove Image
@@ -717,7 +823,9 @@ function EditProject() {
                     </CldUploadButton>
                     {projectName2ImageUrl && (
                       <button
-                        onClick={(e) => removeImage(e, "name2")}
+                        onClick={(e) =>
+                          removeImage(e, "name2", projectName2ImagePublicId)
+                        }
                         className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                       >
                         Remove Image
