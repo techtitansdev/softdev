@@ -11,9 +11,9 @@ import LoadingSpinner from "./LoadingSpinner";
 export const Sidebar = () => {
   const Menus = [
     {
-      title: "Dashboard",
+      title: "Administrator",
       icon: <BiSolidDashboard size={25} />,
-      link: "/admin",
+      link: "/admin/administrator",
     },
     {
       title: "Funding",
@@ -31,11 +31,6 @@ export const Sidebar = () => {
       title: "Comments",
       icon: <AiOutlineComment size={25} />,
       link: "/admin/comments",
-    },
-    {
-      title: "Administrator",
-      icon: <AiOutlineComment size={25} />,
-      link: "/admin/administrator",
     },
   ];
   const [open, setOpen] = useState(true);

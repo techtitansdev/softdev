@@ -2,19 +2,19 @@ import React, { useEffect, useState } from "react";
 import { clerkClient, useUser } from "@clerk/nextjs";
 import Head from "next/head";
 import { Sidebar } from "~/components/Sidebar";
-import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import { api } from "~/utils/api";
 import AdminModal from "~/components/AddAdminModal";
-import { Modal } from "~/components/Modal"; // Import your custom modal
+import { Modal } from "~/components/Modal";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 const Administrators = () => {
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin ? "ADMIN" : "USER";
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(""); // State for error messages
-  const [userDetails, setUserDetails] = useState(null); // State for user details
+  const [errorMessage, setErrorMessage] = useState("");
+  const [userDetails, setUserDetails] = useState(null);
   const [userId, setUserId] = useState("");
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const {
@@ -26,7 +26,7 @@ const Administrators = () => {
   const setRole = api.user.setRole.useMutation({
     onSuccess: () => {
       refetch();
-      setIsModalOpen(false); // Close the modal after success
+      setIsModalOpen(false);
     },
     onError: (error) => {
       setErrorMessage(
@@ -60,22 +60,19 @@ const Administrators = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: email, // Use the user's ID
+          email: email,
         }),
       });
 
-      // Check if the response is successful
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      // Parse the JSON from the response
       const data = await response.json();
       setUserId(data);
-      // Log or use the data received
+
       console.log(data);
 
-      // If you need to use the value elsewhere, you can return it
       return data;
     } catch (error) {
       console.error("Error fetching user details:", error);
@@ -97,7 +94,7 @@ const Administrators = () => {
         },
         body: JSON.stringify({
           role,
-          userId: userId, // Use the user's ID
+          userId: userId,
         }),
       });
 
@@ -116,7 +113,7 @@ const Administrators = () => {
     }
   };
   if (!isLoaded || isAdminsLoading) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
 
   if (user_role !== "ADMIN") {
@@ -154,8 +151,8 @@ const Administrators = () => {
             </AdminModal>
 
             <Modal
-              isOpen={!!errorMessage} // Show modal if there's an error message
-              onClose={() => setErrorMessage("")} // Hide modal on close
+              isOpen={!!errorMessage}
+              onClose={() => setErrorMessage("")}
               message={errorMessage}
               bgColor="bg-red-500"
             />
@@ -170,7 +167,7 @@ const Administrators = () => {
                     <span>{admin.email}</span>
                     <button
                       onClick={() => handleRemoveAdmin(admin.email)}
-                      className="ml-4 rounded bg-red-500 px-4 py-2 text-white hover:bg-red-700"
+                      className="ml-4 rounded bg-red-500 px-4 py-1 text-white hover:bg-red-700"
                     >
                       Remove
                     </button>
@@ -183,7 +180,7 @@ const Administrators = () => {
 
             <button
               onClick={() => setIsModalOpen(true)}
-              className="mb-4 rounded bg-green-500 px-4 py-2 text-white hover:bg-green-700"
+              className="mb-4 mt-2 rounded bg-blue-700 px-4 py-2 text-white hover:bg-blue-800"
             >
               Add Admin
             </button>
@@ -191,7 +188,7 @@ const Administrators = () => {
             {userDetails && (
               <div className="mt-4 rounded bg-gray-100 p-4">
                 <h3>User Details:</h3>
-                {/* Render the user details here */}
+
                 <pre>{JSON.stringify(userDetails, null, 2)}</pre>
               </div>
             )}
