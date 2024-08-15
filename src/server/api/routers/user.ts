@@ -11,47 +11,47 @@ import bcrypt from "bcrypt";
 
 export const userRouter = createTRPCRouter({
   create: publicProcedure
-    .input(
-      z.object({
-        id:z.string(),
-        email: z.string().toLowerCase(),
-        firstName: z.string(),
-        lastName: z.string(),
-        address: z.string(),
-        phone: z.string(),
-        password: z.string(),
-        emailVerified: z.boolean(),
-      }),
-    )
-    .mutation(async (opts) => {
-      const { input } = opts;
+  .input(
+    z.object({
+      email: z.string().toLowerCase(),
+      firstName: z.string(),
+      lastName: z.string(),
+      address: z.string(),
+      phone: z.string(),
+      password: z.string(),
+      emailVerified:z.boolean(),
 
-      //check if email already exists in the database
-      const existingEmail = await db.users.findUnique({
-        where: { email: input.email },
-      });
-
-      if (existingEmail) {
-        throw new Error("Email is already in use");
-      }
-
-      //hash the password
-      const saltRounds = 13;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      const hashedPassword = await bcrypt.hash(input.password, saltRounds);
-
-      //add user credentials to the database
-      const newUser = {
-        ...input,
-        password: hashedPassword,
-        emailVerifiedAt: new Date().toISOString(),
-      };
-
-      const user = await db.users.create({
-        data: newUser,
-      });
-      return user;
     }),
+  )
+  .mutation(async (opts) => {
+    const { input } = opts;
+
+    //check if email already exists in the database
+    const existingEmail = await db.users.findUnique({
+      where: { email: input.email },
+    });
+
+    if (existingEmail) {
+      throw new Error("Email is already in use");
+    }
+
+    //hash the password
+    const saltRounds = 13;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const hashedPassword = await bcrypt.hash(input.password, saltRounds);
+
+    //add user credentials to the database
+    const newUser = {
+      ...input,
+      password: hashedPassword,
+      emailVerifiedAt: new Date().toISOString(),
+    };
+
+    const user = await db.users.create({
+      data: newUser,
+    });
+    return user;
+  }),
   getByEmail: publicProcedure
     .input(
       z.object({
