@@ -12,7 +12,7 @@ import SearchByProject from "~/components/search/SearchByProject";
 import FilterByCategory from "~/components/filter/FilterByCategory";
 import FilterByStatus from "~/components/filter/FilterByStatus";
 import Unauthorized from "~/components/Unauthorized";
-import Loading from "~/components/Loading";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 const AdminProjectPage = () => {
   const [projectData, setProjectData] = useState<any>([]);
@@ -130,7 +130,7 @@ const AdminProjectPage = () => {
 
   useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;

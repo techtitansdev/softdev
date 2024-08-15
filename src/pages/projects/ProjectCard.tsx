@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { IoLocationSharp } from "react-icons/io5";
 
 interface ProjectData {
@@ -25,10 +26,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ projectData }) => {
           className="transform rounded-lg pb-4 shadow transition duration-500 ease-in-out hover:-translate-y-1 hover:scale-105"
         >
           <Link href={`/projects/${encodeURIComponent(projectData.id)}`}>
-            <img
-              className="h-56 w-[280px] rounded-t-lg object-cover lg:w-[300px]"
+            <Image
+              className="h-56 rounded-t-lg object-cover"
               src={projectData.image}
               alt="project-image"
+              width={300}
+              height={224}
             />
           </Link>
 

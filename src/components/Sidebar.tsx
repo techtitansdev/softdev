@@ -6,6 +6,7 @@ import { BiLogoBlogger, BiMoney, BiSolidDashboard } from "react-icons/bi";
 import { FaDonate } from "react-icons/fa";
 import { useClerk } from "@clerk/nextjs";
 import { PiSignOutLight } from "react-icons/pi";
+import LoadingSpinner from "./LoadingSpinner";
 
 export const Sidebar = () => {
   const Menus = [
@@ -34,16 +35,24 @@ export const Sidebar = () => {
   ];
   const [open, setOpen] = useState(true);
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
   const { signOut } = useClerk();
 
   const handleSignOut = async () => {
+    setIsLoading(true);
     try {
-      await signOut();
       router.push("/");
+      await signOut();
     } catch (error) {
       console.error("Error signing out:", error);
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className={`flex ${open ? "mr-52" : "mr-20"}`}>

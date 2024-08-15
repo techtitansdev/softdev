@@ -6,13 +6,13 @@ import { Sidebar } from "~/components/Sidebar";
 import { api } from "~/utils/api";
 import Link from "next/link";
 import { Modal } from "~/components/Modal";
-import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import FilterByCategory from "~/components/filter/FilterByCategory";
 import FilterByStatus from "~/components/filter/FilterByStatus";
 import SearchByProject from "~/components/search/SearchByProject";
 import { RiSearchLine } from "react-icons/ri";
 import FundingCardComponent from "./components/FundingCardComponent";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 const AdminFunding = () => {
   const [fundingData, setFundingData] = useState<any>([]);
@@ -130,7 +130,7 @@ const AdminFunding = () => {
 
   useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;

@@ -40,7 +40,7 @@ const Blogs = () => {
         <main className="mx-auto mt-24 max-w-[280px] flex-grow items-center justify-between md:mt-32 md:max-w-[570px] lg:mt-36 lg:max-w-[950px] lg:flex-row xl:max-w-[1275px]">
           {loading ? (
             <div className="flex min-h-screen items-center justify-center">
-              <LoadingSpinner /> {/* Render the LoadingSpinner component */}
+              <LoadingSpinner />
             </div>
           ) : (
             <>

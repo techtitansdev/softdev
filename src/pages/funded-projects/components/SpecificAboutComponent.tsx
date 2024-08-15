@@ -44,7 +44,7 @@ const SpecificAboutComponent: React.FC = () => {
           <div className="mt-2 w-full rounded-md px-2 sm:px-6 lg:w-1/2 lg:max-w-[650px] lg:pr-6 xl:ml-12 xl:px-0">
             <img
               src={project?.projectImage}
-              className="min-h-[260px] min-w-[200px] rounded-md object-cover sm:min-h-[350px]"
+              className="object-obtain min-h-[200px] min-w-[200px] rounded-md sm:min-h-[350px]"
               alt="Project Image"
             />
           </div>
@@ -101,7 +101,7 @@ const SpecificAboutComponent: React.FC = () => {
 
             <img
               src={project?.projectName2Image}
-              className="mx-auto h-[560px] w-[680px]"
+              className="mx-auto w-[680px] md:h-[560px]"
               alt="projectImage2"
             ></img>
           </div>

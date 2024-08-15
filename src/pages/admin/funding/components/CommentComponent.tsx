@@ -1,4 +1,17 @@
+import { useState } from "react";
+import { Modal } from "~/components/Modal";
+
 const CommentComponent: React.FC = () => {
+  const [showModal, setShowModal] = useState(false);
+
+  const commentClick = () => {
+    setShowModal(true);
+
+    setTimeout(() => {
+      setShowModal(false);
+    }, 2000);
+  };
+
   return (
     <div className="mx-auto">
       <div className="items-center justify-center">
@@ -13,11 +26,21 @@ const CommentComponent: React.FC = () => {
             placeholder="What’s on your mind?"
           />
 
-          <button className="self-end rounded-lg bg-gray-300 px-20 py-2 hover:bg-gray-400">
+          <button
+            className="self-end rounded-lg bg-gray-300 px-20 py-2 hover:bg-gray-400"
+            onClick={commentClick}
+          >
             Post
           </button>
         </div>
       </div>
+
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        message="Please log in as a user to comment."
+        bgColor="bg-gray-700 text-white"
+      />
     </div>
   );
 };

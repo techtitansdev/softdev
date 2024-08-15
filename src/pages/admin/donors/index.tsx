@@ -8,10 +8,10 @@ import {
   AiOutlineSortDescending,
 } from "react-icons/ai";
 import SearchByDonor from "~/components/search/SearchByDonor";
-import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import { api } from "~/utils/api";
 import FilterByProjectName from "~/components/filter/FilterByProjectName";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 type Donor = {
   fullName: string;
@@ -192,7 +192,7 @@ const Donors = () => {
 
   useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;

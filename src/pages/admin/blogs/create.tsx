@@ -8,9 +8,9 @@ import { BlogData } from "~/types/blogData";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import Loading from "~/components/Loading";
 import Unauthorized from "~/components/Unauthorized";
 import UploadIcon from "~/components/svg/UploadIcon";
+import LoadingSpinner from "~/components/LoadingSpinner";
 
 function CreateBlogs() {
   const createBlog = api.blog.create.useMutation();
@@ -151,7 +151,7 @@ function CreateBlogs() {
 
   useEffect(() => {}, [isLoaded, user_role]);
   if (!isLoaded) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
   if (user_role !== "admin") {
     return <Unauthorized />;
