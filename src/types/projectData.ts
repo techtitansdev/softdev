@@ -2,6 +2,7 @@ export interface ProjectData {
   title: string;
   description: string;
   image: string;
+  imageId: string;
   hub: string;
   category: string;
   type: string;

@@ -51,6 +51,7 @@ function CreateProjects() {
     title: "",
     description: "",
     image: "",
+    imageId: "",
     hub: "",
     category: "",
     type: "",
@@ -149,6 +150,7 @@ function CreateProjects() {
         case "featured":
           setImageUrl(url);
           setPublicId(public_id);
+
           break;
         case "project":
           setProjectImageUrl(url);
@@ -239,8 +241,13 @@ function CreateProjects() {
           projectImage: projectImageUrl,
           projectName1Image: projectName1ImageUrl,
           projectName2Image: projectName2ImageUrl,
+          projectImageId: projectImagePublicId,
+          objectiveImageId: objectiveImagePublicId,
+          projectName1ImageId: projectName1ImagePublicId,
+          projectName2ImageId: projectName2ImagePublicId,
         },
         image: featuredImageUrl,
+        imageId: featuredImagePublicId,
         published: isPublished,
         featured: false,
       });
