@@ -11,9 +11,8 @@ import CreatableSelect from "react-select/creatable";
 import { useUser } from "@clerk/nextjs";
 import Unauthorized from "~/components/Unauthorized";
 import UploadIcon from "~/components/svg/UploadIcon";
-import React from 'react';
+import React from "react";
 import LoadingSpinner from "~/components/LoadingSpinner";
-
 
 interface ProjectAbout {
   projectTitle: string;
@@ -71,8 +70,6 @@ function EditProject() {
   const [projectName2ImageUrl, setProjectName2ImageUrl] = useState("");
   const [projectName2ImagePublicId, setProjectName2ImagePublicId] =
     useState("");
-
-  const deleteImage = api.project.removeImage.useMutation();
 
   const getProject = api.project.getById.useQuery(
     { id: id as string },
@@ -150,10 +147,15 @@ function EditProject() {
       });
       setFeaturedImageUrl(data.image);
       setFeaturedImagePublicId(data.image);
+      setFeaturedImagePublicId(data.imageId);
       setProjectImageUrl(aboutData.projectImage);
+      setProjectImagePublicId(aboutData.projectImageId);
       setObjectiveImageUrl(aboutData.projectObjImage);
+      setObjectiveImagePublicId(aboutData.objectiveImageId);
       setProjectName1ImageUrl(aboutData.projectName1Image);
+      setProjectName1ImagePublicId(aboutData.projectName1ImageId);
       setProjectName2ImageUrl(aboutData.projectName2Image);
+      setProjectName2ImagePublicId(aboutData.projectName2ImageId);
     }
   }, [getProject.data]);
 
