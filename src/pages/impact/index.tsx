@@ -38,7 +38,7 @@ const Impact = () => {
                   />
                 </div>
                 <div className="mx-2 my-2 flex-1">
-                  <div className="w-56 text-lg font-medium tracking-tight text-gray-900">
+                  <div className="w-52 text-lg font-medium tracking-tight text-gray-900 md:w-56">
                     {card.title}
                   </div>
                   <div className="mt-1 text-sm font-light text-gray-900">
