@@ -47,13 +47,16 @@ const FeaturedProjects = () => {
                     </div>
                     <div className="p-4">
                       <div className="card-title">
-                        <div className="mb-1 text-xl tracking-tight text-gray-900">
+                        <div className="mb-1 max-w-[260px] overflow-hidden text-ellipsis whitespace-nowrap text-xl tracking-tight text-gray-900">
                           {card.title}
                         </div>
                       </div>
 
-                      <div className="flex flex-row items-center font-normal text-gray-800 dark:text-gray-500">
-                        <IoLocationSharp size={15} /> {card.hub}
+                      <div className="flex items-center font-normal text-gray-800 dark:text-gray-500">
+                        <IoLocationSharp size={15} />
+                        <span className="ml-1 max-w-[235px] overflow-hidden text-ellipsis whitespace-nowrap">
+                          {card.hub}
+                        </span>
                       </div>
                     </div>
                   </div>
