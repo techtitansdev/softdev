@@ -39,7 +39,7 @@ const FundingCard: React.FC<FundingCardProps> = ({ fundingData }) => {
           </Link>
 
           <div className="mx-2 my-2">
-            <h5 className="text-lg font-semibold tracking-tight text-gray-900">
+            <h5 className="max-w-[340px] overflow-hidden text-ellipsis whitespace-nowrap text-lg font-semibold tracking-tight text-gray-900">
               {fundingData.project?.title}
             </h5>
 
