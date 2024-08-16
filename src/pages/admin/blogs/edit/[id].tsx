@@ -200,7 +200,12 @@ function EditBlog() {
     }
   };
 
-  const removeImage = async (imageType: string, publicId: string) => {
+  const removeImage = async (
+    e: React.FormEvent,
+    imageType: string,
+    publicId: string,
+  ) => {
+    e.preventDefault();
     try {
       const response = await fetch("/api/deleteImage", {
         method: "DELETE",
@@ -382,8 +387,8 @@ function EditBlog() {
 
                 {featuredImagePublicId && (
                   <button
-                    onClick={() =>
-                      removeImage("featured", featuredImagePublicId)
+                    onClick={(e) =>
+                      removeImage(e, "featured", featuredImagePublicId)
                     }
                     className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                   >
@@ -441,7 +446,7 @@ function EditBlog() {
 
               {blogPublicId && (
                 <button
-                  onClick={() => removeImage("image", blogPublicId)}
+                  onClick={(e) => removeImage(e, "image", blogPublicId)}
                   className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                 >
                   Remove Image
@@ -473,7 +478,7 @@ function EditBlog() {
 
                   {blogPublicId1 && (
                     <button
-                      onClick={() => removeImage("image1", blogPublicId1)}
+                      onClick={(e) => removeImage(e, "image1", blogPublicId1)}
                       className=" mt-1 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                     >
                       Remove Image
@@ -528,7 +533,7 @@ function EditBlog() {
 
                   {blogPublicId2 && (
                     <button
-                      onClick={() => removeImage("image2", blogPublicId2)}
+                      onClick={(e) => removeImage(e, "image2", blogPublicId2)}
                       className=" mt-1 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                     >
                       Remove Image
