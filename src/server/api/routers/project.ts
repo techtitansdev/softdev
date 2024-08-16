@@ -397,7 +397,7 @@ export const project = createTRPCRouter({
       const updatedAbout = await db.about.update({
         where: { projectId: input.id },
         data: {
-          ...existingProjectAbout,
+          ...existingProjectAbout.about[0],
           projectImage: input.image,
           projectImageId: input.imageId,
         },
@@ -427,7 +427,7 @@ export const project = createTRPCRouter({
       const updatedAbout = await db.about.update({
         where: { projectId: input.id },
         data: {
-          ...existingProjectAbout,
+          ...existingProjectAbout.about[0],
           projectObjImage: input.image,
           objectiveImageId: input.imageId,
         },
@@ -457,7 +457,7 @@ export const project = createTRPCRouter({
       const updatedAbout = await db.about.update({
         where: { projectId: input.id },
         data: {
-          ...existingProjectAbout,
+          ...existingProjectAbout.about[0],
           projectName1Image: input.image,
           projectName1ImageId: input.imageId,
         },
@@ -487,7 +487,7 @@ export const project = createTRPCRouter({
       const updatedAbout = await db.about.update({
         where: { projectId: input.id },
         data: {
-          ...existingProjectAbout,
+          ...existingProjectAbout.about[0],
           projectName2Image: input.image,
           projectName1ImageId: input.imageId,
         },
