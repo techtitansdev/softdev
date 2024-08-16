@@ -37,12 +37,12 @@ const Blogs = () => {
       </Head>
       <div className="flex min-h-screen flex-col">
         <Navbar />
-        <main className="mx-auto mt-24 max-w-[280px] flex-grow items-center justify-between md:mt-32 md:max-w-[570px] lg:mt-36 lg:max-w-[950px] lg:flex-row xl:max-w-[1275px]">
-          {loading ? (
-            <div className="flex min-h-screen items-center justify-center">
-              <LoadingSpinner />
-            </div>
-          ) : (
+        {loading ? (
+          <div className="flex min-h-screen items-center justify-center">
+            <LoadingSpinner />
+          </div>
+        ) : (
+          <main className="mx-auto mt-24 max-w-[280px] flex-grow items-center justify-between md:mt-32 md:max-w-[570px] lg:mt-36 lg:max-w-[950px] lg:flex-row xl:max-w-[1275px]">
             <>
               <div className="mb-4 mt-1 flex items-center justify-center">
                 <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
@@ -64,8 +64,8 @@ const Blogs = () => {
                 </div>
               </div>
             </>
-          )}
-        </main>
+          </main>
+        )}
         <Footer />
       </div>
     </>
