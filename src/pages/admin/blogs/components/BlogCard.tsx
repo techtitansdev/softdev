@@ -27,7 +27,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
   const openModal = () => {
     setModalOpen(true);
   };
-  
+
   const closeModal = () => {
     setModalOpen(false);
   };
@@ -115,9 +115,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
           </Link>
 
           <div className="mx-2 my-2">
-            <div
-              className="truncate text-lg font-medium tracking-tight text-gray-900"
-            >
+            <div className="truncate text-lg font-medium tracking-tight text-gray-900">
               {blogData.title}
             </div>
 
@@ -128,9 +126,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
               {createdDate}
             </div>
 
-            <div
-              className="max-w-[330px] items-center truncate text-xs font-light text-gray-700 dark:text-gray-500"
-            >
+            <div className="max-w-[330px] items-center truncate text-xs font-light text-gray-700 dark:text-gray-500">
               {blogData.excerpt}
             </div>
           </div>

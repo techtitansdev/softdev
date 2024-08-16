@@ -40,7 +40,7 @@ const FeaturedBlogCard: React.FC<FeaturedBlogCardProps> = ({ blogData }) => {
           </Link>
 
           <div className="my-2 ml-1">
-            <div className="ml-1 text-lg font-medium tracking-tight text-gray-900 lg:text-xl">
+            <div className="ml-1 max-w-[350px] overflow-hidden text-ellipsis whitespace-nowrap text-lg font-medium tracking-tight text-gray-900 lg:text-xl">
               {blogData.title}
             </div>
 
@@ -57,7 +57,7 @@ const FeaturedBlogCard: React.FC<FeaturedBlogCardProps> = ({ blogData }) => {
               className="mx-1 items-center text-xs font-light text-gray-700 lg:text-sm dark:text-gray-500"
               style={{
                 display: "-webkit-box",
-                WebkitLineClamp: 2,
+                WebkitLineClamp: 1,
                 WebkitBoxOrient: "vertical",
                 overflow: "hidden",
               }}
