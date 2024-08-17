@@ -273,7 +273,7 @@ function EditBlog() {
       image: featuredImage,
       blogImage: blogImage,
       blogImage1: blogImage1,
-      blogImage2Image: blogImage2,
+      blogImage2: blogImage2,
       published: isPublished,
       featured: false,
     };
