@@ -1,6 +1,6 @@
 import { useSignUp } from "@clerk/nextjs";
 import router from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Modal } from "./Modal";
 
 interface OtpVerificationProps {
@@ -16,6 +16,7 @@ export const OtpVerification: React.FC<OtpVerificationProps> = ({
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [modalColor, setModalColor] = useState("");
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const closeModal = () => {
     setModalOpen(false);
@@ -70,11 +71,10 @@ export const OtpVerification: React.FC<OtpVerificationProps> = ({
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     const inputValue = e.target.value;
 
-    // Check if the input is a numeric digit (0-9)
     if (/^\d$/.test(inputValue)) {
       setOtp((prevOtp) => {
         prevOtp[index] = inputValue;
@@ -83,11 +83,12 @@ export const OtpVerification: React.FC<OtpVerificationProps> = ({
 
       // Move focus to the next input field
       if (index < otp.length - 1) {
-        const nextInput = e.currentTarget.nextSibling as HTMLInputElement;
-        setTimeout(() => nextInput?.focus(), 0);
+        const nextInput = inputRefs.current[index + 1];
+        if (nextInput) {
+          setTimeout(() => nextInput.focus(), 0);
+        }
       }
     } else if (inputValue === "") {
-      // Handle Backspace key
       setOtp((prevOtp) => {
         prevOtp[index] = "";
         return [...prevOtp];
@@ -95,8 +96,32 @@ export const OtpVerification: React.FC<OtpVerificationProps> = ({
 
       // Move focus to the previous input field
       if (index > 0) {
-        const prevInput = e.currentTarget.previousSibling as HTMLInputElement;
-        setTimeout(() => prevInput?.focus(), 0);
+        const prevInput = inputRefs.current[index - 1];
+        if (prevInput) {
+          setTimeout(() => prevInput.focus(), 0);
+        }
+      }
+    }
+  };
+
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number,
+  ) => {
+    if (e.key === "Backspace") {
+      e.preventDefault(); // Prevent default backspace behavior
+
+      setOtp((prevOtp) => {
+        prevOtp[index] = "";
+        return [...prevOtp];
+      });
+
+      // Move focus to the previous input field
+      if (index > 0) {
+        const prevInput = inputRefs.current[index - 1];
+        if (prevInput) {
+          setTimeout(() => prevInput.focus(), 0);
+        }
       }
     }
   };
@@ -126,7 +151,9 @@ export const OtpVerification: React.FC<OtpVerificationProps> = ({
               key={i}
               value={data || ""}
               onChange={(e) => handleInputChange(e, i)}
+              onKeyDown={(e) => handleKeyDown(e, i)}
               onFocus={(e) => e.target.select()}
+              ref={(el) => (inputRefs.current[i] = el)}
             />
           ))}
         </div>

@@ -40,7 +40,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData }) => {
           </Link>
 
           <div className="my-2 ml-1">
-            <div className="ml-1 text-lg font-medium tracking-tight text-gray-900">
+            <div className="ml-1 max-w-[280px] overflow-hidden text-ellipsis whitespace-nowrap text-lg font-medium tracking-tight text-gray-900">
               {blogData.title}
             </div>
 
