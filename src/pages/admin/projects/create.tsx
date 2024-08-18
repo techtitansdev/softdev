@@ -134,8 +134,26 @@ function CreateProjects() {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
-    setProjectData({ ...projectData, [name]: value });
-    setAboutData({ ...aboutData, [name]: value });
+
+    if (name in projectData) {
+      setProjectData({ ...projectData, [name]: value });
+
+      // Auto-fill the aboutData fields
+      if (name === "title") {
+        setAboutData((prevAboutData) => ({
+          ...prevAboutData,
+          projectTitle: value,
+        }));
+      } else if (name === "description") {
+        setAboutData((prevAboutData) => ({
+          ...prevAboutData,
+          projectDescription: value,
+        }));
+      }
+    } else if (name in aboutData) {
+      // Update aboutData state
+      setAboutData({ ...aboutData, [name]: value });
+    }
   };
 
   const handleImageUpload = (result: CldUploadWidgetResults, type: string) => {
