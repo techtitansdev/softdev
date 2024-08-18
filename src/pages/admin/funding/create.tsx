@@ -47,8 +47,8 @@ function CreateFunding() {
     beneficiaries: "",
     goal: "",
     date: "",
-    donors:0,
-    funds:0,
+    donors: 0,
+    funds: 0,
     about: {
       projectTitle: "",
       projectDescription: "",
@@ -172,11 +172,29 @@ function CreateFunding() {
 
   const createFundRaiser = api.fundraiser.create.useMutation();
 
+  const validateFields = (): string[] => {
+    const errors: string[] = [];
+
+    // Validate Select Project, Funding Goal, and Target Date
+    if (!fundingData.project.trim()) errors.push("Select Project is required.");
+    if (!fundingData.goal) errors.push("Funding Goal is required.");
+    if (!fundingData.date) errors.push("Target Date is required.");
+
+    return errors;
+  };
+
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
     publish: boolean,
   ) => {
     e.preventDefault();
+
+    const errors = validateFields();
+
+    if (errors.length > 0) {
+      alert(errors.join("\n"));
+      return;
+    }
 
     try {
       const fundraiserResult = await createFundRaiser.mutateAsync({

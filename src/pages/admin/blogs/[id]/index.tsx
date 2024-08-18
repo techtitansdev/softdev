@@ -47,7 +47,7 @@ const BlogDetailsPage = () => {
           {blog.blogTitle}
         </div>
 
-        <div className="mb-6 flex items-center  px-2 text-sm md:text-base lg:max-w-[980px]">
+        <div className="mb-6 flex items-center px-2 text-sm md:text-base lg:max-w-[980px]">
           {blog.blogDescription}
         </div>
 
@@ -58,41 +58,45 @@ const BlogDetailsPage = () => {
           height={200}
         />
 
-        <div className="flex flex-col-reverse items-center px-2 pt-4 lg:flex-row lg:pt-16">
-          <div className="w-full flex-col items-center justify-center lg:w-1/2">
-            <Image
-              src={blog.blogImage1}
-              alt="blog-image1"
-              className="mx-auto w-full"
-              width={600}
-              height={300}
-            />
-          </div>
+        {blog.blogImage1 && (
+          <div className="flex flex-col-reverse items-center px-2 pt-4 lg:flex-row lg:pt-16">
+            <div className="w-full flex-col items-center justify-center lg:w-1/2">
+              <Image
+                src={blog.blogImage1}
+                alt="blog-image1"
+                className="mx-auto w-full"
+                width={600}
+                height={300}
+              />
+            </div>
 
-          <div className="mt-2 w-full rounded-md  lg:w-1/2 lg:max-w-[650px] lg:pr-6 xl:ml-12 xl:px-0">
-            <p className={` mb-4 text-sm sm:mb-8 sm:mt-8 md:text-lg`}>
-              {blog.blogDescription1}
-            </p>
+            <div className="mt-2 w-full rounded-md lg:w-1/2 lg:max-w-[650px] lg:pr-6 xl:ml-12 xl:px-0">
+              <p className="mb-4 text-sm sm:mb-8 sm:mt-8 md:text-lg">
+                {blog.blogDescription1}
+              </p>
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="mb-12 flex flex-col items-center px-2 pt-4 lg:flex-row lg:pt-16">
-          <div className="w-full flex-col items-center justify-center lg:w-1/2">
-            <p className={` mb-4 text-sm sm:mb-8 sm:mt-8 md:text-lg`}>
-              {blog.blogDescription2}
-            </p>
-          </div>
+        {blog.blogImage2 && (
+          <div className="mb-12 flex flex-col items-center px-2 pt-4 lg:flex-row lg:pt-16">
+            <div className="w-full flex-col items-center justify-center lg:w-1/2">
+              <p className="mb-4 text-sm sm:mb-8 sm:mt-8 md:text-lg">
+                {blog.blogDescription2}
+              </p>
+            </div>
 
-          <div className="mt-2 w-full rounded-md  lg:w-1/2 lg:max-w-[650px] lg:pr-6 xl:ml-12 xl:px-0">
-            <Image
-              src={blog.blogImage2}
-              alt="blog-image2"
-              className="mx-auto w-full"
-              width={600}
-              height={300}
-            />
+            <div className="mt-2 w-full rounded-md lg:w-1/2 lg:max-w-[650px] lg:pr-6 xl:ml-12 xl:px-0">
+              <Image
+                src={blog.blogImage2}
+                alt="blog-image2"
+                className="mx-auto w-full"
+                width={600}
+                height={300}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
