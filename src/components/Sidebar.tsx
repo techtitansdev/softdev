@@ -12,12 +12,7 @@ import { MdOutlineAdminPanelSettings } from "react-icons/md";
 export const Sidebar = () => {
   const Menus = [
     {
-      title: "Dashboard",
-      icon: <BiSolidDashboard size={25} />,
-      link: "/admin",
-    },
-    {
-      title: "Administrator",
+      title: "Admin",
       icon: <MdOutlineAdminPanelSettings size={25} />,
       link: "/admin/administrator",
     },
@@ -48,7 +43,7 @@ export const Sidebar = () => {
   const handleSignOut = async () => {
     setIsLoading(true);
     try {
-      router.push("/");
+      router.push("/home");
       await signOut();
     } catch (error) {
       console.error("Error signing out:", error);
