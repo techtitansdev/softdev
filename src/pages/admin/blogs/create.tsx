@@ -52,7 +52,20 @@ function CreateBlogs() {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
-    setBlogData({ ...blogData, [name]: value });
+
+    setBlogData((prev) => {
+      const newValues = { ...prev, [name]: value };
+
+      if (name === "title") {
+        newValues.blogTitle = value;
+      }
+
+      if (name === "excerpt") {
+        newValues.blogDescription = value;
+      }
+
+      return newValues;
+    });
   };
 
   const handleImageUpload = (result: CldUploadWidgetResults, type: string) => {
