@@ -134,7 +134,29 @@ function CreateBlogs() {
     }
   };
 
+  const validateFields = (): string[] => {
+    const errors: string[] = [];
+
+    // Validate Blog Data
+    if (!blogData.title.trim()) errors.push("Blog Title is required.");
+    if (!blogData.excerpt.trim()) errors.push("Blog Description is required.");
+    if (!featuredImage.trim()) errors.push("Featured Image is required.");
+    if (!blogData.blogTitle.trim())
+      errors.push("Blog Title (Design) is required.");
+    if (!blogData.blogDescription.trim())
+      errors.push("Blog Description (Design) is required.");
+    if (!blogImage.trim()) errors.push("Blog Image (Design) is required.");
+    return errors;
+  };
+
   const handleSubmit = async (isPublished: boolean) => {
+    const errors = validateFields();
+
+    if (errors.length > 0) {
+      alert(errors.join("\n"));
+      return;
+    }
+
     try {
       const result = await createBlog.mutateAsync({
         ...blogData,
