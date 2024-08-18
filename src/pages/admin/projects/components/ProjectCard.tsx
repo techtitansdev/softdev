@@ -104,12 +104,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </Link>
 
           <div className="mx-2 my-2">
-            <div className="truncate text-lg font-medium tracking-tight text-gray-900">
+            <div className="max-w-[260px] overflow-hidden truncate text-ellipsis whitespace-nowrap text-lg font-medium tracking-tight text-gray-900">
               {projectData.title}
             </div>
-            <div className="flex flex-row items-center overflow-hidden font-normal text-gray-700 dark:text-gray-500">
+            <div className="flex items-center font-normal text-gray-700 dark:text-gray-500">
               <IoLocationSharp size={15} />
-              {projectData.hub}
+              <span className="ml-1 max-w-[238px] overflow-hidden truncate text-ellipsis whitespace-nowrap">
+                {projectData.hub}
+              </span>
             </div>
           </div>
 

@@ -176,7 +176,12 @@ function CreateProjects() {
     }
   };
 
-  const removeImage = async (imageType: string, publicId: string) => {
+  const removeImage = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    imageType: string,
+    publicId: string,
+  ) => {
+    e.preventDefault();
     try {
       const response = await fetch("/api/deleteImage", {
         method: "DELETE",
@@ -351,7 +356,9 @@ function CreateProjects() {
 
               {featuredImagePublicId && (
                 <button
-                  onClick={() => removeImage("featured", featuredImagePublicId)}
+                  onClick={(e) =>
+                    removeImage(e, "featured", featuredImagePublicId)
+                  }
                   className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                 >
                   Remove Image
@@ -506,7 +513,9 @@ function CreateProjects() {
 
                 {projectImagePublicId && (
                   <button
-                    onClick={() => removeImage("project", projectImagePublicId)}
+                    onClick={(e) =>
+                      removeImage(e, "project", projectImagePublicId)
+                    }
                     className=" mt-1 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                   >
                     Remove Image
@@ -553,8 +562,8 @@ function CreateProjects() {
               </CldUploadButton>
               {objectiveImagePublicId && (
                 <button
-                  onClick={() =>
-                    removeImage("objective", objectiveImagePublicId)
+                  onClick={(e) =>
+                    removeImage(e, "objective", objectiveImagePublicId)
                   }
                   className="mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                 >
@@ -614,8 +623,8 @@ function CreateProjects() {
                 </CldUploadButton>
                 {projectName1ImagePublicId && (
                   <button
-                    onClick={() =>
-                      removeImage("name1", projectName1ImagePublicId)
+                    onClick={(e) =>
+                      removeImage(e, "name1", projectName1ImagePublicId)
                     }
                     className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                   >
@@ -676,8 +685,8 @@ function CreateProjects() {
                   </CldUploadButton>
                   {projectName2ImagePublicId && (
                     <button
-                      onClick={() =>
-                        removeImage("name2", projectName2ImagePublicId)
+                      onClick={(e) =>
+                        removeImage(e, "name2", projectName2ImagePublicId)
                       }
                       className="mb-4 mt-2 w-fit rounded-md bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
                     >

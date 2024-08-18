@@ -59,6 +59,7 @@ const Funding: React.FC = () => {
 
       setTimeout(() => {
         setShowModal(false);
+        router.push(`/login`);
       }, 2000);
     } else {
       router.push(

@@ -35,12 +35,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ projectData }) => {
             />
           </Link>
 
-          <div className="my-2 ml-2">
-            <h5 className="text-lg font-medium tracking-tight text-gray-900">
+          <div className="my-2 ml-2 max-w-full">
+            <h5 className="max-w-[260px] overflow-hidden text-ellipsis whitespace-nowrap text-lg font-medium tracking-tight text-gray-900">
               {projectData.title}
             </h5>
-            <p className="flex flex-row items-center font-normal text-gray-700 dark:text-gray-500">
-              <IoLocationSharp size={15} /> {projectData.hub}
+            <p className="flex items-center font-normal text-gray-700 dark:text-gray-500">
+              <IoLocationSharp size={15} />
+              <span className="ml-1 max-w-[238px] overflow-hidden text-ellipsis whitespace-nowrap">
+                {projectData.hub}
+              </span>
             </p>
           </div>
         </li>

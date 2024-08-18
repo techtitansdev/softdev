@@ -5,6 +5,7 @@ import DeleteModal from "~/components/DeleteModal";
 interface FundingData {
   id: string;
   project: {
+    title: string;
     image: string;
     description: string;
   };
@@ -61,11 +62,11 @@ const FundingCard: React.FC<FundingCardProps> = ({
           </Link>
 
           <div className="mx-2 my-2">
-            <h5 className="truncate text-lg font-medium tracking-tight text-gray-900">
-              {fundingData.title}
+            <h5 className="max-w-[340px] overflow-hidden truncate text-ellipsis whitespace-nowrap text-lg font-medium tracking-tight text-gray-900">
+              {fundingData.project.title}
             </h5>
 
-            <div className="max-w-[330px] items-center truncate text-xs font-light text-gray-700 dark:text-gray-500">
+            <div className="max-w-[336px] items-center truncate text-xs font-light text-gray-700 dark:text-gray-500">
               {fundingData.project.description}
             </div>
           </div>
