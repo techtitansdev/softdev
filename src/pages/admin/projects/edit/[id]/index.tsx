@@ -374,6 +374,8 @@ function EditProject() {
       errors.push("Project Title (Design) is required.");
     if (!projectData.about.projectDescription.trim())
       errors.push("Project Description (Design) is required.");
+    if (!projectData.about.projectLink.trim())
+      errors.push("Project Link (Design) is required.");
     if (!projectData.about.projectObjDescription.trim())
       errors.push("Project Objectives Description is required.");
 
