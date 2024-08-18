@@ -356,7 +356,45 @@ function EditProject() {
     }
   };
 
+  const validateFields = (): string[] => {
+    const errors: string[] = [];
+
+    // Validate Project Data
+    if (!projectData.title.trim()) errors.push("Project Title is required.");
+    if (!projectData.description.trim())
+      errors.push("Project Description is required.");
+    if (!projectData.hub.trim()) errors.push("Hub is required.");
+    if (!projectData.category.trim()) errors.push("Category is required.");
+    if (!projectData.type.trim()) errors.push("Type is required.");
+    if (!projectData.beneficiaries.trim())
+      errors.push("Beneficiaries are required.");
+
+    // Validate About Data
+    if (!projectData.about.projectTitle.trim())
+      errors.push("Project Title (Design) is required.");
+    if (!projectData.about.projectDescription.trim())
+      errors.push("Project Description (Design) is required.");
+    if (!projectData.about.projectLink.trim())
+      errors.push("Project Link (Design) is required.");
+    if (!projectData.about.projectObjDescription.trim())
+      errors.push("Project Objectives Description is required.");
+
+    // Validate Images
+    if (!featuredImageUrl.trim()) errors.push("Featured Image is required.");
+    if (!projectImageUrl.trim()) errors.push("Project Image is required.");
+    if (!objectiveImageUrl.trim()) errors.push("Objective Image is required.");
+
+    return errors;
+  };
+
   const handleSubmit = async (isPublished: boolean) => {
+    const errors = validateFields();
+
+    if (errors.length > 0) {
+      alert(errors.join("\n"));
+      return;
+    }
+
     const data: ProjectData = {
       ...projectData,
       id: id as string,
