@@ -57,6 +57,7 @@ function EditBlog() {
     blogDescription2: "",
     blogImage2: "",
     blogImage2Id: "",
+    date: "",
     published: false,
     featured: false,
   });
@@ -100,6 +101,7 @@ function EditBlog() {
           prevData.blogDescription2 !== getBlog.data.blogDescription2 ||
           prevData.blogImage2 !== getBlog.data.blogImage2 ||
           prevData.blogImage2Id !== getBlog.data.blogImage2Id ||
+          prevData.date !== getBlog.data.date ||
           prevData.published !== getBlog.data.published ||
           prevData.featured !== getBlog.data.featured;
 
@@ -119,6 +121,7 @@ function EditBlog() {
             blogDescription2: getBlog.data.blogDescription2,
             blogImage2: getBlog.data.blogImage2,
             blogImage2Id: getBlog.data.blogImage2Id,
+            date: getBlog.data.date,
             published: getBlog.data.published,
             featured: getBlog.data.featured,
           };

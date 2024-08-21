@@ -32,6 +32,7 @@ function CreateBlogs() {
     blogDescription2: "",
     blogImage2: "",
     blogImage2Id: "",
+    date: "",
     published: false,
     featured: false,
   });
@@ -255,6 +256,20 @@ function CreateBlogs() {
                   Remove Image
                 </button>
               )}
+            </div>
+            <div>
+              <label htmlFor="image" className="font-medium text-gray-700">
+                Date
+              </label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                value={blogData.date}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-md border p-2 shadow-sm"
+                required
+              />
             </div>
 
             <div className="mb-2 mt-12 text-xl"> Blog Design</div>
