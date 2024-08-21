@@ -13,6 +13,7 @@ export interface BlogData {
   blogDescription2: string;
   blogImage2: string;
   blogImage2Id: string;
+  date: string;
   published: boolean;
   featured: boolean;
 }
