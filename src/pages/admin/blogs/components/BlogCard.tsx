@@ -15,12 +15,12 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [featured, setFeatured] = useState(false);
   const [maxFeaturedReached, setMaxFeaturedReached] = useState(false);
-  const [createdDate, setCreatedDate] = useState("");
+  const [date, setDate] = useState("");
 
   useEffect(() => {
     if (blogData) {
       setFeatured(blogData.featured || false);
-      setCreatedDate(new Date(blogData.created).toLocaleDateString());
+      setDate(new Date(blogData.date).toLocaleDateString());
     }
   }, [blogData]);
 
@@ -125,7 +125,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blogData, handleDelete }) => {
               <div className="mr-1">
                 <LuCalendarDays />
               </div>
-              {createdDate}
+              {date}
             </div>
 
             <div
