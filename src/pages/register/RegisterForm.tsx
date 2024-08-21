@@ -28,12 +28,13 @@ const RegisterForm = () => {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [pendingVerification, setPendingVerification] = useState(false);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [modalError, setModalError] = useState("");
   const [modalBgColor, setModalBgColor] = useState("");
 
   const createUser = api.user.create.useMutation();
-  const verifyUser = api.user.verify.useMutation();
   const { signUp } = useSignUp();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,6 +53,7 @@ const RegisterForm = () => {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     let formErrors = validateRegistration(formValues);
 
@@ -73,8 +75,6 @@ const RegisterForm = () => {
           strategy: "email_code",
         });
 
-        
-
         setPendingVerification(true);
       } catch (err: any) {
         setModalOpen(true);
@@ -85,8 +85,11 @@ const RegisterForm = () => {
           setModalOpen(false);
         }, 3000);
       } finally {
+        setIsSubmitting(false);
         setLoading(false);
       }
+    } else {
+      setIsSubmitting(false);
     }
   };
 
@@ -326,6 +329,7 @@ const RegisterForm = () => {
                 <div className="mb-8 mt-4 px-10 md:mb-12 md:px-24 lg:w-full lg:px-0">
                   <button
                     type="submit"
+                    disabled={isSubmitting}
                     className="block w-full rounded-lg bg-gray-600 px-4 py-3 font-bold text-white hover:bg-gray-800"
                   >
                     Sign Up
@@ -353,17 +357,22 @@ const RegisterForm = () => {
           />
         </form>
       )}
-      {pendingVerification && <OtpVerification  onSuccess={function (): void {
-        createUser.mutate({
-          email: formValues.email,
-          firstName: formValues.firstName,
-          lastName: formValues.lastName,
-          address: formValues.address,
-          phone: formValues.phone,
-          password: formValues.password,
-          emailVerified: true
-        });
-      } } />}
+
+      {pendingVerification && (
+        <OtpVerification
+          onSuccess={function (): void {
+            createUser.mutate({
+              email: formValues.email,
+              firstName: formValues.firstName,
+              lastName: formValues.lastName,
+              address: formValues.address,
+              phone: formValues.phone,
+              password: formValues.password,
+              emailVerified: true,
+            });
+          }}
+        />
+      )}
     </div>
   );
 };
