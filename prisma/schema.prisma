@@ -65,6 +65,7 @@ model Blogs {
   blogDescription2     String
   blogImage2           String
   blogImage2Id         String
+  date                 String
   created              DateTime               @default(now())
   updated              DateTime               @updatedAt()
   published            Boolean                @default(false)
