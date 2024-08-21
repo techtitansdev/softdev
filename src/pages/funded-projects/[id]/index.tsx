@@ -12,6 +12,7 @@ import { Modal } from "~/components/Modal";
 import MilestoneComponent from "~/pages/admin/funding/components/MilestoneComponent";
 import SpecificAboutComponent from "../components/SpecificAboutComponent";
 import LoadingSpinner from "~/components/LoadingSpinner";
+import CustomButton from "~/components/Buttons/CustomButton";
 
 const Funding: React.FC = () => {
   const router = useRouter();
@@ -97,12 +98,11 @@ const Funding: React.FC = () => {
               <Link
                 href={`/funded-projects/${encodeURIComponent(fundingData.id)}/payment`}
               >
-                <button
+                <CustomButton
                   onClick={handleDonateClick}
-                  className="w-72 rounded-lg bg-blue-800 py-2 text-xl text-white hover:bg-blue-900 md:text-2xl"
-                >
-                  Donate
-                </button>
+                  text="Donate"
+                  className="text-xl"
+                />
               </Link>
 
               <div className="mt-4 flex space-x-28 lg:mt-8">

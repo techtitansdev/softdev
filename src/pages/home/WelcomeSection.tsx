@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import CustomButton from "~/components/Buttons/CustomButton";
 
 const WelcomeSection = () => {
   const textVariants = {
@@ -71,9 +72,7 @@ const WelcomeSection = () => {
               animate="visible"
               variants={textVariants}
             >
-              <button className="mt-6 block w-72 rounded-2xl bg-blue-800 py-2 text-lg font-semibold text-white hover:bg-blue-900 md:mb-6 md:w-80 md:py-3">
-                Fund Impact
-              </button>
+              <CustomButton text="Fund Impact" />
             </motion.div>
           </Link>
         </div>
