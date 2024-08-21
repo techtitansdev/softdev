@@ -89,6 +89,14 @@ const Payment = () => {
     setPaymentError(null);
     setLoading(true);
 
+    let finalFullName = fullName;
+    let finalEmail = email;
+
+    if (contributionType === "Anonymous") {
+      finalFullName = "Anonymous";
+      finalEmail = "anonymous@anonymous.anonymous";
+    }
+
     const convertedAmount = parseInt(amount, 10) * 100;
 
     try {
@@ -102,8 +110,8 @@ const Payment = () => {
 
         if (paymentMethod === "Gcash") {
           paymentMethodResponse = await createGcashPaymentMethod.mutateAsync({
-            email: email,
-            name: fullName,
+            email: finalEmail,
+            name: finalFullName,
             phone: phoneNumber,
           });
         } else {
@@ -123,9 +131,9 @@ const Payment = () => {
                 postal_code: cardDetails.postal_code,
                 country: cardDetails.country,
               },
-              name: fullName,
+              name: finalFullName,
               phone: phoneNumber,
-              email: email,
+              email: finalEmail,
             },
           });
         }
@@ -147,11 +155,12 @@ const Payment = () => {
           donors: 1,
         });
 
-        // Check if donor email exists
-        if (!checkEmail.data) {
-          await updateDonor.mutateAsync({
-            userEmail: userEmail,
-          });
+        if (contributionType !== "Anonymous") {
+          if (!checkEmail.data) {
+            await updateDonor.mutateAsync({
+              userEmail: userEmail,
+            });
+          }
         }
 
         // Create funding record
@@ -160,8 +169,8 @@ const Payment = () => {
           amount: parseInt(amount, 10),
           donorEmail: userEmail,
           paymentMethod,
-          fullName: fullName,
-          email: email,
+          fullName: finalFullName,
+          email: finalEmail,
           contact: phoneNumber,
           donatedAs: contributionType,
         });
@@ -173,7 +182,7 @@ const Payment = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            to: email,
+            to: finalEmail,
             subject: `${fundingData?.title} Donation Receipt`,
             text: `Thank you for your generous donation of ${currency} ${amount} to ${fundingData?.title}.`,
             projectTitle: fundingData?.title,
@@ -190,8 +199,8 @@ const Payment = () => {
           amount: convertedAmount,
           currency,
           paymentMethod,
-          fullName,
-          email,
+          fullName: finalFullName,
+          email: finalEmail,
         });
         setIsReceiptModalOpen(true);
       } else {
@@ -206,6 +215,16 @@ const Payment = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (contributionType === "Anonymous") {
+      setFullName("Anonymous");
+      setEmail("anonymous@anonymous.anonymous");
+    } else {
+      setFullName(""); // reset to empty if not anonymous
+      setEmail(""); // reset to empty if not anonymous
+    }
+  }, [contributionType]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -234,7 +253,7 @@ const Payment = () => {
       </Head>
 
       <Navbar />
-      
+
       {loading && (
         <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-white bg-opacity-50">
           <LoadingSpinner />
