@@ -351,40 +351,8 @@ function EditBlog() {
 
             <form>
               <div className="mb-4">
-                <label htmlFor="title" className="font-medium text-gray-700">
-                  Blog Title
-                </label>
-
-                <input
-                  type="text"
-                  id="title"
-                  name="title"
-                  value={blogData.title}
-                  onChange={handleChange}
-                  className="mt-1 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
-                  required
-                  data-testid="blog-title-input"
-                />
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="excerpt" className="font-medium text-gray-700">
-                  Blog Description
-                </label>
-                <textarea
-                  id="excerpt"
-                  name="excerpt"
-                  value={blogData.excerpt}
-                  onChange={handleChange}
-                  className="mt-1 h-56 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
-                  required
-                  data-testid="blog-description-input"
-                />
-              </div>
-
-              <div className="mb-4">
                 <label htmlFor="image" className="font-medium text-gray-700">
-                  Featured Image
+                  Card Image
                 </label>
 
                 <CldUploadButton
@@ -421,7 +389,39 @@ function EditBlog() {
                   </button>
                 )}
               </div>
-              
+
+              <div className="mb-4">
+                <label htmlFor="title" className="font-medium text-gray-700">
+                  Card Title
+                </label>
+
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  value={blogData.title}
+                  onChange={handleChange}
+                  className="mt-1 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
+                  required
+                  data-testid="blog-title-input"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="excerpt" className="font-medium text-gray-700">
+                  Card Description
+                </label>
+                <textarea
+                  id="excerpt"
+                  name="excerpt"
+                  value={blogData.excerpt}
+                  onChange={handleChange}
+                  className="mt-1 h-56 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
+                  required
+                  data-testid="blog-description-input"
+                />
+              </div>
+
               <div>
                 <label htmlFor="image" className="font-medium text-gray-700">
                   Date
@@ -436,7 +436,7 @@ function EditBlog() {
                   required
                 />
               </div>
-              <div className="mb-2 mt-12 text-xl"> Blog Design</div>
+              <div className="mb-2 mt-12 text-xl"> Blog Page View</div>
 
               <div>
                 <textarea
@@ -553,7 +553,7 @@ function EditBlog() {
                     uploadPreset={
                       process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
                     }
-                    className={`relative ml-12 grid h-[320px] w-[550px] place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                    className={`relative grid h-[320px] w-[550px] place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
                       blogImage2 && "pointer-events-none"
                     }`}
                     onUpload={(result) => handleImageUpload(result, "image2")}
