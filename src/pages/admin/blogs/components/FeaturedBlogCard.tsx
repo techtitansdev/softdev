@@ -15,21 +15,11 @@ const FeaturedBlogCard: React.FC<BlogCardProps> = ({
   blogData,
   handleDelete,
 }) => {
-  if (
-    !blogData ||
-    !blogData.id ||
-    !blogData.title ||
-    !blogData.created ||
-    !blogData.image ||
-    !blogData.excerpt
-  ) {
-    return null;
-  }
-
+  
   const [isModalOpen, setModalOpen] = useState(false);
   const [featured, setFeatured] = useState(blogData.featured || false);
   const [maxFeaturedReached, setMaxFeaturedReached] = useState(false);
-  const createdDate = new Date(blogData.created).toLocaleDateString();
+  const blogDate = new Date(blogData.date).toLocaleDateString();
 
   const openModal = () => {
     setModalOpen(true);
@@ -116,7 +106,7 @@ const FeaturedBlogCard: React.FC<BlogCardProps> = ({
               <div className="mr-1">
                 <LuCalendarDays />
               </div>
-              {createdDate}
+              {blogDate}
             </div>
 
             <div

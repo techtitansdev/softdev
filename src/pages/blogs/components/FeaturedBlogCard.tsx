@@ -8,7 +8,7 @@ interface BlogData {
   image: string;
   excerpt: string;
   featured: boolean;
-  created: Date;
+  date: Date;
 }
 
 interface FeaturedBlogCardProps {
@@ -16,11 +16,7 @@ interface FeaturedBlogCardProps {
 }
 
 const FeaturedBlogCard: React.FC<FeaturedBlogCardProps> = ({ blogData }) => {
-  if (!blogData?.created) {
-    return null;
-  }
-
-  const createdDate = new Date(blogData.created).toLocaleDateString();
+  const blogDate = new Date(blogData.date).toLocaleDateString();
 
   return (
     <div>
@@ -44,12 +40,12 @@ const FeaturedBlogCard: React.FC<FeaturedBlogCardProps> = ({ blogData }) => {
               {blogData.title}
             </div>
 
-            {createdDate && (
+            {blogDate && (
               <div className="my-2 ml-1 flex max-w-[92px] items-center justify-center rounded-sm bg-gray-100 text-xs font-light text-gray-700 lg:text-sm dark:text-gray-500">
                 <div className="mr-1">
                   <LuCalendarDays />
                 </div>
-                {createdDate}
+                {blogDate}
               </div>
             )}
 
