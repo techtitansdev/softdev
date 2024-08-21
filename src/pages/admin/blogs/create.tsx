@@ -224,40 +224,8 @@ function CreateBlogs() {
 
           <form>
             <div className="mb-4">
-              <label htmlFor="title" className="font-medium text-gray-700">
-                Blog Title
-              </label>
-
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={blogData.title}
-                onChange={handleChange}
-                className="mt-1 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
-                required
-                data-testid="blog-title-input"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label htmlFor="excerpt" className="font-medium text-gray-700">
-                Blog Description
-              </label>
-              <textarea
-                id="excerpt"
-                name="excerpt"
-                value={blogData.excerpt}
-                onChange={handleChange}
-                className="mt-1 h-56 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
-                required
-                data-testid="blog-description-input"
-              />
-            </div>
-
-            <div className="mb-4">
               <label htmlFor="image" className="font-medium text-gray-700">
-                Featured Image
+                Card Image
               </label>
 
               <CldUploadButton
@@ -292,6 +260,39 @@ function CreateBlogs() {
                 </button>
               )}
             </div>
+
+            <div className="mb-4">
+              <label htmlFor="title" className="font-medium text-gray-700">
+                Card Title
+              </label>
+
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={blogData.title}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
+                required
+                data-testid="blog-title-input"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="excerpt" className="font-medium text-gray-700">
+                Card Excerpt
+              </label>
+              <textarea
+                id="excerpt"
+                name="excerpt"
+                value={blogData.excerpt}
+                onChange={handleChange}
+                className="mt-1 h-56 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
+                required
+                data-testid="blog-description-input"
+              />
+            </div>
+
             <div>
               <label htmlFor="image" className="font-medium text-gray-700">
                 Date
@@ -307,14 +308,14 @@ function CreateBlogs() {
               />
             </div>
 
-            <div className="mb-2 mt-12 text-xl"> Blog Design</div>
+            <div className="mb-2 mt-12 text-xl"> Blog Page View</div>
 
             <div>
               <textarea
                 placeholder="Blog Title"
                 id="blogTitle"
                 name="blogTitle"
-                maxLength={500}
+                maxLength={1000}
                 value={blogData.blogTitle}
                 onChange={handleChange}
                 className="text-bold mb-1 mt-1 h-20 w-[900px] rounded-md border border-gray-400 p-2 text-2xl font-medium outline-gray-400"
@@ -398,7 +399,7 @@ function CreateBlogs() {
               <textarea
                 id="blogDescription1"
                 name="blogDescription1"
-                placeholder="Blog Info"
+                placeholder="Blog Information"
                 value={blogData.blogDescription1}
                 maxLength={1000}
                 onChange={handleChange}
@@ -411,7 +412,7 @@ function CreateBlogs() {
               <textarea
                 id="blogDescription2"
                 name="blogDescription2"
-                placeholder="Blog Info"
+                placeholder="Blog Information"
                 value={blogData.blogDescription2}
                 maxLength={1000}
                 onChange={handleChange}
@@ -424,7 +425,7 @@ function CreateBlogs() {
                   uploadPreset={
                     process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
                   }
-                  className={`relative ml-12 grid h-[320px] w-[550px] place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
+                  className={`relative grid h-[320px] w-[550px] place-items-center rounded-md border-2 border-dotted bg-slate-100 object-cover ${
                     blogImage2 && "pointer-events-none"
                   }`}
                   onUpload={(result) => handleImageUpload(result, "image2")}

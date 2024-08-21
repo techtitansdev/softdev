@@ -373,7 +373,7 @@ function CreateFunding() {
               />
             </div>
 
-            <div className="mb-2 mt-12 text-xl">Project Design</div>
+            <div className="mb-2 mt-12 text-xl">Fundraiser Page View</div>
             <div className="flex items-center justify-between">
               <div className="">
                 <div className="">
