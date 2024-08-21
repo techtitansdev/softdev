@@ -354,40 +354,8 @@ function CreateProjects() {
 
           <form>
             <div className="mb-4">
-              <label htmlFor="title" className="font-medium text-gray-700">
-                Project Title
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={projectData.title}
-                onChange={handleChange}
-                className="mt-1 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
-                required
-              />
-            </div>
-
-            <div className="mb-4">
-              <label
-                htmlFor="description"
-                className="font-medium text-gray-700"
-              >
-                Project Description
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                value={projectData.description}
-                onChange={handleChange}
-                className="mt-1 h-56 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
-                required
-              />
-            </div>
-
-            <div className="mb-4">
               <label htmlFor="image" className="font-medium text-gray-700">
-                Featured Image
+                Card Image
               </label>
 
               <CldUploadButton
@@ -423,6 +391,38 @@ function CreateProjects() {
             </div>
 
             <div className="mb-4">
+              <label htmlFor="title" className="font-medium text-gray-700">
+                Card Title
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={projectData.title}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
+                required
+              />
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="description"
+                className="font-medium text-gray-700"
+              >
+                Card Excerpt
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                value={projectData.description}
+                onChange={handleChange}
+                className="mt-1 h-56 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
+                required
+              />
+            </div>
+
+            <div className="mb-4">
               <label htmlFor="hub" className="block font-medium text-gray-700">
                 Hub
               </label>
@@ -431,6 +431,7 @@ function CreateProjects() {
                 type="text"
                 id="hub"
                 name="hub"
+                placeholder="Iloilo Hub"
                 value={projectData.hub}
                 onChange={handleChange}
                 className="mt-1 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
@@ -505,7 +506,7 @@ function CreateProjects() {
               />
             </div>
 
-            <div className="mb-2 mt-12 text-xl">Project Design</div>
+            <div className="mb-2 mt-12 text-xl">Project Page View </div>
             <div className="flex items-center justify-between">
               <div className="">
                 <div className="">
@@ -514,7 +515,7 @@ function CreateProjects() {
                     type="text"
                     id="projectTitle"
                     name="projectTitle"
-                    maxLength={40}
+                    maxLength={1000}
                     value={aboutData.projectTitle}
                     onChange={handleChange}
                     className="text-bold mb-1 mt-1 h-12 w-[530px] rounded-md border border-gray-400 p-2 text-lg font-medium outline-gray-400"
@@ -527,7 +528,7 @@ function CreateProjects() {
                     name="projectDescription"
                     placeholder="Project Description"
                     value={aboutData.projectDescription}
-                    maxLength={500}
+                    maxLength={1000}
                     onChange={handleChange}
                     className="mt-1 h-60 w-[530px] rounded-md border border-gray-400 p-2 text-base outline-gray-400"
                     required
@@ -589,7 +590,7 @@ function CreateProjects() {
                 id="projectObjDescription"
                 name="projectObjDescription"
                 placeholder="Project Objectives Description"
-                maxLength={210}
+                maxLength={1000}
                 value={aboutData.projectObjDescription}
                 onChange={handleChange}
                 className="mt-1 w-[950px] rounded-md border border-gray-400 p-2 text-center outline-gray-400"
@@ -636,7 +637,7 @@ function CreateProjects() {
                     type="text"
                     id="projectName1"
                     name="projectName1"
-                    maxLength={30}
+                    maxLength={500}
                     value={aboutData.projectName1}
                     onChange={handleChange}
                     className="text-bold mb-1 mt-12 h-12 w-[550px] rounded-md border border-gray-400 p-2 text-center text-lg font-medium outline-gray-400"
@@ -649,7 +650,7 @@ function CreateProjects() {
                     placeholder="Small Description"
                     id="projectName1Description"
                     name="projectName1Description"
-                    maxLength={100}
+                    maxLength={500}
                     value={aboutData.projectName1Description}
                     onChange={handleChange}
                     className="mb-1 mt-1 h-12 w-[550px] rounded-md border border-gray-400 p-2 text-center text-base font-medium outline-gray-400"
@@ -697,7 +698,7 @@ function CreateProjects() {
                       type="text"
                       id="projectName2"
                       name="projectName2"
-                      maxLength={30}
+                      maxLength={500}
                       value={aboutData.projectName2}
                       onChange={handleChange}
                       className="text-bold mb-1 mt-12 h-12 w-[550px] rounded-md border border-gray-400 p-2 text-center text-lg font-medium outline-gray-400"
@@ -711,7 +712,7 @@ function CreateProjects() {
                       type="text"
                       id="projectName2Description"
                       name="projectName2Description"
-                      maxLength={100}
+                      maxLength={500}
                       value={aboutData.projectName2Description}
                       onChange={handleChange}
                       className="mb-1 mt-1 h-12 w-[550px] rounded-md border border-gray-400 p-2 text-center text-base font-medium outline-gray-400"

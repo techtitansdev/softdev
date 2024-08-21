@@ -456,43 +456,8 @@ function EditProject() {
 
             <form onSubmit={() => handleSubmit(false)}>
               <div className="mb-4">
-                <label htmlFor="title" className="font-medium text-gray-700">
-                  Project Title
-                </label>
-
-                <input
-                  type="text"
-                  id="title"
-                  name="title"
-                  placeholder="title"
-                  value={projectData.title}
-                  className="mt-1 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
-                  required
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="mb-4">
-                <label
-                  htmlFor="description"
-                  className="font-medium text-gray-700"
-                >
-                  Project Description
-                </label>
-
-                <textarea
-                  id="description"
-                  name="description"
-                  value={projectData.description}
-                  onChange={handleChange}
-                  className="mt-1 h-56 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
-                  required
-                />
-              </div>
-
-              <div className="mb-4">
                 <label htmlFor="image" className="font-medium text-gray-700">
-                  Featured Image
+                  Card Image
                 </label>
 
                 <CldUploadButton
@@ -527,6 +492,41 @@ function EditProject() {
                     Remove Image
                   </button>
                 )}
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="title" className="font-medium text-gray-700">
+                  Card Title
+                </label>
+
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  placeholder="title"
+                  value={projectData.title}
+                  className="mt-1 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
+                  required
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="description"
+                  className="font-medium text-gray-700"
+                >
+                  Card Description
+                </label>
+
+                <textarea
+                  id="description"
+                  name="description"
+                  value={projectData.description}
+                  onChange={handleChange}
+                  className="mt-1 h-56 w-full rounded-md border border-gray-400 p-2 outline-gray-400"
+                  required
+                />
               </div>
 
               <div className="mb-4">
@@ -626,7 +626,7 @@ function EditProject() {
                 />
               </div>
 
-              <div className="mb-2 mt-12 text-xl">Project Design</div>
+              <div className="mb-2 mt-12 text-xl">Project Page View</div>
               <div className="flex items-center justify-between">
                 <div className="">
                   <div className="">
