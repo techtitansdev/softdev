@@ -8,6 +8,7 @@ import FilterByCategory from "~/components/filter/FilterByCategory";
 import { Footer } from "~/components/Footer";
 import FundraiserSearchInput from "~/components/search/SearchByFundraiser";
 import LoadingSpinner from "~/components/LoadingSpinner";
+
 const FundedProjects = () => {
   const [fundingData, setFundingData] = useState<any>([]);
   const [loading, setLoading] = useState(true);

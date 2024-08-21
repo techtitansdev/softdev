@@ -14,10 +14,12 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ projectId }) => {
     message: string;
     bgColor: string;
   } | null>(null);
+
   const { user } = useUser();
 
   const email = user?.primaryEmailAddress?.emailAddress;
   const dbUser = api.user.getByEmail.useQuery({ email: email! });
+
   const createComment = api.feedback.create.useMutation({
     onSuccess: () => {
       setComment("");
@@ -65,14 +67,12 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ projectId }) => {
       return;
     }
 
-    console.log("projectId:", projectId);
     if (user) {
       const commentInput = {
         userId: dbUser.data!.id,
         projectId: projectId,
         feedback: comment,
       };
-      console.log("commentInput:", commentInput);
       createComment.mutate(commentInput);
     }
   };

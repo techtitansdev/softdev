@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
-
 import CommentComponent from "../components/CommentComponent";
 import { Navbar } from "~/components/Navbar";
 import { Footer } from "~/components/Footer";
@@ -17,11 +16,11 @@ import CustomButton from "~/components/Buttons/CustomButton";
 const Funding: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
-
   const [fundingData, setFundingData] = useState<any>(null);
   const { user } = useUser();
   const [showModal, setShowModal] = useState(false);
   const getFunding = api.fundraiser.getById.useQuery({ id: id as string });
+
   const projectId = getFunding.data?.project.id;
   console.log(getFunding.data?.project.id);
 
@@ -43,12 +42,10 @@ const Funding: React.FC = () => {
 
     const differenceMs = target.getTime() - currentDate.getTime();
 
-    // Check if the target date has passed
     if (differenceMs < 0) {
-      return 0; // Return 0 if target date has passed
+      return 0;
     }
 
-    // Calculate the difference in days
     const differenceDays = Math.ceil(differenceMs / (1000 * 60 * 60 * 24));
     return differenceDays;
   };
