@@ -4,20 +4,22 @@ import { Sidebar } from "~/components/Sidebar";
 
 import Unauthorized from "~/components/Unauthorized";
 import { api } from "~/utils/api";
-import AdminModal from "~/components/AddAdminModal";
 import { Modal } from "~/components/Modal";
 import { useUser } from "@clerk/nextjs";
 import LoadingSpinner from "~/components/LoadingSpinner";
+import { AdminConfirmModal } from "~/components/administratorModal";
 
 const Administrators = () => {
   const { user, isLoaded } = useUser();
   const user_role = user?.publicMetadata.admin ? "ADMIN" : "USER";
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false); // State for Add Admin modal
   const [errorMessage, setErrorMessage] = useState("");
   const [userDetails, setUserDetails] = useState(null);
   const [userId, setUserId] = useState("");
   const [newAdminEmail, setNewAdminEmail] = useState("");
+  const [selectedAdminEmail, setSelectedAdminEmail] = useState(""); // State to store selected admin email
   const {
     data: adminData,
     isLoading: isAdminsLoading,
@@ -27,7 +29,8 @@ const Administrators = () => {
   const setRole = api.user.setRole.useMutation({
     onSuccess: () => {
       refetch();
-      setIsModalOpen(false);
+      setIsRemoveModalOpen(false);
+      setIsAddModalOpen(false); // Close Add Admin modal after success
     },
     onError: (error) => {
       setErrorMessage(
@@ -38,18 +41,30 @@ const Administrators = () => {
 
   useEffect(() => {}, [isLoaded, user_role]);
 
-  const handleRemoveAdmin = async (adminEmail: string) => {
-    if (confirm("Are you sure you want to remove this administrator?")) {
-      await updateRole(adminEmail, "user");
-      setRole.mutate({ email: adminEmail, role: "user" });
+  const handleRemoveAdmin = async () => {
+    if (selectedAdminEmail) {
+      await updateRole(selectedAdminEmail, "user");
+      setRole.mutate({ email: selectedAdminEmail, role: "user" });
     }
   };
 
-  const handleAddAdmin = async (adminEmail: string) => {
-    if (confirm("Are you sure you want to add this administrator?")) {
-      await updateRole(adminEmail, "admin");
-      setRole.mutate({ email: adminEmail, role: "admin" });
+  const handleOpenRemoveModal = async (adminEmail: string) => {
+    setSelectedAdminEmail(adminEmail);
+    await handleGetUserDetails(adminEmail);
+    setIsRemoveModalOpen(true);
+  };
+
+  const handleAddAdmin = async () => {
+    if (newAdminEmail) {
+      await handleGetUserDetails(newAdminEmail);
+      setIsAddModalOpen(true);
     }
+  };
+
+  const handleConfirmAddAdmin = async () => {
+    await updateRole(newAdminEmail, "admin");
+    setRole.mutate({ email: newAdminEmail, role: "admin" });
+    setNewAdminEmail("")
   };
 
   const handleGetUserDetails = async (email: string) => {
@@ -116,6 +131,7 @@ const Administrators = () => {
       }
     }
   };
+
   if (!isLoaded || isAdminsLoading) {
     return <LoadingSpinner />;
   }
@@ -139,20 +155,6 @@ const Administrators = () => {
             ADMINISTRATOR
           </div>
           <div className="mt-8">
-            <AdminModal
-              isOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-              onConfirm={() => handleAddAdmin(newAdminEmail)}
-              title="Add New Administrator"
-            >
-              <input
-                type="email"
-                value={newAdminEmail}
-                onChange={(e) => setNewAdminEmail(e.target.value)}
-                placeholder="Enter email to add as admin"
-                className="w-full rounded border border-gray-300 p-2"
-              />
-            </AdminModal>
 
             <Modal
               isOpen={!!errorMessage}
@@ -160,6 +162,20 @@ const Administrators = () => {
               message={errorMessage}
               bgColor="bg-red-500"
             />
+            <div className="grid grid-cols-2 gap-4">
+              <input
+                placeholder="Enter admin email"
+                value={newAdminEmail}
+                onChange={(e) => setNewAdminEmail(e.target.value)}
+                className="rounded border border-gray-300 p-2"
+              />
+              <button
+                onClick={handleAddAdmin}
+                className="rounded bg-blue-800 px-4 py-2 text-white hover:bg-blue-700"
+              >
+                Add
+              </button>
+            </div>
 
             {adminData && adminData.length > 0 ? (
               <ul>
@@ -170,7 +186,7 @@ const Administrators = () => {
                   >
                     <span>{admin.email}</span>
                     <button
-                      onClick={() => handleRemoveAdmin(admin.email)}
+                      onClick={() => handleOpenRemoveModal(admin.email)} // Open modal with selected admin email
                       className="ml-4 rounded bg-red-500 px-4 py-1 text-white hover:bg-red-700"
                     >
                       Remove
@@ -182,13 +198,6 @@ const Administrators = () => {
               <p>No administrators found.</p>
             )}
 
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="mb-4 mt-2 rounded bg-blue-700 px-4 py-2 text-white hover:bg-blue-800"
-            >
-              Add Admin
-            </button>
-
             {userDetails && (
               <div className="mt-4 rounded bg-gray-100 p-4">
                 <h3>User Details:</h3>
@@ -196,6 +205,24 @@ const Administrators = () => {
                 <pre>{JSON.stringify(userDetails, null, 2)}</pre>
               </div>
             )}
+
+            {/* Confirmation Modal for Removing Admin */}
+            <AdminConfirmModal
+              isOpen={isRemoveModalOpen}
+              onClose={() => setIsRemoveModalOpen(false)}
+              message={`Are you sure you want to remove ${selectedAdminEmail} as an administrator?`}
+              onConfirm={handleRemoveAdmin} // Confirm button triggers removal
+              bgColor="bg-yellow-gray"
+            />
+
+            {/* Confirmation Modal for Adding Admin */}
+            <AdminConfirmModal
+              isOpen={isAddModalOpen}
+              onClose={() => setIsAddModalOpen(false)}
+              message={`Are you sure you want to add ${newAdminEmail} as an administrator?`}
+              onConfirm={handleConfirmAddAdmin} // Confirm button triggers adding
+              bgColor="bg-blue-gray"
+            />
           </div>
         </div>
       </div>
